@@ -1,0 +1,48 @@
+---
+title: "INSERT TITLE"
+author: "NAME"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  minidown::mini_document:
+    code_download: true
+    code_folding:
+      source: hide
+      output: show
+      message: hide
+      warning: hide
+      error: show
+    toc: true
+    toc_float: true
+    number_sections: true
+---
+
+```{r setup, message=FALSE}
+library(tidyverse)
+#library(timesaveR)
+```
+
+
+# How to use this template
+
+Before you can knit this file, you need to install the `minidown`-package (`install.packages("minidown")`). This allows you to create more readable reports out of the box, and has some helpful extra features that you can find on the [minidown webpage](https://minidown.atusy.net/)
+
+# Load data 
+
+```{r}
+
+```
+
+# Create scales
+
+```{r}
+
+```
+
+
+# Report descriptives and correlations
+
+```{r}
+
+```
+
+# ...

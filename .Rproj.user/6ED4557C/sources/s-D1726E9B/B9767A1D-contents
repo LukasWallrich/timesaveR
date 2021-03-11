@@ -1,0 +1,148 @@
+---
+title: "Core Quants Week 7 classwork"
+author: "YOUR NAME"
+date: "16/01/2020"
+output: html_document
+---
+
+# Exploring the ESS (European Social Survey) further
+
+The [ESS](https://europeansocialsurvey.org/) is a huge survey run every two years across Europe, focusing on different social and political attitudes, as well as personal characteristics. Here we use Wave 7 from 2014, which collected 601 variables on 40,185 respondents and included a special module on the social determinants of health. 
+
+Today we will focus on replicating and extending some analyses from Thomson et al. (2017) who considered regional inequalities. At this stage, we will ignore two important aspects to focus on fundamental data manipulation skills:
+- we will *ignore survey weights*, which need to be used to make country results representative of the countries' population,
+- we will *ignore different types of missing data.* I have recoded all missing values as NA; in a more thorough analysis, the different reasons for missingness reported in the codebook should be considered.
+
+
+# Loading the ESS data 
+
+I have selected a smaller set of 81 variables that we will look at over the next few weeks. I have saved the data as an RDS object - a R data type - and you can download it directly from the web by running the following code. 
+
+```{r}
+library(tidyverse)
+
+ess <- read_rds(url("http://empower-training.de/Gold/ess7_health.RDS"))
+#The file is 20 MB large, so depending on your internet speed, it might take a minute.
+
+#If that fails, your computer likely does not allow R to access the internet - then use the link to download the file and replace the URL by the local file path.
+
+```
+
+# Open the codebook or variable key
+
+The ESS variable names are not intuitive and often it is not clear what the answer options are - the [Codebook](https://www.europeansocialsurvey.org/docs/round7/survey/ESS7_appendix_a7_e01_0.pdf) contains information on all that. I have also provided a variable key on learn.gold, which might be sufficient. Make sure to open either of them.
+
+# Initial data preparation
+
+- Filter to include only participants who are at least 18 years old
+- Create a `bmi` variable: weight(in kg)/height(in m)^2 (^2 means squared, make sure to convert height to meters)
+- Remove Israel ("IL") as they do not provide information on subregions (and are not on the European map)
+- Create a poor_health variable that is TRUE if someone's health is 4 (bad) or 5 (very bad) and FALSE otherwise
+
+```{r}
+
+
+
+```
+
+
+# Create a scale for depression
+
+Depression was measured with 8 items. We need to calculate their mean, but should also check whether the scale is internally consistent.
+
+To test a scale for internal consistency, you need to calculate Cronbach's alpha. To do that easily, you will need to install a package that has a specific function for it; we will use the `psych` package. So run install.packages("psych") in the console. 
+
+Note: Given that we will only use a single function from that package, I would recommend typing psych::alpha() rather than loading the full package, but you could as well run library(psych) and then use the alpha() function.
+
+The proposed depression scale consists of the following items:
+
+fltdpr
+flteeff
+slprl
+wrhpp
+fltlnl
+enjlf
+fltsd
+cldgng
+
+```{r}
+# Two items should be reverse coded because they do not measure high but low levels of depression. Have a look at the variable key pdf to identify which, and then create reverse-coded versions by subtracting them from 1 + the maximum. var1 below needs to be replaced by one of the variable names, and then you need to create the same command for the other
+
+ess <- ess %>% mutate(var1_rev = 5 - var1, ____)
+
+#Test whether the 8 items listed above can form an internally consistent scale
+ess %>% select(_____) %>% psych::alpha()
+
+#Create a new depression variable that is the sum of the eight. Ensure that you include the reverse-coded ones. Avoid using the sum() function inside mutate() - just add them up.
+
+____
+
+#Calculate and plot the average depression score by country 
+#Remember that you can use group_by() before summarise() to create summaries per group
+#A column chart `geom_col()` might be best; you can add `+ coord_flip()` to get horizontal bars with better-to-read labels
+#If you want to arrange the bars, use the reorder function on the x-axis, e.g., ggplot(aes(x=reorder(cntry, depression_score), y=depression_score))
+
+ess %>% ___ %>% ggplot(aes(x=reorder(cntry, depression_score), y=depression_score)) + geom_col() + coord_flip()
+
+#In the article, they turned the depression score into a categorical variable - just depressed vs. not depressed, based on whether the score was higher than 10 (in our data, that is 18 - they started from 0 rather than one. Create a `depressed` variable that indicates whether someone is depressed (i.e. scored 18 or more), and create another column chart that shows the proportion depressed. Is the order different? Which measure is more interesting to you? 
+
+ess <- ess %>% mutate(depressed = ______)
+
+ess %>% ____
+
+```
+
+In the following, please follow the guidance of the paper and always filter out regions with fewer than 100 responses per group.
+
+# Map health and depression per region
+
+In the paper, they used deciles to rank regions. We will use relative odds for being in poor health or depressed. But let's first consider how to draw maps.
+
+## Prepare for drawing maps
+
+To be able to draw maps with correct projection, you need two additional packages as well as the required data with borders. If you run this chunk, you will install those packages and download the geodata - already prepared with the NUTS 1 and 2 regions as they are used in the article, and with the names aligned so that they match the ESS data. 
+
+```{r}
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(maps, mapproj)
+
+geo_data <- read_rds(url("http://empower-training.de/Gold/geodata_for_ess7.RDS"))
+
+#We will merge the geodata to the ESS by region and country. For that, it helps to align variable names - the following line does this
+
+geo_data <- geo_data %>% 
+  rename(cntry = CNTR_CODE, health_region = NUTS_NAME)
+
+```
+
+## Drawing maps
+
+For ggplot, maps are polygons that consist of individual lines - drawn with `geom_polygon()`. To account for the fact that degrees of longitude and latitude cover very different distances, especially up north, we need to use a map projection, offered by `coord_map()`. We also need to zoom in on the European mainland, ignoring overseas territories and the like. 
+
+Typically, only `fill` is used to convey information on maps. So you can copy-paste the code below and replace fill and labels to create meaningful maps.
+
+```{r}
+
+geo_data %>% 
+  ggplot(aes(x = long, y = lat, group = group, fill = 1)) +
+  geom_polygon(color = "grey", size = .25) +
+  coord_map(xlim = c(-11, 22), ylim = c(35, 72))
+
+```
+
+
+
+# Calculate relative risk
+
+Calculate the average share of people who are depressed or in poor health across the dataset. Then calculate the share per region `health_region` and divide that by the overall share to get a relative risk. Finally, plot two maps with regions filled by these relative risks.
+
+```{r}
+
+```
+
+
+
+## Wrapping up
+Click on Knit above to run all code and save the document as an HTML report that you can easily save and share. Note than you can only do that if all your code works without throwing an error - if there are just a few stubborn lines, you can always disable them for knitting by putting # in front of them.
+
+
