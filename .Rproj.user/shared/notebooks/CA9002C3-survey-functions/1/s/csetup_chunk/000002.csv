@@ -1,5 +1,0 @@
-"0","ess_survey <- svydesign(~1, data = ess_health, weights = svy_weight)
-"
-"2","Error in svydesign.default(~1, data = ess_health, weights = svy_weight) : 
-  object 'svy_weight' not found
-"
