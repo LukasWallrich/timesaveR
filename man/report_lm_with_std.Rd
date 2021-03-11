@@ -6,8 +6,9 @@
 \usage{
 report_lm_with_std(
   mod,
-  std_mod,
+  mod_std,
   conf_level = 0.95,
+  coef_renames = NULL,
   fmt = "\%.2f",
   statistic_vertical = FALSE,
   filename = NULL,
@@ -23,10 +24,13 @@ report_lm_with_std(
 \arguments{
 \item{mod}{A lm-model/mira object of lm models, with variables not standardised (or a list of such models)}
 
-\item{std_mod}{A lm-model/mira object of lm models, with standardised variables. Can be
+\item{mod_std}{A lm-model/mira object of lm models, with standardised variables. Can be
 created with \code{\link{lm_std}} (or a list of such models)}
 
 \item{conf_level}{Confidence level to use for confidence intervals, defaults to .95}
+
+\item{coef_renames}{A named character vector with new names for the coefficients or a tibble as provided by \code{\link{get_coef_rename_tribbles}}
+for variables. If NULL, then the coefficients are not renamed.}
 
 \item{fmt}{determines how to format numeric values
 \itemize{
@@ -37,7 +41,7 @@ created with \code{\link{lm_std}} (or a list of such models)}
 
 \item{statistic_vertical}{Should standard errors and CIs be shown below coefficients? Defaults to horizontal layout}
 
-\item{filename}{the file name to create on disk. Include '.html' extension to best preserve formatting (see gt::gtsave for details)}
+\item{filename}{the file name to create a HTML file on disk.}
 
 \item{model_names}{If several pairs of models are to be plotted side by side, indicate the label for each *pair* here}
 
@@ -54,20 +58,6 @@ created with \code{\link{lm_std}} (or a list of such models)}
 \item{...}{
   Arguments passed on to \code{\link[modelsummary:modelsummary]{modelsummary::modelsummary}}
   \describe{
-    \item{\code{output}}{filename or object type (character string)
-\itemize{
-  \item Supported filename extensions: .html, .tex, .md, .txt, .png, .jpg.
-  \item Supported object types: "default", "html", "markdown", "latex", "data.frame", "gt", "kableExtra", "huxtable", "flextable".
-  \item Warning: the `output` argument \emph{cannot} be used when customizing tables with external packages. See the 'Details' section below.
-}}
-    \item{\code{estimate}}{string or `glue` string of the estimate to display (or a
-vector with one string per model). Valid entries include any column name of
-the data.frame produced by `get_estimates(model)`. Examples:
-\itemize{
-  \item "estimate"
-  \item "{estimate} ({std.error}){stars}"
-  \item "{estimate} [{conf.low}, {conf.high}]"
-}}
     \item{\code{coef_map}}{named character vector. Values refer to the variable names
 that will appear in the table. Names refer to the original term names stored
 in the model object, e.g. c("hp:mpg"="hp X mpg") for an interaction term.
@@ -78,22 +68,14 @@ from the table using `grepl(perl=TRUE)`.}
     \item{\code{coef_rename}}{named character vector. Values refer to the variable names
 that will appear in the table. Names refer to the original term names stored
 in the model object, e.g. c("hp:mpg"="hp X mpg") for an interaction term.}
-    \item{\code{gof_map}}{\itemize{
-  \item NULL (default): the `modelsummary::gof_map` dictionary is used for formatting, and all unknown statistic are included.
-  \item data.frame with 3 columns named "raw", "clean", "fmt". Unknown statistics are omitted. See the 'Examples' section below.
-  \item list of lists, each of which includes 3 elements named "raw", "clean", "fmt". Unknown statistics are omitted. See the 'Examples section below'.
-}}
-    \item{\code{gof_omit}}{string regular expression. Omits all matching gof statistics from
-the table (using `grepl(perl=TRUE)`).}
-    \item{\code{add_rows}}{a data.frame (or tibble) with the same number of columns as
-your main table. By default, rows are appended to the bottom of the table.
-You can define a "position" attribute of integers to set the row positions.
-See Examples section below.}
-    \item{\code{align}}{A character string of length equal to the number of columns in
-the table.  "lcr" means that the first column will be left-aligned, the 2nd
-column center-aligned, and the 3rd column right-aligned.}
-    \item{\code{title}}{string}
   }}
+}
+\value{
+A list with `gt_tab` (the gt-table object including the parts of the table 
+that can be created with gt. This can be post-processed and formatted with functions in 
+the gt-package, but does not include the lower part with model statistics, e.g., R^2.) and
+`html_code` (the code that creates the full table, and is used to render it in
+the Viewer).
 }
 \description{
 This function creates a summary table for lm models (including mice::mira objects

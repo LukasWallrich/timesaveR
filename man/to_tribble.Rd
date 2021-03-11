@@ -4,12 +4,14 @@
 \alias{to_tribble}
 \title{Converts a tibble/dataframe to tribble code}
 \usage{
-to_tribble(x, show = FALSE)
+to_tribble(x, show = FALSE, digits = 5)
 }
 \arguments{
 \item{x}{The tibble/dataframe to be converted into tribble code}
 
 \item{show}{Logical. Print code (otherwise, returned - print with `cat()` to get linebreaks etc)}
+
+\item{digits}{Number of digits to round numeric columns to.}
 }
 \description{
 Tribbles are an easy way to legibly input data, and therefore helpful for teaching 
