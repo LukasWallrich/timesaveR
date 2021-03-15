@@ -1,0 +1,199 @@
+---
+title: "Getting started with timesaveR"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting started with timesaveR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE, eval = FALSE}
+#Only to be run locally to link to vignette from GitHub README
+rmarkdown::render("vignettes/survey-functions.Rmd", output_file="doc/survey-functions.html")
+```
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette introduces some of the basic functions that quickly get you from a dataset to publication-ready outputs. It uses `tidyverse`-functions alongside `timesaveR` as that is the recommended workflow.
+
+```{r setup}
+library(timesaveR)
+library(tidyverse)
+```
+
+# Create scales
+
+Let's create scales for health behaviours and depressive symptoms, each including some reverse coding. For that, scale items need to be included into a named character vector; if any items are to be reversed, they should be added into another character vector.
+
+```{r}
+scales <- list(
+  depression = c("fltdpr", "flteeff", "slprl", "wrhpp", "fltlnl", 
+                 "enjlf", "fltsd", "cldgng"),
+  healthy_eating = c("etfruit", "eatveg")
+  )
+  
+scales_reverse <- list(
+  depression = c("wrhpp", "enjlf"),
+  healthy_eating = c("etfruit", "eatveg")
+)
+
+```
+
+Then, the `make_scales()` command can be used to calculate scale scores as well as descriptives. By default, it also returns histograms showing the distribution of each item and the resulting scale, which can help to spot problems. By default, it also returns both scale `scores` and `descriptives` that can be processed separately.
+
+```{r}
+
+scales <- make_scales(ess_health, items = scales, reversed = scales_reverse)
+
+#Check descriptives, including reliability
+scales$descriptives
+
+#Add scale scores to dataset
+ess_health <- cbind(ess_health, scales$scores)
+```
+
+
+# Report correlations and descriptive statistics
+
+Next, we are often interested in descriptive statistics, variable distributions and correlations. As far as numerical variables are concerned, all of them can be reported in a pretty table with the `apa_cor_table()` function. That function needs a correlation matrix as its first argument, which can usually be created with the `cor_matrix()` function.
+
+```{r}
+ess_health %>%
+  select(agea, health, depression, healthy_eating) %>%
+  cor_matrix() %>%
+  apa_cor_table()
+
+```
+
+It is often helpful to use different variable names for display. For this, functions in the package typically accept rename tibbles that contain an `old` and a `new` function. Given the `tribble` notation, they can be entered more cleanly that named character vectors, and the `get_rename_tribble()` helper function creates most of the code.
+
+```{r}
+#Use get_rename_tribbles to get most of this code
+var_renames <- tibble::tribble(
+    ~old,     ~new,     
+    "agea",   "Age",  
+    "health",  "Poor health",
+    "depression",  "Depression",
+    "healthy_eating",  "Healthy eating",
+)
+
+#If var_names are provided, only variables included in that are included in the correlation table
+ess_health %>% cor_matrix(var_names = var_renames) %>% apa_cor_table()
+```
+
+Often, it is interesting to also include variable distributions into this initial data summary table. This can also be done with the `apa_cor_table()` function. By default, variables with 5 distinct values or fewer are shown with a histogram, while for those with more values, a density plot is provided - but this can be changed with the `plot_type` argument. 
+
+```{r}
+ess_health %>% cor_matrix(var_names = var_renames) %>%
+  apa_cor_table(add_distributions = TRUE, data = ess_health)
+```
+
+
+# Describe categorical variables and their relation with an outcome
+
+Often, we are also interested in how the means of an outcome variable differ between different groups. It can be fiddly to get these tables and the pairwise significance tests done, but this function does it in a breeze.
+
+If you want to rename variable levels as well as names, the `get_rename_tribbles()` function becomes a real timesaver.
+
+```{r}
+# Start with get_rename_tribbles(ess_health, gndr, cntry) in the console
+
+var_renames <- tibble::tribble(
+    ~old,     ~new,     
+    "gndr",   "Gender",  
+    "cntry",  "Country"
+)
+
+level_renames <- tibble::tribble(
+    ~var,     ~level_old, ~level_new, 
+    "gndr",   "1",        "male",       
+    "gndr",   "2",        "female",       
+    "cntry",  "DE",       "Germany",      
+    "cntry",  "FR",       "France",      
+    "cntry",  "GB",       "UK"
+)
+```
+
+Then run `cat_var_table()` to get a table with the distribution of the categories and their association with the outcome variable.
+
+```{r}
+cat_var_table(ess_health, health, gndr, cntry, var_names = var_renames, 
+              level_names = level_renames)
+```
+
+# Report regression models with standardized coefficients
+
+In psychology, it is often expected that regression models are reported with both unstandardised (B) and standardized (&beta;) coefficients. This can be fiddly and lead to redundant information. The `lm_std()` function easily runs linear regression models that return standardised coefficients and the `report_lm_with_std()` function creates side-by-side regression tables.
+
+At the most basic, you just need to run two models and pass them to the reporting function:
+
+```{r}
+ess_health$gndr <- factor(ess_health$gndr)
+
+#Standard lm model
+mod1 <- lm(depression ~ agea + gndr + health + cntry, ess_health)
+
+#Model with standardised coefficients
+mod2 <- lm_std(depression ~ agea + gndr + health + cntry, ess_health)
+
+report_lm_with_std(mod1, mod2)
+```
+
+Often, the coefficient names - particularly for dummy variables - are not particularly clear or pleasing. In such cases, they can be renamed easily - again, there is a helper function (`get_coef_rename_tribble()`) that creates most of the necessary code. In the new names, you can use markdown formatting, for instance to add information on reference levels.
+
+```{r}
+#get_coef_rename_tribble(mod1) is the starting point.
+
+coef_names <- tibble::tribble(
+  ~old,           ~new,           
+   "(Intercept)",  "*(Intercept)*", 
+   "agea",         "Age",        
+   "gndr2",        "Gender *(female)*",       
+   "health",       "Poor health",      
+   "cntryFR",      "France *(vs DE)*",     
+   "cntryGB",      "UK *(vs DE)*"
+)
+
+report_lm_with_std(mod1, mod2, coef_renames = coef_names)
+```
+
+You can also display two nested models side-by-side and get the F-change significance test. (More models can be displayed, but not yet statistically tested against each other.) To enable model comparisons, all models need to be fitted on the same dataset, so that I will first omit missing data.
+
+```{r}
+
+ess_data <- tidyr::drop_na(ess_data)
+
+#You can also easily display multiple nested models side-by-side and get the
+#F-change significance test. For that, all models need to be fit on the same
+#dataset, so that I will drop all missing data.
+
+mod1 <- lm(depression ~ agea + gndr + health + cntry, ess_data)
+mod2 <- lm_std(depression ~ agea + gndr + health + cntry, ess_data)
+
+
+mod3 <- lm(depression ~ agea * gndr + eisced + health + cntry, ess_data)
+mod4 <- lm_std(depression ~ agea * gndr + eisced + health + cntry, ess_data)
+
+coef_names <- tibble::tribble(
+  ~old,           ~new,           
+   "(Intercept)",  "*(Intercept)*", 
+   "agea",         "Age",        
+   "gndr2",        "Gender *(female)*",       
+   "health",       "Poor health",      
+   "cntryFR",      "France *(vs DE)*",     
+   "cntryGB",      "UK *(vs DE)*",
+   "eisced",       "Education",
+   "agea:gndr2",   "Age x Female",
+)
+
+report_lm_with_std(mod = list(mod1, mod3), mod_std = list(mod2, mod4),
+                   coef_renames = coef_names, R2_change = TRUE)
+```
+
+
+

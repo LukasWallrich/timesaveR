@@ -19,7 +19,7 @@ Among others, the package can help with the following:
 
 There are many packages that support data analysis and reporting. For instance, the `psych` package offers functions to create scales, while the `modelsummary` package offers options to create customisable tables in a wide variety of output format. They power many of the functions offered here 'under the hood.'
 
-`apa` and `papaja` are two packages that directly support the reporting of results in APA style. However, none of the existing offered quite what we needed. This package
+`apa` and `papaja` are two packages that directly support the reporting of results in APA style - they can complement this package well. However, none of the existing offered quite what we needed. This package
 
 - takes an end-to-end view of the data analysis process, streamlining time-consuming steps at various stages
 - offers analysis templates that make it easy to get started, particularly for R novices,
@@ -90,7 +90,7 @@ var_renames <- tibble::tribble(
 )
 
 #A rename tibble or vector automatically only selects the variables included into it
-ess_health %>% cor_matrix(var_names = var_renames) %>% apa_cor_table(var_names = var_renames)
+ess_health %>% cor_matrix(var_names = var_renames) %>% apa_cor_table()
 
 #Often, it is also interesting to include variable distributions
 ess_health %>% cor_matrix(var_names = var_renames) %>% apa_cor_table(add_distributions = TRUE, data = ess_health)
@@ -143,7 +143,8 @@ mod2 <- lm_std(depression ~ agea + gndr + health + cntry, ess_health)
 
 report_lm_with_std(mod1, mod2)
 
-#Often the coefficients should be renamed - get_coef_rename_tribble(mod1) is the starting point. In that, markdown formatting can be used.
+#Often the coefficients should be renamed - get_coef_rename_tribble(mod1) 
+#is the starting point. In that, markdown formatting can be used.
 
 coef_names <- tibble::tribble(
   ~old,           ~new,           
@@ -157,7 +158,9 @@ coef_names <- tibble::tribble(
 
 report_lm_with_std(mod1, mod2, coef_renames = coef_names)
 
-#You can also easily display multiple nested models side-by-side and get the F-change significance test. For that, all models need to be fit on the same dataset, so that I will drop all missing data.
+#You can also easily display multiple nested models side-by-side and get the
+#F-change significance test. For that, all models need to be fit on the same
+#dataset, so that I will drop all missing data.
 
 mod1 <- lm(depression ~ agea + gndr + health + cntry, tidyr::drop_na(ess_health))
 mod2 <- lm_std(depression ~ agea + gndr + health + cntry, tidyr::drop_na(ess_health))
@@ -178,11 +181,12 @@ coef_names <- tibble::tribble(
    "agea:gndr2",   "Age x Female",
 )
 
-report_lm_with_std(mod = list(mod1, mod3), mod_std = list(mod2, mod4), coef_renames = coef_names, R2_change = TRUE)
+report_lm_with_std(mod = list(mod1, mod3), mod_std = list(mod2, mod4),
+                   coef_renames = coef_names, R2_change = TRUE)
 ```
 
-# Alternative packages
+# Related/alternative packages
 
 - (`modelsummary`)[https://vincentarelbundock.github.io/modelsummary/] allows you to create highly customisable tables with data summaries or the output of statistical models that can be saved in a wide range of formats.
-- (`apa`)[]
-- (`papaja`)[]
+- (`apa`)[https://cran.r-project.org/web/packages/apa/apa.pdf] mostly offers functions that turn the output of statistical tests (e.g., t-tests) into text, in line with APA guidelines.
+- (`papaja`)[https://github.com/crsh/papaja] offers the opportunity to create full APA-style journal manuscripts in R. It's `apa_table` function is a generic alternative to the table functions in this package, which support many more types of models, but includes fewer details. 

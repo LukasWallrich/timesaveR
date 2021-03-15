@@ -45,6 +45,8 @@
 #'              level_names = level_renames)
 #' @export
 
+#TK - implement dv = NULL to only show distribution
+
 cat_var_table <- function(df, dv, ..., var_names = NULL, level_names = NULL, p.adjust = p.adjust.methods, alpha_level = .05, filename = NULL, notes = list(), dv_name = NULL, bold_vars = TRUE, css_tags = list(), na.rm = TRUE, exclude_na = FALSE) {
   
   assert_data_frame(df)

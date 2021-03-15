@@ -38,9 +38,9 @@ make_scale <- function(df, scale_items, scale_name, reverse = c(
 
   if (df %>% dplyr::select(dplyr::any_of(scale_items)) %>% {all(sapply(., checkmate::allMissing))}) stop("All variables for scale ", scale_name, " only contain missing values.", call. = FALSE)
 
-  assert_choice(reverse, c("auto", "none", "spec"))
+  assert_choice(reverse[1], c("auto", "none", "spec"))
 
-  if(!is.null(reverse_items)&!reverse=="spec") stop('reverse_items should only be specified together with reverse = "spec"')
+  if(!is.null(reverse_items)&!reverse[1]=="spec") stop('reverse_items should only be specified together with reverse = "spec"')
 
   if (is.null(r_key)) r_key <- 0
   scale_vals <- df %>%
