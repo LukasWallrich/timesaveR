@@ -1,8 +1,9 @@
 # timesaveR
 
-  <!-- badges: start -->
-  [![R build status](https://github.com/LukasWallrich/timesaveR/workflows/R-CMD-check/badge.svg)](https://github.com/LukasWallrich/timesaveR/actions)
-  <!-- badges: end -->
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/LukasWallrich/timesaveR/workflows/R-CMD-check/badge.svg)](https://github.com/LukasWallrich/timesaveR/actions)
+<!-- badges: end -->
+
 
 This package aims to speed up research projects in social psychology (and related fields). For that, it primarily includes some functions that help lay the groundwork and others that facilitate the reporting of results.
 
