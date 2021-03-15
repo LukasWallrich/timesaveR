@@ -49,7 +49,7 @@ apa_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_SE"
   
   if(add_distributions) {
     if(!is.null(cor_matrix$var_renames)) {
-      plots <- do.call(plot_distributions, c(list(data = data, var_names = var_renames), plot_args))
+      plots <- do.call(plot_distributions, c(list(data = data, var_names = cor_matrix$var_renames), plot_args))
     } else {
       plots <- data %>% dplyr::select(dplyr::all_of(rownames(cor_matrix$cors))) %>% 
         {do.call(plot_distributions, c(list(data = .,), plot_args))}
@@ -209,7 +209,7 @@ apa_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_SE"
 #' Calculates the correlation matrix between the numeric variables in a given dataframe and
 #' includes descriptives (mean and standard deviation) - ready for creating a nice table with \code{\link{apa_cor_table}}
 #'
-#' @param x Dataframe. Only numeric variables are included into correlation matrix.
+#' @param df Dataframe. Only numeric variables are included into correlation matrix.
 #' @param var_names A named character vector with new variable names or a tibble as provided by \code{\link{get_rename_tribbles}}
 #' for variables. If NULL, then the variables are not renamed. If names are provided, only the variables included here are retained. 
 #' This is most helpful when the results are passed to some print function, such as \code{\link{apa_cor_table}}
@@ -221,23 +221,26 @@ apa_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_SE"
 #' @export
 
 
-cor_matrix <- function(x,
+cor_matrix <- function(df,
                        var_names = NULL,
                        method = c("pearson", "spearman", "kendall"),
                        adjust = "none",
                        ...) {
 
-  x %<>% dplyr::select_if(is.numeric)
+  df %<>% dplyr::select_if(is.numeric)
 
   if(is.data.frame(var_names)) {
     assert_names(names(var_names), must.include = c("old", "new")) 
     var_names <- var_names$new %>% magrittr::set_names(var_names$old)
   }
 
-    if(!is.null(var_names)) x <- x[names(var_names)]
-
+    if(!is.null(var_names)) {
+      df <- df[names(var_names)]
+      missing <- setdiff(names(var_names), names(df))
+      if(length(missing)>0) warning("The following variables are included in var_names but cannot be included into the correlation matrix - either, they are missing from df or not of type numeric: ", paste(missing, collapse = ", "), call. = FALSE)
+}
   # Compute correlation matrix
-  correlation_matrix <- psych::corr.test(x, method = method[1], adjust = adjust, ...)
+  correlation_matrix <- psych::corr.test(df, method = method[1], adjust = adjust, ...)
   cors <- correlation_matrix$r # Matrix of correlation coeficients
   p.values <- correlation_matrix$p # Matrix of p-value
   std.err <- correlation_matrix$se # Matrix of standard errors
@@ -263,7 +266,7 @@ cor_matrix <- function(x,
   ci_high[lower.tri(ci_high)] <- correlation_matrix$ci$upper
 
 
-  desc_stat <- x %>%
+  desc_stat <- df %>%
     psych::describe() %>%
     data.frame() %>%
     tibble::rownames_to_column("var") %>%
