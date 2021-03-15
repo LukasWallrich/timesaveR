@@ -2,7 +2,7 @@
 % Please edit documentation in R/dplyr_wrappers.R
 \name{run_lm}
 \alias{run_lm}
-\title{lm() for pipes - data as first argument}
+\title{lm() for use with pipes (`%>%`) - data as first argument}
 \source{
 After experiencing an issue with passing weights, I rewrote this
 based on the code suggested by "Vandenman" here

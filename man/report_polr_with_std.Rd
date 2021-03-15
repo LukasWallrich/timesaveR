@@ -7,7 +7,7 @@ proportional odd logistic regression models}
 \usage{
 report_polr_with_std(
   mod,
-  std_mod,
+  mod_std,
   OR = TRUE,
   conf_level = 0.95,
   fmt = "\%.2f",
@@ -24,7 +24,7 @@ report_polr_with_std(
 \arguments{
 \item{mod}{A polr-model/mira object of polr models, with variables not standardised (or a list of such models)}
 
-\item{std_mod}{A polr-model/mira object of polr models, with standardised predictor variables (or a list of such models)}
+\item{mod_std}{A polr-model/mira object of polr models, with standardised predictor variables (or a list of such models)}
 
 \item{OR}{Logical. Shoulds odds ratios be shown instead of typical coefficients. If TRUE, estimates are exponentiated}
 
@@ -58,7 +58,7 @@ stating that dummy variables were not scaled in standardisation. If you approach
     \item{\code{output}}{filename or object type (character string)
 \itemize{
   \item Supported filename extensions: .html, .tex, .md, .txt, .png, .jpg.
-  \item Supported object types: "default", "html", "markdown", "latex", "data.frame", "gt", "kableExtra", "huxtable", "flextable".
+  \item Supported object types: "default", "html", "markdown", "latex", "latex_tabular", "data.frame", "gt", "kableExtra", "huxtable", "flextable".
   \item Warning: the `output` argument \emph{cannot} be used when customizing tables with external packages. See the 'Details' section below.
 }}
     \item{\code{estimate}}{string or `glue` string of the estimate to display (or a
