@@ -9,7 +9,7 @@ Adapted from
 }
 \usage{
 cor_matrix(
-  x,
+  df,
   var_names = NULL,
   method = c("pearson", "spearman", "kendall"),
   adjust = "none",
@@ -17,7 +17,7 @@ cor_matrix(
 )
 }
 \arguments{
-\item{x}{Dataframe. Only numeric variables are included into correlation matrix.}
+\item{df}{Dataframe. Only numeric variables are included into correlation matrix.}
 
 \item{var_names}{A named character vector with new variable names or a tibble as provided by \code{\link{get_rename_tribbles}}
 for variables. If NULL, then the variables are not renamed. If names are provided, only the variables included here are retained. 
@@ -30,6 +30,7 @@ This is most helpful when the results are passed to some print function, such as
 \item{...}{
   Arguments passed on to \code{\link[psych:corr.test]{psych::corr.test}}
   \describe{
+    \item{\code{x}}{A matrix or dataframe }
     \item{\code{use}}{use="pairwise" is the default value and will do pairwise deletion of cases. use="complete" will select just complete cases. }
     \item{\code{alpha}}{alpha level of confidence intervals}
   }}
