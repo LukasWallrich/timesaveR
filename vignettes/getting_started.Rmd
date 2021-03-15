@@ -19,11 +19,11 @@ knitr::opts_chunk$set(
 )
 ```
 
-This vignette introduces some of the basic functions that quickly get you from a dataset to publication-ready outputs. It uses `tidyverse`-functions alongside `timesaveR` as that is the recommended workflow.
+This vignette introduces some of the basic functions that quickly get you from a dataset to publication-ready outputs. It uses `tidyverse`/`dplyr`-functions alongside `timesaveR` as that is the recommended workflow.
 
 ```{r setup}
 library(timesaveR)
-library(tidyverse)
+library(dplyr)
 ```
 
 # Create scales
