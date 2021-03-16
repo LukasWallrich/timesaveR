@@ -15,7 +15,8 @@ get_rename_tribbles(
 \arguments{
 \item{df}{A dataframe that contains the variables - only used to extract their possible levels.}
 
-\item{...}{The variables to be included in the rename tribbles.}
+\item{...}{The variables to be included in the rename tribbles. If none are 
+specified, all are included, unless there are more than `max_level` variables in the df}
 
 \item{show}{Logical - should the output be printed to the console. In any case, it is returned invisibly}
 
