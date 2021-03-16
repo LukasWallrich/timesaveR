@@ -53,8 +53,8 @@ std_stars_pad <- c(`&nbsp;&nbsp;&nbsp;` = 1, `&dagger;&nbsp;&nbsp;` = .1, `*&nbs
 #' in tables that report the results of multiple statistical tests. An empty
 #' string is returned for NAs, unless that behaviour is overwritten.
 #'
-#'  Symbols and tresholds are *** \emph{p} < .001,  ** \emph{p} < .01, * \emph{p}
-#'  < .05 and † \emph{p} < .1. The symbols can be changed by named character vector sorted
+#'  Symbols and thresholds are *** \emph{p} < .001,  ** \emph{p} < .01, * \emph{p}
+#'  < .05 and † \emph{p} < .1. The symbols can be changed by passing a named character vector sorted
 #'  descendingly to the \code{stars} argument. For the default, the argument would be
 #' \code{stars <- c(`&dagger;` = .1, `*` = 0.05, `**` = 0.01, `***` = 0.001)}
 #'
@@ -294,7 +294,8 @@ to_tribble <- function(x, show = FALSE, digits = 5) {
 #'
 #'
 #' @param df A dataframe that contains the variables - only used to extract their possible levels.
-#' @param ... The variables to be included in the rename tribbles.
+#' @param ... The variables to be included in the rename tribbles. If none are 
+#' specified, all are included, unless there are more than `max_level` variables in the df 
 #' @param show Logical - should the output be printed to the console. In any case, it is returned invisibly
 #' @param which Should tribble code be generated for variables (\code{"vars"}), levels (\code{"levels"}) or both (\code{"both"}) (default)
 #' @param max_levels The maximum number of levels before a variable is dropped from the levels_tribble. Defaults to 20
@@ -314,7 +315,16 @@ get_rename_tribbles <- function(df, ..., show = TRUE, which = c("both", "vars", 
   assert_logical(show)
   
   vars <- rlang::enquos(...)
-  vars_chr <- purrr::map_chr(vars, dplyr::as_label)
+  if(length(vars) == 0) {
+    vars_chr <- names(df)
+    if(length(vars_chr)>max_levels) stop("No variables were specified for renaming.",
+                                         " Would usually include all, but when there are more than",
+                                         " specified in max_levels, that seems excessive. Please ",
+                                         "specify variables or increase that number.")
+  } else {
+    vars_chr <- purrr::map_chr(vars, dplyr::as_label)
+  }
+    
   out <- list()
   if (which[1] %in% c("both", "vars")) {
     vars_tribble <- tibble::tibble(old = vars_chr, new = vars_chr) %>% to_tribble(show = show)
@@ -322,13 +332,11 @@ get_rename_tribbles <- function(df, ..., show = TRUE, which = c("both", "vars", 
   }
   if (which[1] %in% c("both", "levels")) {
     get_levels <- function(x, df) {
-      df %>%
-        dplyr::select(!!x) %>%
-        dplyr::pull() %>%
+      df[[x]] %>%
         factor() %>%
         levels()
     }
-    levels_list <- purrr::map(vars, get_levels, df)
+    levels_list <- purrr::map(vars_chr, get_levels, df)
     names(levels_list) <- vars_chr
     levels_list <- Filter(function(x) length(x) <= max_levels, levels_list)
     if (length(levels_list) >= 1) {
@@ -373,7 +381,7 @@ get_rename_tribbles <- function(df, ..., show = TRUE, which = c("both", "vars", 
 
 get_coef_rename_tribble <- function(mod, show = TRUE) {
  
-    coefs <- try(coef(mod), silent = TRUE)
+    coefs <- try(stats::coef(mod), silent = TRUE)
     if(class(coefs) == "try-error") stop("coef() could not extract coefficients from mod argument.")
     coefs <- names(coefs)
     assert_logical(show)
@@ -430,11 +438,12 @@ dump_to_clip <- function(objects) {
 #' @param x Character string of desired vector items, separated by spaces, tabs or linebreaks. If NULL, it will be read from the clipboard.
 #' @param strings Should vector items be considered as strings, i.e. quoted.
 #' @param separators Which separator should x be split by. This defaults to the "top-level" found in x, i.e., newlines, if there are any, and otherwise tabs or spaces. Can also be "all".
+#' @param to_clip Should code for vector be copied into clipboard? Defaults to TRUE in interactive use, but only works when \code{clipr} package is installed
 #' @param return Should code or a vector be returned? Defaults to code
 #' @examples
 #' line_to_vector("a b c", strings = TRUE)
 #' 
-#' line_to_vector("1 2 3", st = F, return = "vector")
+#' line_to_vector("1 2 3", st = FALSE, return = "vector")
 #' 
 #' line_to_vector("Hello World!
 #'                 How are the bananas today?
@@ -498,4 +507,20 @@ na_share <- function(x, round = 2) {
 
 rm_na <- function(x) {
   x[!is.na(x)]
+}
+
+#' Add class
+#'
+#' This function adds a given class to an object, so that
+#' different S3 methods can be called (e.g., `tidy.exp` to get OR for logistic regression models
+#' (e.g., in `modelsummary::msummary`)
+#'
+#'
+#' @param x An object
+#' @param class_to_add String of the class to add, defaults to "exp"
+
+
+add_class <- function(x, class_to_add = "exp") {
+  class(x) <- c(class_to_add, class(x))
+  x
 }

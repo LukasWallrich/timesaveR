@@ -32,8 +32,8 @@ in tables that report the results of multiple statistical tests. An empty
 string is returned for NAs, unless that behaviour is overwritten.
 }
 \details{
-Symbols and tresholds are *** \emph{p} < .001,  ** \emph{p} < .01, * \emph{p}
- < .05 and † \emph{p} < .1. The symbols can be changed by named character vector sorted
+Symbols and thresholds are *** \emph{p} < .001,  ** \emph{p} < .01, * \emph{p}
+ < .05 and † \emph{p} < .1. The symbols can be changed by passing a named character vector sorted
  descendingly to the \code{stars} argument. For the default, the argument would be
 \code{stars <- c(`&dagger;` = .1, `*` = 0.05, `**` = 0.01, `***` = 0.001)}
 }

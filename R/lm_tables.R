@@ -8,7 +8,7 @@
 #' @param mod_std A lm-model/mira object of lm models, with standardised variables. Can be
 #' created with \code{\link{lm_std}} (or a list of such models)
 #' @param conf_level Confidence level to use for confidence intervals, defaults to .95
-#' @param coef_renames A named character vector with new names for the coefficients or a tibble as provided by \code{\link{get_coef_rename_tribbles}}
+#' @param coef_renames A named character vector with new names for the coefficients or a tibble as provided by \code{\link{get_coef_rename_tribble}}
 #' for variables. If NULL, then the coefficients are not renamed.
 #' @param filename the file name to create a HTML file on disk.
 #' @param model_names If several pairs of models are to be plotted side by side, indicate the label for each *pair* here
@@ -26,14 +26,13 @@
 #' `html_code` (the code that creates the full table, and is used to render it in
 #' the Viewer).
 #' @examples 
-#' ess_health$gndr <- factor(ess_health$gndr)
 #'
 #' #Standard lm model
-#' mod1 <- lm(depression ~ agea + gndr + health + cntry, ess_health)
+#' mod1 <- lm(mpg ~ hp + wt, mtcars)
 #'
 #' #Model with standardised coefficients
 #'
-#' mod2 <- lm_std(depression ~ agea + gndr + health + cntry, ess_health)
+#' mod2 <- lm_std(mpg ~ hp + wt, mtcars)
 #'
 #' report_lm_with_std(mod1, mod2)
 #' @export
@@ -213,10 +212,14 @@ if (statistic_vertical) {
     htmltools::save_html(temp_file)
   code <- readr::read_file(temp_file) %>% stringr::str_replace("</tbody>", paste(code, "</tbody>"))
 
- code %<>% stringr::str_replace_all(c("\\u03b2" = "&beta;", "†" = "&dagger;", " " = "&nbsp;"))
+  special_replace <- c("&beta;",   "&dagger;", "&nbsp;") %>%
+    magrittr::set_names(c("\\u03b2", stringi::stri_unescape_unicode("\\u2020"), 
+                          stringi::stri_unescape_unicode("\\u00a0")))
+  
+  code %<>% stringr::str_replace_all(special_replace)
   
  out <- list(gt_tab = tab, html_code = code)
- class(out) <- c("timesaveR_raw_html", class(out))
+ out %<>% add_class("timesaveR_raw_html")
  
   if (!is.null(filename)) {
     readr::write_file(code, filename)
@@ -300,7 +303,7 @@ mira.lm_F_test <- function(mod, return_list = FALSE) {
 #' @param mod A polr-model/mira object of polr models, with variables not standardised (or a list of such models)
 #' @param mod_std A polr-model/mira object of polr models, with standardised predictor variables (or a list of such models)
 #' @param conf_level Confidence level to use for confidence intervals, defaults to .95
-#' @param OR Logical. Shoulds odds ratios be shown instead of typical coefficients. If TRUE, estimates are exponentiated
+#' @param OR Logical. Should odds ratios be shown instead of typical coefficients. If TRUE, estimates are exponentiated
 #' @param filename the file name to create on disk. Include '.html' extension to best preserve formatting (see gt::gtsave for details)
 #' @param model_names If several pairs of models are to be plotted side by side, indicate the label for each *pair* here
 #' @param show_nimp Logical. If mira objects are passed, this determines whether the number of imputations will be reported as a model statistic
@@ -459,7 +462,11 @@ if (statistic_vertical) {
     htmltools::save_html(temp_file)
   code <- readr::read_file(temp_file) %>% stringr::str_replace("</tbody>", paste(code, "</tbody>"))
 
-  code %<>% stringr::str_replace_all(c("\\u03b2" = "&beta;", "†" = "&dagger;", " " = "&nbsp;"))
+  special_replace <- c("&beta;",   "&dagger;", "&nbsp;") %>%
+  magrittr::set_names(c("\\u03b2", stringi::stri_unescape_unicode("\\u2020"), 
+                      stringi::stri_unescape_unicode("\\u00a0")))
+  
+  code %<>% stringr::str_replace_all(special_replace)
   
   out <- list(gt_tab = tab, html_code = code)
   class(out) <- c("timesaveR_raw_html", class(out))
@@ -617,25 +624,5 @@ fmt_labels_md <- function(tab, position = c('both', 'row', 'column')) {
   return(out)
 }
 
-#' Renders HTML code for Viewer pane
-#' 
-#' Various functions in this package return HTML code, mostly for tables. This
-#' function allows for them to rendered and shown in the Viewer. It can also be
-#' called manually to render a character vector x that contains HTML code.
-#' 
-#' @param x Either a character vector containing HTML code 
-#' or a list with a html_code element
-#' @export
 
-print.timesaveR_raw_html <- function(x) {
-  tempDir <- tempfile()
-  dir.create(tempDir)
-  htmlFile <- file.path(tempDir, "index.html")
-  if("html_code" %in% names(x)) {
-  writeLines(x$html_code, htmlFile) 
-  } else {
-    writeLines(x, htmlFile) 
-  }
-  viewer <- getOption("viewer")
-  viewer(htmlFile)
-}
+

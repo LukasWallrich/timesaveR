@@ -2,7 +2,7 @@
 % Please edit documentation in R/dplyr_wrappers.R
 \name{run_lm}
 \alias{run_lm}
-\title{lm() for use with pipes (`%>%`) - data as first argument}
+\title{lm() for use with pipes (`\%>\%`) - data as first argument}
 \source{
 After experiencing an issue with passing weights, I rewrote this
 based on the code suggested by "Vandenman" here
@@ -12,7 +12,7 @@ https://stackoverflow.com/questions/38683076/ellipsis-trouble-passing-to-lm
 run_lm(df, formula, std = FALSE, rename_std = FALSE, ...)
 }
 \arguments{
-\item{df}{Data for modeling}
+\item{df}{Data for modelling}
 
 \item{formula}{an object of class \code{"\link[stats]{formula}"} (or one that
     can be coerced to that class): a symbolic description of the

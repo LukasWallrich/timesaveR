@@ -16,7 +16,7 @@ spearman_brown(df, items, name = "", SB_only = FALSE)
 
 \item{name}{Name of the scale, relevant only if data.frame is returned}
 
-\item{SB_only}{Logical, indicating whether to return only the reliabity as
+\item{SB_only}{Logical, indicating whether to return only the reliability as
 a number or a dataframe that also includes the scale name and correlation.}
 }
 \value{

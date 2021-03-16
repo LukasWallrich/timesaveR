@@ -26,7 +26,7 @@ report_polr_with_std(
 
 \item{mod_std}{A polr-model/mira object of polr models, with standardised predictor variables (or a list of such models)}
 
-\item{OR}{Logical. Shoulds odds ratios be shown instead of typical coefficients. If TRUE, estimates are exponentiated}
+\item{OR}{Logical. Should odds ratios be shown instead of typical coefficients. If TRUE, estimates are exponentiated}
 
 \item{conf_level}{Confidence level to use for confidence intervals, defaults to .95}
 
@@ -58,7 +58,7 @@ stating that dummy variables were not scaled in standardisation. If you approach
     \item{\code{output}}{filename or object type (character string)
 \itemize{
   \item Supported filename extensions: .html, .tex, .md, .txt, .png, .jpg.
-  \item Supported object types: "default", "html", "markdown", "latex", "latex_tabular", "data.frame", "gt", "kableExtra", "huxtable", "flextable".
+  \item Supported object types: "default", "html", "markdown", "latex", "data.frame", "gt", "kableExtra", "huxtable", "flextable".
   \item Warning: the `output` argument \emph{cannot} be used when customizing tables with external packages. See the 'Details' section below.
 }}
     \item{\code{estimate}}{string or `glue` string of the estimate to display (or a

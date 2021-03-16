@@ -19,6 +19,8 @@ line_to_vector(
 
 \item{separators}{Which separator should x be split by. This defaults to the "top-level" found in x, i.e., newlines, if there are any, and otherwise tabs or spaces. Can also be "all".}
 
+\item{to_clip}{Should code for vector be copied into clipboard? Defaults to TRUE in interactive use, but only works when \code{clipr} package is installed}
+
 \item{return}{Should code or a vector be returned? Defaults to code}
 }
 \description{

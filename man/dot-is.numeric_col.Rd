@@ -2,7 +2,7 @@
 % Please edit documentation in R/dplyr_wrappers.R
 \name{.is.numeric_col}
 \alias{.is.numeric_col}
-\title{Tests whether a column in df, specificied by string, is numeric}
+\title{Tests whether a column in dataframe, specified by string, is numeric}
 \usage{
 .is.numeric_col(col, df)
 }
@@ -12,5 +12,5 @@
 \item{df}{Dataframe that contains `col`}
 }
 \description{
-Tests whether a column in df, specificied by string, is numeric
+Tests whether a column in dataframe, specified by string, is numeric
 }

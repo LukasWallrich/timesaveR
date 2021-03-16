@@ -1,4 +1,4 @@
-#' lm() for use with pipes (`%>%`) - data as first argument
+#' lm() for use with pipes (`\%>\%`) - data as first argument
 #'
 #' Within a dplyr-pipe, running lm() is often complicated be the placing of the
 #' data argument. This wrapper places data first and allows to run standardized
@@ -7,7 +7,7 @@
 #' Note that the model call in the lm-object is replaced by the call to this
 #' function - that means that \code{update()} cannot be used.
 #'
-#' @param df Data for modeling
+#' @param df Data for modelling
 #' @param std Logical. Should variables be standardised? This is only applied to
 #' numeric variables, factors are left unchanged so that their coefficients
 #' remain interpretable.
@@ -21,6 +21,7 @@
 #' @references See (Fox, 2015) for an argument why dummy variables should never
 #' be standardised. If you want to run a model with all variables standardised,
 #' one option is `QuantPsyc::lm.beta()`
+#' 
 #' @export
 
 run_lm <- function(df, formula, std = FALSE, rename_std = FALSE, ...) {
@@ -95,7 +96,7 @@ summary.rN_lm <- function(object, ...) {
   out
 }
 
-#' Tests whether a column in df, specificied by string, is numeric
+#' Tests whether a column in dataframe, specified by string, is numeric
 #'
 #' @param col Character indicating column name
 #' @param df Dataframe that contains `col`

@@ -63,7 +63,7 @@ fmt_pct <- function(x, digits = 1) {
 #'
 #' Format numbers as correlation coefficients, by rounding them and removing the leading 0
 #'
-#' @param x Numeric, or a vector of numbers
+#' @param cor_value Numeric, or a vector of numbers
 #' @param digits Number of significant digits, defaults to 2
 #' @export
 
@@ -79,15 +79,18 @@ fmt_cor <- function(cor_value, digits = 2) {
 
 #' Format confidence interval based on the bounds
 #'
-#' Rounds numbers to consistent length and place in square brackets.
+#' Constructs a confidence intervals from upper and lower bounds, 
+#' placing them in between square brackets
 #'
-#' @param x Numeric, or a vector of numbers
+#' @param lower Lower bound(s) of confidence interval(s). Numeric, or a vector of numbers
+#' @param upper Lower bound(s) of confidence interval(s). Numeric, or a vector of numbers
 #' @param digits Number of significant digits, defaults to 2
 #' @export
 
 fmt_ci <- function(lower, upper, digits = 2) {
   assert_numeric(lower)
   assert_numeric(upper)
+  if(!(length(lower) == length(upper))) stop("lower and upper must have the same length.")
   assert_count(digits)
   out <- paste0("[", round_(lower, digits), ", ", round_(upper, digits), "]")
   out[is.na(lower) | is.na(upper)] <- NA

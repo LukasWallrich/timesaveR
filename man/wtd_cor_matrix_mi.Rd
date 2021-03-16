@@ -6,7 +6,7 @@
 \source{
 Takes some code from the \code{miceadds::micombine.cor} function,
 but adapted to use weights and return in the format accepted by
-\code{apa_cor_table}
+\code{report_cor_table}
 }
 \usage{
 wtd_cor_matrix_mi(mi_list, weights, var_names = NULL)
@@ -18,7 +18,7 @@ wtd_cor_matrix_mi(mi_list, weights, var_names = NULL)
 
 \item{var_names}{A named character vector with new variable names or a tibble as provided by \code{\link{get_rename_tribbles}}
 for variables. If NULL, then the variables are not renamed. If names are provided, only the variables included here are retained. 
-This is most helpful when the results are passed to some print function, such as \code{\link{apa_cor_table}}
+This is most helpful when the results are passed to some print function, such as \code{\link{report_cor_table}}
 To facilitate post-processing, correlations with original variable
 names are returned in the `tests` element.}
 }

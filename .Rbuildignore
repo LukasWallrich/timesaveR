@@ -3,3 +3,6 @@
 ^doc$
 ^doc/Vignette.html$
 ^\.github$
+^LICENSE\.md$
+^Meta$
+^\.lintr$

@@ -210,7 +210,7 @@ make_scales <- function(df, items, reversed = NULL, two_items_reliability = c(
 #' @param df A dataframe
 #' @param items Character vector of length 2, with names of the two items
 #' @param name Name of the scale, relevant only if data.frame is returned
-#' @param SB_only Logical, indicating whether to return only the reliabity as
+#' @param SB_only Logical, indicating whether to return only the reliability as
 #' a number or a dataframe that also includes the scale name and correlation.
 #' @return Either the Spearman-Brown coefficient as a single number, or a
 #'   dataframe including the Pearson correlation coefficient and the scale name

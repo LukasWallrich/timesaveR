@@ -1,5 +1,6 @@
 ---
 title: "Getting started with timesaveR"
+author: "Lukas Wallrich"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Getting started with timesaveR}
@@ -60,13 +61,13 @@ ess_health <- cbind(ess_health, scales$scores)
 
 # Report correlations and descriptive statistics
 
-Next, we are often interested in descriptive statistics, variable distributions and correlations. As far as numerical variables are concerned, all of them can be reported in a pretty table with the `apa_cor_table()` function. That function needs a correlation matrix as its first argument, which can usually be created with the `cor_matrix()` function.
+Next, we are often interested in descriptive statistics, variable distributions and correlations. As far as numerical variables are concerned, all of them can be reported in a pretty table with the `report_cor_table()` function. That function needs a correlation matrix as its first argument, which can usually be created with the `cor_matrix()` function.
 
 ```{r}
 ess_health %>%
   select(agea, health, depression, healthy_eating) %>%
   cor_matrix() %>%
-  apa_cor_table()
+  report_cor_table()
 
 ```
 
@@ -79,18 +80,18 @@ var_renames <- tibble::tribble(
     "agea",   "Age",  
     "health",  "Poor health",
     "depression",  "Depression",
-    "healthy_eating",  "Healthy eating",
+    "healthy_eating",  "Healthy eating"
 )
 
 #If var_names are provided, only variables included in that are included in the correlation table
-ess_health %>% cor_matrix(var_names = var_renames) %>% apa_cor_table()
+ess_health %>% cor_matrix(var_names = var_renames) %>% report_cor_table()
 ```
 
-Often, it is interesting to also include variable distributions into this initial data summary table. This can also be done with the `apa_cor_table()` function. By default, variables with 5 distinct values or fewer are shown with a histogram, while for those with more values, a density plot is provided - but this can be changed with the `plot_type` argument. 
+Often, it is interesting to also include variable distributions into this initial data summary table. This can also be done with the `report_cor_table()` function. By default, variables with 5 distinct values or fewer are shown with a histogram, while for those with more values, a density plot is provided - but this can be changed with the `plot_type` argument. 
 
 ```{r}
 ess_health %>% cor_matrix(var_names = var_renames) %>%
-  apa_cor_table(add_distributions = TRUE, data = ess_health)
+  report_cor_table(add_distributions = TRUE, data = ess_health)
 ```
 
 
@@ -142,6 +143,7 @@ mod1 <- lm(depression ~ agea + gndr + health + cntry, ess_health)
 mod2 <- lm_std(depression ~ agea + gndr + health + cntry, ess_health)
 
 report_lm_with_std(mod1, mod2)
+
 ```
 
 Often, the coefficient names - particularly for dummy variables - are not particularly clear or pleasing. In such cases, they can be renamed easily - again, there is a helper function (`get_coef_rename_tribble()`) that creates most of the necessary code. In the new names, you can use markdown formatting, for instance to add information on reference levels.
@@ -166,18 +168,14 @@ You can also display two nested models side-by-side and get the F-change signifi
 
 ```{r}
 
-ess_data <- tidyr::drop_na(ess_data)
+ess_health <- tidyr::drop_na(ess_health)
 
-#You can also easily display multiple nested models side-by-side and get the
-#F-change significance test. For that, all models need to be fit on the same
-#dataset, so that I will drop all missing data.
-
-mod1 <- lm(depression ~ agea + gndr + health + cntry, ess_data)
-mod2 <- lm_std(depression ~ agea + gndr + health + cntry, ess_data)
+mod1 <- lm(depression ~ agea + gndr + health + cntry, ess_health)
+mod2 <- lm_std(depression ~ agea + gndr + health + cntry, ess_health)
 
 
-mod3 <- lm(depression ~ agea * gndr + eisced + health + cntry, ess_data)
-mod4 <- lm_std(depression ~ agea * gndr + eisced + health + cntry, ess_data)
+mod3 <- lm(depression ~ agea * gndr + eisced + health + cntry, ess_health)
+mod4 <- lm_std(depression ~ agea * gndr + eisced + health + cntry, ess_health)
 
 coef_names <- tibble::tribble(
   ~old,           ~new,           

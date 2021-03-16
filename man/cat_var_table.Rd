@@ -36,6 +36,8 @@ cat_var_table(
 
 \item{alpha_level}{The level of significance for the pairwise comparisons (after p.adjust). Defaults to .05}
 
+\item{filename}{If provided, the table will be saved as an HTML file with this name.}
+
 \item{notes}{List of notes to append to bottom of table.}
 
 \item{dv_name}{Optional. A different name to use for the dependent variable in the automatic table footnote explaining the M(SD) column. Defaults to dv variable name.}
@@ -49,7 +51,7 @@ cat_var_table(
 \item{exclude_na}{Should cases that are NA on a categorical variable be dropped from that section?}
 }
 \value{
-A list including a tibble of descriptive statistics (`descr`), the `gt`-table (`tab`) and the HTML code (`html`) with `css_tags` added
+A list including a tibble of descriptive statistics (`descr`), the `gt`-table (`tab`) and the HTML code (`html_code`) with `css_tags` added
 }
 \description{
 This takes a set of categorical variables and a continuous dependent variable and

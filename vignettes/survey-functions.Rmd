@@ -1,8 +1,8 @@
 ---
-title: "survey-functions"
+title: "Analysing survey data with timesaveR"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{survey-functions}
+  %\VignetteIndexEntry{Analysing survey data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -19,6 +19,8 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
+
+# Early and very incomplete draft!
 
 # Using survey weights
 

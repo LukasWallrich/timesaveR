@@ -284,12 +284,12 @@ pairwise_t_test_mi <- function(mi_list, dv, groups, weights = NULL, p.adjust.met
 #' @source Algorithm based on https://www.tandfonline.com/doi/abs/10.1198/1061860043515
 #'
 #' @examples
-#' attach(airquality)
-#' month <- factor(Month, labels = month.abb[5:9])
-#' x <- pairwise.t.test(Ozone, Month)
-#' library(rNuggets)
+#' data("airquality")
+#' airquality$month <- factor(airquality$Month, labels = month.abb[5:9])
+#' x <- pairwise.t.test(airquality$Ozone, airquality$Month)
+#' 
 #' get_pairwise_letters(x)
-#' detach()
+#' 
 #' @export
 
 

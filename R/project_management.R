@@ -119,7 +119,7 @@ writeLines(notes, here("last_complete_run.txt"))
 #' @title Export package-specific R snippets
 #'
 #' @description \code{add_package_snippets} copies all (missing) snippet definitions
-#'   in 'inst/rstudio/r.snippets' and 'rmd.snippets' (if not empty) to the RStudios user snippet location.
+#'   in 'inst/rstudio/r.snippets' and 'rmd.snippets' (if not empty) to the RStudio user snippet location.
 #'
 #' @return boolean invisible(FALSE) if nothing was added, invisible(TRUE) if snipped definitions were added
 #' @export

@@ -29,7 +29,7 @@ created with \code{\link{lm_std}} (or a list of such models)}
 
 \item{conf_level}{Confidence level to use for confidence intervals, defaults to .95}
 
-\item{coef_renames}{A named character vector with new names for the coefficients or a tibble as provided by \code{\link{get_coef_rename_tribbles}}
+\item{coef_renames}{A named character vector with new names for the coefficients or a tibble as provided by \code{\link{get_coef_rename_tribble}}
 for variables. If NULL, then the coefficients are not renamed.}
 
 \item{fmt}{determines how to format numeric values
@@ -83,14 +83,13 @@ containing lm-models) that shows a standardised and non-standardised version of 
 side-by-side. Several pairs of such models can be compared side-by-side.
 }
 \examples{
-ess_health$gndr <- factor(ess_health$gndr)
 
 #Standard lm model
-mod1 <- lm(depression ~ agea + gndr + health + cntry, ess_health)
+mod1 <- lm(mpg ~ hp + wt, mtcars)
 
 #Model with standardised coefficients
 
-mod2 <- lm_std(depression ~ agea + gndr + health + cntry, ess_health)
+mod2 <- lm_std(mpg ~ hp + wt, mtcars)
 
 report_lm_with_std(mod1, mod2)
 }

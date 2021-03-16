@@ -7,10 +7,13 @@
 fmt_ci(lower, upper, digits = 2)
 }
 \arguments{
-\item{digits}{Number of significant digits, defaults to 2}
+\item{lower}{Lower bound(s) of confidence interval(s). Numeric, or a vector of numbers}
 
-\item{x}{Numeric, or a vector of numbers}
+\item{upper}{Lower bound(s) of confidence interval(s). Numeric, or a vector of numbers}
+
+\item{digits}{Number of significant digits, defaults to 2}
 }
 \description{
-Rounds numbers to consistent length and place in square brackets.
+Constructs a confidence intervals from upper and lower bounds, 
+placing them in between square brackets
 }

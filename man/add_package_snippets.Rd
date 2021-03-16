@@ -14,7 +14,7 @@ boolean invisible(FALSE) if nothing was added, invisible(TRUE) if snipped defini
 }
 \description{
 \code{add_package_snippets} copies all (missing) snippet definitions
-  in 'inst/rstudio/r.snippets' and 'rmd.snippets' (if not empty) to the RStudios user snippet location.
+  in 'inst/rstudio/r.snippets' and 'rmd.snippets' (if not empty) to the RStudio user snippet location.
 }
 \examples{
 \dontrun{

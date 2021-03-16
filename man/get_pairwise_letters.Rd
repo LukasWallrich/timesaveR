@@ -29,10 +29,10 @@ that can be used to indicate which differences are significant. The difference
 between levels that are assigned the same letter are *not* statistically different.
 }
 \examples{
-attach(airquality)
-month <- factor(Month, labels = month.abb[5:9])
-x <- pairwise.t.test(Ozone, Month)
-library(rNuggets)
+data("airquality")
+airquality$month <- factor(airquality$Month, labels = month.abb[5:9])
+x <- pairwise.t.test(airquality$Ozone, airquality$Month)
+
 get_pairwise_letters(x)
-detach()
+
 }

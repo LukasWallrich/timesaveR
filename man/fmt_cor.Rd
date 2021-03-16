@@ -7,9 +7,9 @@
 fmt_cor(cor_value, digits = 2)
 }
 \arguments{
-\item{digits}{Number of significant digits, defaults to 2}
+\item{cor_value}{Numeric, or a vector of numbers}
 
-\item{x}{Numeric, or a vector of numbers}
+\item{digits}{Number of significant digits, defaults to 2}
 }
 \description{
 Format numbers as correlation coefficients, by rounding them and removing the leading 0

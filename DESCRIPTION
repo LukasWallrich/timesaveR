@@ -11,7 +11,7 @@ Description: Functions and templates in this package facilitate common tasks
     mediation models.
 Encoding: UTF-8
 LazyData: true
-License: GPL-2 | GPL-3
+License: GPL (>= 3)
 BugReports: https://github.com/LukasWallrich/timesaveR/issues
 URL: https://github.com/LukasWallrich/timesaveR
 Imports: 
@@ -30,10 +30,9 @@ Imports:
     forcats, 
     checkmate,
     stringi,
-    here
+    here,
+    scales
 Suggests:
-    survey,
-    srvyr,
     jtools,
     mice,
     mitools,
@@ -53,7 +52,11 @@ Suggests:
     rstudioapi,
     testthat (>= 3.0.0),
     knitr,
-    rmarkdown
+    rmarkdown,
+    lavaan,
+    spelling,
+    survey,
+    srvyr
 RoxygenNote: 7.1.1
 Config/testthat/edition: 3
 Language: en-US

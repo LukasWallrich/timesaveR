@@ -24,7 +24,7 @@ There are many packages that support data analysis and reporting. For instance, 
 
 - takes an end-to-end view of the data analysis process, streamlining time-consuming steps at various stages
 - offers analysis templates that make it easy to get started, particularly for R novices,
-- prioritises publication-readiness and good reporting practices over customizability in creating tables and charts
+- prioritises publication-readiness and good reporting practices over customisability in creating tables and charts
 - integrates with the `tidyverse` by supporting tidy evaluation and returning tibbles where possible 
 
 # Installation

@@ -89,13 +89,13 @@ plot_mediation <- function(IV, DV, Ms, df, digits = 2, coef_offset = length(Ms),
 
   if (ind_p_values == TRUE) {
     pos <- df %>%
-      dplyr::mutate(ci = .fmt_ci(.data$ci.lower, .data$ci.upper, digits), est = paste0(sprintf(paste0("%.", digits, "f"), .data$est), sigstars(.data$pvalue))) %>%
+      dplyr::mutate(ci = fmt_ci(.data$ci.lower, .data$ci.upper, digits), est = paste0(sprintf(paste0("%.", digits, "f"), .data$est), sigstars(.data$pvalue))) %>%
       dplyr::select(obj = .data$type, .data$est, .data$ci) %>%
       dplyr::full_join(pos, by = "obj")
   } else {
     pos <- df %>%
       dplyr::mutate(
-        ci = .fmt_ci(.data$ci.lower, .data$ci.upper, digits),
+        ci = fmt_ci(.data$ci.lower, .data$ci.upper, digits),
         est = ifelse(stringr::str_detect(.data$type, "^M[0-9]$"),
           ifelse(sign(.data$ci.lower) == sign(.data$ci.upper),
             paste0("<b>", sprintf(paste0("%.", digits, "f"), .data$est), "</b> "),
@@ -138,7 +138,7 @@ plot_mediation <- function(IV, DV, Ms, df, digits = 2, coef_offset = length(Ms),
 
 
 
-  code <- glue_warn("digraph  {{
+  code <- glue::glue("digraph  {{
 
             graph [layout = 'neato',
             outputorder = 'edgesfirst',
@@ -221,7 +221,7 @@ moderated_mediation <- function(X, M, W, Y, CV = NULL, mod_direct_path = TRUE, l
 
   p <- "BR"
 
-  code <- glue_warn("digraph {{
+  code <- glue::glue("digraph {{
 
         graph [layout = 'neato',
         outputorder = 'edgesfirst',
@@ -249,9 +249,9 @@ moderated_mediation <- function(X, M, W, Y, CV = NULL, mod_direct_path = TRUE, l
         'W' [label = <{W}>, color = 'black', shape = 'rectangle', height = '0.5', width = '1.5', pos = '1.8,-0.7!']
         'MW' [style = invis, pos = '1.3,0.5!', height = '0', width = '0']
         {if(mod_direct_path) '\\'XW\\' [style = invis, pos = \\'1.8,0!\\', height = \\'0\\', width = \\'0\\']'}
-        {if(mod_direct_path) glue_warn('\\'cmod\\' [label = <{c_mod}>, color = \\'black\\', shape = \\'plaintext\\', fillcolor=\\'transparent\\', pos = \\'1.9,-0.25!\\']')}
+        {if(mod_direct_path) glue::glue('\\'cmod\\' [label = <{c_mod}>, color = \\'black\\', shape = \\'plaintext\\', fillcolor=\\'transparent\\', pos = \\'1.9,-0.25!\\']')}
 
-        {if(!is.null(CV)) glue_warn('\\'CV\\' [label = <{CV}>, color = \\'black\\', shape = \\'rectangle\\', height = \\'{0.4+stringr::str_count(CV, \\'BR\\')*.1}\\', width = \\'1.5\\', pos = \\'5,{-0.7-stringr::str_count(CV, \\'BR\\')*.05}!\\']')}
+        {if(!is.null(CV)) glue::glue('\\'CV\\' [label = <{CV}>, color = \\'black\\', shape = \\'rectangle\\', height = \\'{0.4+stringr::str_count(CV, \\'BR\\')*.1}\\', width = \\'1.5\\', pos = \\'5,{-0.7-stringr::str_count(CV, \\'BR\\')*.05}!\\']')}
 
         edge [fontname = 'Helvetica',
         fontsize = '10',
