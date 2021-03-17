@@ -1,65 +1,70 @@
 Package: timesaveR
-Title: Functions to Accelerate (Academic) Data Analysis and Reporting
+Title: Functions to Accelerate (Academic) Data Analysis and
+    Reporting
 Version: 0.0.1.9005
-Authors@R: person("Lukas", "Wallrich", email = "lukas.wallrich@gmail.com",
-                  role = c("aut", "cre"))
-Description: Functions and templates in this package facilitate common tasks 
-    in the course of most research projects in social psychology and related 
-    fields. These include creating scales, reporting descriptive statistics,
-    correlations and distributions, reporting linear regression models with 
-    standardized coefficients and F-change comparisons, as well as plotting 
-    mediation models.
-Encoding: UTF-8
-LazyData: true
+Authors@R: 
+    person(given = "Lukas",
+           family = "Wallrich",
+           role = c("aut", "cre"),
+           email = "lukas.wallrich@gmail.com")
+Description: Functions and templates in this package facilitate
+    common tasks in the course of most research projects in social
+    psychology and related fields. These include creating scales,
+    reporting descriptive statistics, correlations and distributions,
+    reporting linear regression models with standardized coefficients and
+    F-change comparisons, as well as plotting mediation models.
 License: GPL (>= 3)
-BugReports: https://github.com/LukasWallrich/timesaveR/issues
 URL: https://github.com/LukasWallrich/timesaveR
-Imports: 
-    tibble,
-    purrr,
-    magrittr,
-    dplyr,
-    ggplot2,
-    psych,
-    rlang,
-    stringr,
-    tidyr,
-    generics, 
-    broom,
-    glue,
-    forcats, 
-    checkmate,
-    stringi,
-    here,
-    scales
-Suggests:
-    jtools,
-    mice,
-    mitools,
-    gt,
-    modelsummary,
-    miceadds,
-    htmltools,
-    readr,
-    xml2,
-    pscl,
-    minidown,
-    MASS,
-    DiagrammeR,
-    clipr,
-    DiagrammeRsvg,
-    rsvg,
-    rstudioapi,
-    testthat (>= 3.0.0),
-    knitr,
-    rmarkdown,
-    lavaan,
-    spelling,
-    survey,
-    srvyr
-RoxygenNote: 7.1.1
-Config/testthat/edition: 3
-Language: en-US
+BugReports: https://github.com/LukasWallrich/timesaveR/issues
 Depends: 
     R (>= 2.10)
-VignetteBuilder: knitr
+Imports: 
+    broom,
+    checkmate,
+    dplyr,
+    forcats,
+    generics,
+    ggplot2,
+    glue,
+    here,
+    magrittr,
+    psych,
+    purrr,
+    rlang,
+    scales,
+    stringi,
+    stringr,
+    tibble,
+    tidyr
+Suggests:
+    clipr,
+    DiagrammeR,
+    DiagrammeRsvg,
+    gt,
+    htmltools,
+    jtools,
+    knitr,
+    lavaan,
+    MASS,
+    mice,
+    miceadds,
+    minidown,
+    mitools,
+    modelsummary,
+    pscl,
+    readr,
+    rmarkdown,
+    rstudioapi,
+    rsvg,
+    spelling,
+    srvyr,
+    survey,
+    testthat (>= 3.0.0),
+    xml2
+VignetteBuilder: 
+    knitr
+Config/testthat/edition: 3
+Encoding: UTF-8
+Language: en-US
+LazyData: true
+RoxygenNote: 7.1.1
