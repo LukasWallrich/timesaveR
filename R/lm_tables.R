@@ -20,17 +20,17 @@
 #' @param stars Named vector of significance stars and their thresholds, check `rNuggets:::std_stars_pad` for default.
 #' @inheritParams modelsummary::modelsummary
 #' @inheritDotParams modelsummary::modelsummary coef_map coef_omit coef_rename
-#' @return A list with `gt_tab` (the gt-table object including the parts of the table 
-#' that can be created with gt. This can be post-processed and formatted with functions in 
+#' @return A list with `gt_tab` (the gt-table object including the parts of the table
+#' that can be created with gt. This can be post-processed and formatted with functions in
 #' the gt-package, but does not include the lower part with model statistics, e.g., R^2.) and
 #' `html_code` (the code that creates the full table, and is used to render it in
 #' the Viewer).
-#' @examples 
+#' @examples
 #'
-#' #Standard lm model
+#' # Standard lm model
 #' mod1 <- lm(mpg ~ hp + wt, mtcars)
 #'
-#' #Model with standardised coefficients
+#' # Model with standardised coefficients
 #'
 #' mod2 <- lm_std(mpg ~ hp + wt, mtcars)
 #'
@@ -40,8 +40,8 @@
 report_lm_with_std <- function(mod, mod_std, conf_level = .95, coef_renames = NULL, fmt = "%.2f", statistic_vertical = FALSE, filename = NULL, model_names = NULL, show_nimp = FALSE, R2_change = FALSE, notes = list(NULL), apa_style = TRUE, stars = std_stars_pad, ...) {
   .check_req_packages(c("modelsummary", "gt", "htmltools", "readr"))
 
-  if(is.data.frame(coef_renames)) {
-    assert_names(names(coef_renames), must.include = c("old", "new")) 
+  if (is.data.frame(coef_renames)) {
+    assert_names(names(coef_renames), must.include = c("old", "new"))
     coef_renames <- coef_renames$new %>% magrittr::set_names(coef_renames$old)
   }
 
@@ -124,24 +124,26 @@ report_lm_with_std <- function(mod, mod_std, conf_level = .95, coef_renames = NU
 
   notes <- Filter(Negate(is.null), notes)
 
-if (statistic_vertical) {
-  tab <- modelsummary::msummary(mods, output = "gt", vcov = stat_list, rep(c(
-    "{estimate} {stars}", "{estimate}"), length(mod)), fmt = fmt, gof_omit = ".*", stars = stars, coef_rename = coef_renames, ...) %>%
-    gt::fmt_markdown(columns = dplyr::everything()) %>%
-    gt::cols_label(.list = col_labels) %>%
-    gt::cols_align("right", dplyr::everything()) %>%
-    gt::cols_align("left", columns = 1) %>%
-    gt:::dt_source_notes_set("") #Remove std star note
-} else {
-  tab <- modelsummary::msummary(mods, output = "gt", statistic = NULL, estimate = rep(c(
-    "{estimate} ({std.error}){stars}",
-    "{estimate} [{conf.low}, {conf.high}]"), length(mod)), fmt = fmt, gof_omit = ".*", stars = stars, coef_rename = coef_renames,...) %>%
-    gt::fmt_markdown(columns = dplyr::everything()) %>%
-    gt::cols_label(.list = col_labels) %>%
-    gt::cols_align("right", dplyr::everything()) %>%
-    gt::cols_align("left", columns = 1) %>%
-    gt:::dt_source_notes_set("") #Remove std star note
-}
+  if (statistic_vertical) {
+    tab <- modelsummary::msummary(mods, output = "gt", vcov = stat_list, rep(c(
+      "{estimate} {stars}", "{estimate}"
+    ), length(mod)), fmt = fmt, gof_omit = ".*", stars = stars, coef_rename = coef_renames, ...) %>%
+      gt::fmt_markdown(columns = dplyr::everything()) %>%
+      gt::cols_label(.list = col_labels) %>%
+      gt::cols_align("right", dplyr::everything()) %>%
+      gt::cols_align("left", columns = 1) %>%
+      gt:::dt_source_notes_set("") # Remove std star note
+  } else {
+    tab <- modelsummary::msummary(mods, output = "gt", statistic = NULL, estimate = rep(c(
+      "{estimate} ({std.error}){stars}",
+      "{estimate} [{conf.low}, {conf.high}]"
+    ), length(mod)), fmt = fmt, gof_omit = ".*", stars = stars, coef_rename = coef_renames, ...) %>%
+      gt::fmt_markdown(columns = dplyr::everything()) %>%
+      gt::cols_label(.list = col_labels) %>%
+      gt::cols_align("right", dplyr::everything()) %>%
+      gt::cols_align("left", columns = 1) %>%
+      gt:::dt_source_notes_set("") # Remove std star note
+  }
 
   if (apa_style) tab <- tab %>% gt_apa_style()
 
@@ -190,9 +192,14 @@ if (statistic_vertical) {
   code %<>% paste(row, sums, "</tr>", collapse = "")
 
   if (R2_change == TRUE) {
-
-
-    delta_R2 <- purrr::map_chr(gof, function(x) x %>% dplyr::filter(.data$term == "R<sup>2</sup>") %>% dplyr::pull(.data$value)) %>% as.numeric() %>% diff() %>% fmt_cor()
+    delta_R2 <- purrr::map_chr(gof, function(x) {
+      x %>%
+        dplyr::filter(.data$term == "R<sup>2</sup>") %>%
+        dplyr::pull(.data$value)
+    }) %>%
+      as.numeric() %>%
+      diff() %>%
+      fmt_cor()
 
     x <- stats::anova(mod[[1]], mod[[2]])
     F_test <- glue::glue("<em>F</em>({x$Df[2]}, {x$Res.Df[2]}) = {x$F[2] %>% round_(2)}, <em>p</em> {x$`Pr(>F)`[2] %>% fmt_p()}")
@@ -203,31 +210,30 @@ if (statistic_vertical) {
                      {delta_R2}, {F_test} </td></tr>')
 
     code %<>% paste(row, collapse = "")
-
-    }
+  }
 
   temp_file <- tempfile()
-    tab %>%
+  tab %>%
     htmltools::as.tags() %>%
     htmltools::save_html(temp_file)
   code <- readr::read_file(temp_file) %>% stringr::str_replace("</tbody>", paste(code, "</tbody>"))
 
-  special_replace <- c("&beta;",   "&dagger;", "&nbsp;") %>%
-    magrittr::set_names(c("\\u03b2", stringi::stri_unescape_unicode("\\u2020"), 
-                          stringi::stri_unescape_unicode("\\u00a0")))
-  
+  special_replace <- c("&beta;", "&dagger;", "&nbsp;") %>%
+    magrittr::set_names(c(
+      "\\u03b2", stringi::stri_unescape_unicode("\\u2020"),
+      stringi::stri_unescape_unicode("\\u00a0")
+    ))
+
   code %<>% stringr::str_replace_all(special_replace)
-  
- out <- list(gt_tab = tab, html_code = code)
- out %<>% add_class("timesaveR_raw_html")
- 
+
+  out <- list(gt_tab = tab, html_code = code)
+  out %<>% add_class("timesaveR_raw_html")
+
   if (!is.null(filename)) {
     readr::write_file(code, filename)
- return(invisible(out))
+    return(invisible(out))
   }
-out
- 
- 
+  out
 }
 
 .lm_F_test <- function(mod) {
@@ -319,7 +325,7 @@ mira.lm_F_test <- function(mod, return_list = FALSE) {
 report_polr_with_std <- function(mod, mod_std, OR = TRUE, conf_level = .95, fmt = "%.2f", statistic_vertical = FALSE, filename = NULL, model_names = NULL, show_nimp = FALSE, notes = list(), apa_style = TRUE, stars = std_stars_pad, ...) {
   .check_req_packages(c("modelsummary", "gt", "htmltools", "readr", "pscl"))
 
-  #TK: add polr_std function and show this note only when that function was used.
+  # TK: add polr_std function and show this note only when that function was used.
 
   notes %<>% c("Given that dummy variables loose their interpretability when standardised (Fox, 2015), standardised OR are only shown for continuous predictors.")
 
@@ -381,7 +387,7 @@ report_polr_with_std <- function(mod, mod_std, OR = TRUE, conf_level = .95, fmt 
   stat_list <- list()
 
   for (i in seq_len(length(mod))) {
-     mods[[i * 2 - 1]] <- mod[[i]]
+    mods[[i * 2 - 1]] <- mod[[i]]
     mods[[i * 2]] <- mod_std[[i]]
   }
 
@@ -395,21 +401,21 @@ report_polr_with_std <- function(mod, mod_std, OR = TRUE, conf_level = .95, fmt 
 
   notes %<>% c(.make_stars_note())
 
-if (statistic_vertical) {
-  tab <- modelsummary::msummary(mods, output = "gt", estimate = "{estimate} {stars}", statistic = "[{conf.low}, {conf.high}]", fmt = fmt, gof_omit = ".*", stars = stars, ...) %>%
-    gt::fmt_markdown(columns = dplyr::everything()) %>%
-    gt::cols_label(.list = col_labels) %>%
-    gt::cols_align("right", dplyr::everything()) %>%
-    gt::cols_align("left", columns = 1) %>%
-    gt:::dt_source_notes_set("") #Remove std star note
-} else {
-  tab <- modelsummary::msummary(mods, output = "gt", statistic = NULL, estimate = "{estimate} {stars} [{conf.low}, {conf.high}]", fmt = fmt, gof_omit = ".*", stars = stars,...) %>%
-    gt::fmt_markdown(columns = dplyr::everything()) %>%
-    gt::cols_label(.list = col_labels) %>%
-    gt::cols_align("right", dplyr::everything()) %>%
-    gt::cols_align("left", columns = 1) %>%
-    gt:::dt_source_notes_set("") #Remove std star note
-}
+  if (statistic_vertical) {
+    tab <- modelsummary::msummary(mods, output = "gt", estimate = "{estimate} {stars}", statistic = "[{conf.low}, {conf.high}]", fmt = fmt, gof_omit = ".*", stars = stars, ...) %>%
+      gt::fmt_markdown(columns = dplyr::everything()) %>%
+      gt::cols_label(.list = col_labels) %>%
+      gt::cols_align("right", dplyr::everything()) %>%
+      gt::cols_align("left", columns = 1) %>%
+      gt:::dt_source_notes_set("") # Remove std star note
+  } else {
+    tab <- modelsummary::msummary(mods, output = "gt", statistic = NULL, estimate = "{estimate} {stars} [{conf.low}, {conf.high}]", fmt = fmt, gof_omit = ".*", stars = stars, ...) %>%
+      gt::fmt_markdown(columns = dplyr::everything()) %>%
+      gt::cols_label(.list = col_labels) %>%
+      gt::cols_align("right", dplyr::everything()) %>%
+      gt::cols_align("left", columns = 1) %>%
+      gt:::dt_source_notes_set("") # Remove std star note
+  }
   if (apa_style) tab <- tab %>% gt_apa_style()
 
   for (i in seq_along(notes)) {
@@ -462,21 +468,23 @@ if (statistic_vertical) {
     htmltools::save_html(temp_file)
   code <- readr::read_file(temp_file) %>% stringr::str_replace("</tbody>", paste(code, "</tbody>"))
 
-  special_replace <- c("&beta;",   "&dagger;", "&nbsp;") %>%
-  magrittr::set_names(c("\\u03b2", stringi::stri_unescape_unicode("\\u2020"), 
-                      stringi::stri_unescape_unicode("\\u00a0")))
-  
+  special_replace <- c("&beta;", "&dagger;", "&nbsp;") %>%
+    magrittr::set_names(c(
+      "\\u03b2", stringi::stri_unescape_unicode("\\u2020"),
+      stringi::stri_unescape_unicode("\\u00a0")
+    ))
+
   code %<>% stringr::str_replace_all(special_replace)
-  
+
   out <- list(gt_tab = tab, html_code = code)
   class(out) <- c("timesaveR_raw_html", class(out))
-  
-  
+
+
   if (!is.null(filename)) {
     readr::write_file(code, filename)
     return(invisible(out))
   }
-return(out)
+  return(out)
 }
 
 #' @importFrom generics glance
@@ -509,7 +517,7 @@ generics::tidy
 #'      \item conf.low (if called with conf.int = TRUE)
 #'      \item conf.high (if called with conf.int = TRUE)
 #' }
-#'@export
+#' @export
 tidy.mira <- function(x, conf.int = TRUE, conf.level = .95, ...) {
   out <- summary(mice::pool(x, ...), type = "all", conf.int = conf.int, conf.level = conf.level) %>%
     dplyr::mutate(term = as.character(.data$term)) %>%
@@ -611,18 +619,14 @@ gt_apa_style <- function(gt_table, fmt_labels_md = TRUE) {
 #' are less developed for LaTeX and RTF output.
 #' @source Developed with Vincent Arel-Bundock and first included in `modelsummary`-package
 
-fmt_labels_md <- function(tab, position = c('both', 'row', 'column')) {
+fmt_labels_md <- function(tab, position = c("both", "row", "column")) {
   out <- tab
-  if (match.arg(position) %in% c('both', 'row')) {
+  if (match.arg(position) %in% c("both", "row")) {
     out <- gt::fmt_markdown(out, columns = 1)
   }
-  if (match.arg(position) %in% c('both', 'column')) {
-
+  if (match.arg(position) %in% c("both", "column")) {
     f <- function(x) stats::setNames(lapply(unlist(x$`_boxhead`$column_label), gt::md), names(x$`_data`))
     out <- gt::cols_label(out, .list = f(out))
   }
   return(out)
 }
-
-
-

@@ -124,7 +124,6 @@ svy_pairwise.t.test <- function(df, dv, iv, cats, ...) {
 #' @export
 
 lm_std <- function(formula, data = NULL, weights = NULL, rename_std = FALSE, ...) {
-
   if (any(stringr::str_detect(as.character(formula), "factor\\("))) stop("Functions in the formula are applied after standardising - thus factor() needs to be used before lm_std() is called")
 
   parent <- parent.frame()
@@ -139,7 +138,7 @@ lm_std <- function(formula, data = NULL, weights = NULL, rename_std = FALSE, ...
 
   vars_dummies <- vars_num[purrr::map_lgl(vars_num, ~ dplyr::n_distinct(get(.x, parent)) < 3)]
 
-  if(length(vars_dummies)>0) warning("The following variables have less than three distinct values but are of type numeric: ", paste0(vars_dummies, collapse = ", ") ,". Check whether they should not be factors instead. As it stands, they are standardised, which is typically not recommended.")
+  if (length(vars_dummies) > 0) warning("The following variables have less than three distinct values but are of type numeric: ", paste0(vars_dummies, collapse = ", "), ". Check whether they should not be factors instead. As it stands, they are standardised, which is typically not recommended.")
 
   if (rename_std) {
     vars_num_sc <- paste0(vars_num, "_sd")
@@ -287,9 +286,8 @@ pairwise_t_test_mi <- function(mi_list, dv, groups, weights = NULL, p.adjust.met
 #' data("airquality")
 #' airquality$month <- factor(airquality$Month, labels = month.abb[5:9])
 #' x <- pairwise.t.test(airquality$Ozone, airquality$Month)
-#' 
+#'
 #' get_pairwise_letters(x)
-#' 
 #' @export
 
 
@@ -414,14 +412,14 @@ get_pairwise_letters <- function(tests,
 #' @export
 
 pairwise_t_tests <- function(df, outcome, groups, p.adjust.method = p.adjust.methods, conf_level = .95, var_equal = FALSE) {
-  if(is.character(rlang::enexpr(outcome))) {
+  if (is.character(rlang::enexpr(outcome))) {
     warning("literal string input will eventually be deprecated across the package, please use raw variable names")
     outcome <- rlang::enexpr(outcome)
     groups <- rlang::enexpr(groups)
   }
 
   pairs <- df %>%
-    dplyr::select({{groups}}) %>%
+    dplyr::select({{ groups }}) %>%
     dplyr::pull() %>%
     unique() %>%
     as.character() %>%
@@ -431,14 +429,17 @@ pairwise_t_tests <- function(df, outcome, groups, p.adjust.method = p.adjust.met
   fmla <- as.formula(paste(dplyr::as_label(rlang::enexpr(outcome)), "~", dplyr::as_label(rlang::enexpr(groups))))
 
   out <- purrr::map_df(pairs, function(x) {
-    dat <- dplyr::filter(df, {{groups}} %in% x)
+    dat <- dplyr::filter(df, {{ groups }} %in% x)
     out <- stats::t.test(fmla, dat,
                   var.equal = var_equal, conf.level = conf_level,  na.action = "na.omit") %>% broom::tidy()
-    desc <- dat %>% dplyr::arrange(dplyr::desc({{groups}} == x[1])) %>% dplyr::group_by({{groups}}) %>% dplyr::summarise(M = mean({{outcome}}, na.rm = TRUE), var = stats::var({{outcome}}, na.rm = TRUE), .groups = "drop")
-    cohens_d <- (desc$M[1]-desc$M[2]) / sqrt((desc$var[1] + desc$var[2]) / 2)
+    desc <- dat %>%
+      dplyr::arrange(dplyr::desc({{ groups }} == x[1])) %>%
+      dplyr::group_by({{ groups }}) %>%
+      dplyr::summarise(M = mean({{ outcome }}, na.rm = TRUE), var = stats::var({{ outcome }}, na.rm = TRUE), .groups = "drop")
+    cohens_d <- (desc$M[1] - desc$M[2]) / sqrt((desc$var[1] + desc$var[2]) / 2)
     out <- cbind(tibble::tibble(var_1 = x[1], var_2 = x[2], cohens_d = cohens_d), out) %>%
-      dplyr::select(.data$var_1, .data$var_2, mean_1 = .data$estimate1, mean_2 = .data$estimate2, mean_diff = .data$estimate, conf_low = .data$conf.low, conf_high = .data$conf.high, t_value = .data$statistic, df = .data$parameter, p_value = .data$p.value, .data$cohens_d,  test = .data$method)
-    })
+      dplyr::select(.data$var_1, .data$var_2, mean_1 = .data$estimate1, mean_2 = .data$estimate2, mean_diff = .data$estimate, conf_low = .data$conf.low, conf_high = .data$conf.high, t_value = .data$statistic, df = .data$parameter, p_value = .data$p.value, .data$cohens_d, test = .data$method)
+  })
 
   out$p_value %<>% stats::p.adjust(p.adjust.method)
   out$p_value_adjust <- p.adjust.method[1]

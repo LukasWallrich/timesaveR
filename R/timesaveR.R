@@ -6,17 +6,18 @@
 .onLoad <- function(...) {
   registerMethods(list(
     # c(package, genname, class)
-    c("knitr", "knit_print", "timesaveR_raw_html")))
+    c("knitr", "knit_print", "timesaveR_raw_html")
+  ))
 }
 
 #' Functions to Accelerate (Academic) Data Analysis and Reporting
 #'
-#'Functions and templates in this package facilitate common tasks 
-#'in the course of most research projects in social psychology and related 
-#'fields. These include creating scales, reporting descriptive statistics,
-#'correlations and distributions, reporting linear regression models with 
-#'standardized coefficients and F-change comparisons, as well as plotting 
-#'mediation models.
+#' Functions and templates in this package facilitate common tasks
+#' in the course of most research projects in social psychology and related
+#' fields. These include creating scales, reporting descriptive statistics,
+#' correlations and distributions, reporting linear regression models with
+#' standardized coefficients and F-change comparisons, as well as plotting
+#' mediation models.
 #' @docType package
 #' @name timesaveR
 
@@ -44,35 +45,41 @@ generics::glance
 .check_req_packages <- function(x, note = "") {
   res <- suppressWarnings(lapply(x, requireNamespace, quietly = TRUE)) %>% unlist()
   if (!all(res)) {
-    if(!interactive()) {
-    stop(paste0(note, "Some required packages are not installed. Make sure you have
+    if (!interactive()) {
+      stop(paste0(note, "Some required packages are not installed. Make sure you have
                these packages: ", paste0(x[!res], collapse = ", ")),
-      call. = FALSE)}
+        call. = FALSE
+      )
+    }
     op <- options("warn")
     on.exit(options(op))
-    options(warn=1)
+    options(warn = 1)
     warning(paste0(note, "The following packages are required for this function but
                    cannot be loaded: ", paste0(x[!res], collapse = ", ")),
-      call. = FALSE)
+      call. = FALSE
+    )
     choice <- readline(prompt = "Should I try to install these packages? (Y/N)")
     if (choice %in% c("Y", "y")) {
       utils::install.packages(x[!res])
       res <- suppressWarnings(lapply(x, requireNamespace, quietly = TRUE)) %>% unlist()
-      if (!all(res)) stop("Not all packages could be installed successfully. The following could still not be loaded: ", paste0(x[!res], collapse = ", "),
-      call. = FALSE)
+      if (!all(res)) {
+        stop("Not all packages could be installed successfully. The following could still not be loaded: ", paste0(x[!res], collapse = ", "),
+          call. = FALSE
+        )
+      }
       return(TRUE)
     }
     stop("Cannot proceed without these packages.", call. = FALSE)
   }
 }
 
-#' Sample data: health data from the European Social Survey Wave 7 
+#' Sample data: health data from the European Social Survey Wave 7
 #'
-#' This dataset contains data from the ESS Wave 7 (2014) for Germany, 
+#' This dataset contains data from the ESS Wave 7 (2014) for Germany,
 #' the UK and France that describes respondents physical and mental
-#' health as well as specific health behaviours. It can be used to 
+#' health as well as specific health behaviours. It can be used to
 #' demonstrate most functions of this package.
-#' 
+#'
 #' @format A dataframe with 7,226 rows and 23 columns
 #' \describe{
 #'  \item{cntry}{Country}
@@ -105,12 +112,12 @@ generics::glance
 #' @author ESS-ERIC, selected by package author
 #' @references \url{https://www.europeansocialsurvey.org/data/download.html?r=7}
 #' @keywords data
-#' 
+#'
 NULL
 
 
-#Code from htmltools package - 
-#https://github.com/rstudio/htmltools/blob/42712f7f1ba560faf16fe1ee709afb328996bb81/R/zzz.R
+# Code from htmltools package -
+# https://github.com/rstudio/htmltools/blob/42712f7f1ba560faf16fe1ee709afb328996bb81/R/zzz.R
 
 # Reusable function for registering a set of methods with S3 manually. The
 # methods argument is a list of character vectors, each of which has the form
@@ -120,7 +127,7 @@ registerMethods <- function(methods) {
     pkg <- method[[1]]
     generic <- method[[2]]
     class <- method[[3]]
-    func <- get(paste(generic, class, sep="."))
+    func <- get(paste(generic, class, sep = "."))
     if (pkg %in% loadedNamespaces()) {
       registerS3method(generic, class, func, envir = asNamespace(pkg))
     }
@@ -134,12 +141,12 @@ registerMethods <- function(methods) {
 }
 
 #' Renders HTML code for Viewer pane
-#' 
+#'
 #' Various functions in this package return HTML code, mostly for tables. This
 #' function allows for them to rendered and shown in the Viewer. It can also be
 #' called manually to render a character vector x that contains HTML code.
-#' 
-#' @param x Either a character vector containing HTML code 
+#'
+#' @param x Either a character vector containing HTML code
 #' or a list with a html_code element
 #' @inheritDotParams print
 #' @export
@@ -169,23 +176,22 @@ print.timesaveR_raw_html <- function(x, ...) {
 }
 
 #' @exportS3Method knitr::knit_print timesaveR_raw_html
-knit_print.timesaveR_raw_html = function(x, ...) {
- # if (is_html_output) {
-  if("html_code" %in% names(x)) {
-    res <- x$html_code 
+knit_print.timesaveR_raw_html <- function(x, ...) {
+  # if (is_html_output) {
+  if ("html_code" %in% names(x)) {
+    res <- x$html_code
   } else {
-    res <- x 
+    res <- x
   }
   res <- stringr::str_remove(res, "<!DOCTYPE html>")
   res <- stringr::str_remove(res, "<html>")
   res <- stringr::str_remove(res, "</html>")
   browser()
   knitr::asis_output(x)
-  
-  
- # knitr::asis_output(res)
-  #} else {
-  #  
-  #}
-}
 
+
+  # knitr::asis_output(res)
+  # } else {
+  #
+  # }
+}

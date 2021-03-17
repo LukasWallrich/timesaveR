@@ -16,35 +16,35 @@
 rename_cat_variables <- function(dat, ..., var_names = NULL, level_names = NULL) {
   if (!"list" %in% class(dat)) dat <- list(dat)
   vars <- rlang::enquos(...)
-  
+
   if (!is.null(level_names)) {
     level_names_lst <- split(level_names, level_names$var)
-    
+
     relevel <- function(dat, var, levels_old, levels_new) {
       var <- var[1]
       names(levels_old) <- levels_new
       dat <- dat %>% dplyr::mutate(!!var := forcats::fct_recode(as.factor(!!rlang::sym(var)), !!!levels_old))
       dat
     }
-    
+
     for (i in seq_along(level_names_lst)) {
       dat <- purrr::map(dat, relevel, level_names_lst[[i]]$var, level_names_lst[[i]]$level_old, level_names_lst[[i]]$level_new)
     }
   }
-  
+
   if (!is.null(var_names)) {
     var_names_chr <- var_names$old
     names(var_names_chr) <- var_names$new
     dat <- purrr::map(dat, dplyr::rename, !!!var_names_chr)
   }
-  
+
   if (length(dat) == 1) dat <- dat[[1]] # To return dataframe if dataframe was passed
   dat
 }
 
 std_stars <- c(`&dagger;` = .1, `*` = 0.05, `**` = 0.01, `***` = 0.001)
 std_stars_pad <- c(`&nbsp;&nbsp;&nbsp;` = 1, `&dagger;&nbsp;&nbsp;` = .1, `*&nbsp;&nbsp;` = 0.05, `**&nbsp;` = 0.01, `***` = 0.001)
-#TK - change padding so that coefficients are aligned
+# TK - change padding so that coefficients are aligned
 
 
 #' Significance stars for p-values
@@ -229,7 +229,7 @@ scale_blank <- function(x, center = TRUE, scale = TRUE) {
 
 #' Converts a tibble/dataframe to tribble code
 #'
-#' Tribbles are an easy way to legibly input data, and therefore helpful for teaching 
+#' Tribbles are an easy way to legibly input data, and therefore helpful for teaching
 #' and interactive work. This function takes
 #' a tibble and returns code that can recreate it. Note that this function converts
 #' "NA" to NA and converts factors to characters to retain the levels.
@@ -239,7 +239,6 @@ scale_blank <- function(x, center = TRUE, scale = TRUE) {
 #' @param digits Number of digits to round numeric columns to.
 #' @examples
 #' to_tribble(mtcars, show = TRUE)
-#' 
 #' @export
 
 to_tribble <- function(x, show = FALSE, digits = 5) {
@@ -294,8 +293,8 @@ to_tribble <- function(x, show = FALSE, digits = 5) {
 #'
 #'
 #' @param df A dataframe that contains the variables - only used to extract their possible levels.
-#' @param ... The variables to be included in the rename tribbles. If none are 
-#' specified, all are included, unless there are more than `max_level` variables in the df 
+#' @param ... The variables to be included in the rename tribbles. If none are
+#' specified, all are included, unless there are more than `max_level` variables in the df
 #' @param show Logical - should the output be printed to the console. In any case, it is returned invisibly
 #' @param which Should tribble code be generated for variables (\code{"vars"}), levels (\code{"levels"}) or both (\code{"both"}) (default)
 #' @param max_levels The maximum number of levels before a variable is dropped from the levels_tribble. Defaults to 20
@@ -305,7 +304,6 @@ to_tribble <- function(x, show = FALSE, digits = 5) {
 #'
 #' @examples
 #' get_rename_tribbles(iris)
-#'
 #' @export
 
 get_rename_tribbles <- function(df, ..., show = TRUE, which = c("both", "vars", "levels"), max_levels = 20) {
@@ -313,9 +311,9 @@ get_rename_tribbles <- function(df, ..., show = TRUE, which = c("both", "vars", 
   assert_choice(which[1], c("both", "vars", "levels"))
   assert_count(max_levels)
   assert_logical(show)
-  
+
   vars <- rlang::enquos(...)
-  if(length(vars) == 0) {
+  if (length(vars) == 0) {
     vars_chr <- names(df)
     if(length(vars_chr)>max_levels) stop("No variables were specified for renaming.",
                                          " Would usually include all, but when there are more than",
@@ -324,7 +322,7 @@ get_rename_tribbles <- function(df, ..., show = TRUE, which = c("both", "vars", 
   } else {
     vars_chr <- purrr::map_chr(vars, dplyr::as_label)
   }
-    
+
   out <- list()
   if (which[1] %in% c("both", "vars")) {
     vars_tribble <- tibble::tibble(old = vars_chr, new = vars_chr) %>% to_tribble(show = show)
@@ -376,18 +374,16 @@ get_rename_tribbles <- function(df, ..., show = TRUE, which = c("both", "vars", 
 #' @examples
 #' mod <- lm(mpg ~ wt, mtcars)
 #' get_coef_rename_tribble(mod)
-#'
 #' @export
 
 get_coef_rename_tribble <- function(mod, show = TRUE) {
- 
-    coefs <- try(stats::coef(mod), silent = TRUE)
-    if(class(coefs) == "try-error") stop("coef() could not extract coefficients from mod argument.")
-    coefs <- names(coefs)
-    assert_logical(show)
-  
-    tibble::tibble(old = coefs, new = coefs %>% stringr::str_replace_all("_", " ") %>% stringr::str_to_title()) %>% to_tribble(show = show)
-  }
+  coefs <- try(stats::coef(mod), silent = TRUE)
+  if (class(coefs) == "try-error") stop("coef() could not extract coefficients from mod argument.")
+  coefs <- names(coefs)
+  assert_logical(show)
+
+  tibble::tibble(old = coefs, new = coefs %>% stringr::str_replace_all("_", " ") %>% stringr::str_to_title()) %>% to_tribble(show = show)
+}
 
 
 #' Copy data to clipboard to paste into Excel
@@ -431,8 +427,8 @@ dump_to_clip <- function(objects) {
 #' separator present in x is used to split. Note that this makes it possible to copy values
 #' in most spreadsheet programs such as Excel and use this function to pull them
 #' from the clipboard and turn them into code that creates a vector.
-#' 
-#' If x is not split by spaces, stringr::str_trim() is used to trim whitespace from the start 
+#'
+#' If x is not split by spaces, stringr::str_trim() is used to trim whitespace from the start
 #' and end of each element of the vector.
 #'
 #' @param x Character string of desired vector items, separated by spaces, tabs or linebreaks. If NULL, it will be read from the clipboard.
@@ -442,15 +438,14 @@ dump_to_clip <- function(objects) {
 #' @param return Should code or a vector be returned? Defaults to code
 #' @examples
 #' line_to_vector("a b c", strings = TRUE)
-#' 
+#'
 #' line_to_vector("1 2 3", st = FALSE, return = "vector")
-#' 
+#'
 #' line_to_vector("Hello World!
 #'                 How are the bananas today?
 #'                 Thanks for being here.")
-#' 
+#'
 #' weekend <- line_to_vector("Friday Saturday Sunday", return = "vector")
-#'   
 #' @export
 
 line_to_vector <- function(x = readLines("clipboard"), strings = TRUE, separators = c("top-level", "all"), to_clip = interactive(), return = c("code", "vector")) {
@@ -483,7 +478,9 @@ line_to_vector <- function(x = readLines("clipboard"), strings = TRUE, separator
       clipr::write_clip(out)
     }
   }
-  if (return[1] == "vector") return(eval(parse(text = out)))
+  if (return[1] == "vector") {
+    return(eval(parse(text = out)))
+  }
   out
 }
 

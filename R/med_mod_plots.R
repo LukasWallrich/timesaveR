@@ -192,7 +192,7 @@ plot_mediation <- function(IV, DV, Ms, df, digits = 2, coef_offset = length(Ms),
   } else {
     graph <- code %>% DiagrammeR::grViz()
   }
-  if(interactive()) print(graph)
+  if (interactive()) print(graph)
   out <- .named_list(code, graph)
 }
 

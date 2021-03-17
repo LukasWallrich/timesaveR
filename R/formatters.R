@@ -10,7 +10,7 @@
 
 round_df <- function(df, digits = 2) {
   nums <- vapply(df, is.numeric, FUN.VALUE = logical(1))
-  
+
   df[, nums] <- round(df[, nums], digits = digits)
   df
 }
@@ -79,7 +79,7 @@ fmt_cor <- function(cor_value, digits = 2) {
 
 #' Format confidence interval based on the bounds
 #'
-#' Constructs a confidence intervals from upper and lower bounds, 
+#' Constructs a confidence intervals from upper and lower bounds,
 #' placing them in between square brackets
 #'
 #' @param lower Lower bound(s) of confidence interval(s). Numeric, or a vector of numbers
@@ -90,7 +90,7 @@ fmt_cor <- function(cor_value, digits = 2) {
 fmt_ci <- function(lower, upper, digits = 2) {
   assert_numeric(lower)
   assert_numeric(upper)
-  if(!(length(lower) == length(upper))) stop("lower and upper must have the same length.")
+  if (!(length(lower) == length(upper))) stop("lower and upper must have the same length.")
   assert_count(digits)
   out <- paste0("[", round_(lower, digits), ", ", round_(upper, digits), "]")
   out[is.na(lower) | is.na(upper)] <- NA
@@ -98,19 +98,18 @@ fmt_ci <- function(lower, upper, digits = 2) {
 }
 
 #' Round function that returns trailing zeroes
-#' 
+#'
 #' Particularly when creating tables, it is often desirable to keep
 #' all numbers to the same width. `round()` and similar functions drop
 #' trailing zeros - this version keeps them and thus rounds 1.201 to 1.20
-#' rather than 1.2 when 2 digits are requested. 
-#' 
+#' rather than 1.2 when 2 digits are requested.
+#'
 #' @param x Numeric vector to be rounded
 #' @param digits Number of significant digits
 #' @return Character vector of rounded values, with trailing zeroes as needed to show `digits` figures after the decimal point
 #' @export
 
 round_ <- function(x, digits = 2) {
-  
   checkmate::assert_numeric(x)
   checkmate::assert_integerish(digits)
   fmt <- paste0("%.", digits, "f")

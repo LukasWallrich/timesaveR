@@ -7,69 +7,70 @@
 #' @param cor_matrix A correlation matrix, for example returned from
 #' \code{cor_matrix()}, \code{svy_cor_matrix()}, or \code{wtd_cor_matrix_mi()}
 #' @param ci Method to create CI - default is to use any given in the cor_matrix,
-#' and otherwise to compute them using z-transformations. The simple SE method 
+#' and otherwise to compute them using z-transformations. The simple SE method
 #' should not be used, but is provided for compatibility.
-#' @param n Number of observations to calculate confidence intervals - only 
-#' needed if cor_matrix does not contain degrees of freedom (df) and confidence 
+#' @param n Number of observations to calculate confidence intervals - only
+#' needed if cor_matrix does not contain degrees of freedom (df) and confidence
 #' intervals are to be calculated using z-transformations
 #' @param add_distributions Add graphs showing variable distributions?
 #' @inheritDotParams plot_distributions -var_names
 #' @param data Original data, only needed if \code{add_distribution = TRUE}
 #' @param notes List of additional notes to show under the table.
-#' @param filename the file name to create on disk. Include '.html' extension to 
+#' @param filename the file name to create on disk. Include '.html' extension to
 #' best preserve formatting (see gt::gtsave for details)
 #' @inheritParams sigstars
-#' @param add_title Should title be added to table? Set to TRUE for default 
+#' @param add_title Should title be added to table? Set to TRUE for default
 #' title or to character for custom title
 #' @param extras Tibble of additional columns to be added after the descriptives column -
 #'  needs to be sorted in the same order as the `desc` element in the cor_matrix
 #' @param apa_style Logical, should APA-style formatting be applied
 #' @source Based on the apaTables \code{apa.cor.table()} function, but adapted to
-#' accept weighted correlation matrices and work with the `gt` package instead. Code 
-#' for calculation of confidence intervals adapted from 
+#' accept weighted correlation matrices and work with the `gt` package instead. Code
+#' for calculation of confidence intervals adapted from
 #' https://medium.com/@shandou/how-to-compute-confidence-interval-for-pearsons-r-a-brief-guide-951445b9cb2d`
 #' @return A table that can be printed in the RStudio console to be shown in the
 #' viewer. Unless it is to be post-processed with further `gt` functions, it should
 #' usually be saved by passing a filename argument.
 #' @export
 
-report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_SE"), 
+report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_SE"),
                              n = NULL, add_distributions = FALSE, data = NULL,
-                             filename = NULL, notes = list(NULL), stars = NULL, 
+                             filename = NULL, notes = list(NULL), stars = NULL,
                              add_title = FALSE, extras = NULL, apa_style = TRUE, ...) {
-
   .check_req_packages("gt")
-  
-  
-    if (add_title) 
-      add_title <- "Means, standard deviations, and correlations with confidence intervals"
+
+
+  if (add_title) {
+    add_title <- "Means, standard deviations, and correlations with confidence intervals"
+  }
 
   assert_data_frame(extras, null.ok = TRUE)
-    
-  if (add_distributions & is.null(data)) 
+
+  if (add_distributions & is.null(data)) {
     stop("If add_distributions = TRUE, data needs to be provided.", call. = FALSE)
-  
+  }
+
   plot_args <- list(...)
-  if("plot_theme" %in% names(plot_args)) {
-    plot_args$plot_theme <- ggplot2::theme(axis.text.x = ggplot2::element_text(size=40)) + plot_args$plot_theme 
-    } else {
-      plot_args$plot_theme <- ggplot2::theme(axis.text.x = ggplot2::element_text(size=40))
-    }
-  
-  if(add_distributions) {
-    if(!is.null(cor_matrix$var_renames)) {
+  if ("plot_theme" %in% names(plot_args)) {
+    plot_args$plot_theme <- ggplot2::theme(axis.text.x = ggplot2::element_text(size = 40)) + plot_args$plot_theme
+  } else {
+    plot_args$plot_theme <- ggplot2::theme(axis.text.x = ggplot2::element_text(size = 40))
+  }
+
+  if (add_distributions) {
+    if (!is.null(cor_matrix$var_renames)) {
       plots <- do.call(plot_distributions, c(list(data = data, var_names = cor_matrix$var_renames), plot_args))
     } else {
       plots <- data %>% dplyr::select(dplyr::all_of(rownames(cor_matrix$cors))) %>% 
         {do.call(plot_distributions, c(list(data = .), plot_args))}
     }
-    
-    if(is.null(extras)) {
+
+    if (is.null(extras)) {
       extras <- tibble::tibble(Distributions = 1:nrow(cor_matrix$cors))
     } else {
       extras <- cbind(tibble::tibble(Distributions = 1:nrow(cor_matrix$cors)), extras)
     }
-}
+  }
   df_col <- dim(cor_matrix[[1]])[2]
   number_variables <- df_col
   number_columns <- df_col - 1
@@ -96,7 +97,6 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
       }
     }
   } else if ("z_transform" %in% ci & !(is.null(cor_matrix[["df"]]) & is.null(n))) {
-
     get_cor.ci.low <- function(cor_matrix, cor.r, cor.se, i, j, df) {
       z_prime <- .5 * log((1 + cor.r) / (1 - cor.r))
       n <- df + 1
@@ -118,9 +118,10 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
   } else {
     message("Confidence intervals are calculated based on correlation
             coefficient +/- 2 SE. This is generally not recommended!")
-    if ("z_transform" %in% ci & (is.null(cor_matrix[["df"]]) & is.null(n))) 
+    if ("z_transform" %in% ci & (is.null(cor_matrix[["df"]]) & is.null(n))) {
       message("This is because n is not provided and cor_matrix does not contain df. Change either to enable z-transformed confidence intervals.")
-    
+    }
+
     get_cor.ci.low <- function(cor_matrix, cor.r, cor.se, i, j, df) {
       cor.r - 2 * cor.se
     }
@@ -164,7 +165,7 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
       output_descriptives, cor_cells
     )
   } else {
-    if(!(add_distributions & ncol(extras) == 1)) message("Note that the ordering of the 'extras' argument is not checked - ensure that it matches 'desc' in the correlation matrix.")
+    if (!(add_distributions & ncol(extras) == 1)) message("Note that the ordering of the 'extras' argument is not checked - ensure that it matches 'desc' in the correlation matrix.")
     cells <- cbind(
       matrix(output_variable_names, ncol = 1),
       output_descriptives, extras, cor_cells,
@@ -183,8 +184,8 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
 
   if (apa_style) tab <- tab %>% gt_apa_style()
 
-  if(add_distributions) tab <- gt_add_plots(tab, plots, 3)
-  
+  if (add_distributions) tab <- gt_add_plots(tab, plots, 3)
+
   notes %<>% c("*M* and *SD* are used to represent mean and standard deviation, respectively. Values in square brackets indicate the 95% confidence interval for each correlation.")
 
   notes %<>% c(.make_stars_note())
@@ -201,7 +202,7 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
   }
 
   tab <- tab %>% gt::cols_label(desc = gt::md("*M (SD)*"))
-  #TK - add md formatting to extras column titles
+  # TK - add md formatting to extras column titles
 
   if (!is.null(filename)) {
     gt::gtsave(tab, filename)
@@ -218,21 +219,21 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
 #' Calculates the correlation matrix between the numeric variables in a given dataframe and
 #' includes descriptives (mean and standard deviation) - ready for creating a nice table with \code{\link{report_cor_table}}
 #'
-#' By setting missing to "fiml", this function uses the lavaan package to estimate the correlations (and descriptives) 
+#' By setting missing to "fiml", this function uses the lavaan package to estimate the correlations (and descriptives)
 #' by using a full-information maximum likelihood algorithm. This estimates the covariances separately
 #' for each pattern of missingness and then combines them based on the frequency of each pattern. This
-#' will take longer than pairwise deletion, but should yield more precise estimates in the presence of 
-#' missing data. To date, FIML correlation matrices can be obtained with the \code{\link[psych]{corFiml}} 
-#' function, but that function does not report significance tests or confidence intervals, or with the 
+#' will take longer than pairwise deletion, but should yield more precise estimates in the presence of
+#' missing data. To date, FIML correlation matrices can be obtained with the \code{\link[psych]{corFiml}}
+#' function, but that function does not report significance tests or confidence intervals, or with the
 #' \code{\link[lavaan]{lavCor}} function - this function also uses \code{lavaan} for the estimation,
-#' but facilitates bootstrapping and returns the results in a more accessible format. 
-#'  
+#' but facilitates bootstrapping and returns the results in a more accessible format.
+#'
 #' @param df Dataframe. Only numeric variables are included into correlation matrix.
 #' @param var_names A named character vector with new variable names or a tibble as provided by \code{\link{get_rename_tribbles}}
-#' for variables. If NULL, then the variables are not renamed. If names are provided, only the variables included here are retained. 
+#' for variables. If NULL, then the variables are not renamed. If names are provided, only the variables included here are retained.
 #' This is most helpful when the results are passed to some print function, such as \code{\link{report_cor_table}}
-#' @param missing How should missing data be dealt with? Options are "pairwise" deletion, "listwise" deletion or "fiml" for full 
-#' information maximum likelihood estimation of the correlation table. Note that if you use "fiml", this will also be applied to 
+#' @param missing How should missing data be dealt with? Options are "pairwise" deletion, "listwise" deletion or "fiml" for full
+#' information maximum likelihood estimation of the correlation table. Note that if you use "fiml", this will also be applied to
 #' the estimation of means and standard deviations.
 #' @param conf_level Confidence level to use for confidence intervals, defaults to .95
 #' @inheritParams psych::corr.test
@@ -242,7 +243,7 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
 #' @return A list including the correlation matrix, p-values, standard errors, t-values, pairwise number of observations, confidence intervals, descriptives and (if var_names was provided) a tibble with old and new variable names
 #' @source Adapted from
 #'  http://www.sthda.com/english/wiki/elegant-correlation-table-using-xtable-r-package
-#' @references For evidence on the utility of the FIML estimator, see Enders, C. K. (2001) 
+#' @references For evidence on the utility of the FIML estimator, see Enders, C. K. (2001)
 #' The performance of the full information maximum likelihood estimator in multiple regression models with missing data
 #' @export
 
@@ -254,7 +255,6 @@ cor_matrix <- function(df,
                        method = c("pearson", "spearman", "kendall"),
                        adjust = "none",
                        bootstrap = NULL) {
-
   df %<>% dplyr::select_if(is.numeric)
 
   missing <- dplyr::case_when(
@@ -263,60 +263,59 @@ cor_matrix <- function(df,
     missing[1] == "fiml" ~ "fiml",
     TRUE ~ NA_character_
   )
-  
-  if(is.na(missing)) assert_choice(missing, c("pairwise", "listwise", "fiml"))
-  if(!is.null(bootstrap) & missing != "fiml") stop('bootstrapping can only be used when missing = "fiml"')
-  
-    if(is.data.frame(var_names)) {
-    assert_names(names(var_names), must.include = c("old", "new")) 
+
+  if (is.na(missing)) assert_choice(missing, c("pairwise", "listwise", "fiml"))
+  if (!is.null(bootstrap) & missing != "fiml") stop('bootstrapping can only be used when missing = "fiml"')
+
+  if (is.data.frame(var_names)) {
+    assert_names(names(var_names), must.include = c("old", "new"))
     var_names <- var_names$new %>% magrittr::set_names(var_names$old)
   }
 
-    if(!is.null(var_names)) {
-      df <- df %>% dplyr::select(dplyr::any_of(names(var_names)))
-      miss_vars <- setdiff(names(var_names), names(df))
-      if(length(miss_vars)>0) warning("The following variables are included in var_names but cannot be included into the correlation matrix - either, they are missing from df or not of type numeric: ", paste(miss_vars, collapse = ", "), call. = FALSE)
-      var_names <- var_names[intersect(names(var_names), names(df))]
-       }
-  
-  if(!missing == "fiml") {
-  
-  # Compute correlation matrix
-  correlation_matrix <- psych::corr.test(df, method = method[1], adjust = adjust, alpha = 1-conf_level, use = missing)
-  cors <- correlation_matrix$r # Matrix of correlation coefficients
-  p.values <- correlation_matrix$p # Matrix of p-value
-  std.err <- correlation_matrix$se # Matrix of standard errors
-  t.values <- correlation_matrix$t # Matrix of t-values
-  n.matrix <- correlation_matrix$n # Matrix of pairwise counts
-
-  # Copy (possibly) adjusted p-values into lower half that will be used by report_cor_table()
-  p.values[lower.tri(p.values)] <- t(p.values)[lower.tri(p.values)]
-
-  #Ensure that n is a named matrix (corr.test returns single number for complete data)
-  if(is.null(dim(n.matrix))){
-    n.out <- n.matrix
-    n.matrix <- cors
-    n.matrix[TRUE] <- n.out
+  if (!is.null(var_names)) {
+    df <- df %>% dplyr::select(dplyr::any_of(names(var_names)))
+    miss_vars <- setdiff(names(var_names), names(df))
+    if (length(miss_vars) > 0) warning("The following variables are included in var_names but cannot be included into the correlation matrix - either, they are missing from df or not of type numeric: ", paste(miss_vars, collapse = ", "), call. = FALSE)
+    var_names <- var_names[intersect(names(var_names), names(df))]
   }
 
-  ci_low <- p.values
-  ci_low[TRUE] <- NA
-  ci_low[lower.tri(ci_low)] <- correlation_matrix$ci$lower
+  if (!missing == "fiml") {
 
-  ci_high <- p.values
-  ci_high[TRUE] <- NA
-  ci_high[lower.tri(ci_high)] <- correlation_matrix$ci$upper
+    # Compute correlation matrix
+    correlation_matrix <- psych::corr.test(df, method = method[1], adjust = adjust, alpha = 1 - conf_level, use = missing)
+    cors <- correlation_matrix$r # Matrix of correlation coefficients
+    p.values <- correlation_matrix$p # Matrix of p-value
+    std.err <- correlation_matrix$se # Matrix of standard errors
+    t.values <- correlation_matrix$t # Matrix of t-values
+    n.matrix <- correlation_matrix$n # Matrix of pairwise counts
+
+    # Copy (possibly) adjusted p-values into lower half that will be used by report_cor_table()
+    p.values[lower.tri(p.values)] <- t(p.values)[lower.tri(p.values)]
+
+    # Ensure that n is a named matrix (corr.test returns single number for complete data)
+    if (is.null(dim(n.matrix))) {
+      n.out <- n.matrix
+      n.matrix <- cors
+      n.matrix[TRUE] <- n.out
+    }
+
+    ci_low <- p.values
+    ci_low[TRUE] <- NA
+    ci_low[lower.tri(ci_low)] <- correlation_matrix$ci$lower
+
+    ci_high <- p.values
+    ci_high[TRUE] <- NA
+    ci_high[lower.tri(ci_high)] <- correlation_matrix$ci$upper
 
 
-  desc_stat <- df %>%
-    psych::describe() %>%
-    data.frame() %>%
-    tibble::rownames_to_column("var") %>%
-    dplyr::select(.data$var, M = .data$mean, SD = .data$sd)
-
+    desc_stat <- df %>%
+      psych::describe() %>%
+      data.frame() %>%
+      tibble::rownames_to_column("var") %>%
+      dplyr::select(.data$var, M = .data$mean, SD = .data$sd)
   } else {
     .check_req_packages("lavaan", "FIML method for dealing with missing data uses the lavaan package. ")
-    vars_used  <- names(df)
+    vars_used <- names(df)
     covars <- utils::combn(vars_used, 2) %>%
       t() %>%
       data.frame() %>%
@@ -324,70 +323,70 @@ cor_matrix <- function(df,
       dplyr::pull() %>%
       paste(collapse = "\n ")
     vars <- paste(vars_used, "~~", vars_used, collapse = "\n")
-    
-    #Estimate descriptive statistics
-    mod <- paste(vars, covars, sep = "\n") %>% 
-      lavaan::sem(df, estimator='MLR', meanstructure = TRUE)
-    
-    Ms <- lavaan::parameterestimates(mod) %>% 
-      dplyr::filter(.data$op == "~1") %>% 
+
+    # Estimate descriptive statistics
+    mod <- paste(vars, covars, sep = "\n") %>%
+      lavaan::sem(df, estimator = "MLR", meanstructure = TRUE)
+
+    Ms <- lavaan::parameterestimates(mod) %>%
+      dplyr::filter(.data$op == "~1") %>%
       dplyr::select(var = .data$lhs, M = .data$est)
-   
+
     desc_stat <- lavaan::parameterestimates(mod) %>%
       dplyr::filter(.data$op == "~~" & .data$lhs == .data$rhs) %>%
       dplyr::select(var = .data$lhs, SD = .data$est) %>%
       dplyr::mutate(SD = sqrt(.data$SD)) %>%
       dplyr::left_join(Ms, ., by = "var")
-    
-    mod <- paste(vars, covars, sep = "\n") %>% lavaan::sem(df, estimator='MLR', std.ov = TRUE)
-    
-    if(!is.null(bootstrap)) {
-    message("Starting to bootstrap ", bootstrap, " resamples. This might take a while.")
-    
-    #Estimate correlations with CIs
-    res <- lavaan::bootstrapLavaan(mod, R = bootstrap, FUN = "coef") %>%
-      t() %>%
-      data.frame() %>%
-      tibble::rownames_to_column("rowid") %>%
-      dplyr::filter(stringr::str_detect(.data$rowid, "~~")) %>%
-      tidyr::separate(.data$rowid, c("rhs", "lhs"), sep = "~~") %>%
-      dplyr::filter(!.data$lhs == .data$rhs) %>%
-      tidyr::gather(-.data$lhs, -.data$rhs, key = "rep", value = "coef") %>%
-      dplyr::group_by(.data$lhs, .data$rhs) %>%
-      dplyr::summarise(M = mean(.data$coef), 
-                pvalue = ifelse(.data$M > 0, mean(.data$coef < 0) + mean(.data$coef > 2*.data$coef), mean(.data$coef > 0) + mean(.data$coef < 2*.data$coef)), 
-                ci.lower = stats::quantile(.data$coef, (1-conf_level)/2), ci.upper = stats::quantile(.data$coef, 1-(1-conf_level)/2), se = sd(.data$coef),
-                .groups = "drop") %>% dplyr::rename(est = .data$M)
-    
+
+    mod <- paste(vars, covars, sep = "\n") %>% lavaan::sem(df, estimator = "MLR", std.ov = TRUE)
+
+    if (!is.null(bootstrap)) {
+      message("Starting to bootstrap ", bootstrap, " resamples. This might take a while.")
+
+      # Estimate correlations with CIs
+      res <- lavaan::bootstrapLavaan(mod, R = bootstrap, FUN = "coef") %>%
+        t() %>%
+        data.frame() %>%
+        tibble::rownames_to_column("rowid") %>%
+        dplyr::filter(stringr::str_detect(.data$rowid, "~~")) %>%
+        tidyr::separate(.data$rowid, c("rhs", "lhs"), sep = "~~") %>%
+        dplyr::filter(!.data$lhs == .data$rhs) %>%
+        tidyr::gather(-.data$lhs, -.data$rhs, key = "rep", value = "coef") %>%
+        dplyr::group_by(.data$lhs, .data$rhs) %>%
+        dplyr::summarise(
+          M = mean(.data$coef),
+          pvalue = ifelse(.data$M > 0, mean(.data$coef < 0) + mean(.data$coef > 2 * .data$coef), mean(.data$coef > 0) + mean(.data$coef < 2 * .data$coef)),
+          ci.lower = stats::quantile(.data$coef, (1 - conf_level) / 2), ci.upper = stats::quantile(.data$coef, 1 - (1 - conf_level) / 2), se = sd(.data$coef),
+          .groups = "drop"
+        ) %>%
+        dplyr::rename(est = .data$M)
     } else {
       res <- lavaan::parameterestimates(mod) %>% dplyr::filter(.data$rhs != .data$lhs)
     }
     m <- matrix(nrow = length(vars_used), ncol = length(vars_used)) %>%
       magrittr::set_rownames(vars_used) %>%
       magrittr::set_colnames(vars_used)
-    
+
     fill_matrix <- function(x) {
-      
-      for (i in 1:(ncol(m)-1)) {
-        for (j in seq(i+1, nrow(m))) {
+      for (i in 1:(ncol(m) - 1)) {
+        for (j in seq(i + 1, nrow(m))) {
           m[j, i] <- res[[x]][(res$rhs == colnames(m)[i] & res$lhs == rownames(m)[j]) |
                                (res$lhs == colnames(m)[i] & res$rhs == rownames(m)[j])]        }
       }
       m
     }
-    
+
     cors <- fill_matrix("est")
     std.err <- fill_matrix("se")
     p.values <- fill_matrix("pvalue")
     t.values <- m
     t.values[TRUE] <- NA
-    n.matrix <- m 
-    n.matrix[TRUE] <- nrow(df) 
+    n.matrix <- m
+    n.matrix[TRUE] <- nrow(df)
     ci_low <- fill_matrix("ci.lower")
     ci_high <- fill_matrix("ci.upper")
-      
-    }
-      
+  }
+
   cor_matrix <- list(cors = cors, std.err = std.err, p.values = p.values, t.values = t.values, n = n.matrix, ci.low = ci_low, ci.high = ci_high, desc = desc_stat)
 
   if (!is.null(var_names)) {
@@ -401,13 +400,13 @@ cor_matrix <- function(df,
     cor_matrix$desc$var <- var_names[cor_matrix$desc$var]
     cor_matrix$desc <- cor_matrix$desc[match(cor_matrix$desc$var, used_vars), ]
   }
-  
+
   cor_matrix$var_renames <- NULL
-  
-  
-  if(exists("used_vars")) {
+
+
+  if (exists("used_vars")) {
     cor_matrix$var_renames <- tibble::tibble(old = names(var_names[match(used_vars, var_names)]), new = var_names[match(used_vars, var_names)])
-  }    
+  }
   cor_matrix
 }
 
@@ -420,7 +419,7 @@ cor_matrix <- function(df,
 #' @param svy_df A survey object created with the survey or srvyr package. Only
 #' numeric variables will be included in the result.
 #' @param var_names A named character vector with new variable names or a tibble as provided by \code{\link{get_rename_tribbles}}
-#' for variables. If NULL, then the variables are not renamed. If names are provided, only the variables included here are retained. 
+#' for variables. If NULL, then the variables are not renamed. If names are provided, only the variables included here are retained.
 #' This is most helpful when the results are passed to some print function, such as \code{\link{report_cor_table}}
 #' @return A correlation matrix list in the format provided by
 #' \code{jtools::svycor()} with the addition of a \code{desc}-element with means
@@ -430,37 +429,39 @@ cor_matrix <- function(df,
 #' @examples
 #' \dontrun{
 #' if (requireNamespace("survey") & requireNamespace("srvyr")) {
-#' library(survey)
-#' library(srvyr)
-#' data(api)
-# Create survey design object
-#' dstrat <- apistrat %>% as_survey_design(1, strata = stype, fpc = fpc, weight = pw)
+#'   library(survey)
+#'   library(srvyr)
+#'   data(api)
+#'   # Create survey design object
+#'   dstrat <- apistrat %>% as_survey_design(1, strata = stype, fpc = fpc, weight = pw)
 #'
 #'var_names <- c(meals = "Share subsidized meals", ell = "English language learners",
 #'               growth = "Performance Change")
 #'
-#' # Print correlation matrix
-#' svy_cor_matrix(dstrat, var_names)
+#'   # Print correlation matrix
+#'   svy_cor_matrix(dstrat, var_names)
 #' }
 #' }
-
+#'
 svy_cor_matrix <- function(svy_df, var_names) {
   .check_req_packages(c("jtools", "survey", "srvyr", "weights"))
 
   assert_class(svy_df, "survey.design")
 
-  if(!inherits(svy_df, "tbl_svy")) svy_df %<>% srvyr::as_survey(svy_df)
+  if (!inherits(svy_df, "tbl_svy")) svy_df %<>% srvyr::as_survey(svy_df)
 
   svy_df %<>%
     srvyr::select_if(is.numeric)
 
-  if(is.data.frame(var_names)) {
-    assert_names(names(var_names), must.include = c("old", "new")) 
+  if (is.data.frame(var_names)) {
+    assert_names(names(var_names), must.include = c("old", "new"))
     var_names <- var_names$new %>% magrittr::set_names(var_names$old)
   }
-  
-  if(!is.null(var_names))  svy_df %<>%
-    srvyr::select(dplyr::one_of(names(var_names)))
+
+  if (!is.null(var_names)) {
+    svy_df %<>%
+      srvyr::select(dplyr::one_of(names(var_names)))
+  }
 
   cor_matrix <- jtools::svycor(~., svy_df, na.rm = TRUE, sig.stats = TRUE)
   cor_matrix$desc <- svy_df %>%
@@ -489,13 +490,13 @@ svy_cor_matrix <- function(svy_df, var_names) {
     cor_matrix$desc$var %<>% stringr::str_replace_all(var_names)
     cor_matrix$desc <- cor_matrix$desc[match(used_vars, cor_matrix$desc$var), ]
   }
-  
+
   cor_matrix$var_renames <- NULL
-  
-  if(exists("used_vars")) {
+
+  if (exists("used_vars")) {
     cor_matrix$var_renames <- tibble::tibble(old = names(var_names[match(used_vars, var_names)]), new = var_names[match(used_vars, var_names)])
-  }  
-  
+  }
+
   class(cor_matrix) <- "list"
   cor_matrix
 }
@@ -512,7 +513,7 @@ svy_cor_matrix <- function(svy_df, var_names) {
 #' @param mi_list A list of dataframes of multiple imputation results
 #' @param weights A variable within mi_list that gives the survey weights
 #' @param var_names A named character vector with new variable names or a tibble as provided by \code{\link{get_rename_tribbles}}
-#' for variables. If NULL, then the variables are not renamed. If names are provided, only the variables included here are retained. 
+#' for variables. If NULL, then the variables are not renamed. If names are provided, only the variables included here are retained.
 #' This is most helpful when the results are passed to some print function, such as \code{\link{report_cor_table}}
 #' To facilitate post-processing, correlations with original variable
 #' names are returned in the `tests` element.
@@ -527,11 +528,11 @@ svy_cor_matrix <- function(svy_df, var_names) {
 wtd_cor_matrix_mi <- function(mi_list, weights, var_names = NULL) {
   .check_req_packages(c("survey", "srvyr", "mitools", "mice"))
 
-  if(is.data.frame(var_names)) {
-    assert_names(names(var_names), must.include = c("old", "new")) 
+  if (is.data.frame(var_names)) {
+    assert_names(names(var_names), must.include = c("old", "new"))
     var_names <- var_names$new %>% magrittr::set_names(var_names$old)
   }
-  
+
   weights <- rlang::enquo(weights)
 
   mi_list <- purrr::map(mi_list, dplyr::select_if, is.numeric)
@@ -601,13 +602,13 @@ wtd_cor_matrix_mi <- function(mi_list, weights, var_names = NULL) {
     cor_matrix$desc$var %<>% stringr::str_replace_all(var_names)
     cor_matrix$desc <- cor_matrix$desc[match(used_vars, cor_matrix$desc$var), ]
   }
-  
+
   cor_matrix$var_renames <- NULL
-  
-  if(exists("used_vars")) {
+
+  if (exists("used_vars")) {
     cor_matrix$var_renames <- tibble::tibble(old = names(var_names[match(used_vars, var_names)]), new = var_names[match(used_vars, var_names)])
-  }  
-  
+  }
+
 
   cor_matrix
 }
@@ -636,51 +637,52 @@ wtd_cor_matrix_mi <- function(mi_list, weights, var_names = NULL) {
 #' plot_distributions(mtcars, var_names = c(wt = "Weight", mpg = "Efficiency",
 #'                    am = "Transmission", gear = "Gears"))
 #' }
-
+#'
 plot_distributions <- function(data, var_names = NULL, plot_type = c("auto", "histogram", "density"), hist_align_y = FALSE, plot_theme = NULL) {
   data %<>% dplyr::select_if(is.numeric)
-  if(is.data.frame(var_names)) {
-    assert_names(names(var_names), must.include = c("old", "new")) 
+  if (is.data.frame(var_names)) {
+    assert_names(names(var_names), must.include = c("old", "new"))
     var_names <- var_names$new %>% magrittr::set_names(var_names$old)
   }
-  
+
   if (!is.null(var_names)) data <- data[names(var_names)]
-  
-  if(!(plot_type[1] %in% c("auto", "histogram", "density") | test_integerish(plot_type, max.len = 1))) stop('plot_type must be one of "auto", "histogram", "density" or a single number', call. = FALSE)
+
+  if (!(plot_type[1] %in% c("auto", "histogram", "density") | test_integerish(plot_type, max.len = 1))) stop('plot_type must be one of "auto", "histogram", "density" or a single number', call. = FALSE)
 
   assert(
     plot_type[1] %in% c("auto", "histogram", "density"),
     test_integerish(plot_type, max.len = 1)
   )
-  
+
   plot_hist <- (
     if (is.numeric(plot_type)) {
-      purrr::map_lgl(data, ~ (unique(.x)  %>% rm_na() %>% length()) <= plot_type)
+      purrr::map_lgl(data, ~ (unique(.x) %>% rm_na() %>% length()) <= plot_type)
     } else {
       switch(plot_type[1],
         auto = purrr::map_lgl(data, ~ (unique(.x) %>% rm_na() %>% length()) < 10),
         histogram = rep(TRUE, ncol(data)),
         density = rep(FALSE, ncol(data))
-        )
+      )
     })
 
 
-  
+
   if (is.null(var_names)) var_names <- names(data)
   names(var_names) <- names(data)
   plots <- purrr::map2(names(var_names), plot_hist, function(var_name, plot_hist) {
     out <- ggplot2::ggplot(data, ggplot2::aes_string(var_name))
     if (plot_hist) {
-       
       out <- out + ggplot2::geom_histogram(bins = (data[[var_name]] %>% unique() %>% rm_na() %>% length()), col = "white", size = 3)
-      breaks <- (data[[var_name]] %>% unique()  %>% rm_na())
-      if(length(breaks)<=5) {
-      return(out + ggplot2::scale_x_continuous(breaks = breaks))
+      breaks <- (data[[var_name]] %>% unique() %>% rm_na())
+      if (length(breaks) <= 5) {
+        return(out + ggplot2::scale_x_continuous(breaks = breaks))
       } else {
-      return(out + ggplot2::scale_x_continuous(breaks = scales::breaks_extended(5)))
-    }} else {
-    out + ggplot2::geom_density(fill = "grey", outline.type = "full")
-  }})
+        return(out + ggplot2::scale_x_continuous(breaks = scales::breaks_extended(5)))
+      }
+    } else {
+      out + ggplot2::geom_density(fill = "grey", outline.type = "full")
+    }
+  })
 
   if (hist_align_y) {
     ymax <- purrr::map_dbl(plots, ~ ggplot2::layer_scales(.x) %>%
@@ -714,19 +716,17 @@ plot_distributions <- function(data, var_names = NULL, plot_type = c("auto", "hi
 #' var_names <- c(wt = "Weight", am = "Transmission", mpg = "Consumption (mpg)", gear = "Gears")
 #' cor_table <- cor_matrix(mtcars, var_names) %>%
 #'   report_cor_table(extras = tibble::tibble(Distributions = c(1:length(var_names))))
-#' large_text <- ggplot2::theme(axis.text.x = ggplot2::element_text(size=40))
+#' large_text <- ggplot2::theme(axis.text.x = ggplot2::element_text(size = 40))
 #' distr_plots <- plot_distributions(mtcars, var_names, plot_theme = large_text)
 #' gt_add_plots(cor_table, distr_plots, 3)
 #' }
-
+#'
 gt_add_plots <- function(gt_table, plots, col_index) {
   purrr::walk(1:length(plots), function(x) {
-    gt_table <<- gt::text_transform(gt_table, gt::cells_body(col_index,x), fn = function(y) {
+    gt_table <<- gt::text_transform(gt_table, gt::cells_body(col_index, x), fn = function(y) {
       plots[[x]] %>%
         gt::ggplot_image(height = gt::px(50))
     })
-  }
-    )
+  })
   gt_table
 }
-

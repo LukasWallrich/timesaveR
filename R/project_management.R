@@ -278,9 +278,9 @@ add_package_snippets <- function() {
   return(invisible(added))
 }
 
-#Copy Rproj filepath to clipboard - e.g., to set up local links
+# Copy Rproj filepath to clipboard - e.g., to set up local links
 rproj_to_clip <- function() {
-  here::here(list.files(here::here(), pattern =  "[.]Rproj$")) %>% clipr::write_clip()
+  here::here(list.files(here::here(), pattern = "[.]Rproj$")) %>% clipr::write_clip()
 }
 
 #' @title Save ggplot-graph and show in folder
@@ -302,9 +302,9 @@ rproj_to_clip <- function() {
 #' }
 #' @source https://stackoverflow.com/a/12135823/10581449
 
-ggsave_show <- function(filename = tempfile("0_plot", fileext = ".png"), ..., device = "png",  units = "cm"){
+ggsave_show <- function(filename = tempfile("0_plot", fileext = ".png"), ..., device = "png", units = "cm") {
   ggplot2::ggsave(filename, units = units, device = device, ...)
-  if (.Platform['OS.type'] == "windows"){
+  if (.Platform["OS.type"] == "windows") {
     shell.exec(dirname(filename))
   } else {
     system(paste(Sys.getenv("R_BROWSER"), dirname(filename)))

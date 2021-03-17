@@ -21,7 +21,7 @@
 #' @references See (Fox, 2015) for an argument why dummy variables should never
 #' be standardised. If you want to run a model with all variables standardised,
 #' one option is `QuantPsyc::lm.beta()`
-#' 
+#'
 #' @export
 
 run_lm <- function(df, formula, std = FALSE, rename_std = FALSE, ...) {

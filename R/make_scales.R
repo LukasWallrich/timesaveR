@@ -36,11 +36,15 @@ make_scale <- function(df, scale_items, scale_name, reverse = c(
                        ), r_key = NULL, print_hist = TRUE, print_desc = TRUE, return_list = FALSE) {
   if (!all(scale_items %in% names(df))) stop("Not all scale_items can be found in the dataset. The following are missing: ", paste(setdiff(scale_items, names(df)), collapse = ", "), call. = FALSE)
 
-  if (df %>% dplyr::select(dplyr::any_of(scale_items)) %>% {all(sapply(., checkmate::allMissing))}) stop("All variables for scale ", scale_name, " only contain missing values.", call. = FALSE)
+  if (df %>% dplyr::select(dplyr::any_of(scale_items)) %>% {
+    all(sapply(., checkmate::allMissing))
+  }) {
+    stop("All variables for scale ", scale_name, " only contain missing values.", call. = FALSE)
+  }
 
   assert_choice(reverse[1], c("auto", "none", "spec"))
 
-  if(!is.null(reverse_items)&!reverse[1]=="spec") stop('reverse_items should only be specified together with reverse = "spec"')
+  if (!is.null(reverse_items) & !reverse[1] == "spec") stop('reverse_items should only be specified together with reverse = "spec"')
 
   if (is.null(r_key)) r_key <- 0
   scale_vals <- df %>%
@@ -108,7 +112,7 @@ make_scale <- function(df, scale_items, scale_name, reverse = c(
       ggplot2::geom_histogram(binwidth = 0.5) +
       ggplot2::facet_wrap(~ .data$category) +
       ggplot2::ggtitle(paste0("Histogram for ", scale_name))) %>%
-      print() #Remember: %>% has higher precedence than +
+      print() # Remember: %>% has higher precedence than +
   }
   if (return_list) {
     return(list(scores = alpha_obj$scores, descriptives = descriptives))
@@ -134,15 +138,14 @@ make_scale <- function(df, scale_items, scale_name, reverse = c(
 #' @export
 
 make_scales <- function(df, items, reversed = NULL, two_items_reliability = c(
-                               "spearman_brown",
-                               "cronbachs_alpha", "r"
-                             ), ...) {
+                          "spearman_brown",
+                          "cronbachs_alpha", "r"
+                        ), ...) {
+  if (!all(unlist(items) %in% names(df))) stop("Not all items can be found in the dataset. The following are missing: ", paste(setdiff(unlist(items), names(df)), collapse = ", "), call. = FALSE)
 
-    if (!all(unlist(items) %in% names(df))) stop("Not all items can be found in the dataset. The following are missing: ", paste(setdiff(unlist(items), names(df)), collapse = ", "), call. = FALSE)
+  assert_choice(two_items_reliability[1], c("spearman_brown", "cronbachs_alpha", "r"))
 
-    assert_choice(two_items_reliability[1], c("spearman_brown", "cronbachs_alpha", "r"))
-
-   if (!is.null(reversed)) {
+  if (!is.null(reversed)) {
     scales_rev <- intersect(names(items), names(reversed))
     if (length(scales_rev) > 0) {
       print(paste0(

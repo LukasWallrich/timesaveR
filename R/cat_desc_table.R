@@ -29,12 +29,12 @@
 #' @return A list including a tibble of descriptive statistics (`descr`), the
 #' `gt`-table (`tab`) and the HTML code (`html_code`) with `css_tags` added
 #' @examples
-#' 
+#'
 #' cat_var_table(iris, Sepal.Length, Species)
-#' 
-#' #You can rename variables and levels reasonably easily
-#' #Use get_rename_tribbles() to get the basis of these tibbles
-#'  
+#'
+#' # You can rename variables and levels reasonably easily
+#' # Use get_rename_tribbles() to get the basis of these tibbles
+#'
 #' var_renames <- tibble::tribble(
 #'  ~old,     ~new,     
 #'  "gndr",   "Gender",  
@@ -54,41 +54,40 @@
 #'              level_names = level_renames)
 #' @export
 
-#TK - implement dv = NULL to only show distribution
+# TK - implement dv = NULL to only show distribution
 
 cat_var_table <- function(df, dv, ..., var_names = NULL, level_names = NULL,
                           p_adjust = p.adjust.methods, alpha_level = .05,
                           filename = NULL, notes = list(), dv_name = NULL,
                           bold_vars = TRUE, css_tags = list(), na.rm = TRUE,
                           exclude_na = FALSE) {
-  
   assert_data_frame(df)
   if (!is.null(var_names)) {
-  assert_data_frame(var_names)
-  assert_names(names(var_names), must.include = c("old", "new"))
+    assert_data_frame(var_names)
+    assert_names(names(var_names), must.include = c("old", "new"))
   }
   if (!is.null(level_names)) {
-  assert_data_frame(level_names)
-  assert_names(names(level_names), must.include = c("level_old", "level_new")) 
+    assert_data_frame(level_names)
+    assert_names(names(level_names), must.include = c("level_old", "level_new"))
   }
-  
+
   assert(p_adjust[1] %in% p.adjust.methods)
-  
+
   assert_character(dv_name, null.ok = TRUE)
-  
+
   qassert(alpha_level, "R1(0,1)")
   qassert(bold_vars, "B1")
   qassert(na.rm, "B1")
   qassert(exclude_na, "B1")
-  
+
   assert(
     check_null(css_tags),
     check_list(css_tags, names = "named")
   )
-  
+
   vars <- rlang::enquos(...)
   dv <- rlang::enquo(dv)
-  
+
   df <- rename_cat_variables(df, ..., var_names = var_names, level_names = level_names)
 
   if (!is.null(var_names)) {
@@ -120,24 +119,29 @@ cat_var_table <- function(df, dv, ..., var_names = NULL, level_names = NULL,
       )
   })
 
-tests <- purrr::map(vars, function(x) {
-  stats::pairwise.t.test(df %>% dplyr::select(!!dv) %>% dplyr::pull(), 
-                         df %>% dplyr::select(!!x) %>% dplyr::pull(), 
-                         p.adjust.method = p_adjust[1]) %>%
-    get_pairwise_letters(alpha_level = alpha_level) %>%
-    dplyr::select(.data$level, .data$letters)
-})
+  tests <- purrr::map(vars, function(x) {
+    stats::pairwise.t.test(df %>% dplyr::select(!!dv) %>% dplyr::pull(),
+      df %>% dplyr::select(!!x) %>% dplyr::pull(),
+      p.adjust.method = p_adjust[1]
+    ) %>%
+      get_pairwise_letters(alpha_level = alpha_level) %>%
+      dplyr::select(.data$level, .data$letters)
+  })
 
   descr <- purrr::map2(descr, tests, function(x, y) {
-    dplyr::left_join(x, y, by = "level") %>% 
-     dplyr::select(.data$group_var, .data$level, .data$N, .data$Share, .data$M, 
-                   .data$SD, .data$letters)
-    }) %>% 
-     purrr::map_dfr(rbind)
+    dplyr::left_join(x, y, by = "level") %>%
+      dplyr::select(
+        .data$group_var, .data$level, .data$N, .data$Share, .data$M,
+        .data$SD, .data$letters
+      )
+  }) %>%
+    purrr::map_dfr(rbind)
 
   descr_formatted <- descr %>%
-    dplyr::mutate(`*M (SD)*` = paste0(round_(.data$M, 2), " (", round_(.data$SD, 2), ")"), 
-                  N = round_(.data$N), `*M (SD)*` = paste0(.data$`*M (SD)*`, " <sup>", .data$letters, "</sup>")) %>%
+    dplyr::mutate(
+      `*M (SD)*` = paste0(round_(.data$M, 2), " (", round_(.data$SD, 2), ")"),
+      N = round_(.data$N), `*M (SD)*` = paste0(.data$`*M (SD)*`, " <sup>", .data$letters, "</sup>")
+    ) %>%
     dplyr::select(.data$group_var, .data$level, .data$N, .data$Share, .data$`*M (SD)*`)
 
   f <- function(x) {
@@ -191,18 +195,19 @@ tests <- purrr::map(vars, function(x) {
 
   out <- list(descr = descr, tab = tab, html_code = code)
   out %<>% add_class("timesaveR_raw_html")
-  
+
   if (!is.null(filename)) {
     readr::write_file(code, filename)
     return(invisible(out))
   }
-  out  
-
+  out
 }
 
 .add_css <- function(code, class, add) {
   css <- paste0("\n", add, ";\n\n")
   class %<>% stringr::str_replace(stringr::fixed("."), stringr::fixed("\\."))
-  stringr::str_replace(code, paste0("(", class, " \\{[\\s\\S]*?(?=\\}))"), 
-                       paste0("\\1", css))
+  stringr::str_replace(
+    code, paste0("(", class, " \\{[\\s\\S]*?(?=\\}))"),
+    paste0("\\1", css)
+  )
 }
