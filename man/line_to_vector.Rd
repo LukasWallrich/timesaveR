@@ -38,7 +38,7 @@ and end of each element of the vector.
 \examples{
 line_to_vector("a b c", strings = TRUE)
 
-line_to_vector("1 2 3", st = F, return = "vector")
+line_to_vector("1 2 3", st = FALSE, return = "vector")
 
 line_to_vector("Hello World!
                 How are the bananas today?
