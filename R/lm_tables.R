@@ -1,4 +1,4 @@
-#' Creates a summary table comparing standardised and non-standardised linear models
+#' Create a summary table comparing standardised and non-standardised linear models
 #'
 #' This function creates a summary table for lm models (including mice::mira objects
 #' containing lm-models) that shows a standardised and non-standardised version of the model
@@ -299,7 +299,7 @@ mira.lm_F_test <- function(mod, return_list = FALSE) {
 }
 
 
-#' Creates a summary table comparing standardised and non-standardised
+#' Create a summary table comparing standardised and non-standardised
 #' proportional odd logistic regression models
 #'
 #' This function creates a summary table for polr models (including mice::mira objects
@@ -618,6 +618,7 @@ gt_apa_style <- function(gt_table, fmt_labels_md = TRUE) {
 #' @note This function only works for HTML output, since the `gt` render tools
 #' are less developed for LaTeX and RTF output.
 #' @source Developed with Vincent Arel-Bundock and first included in `modelsummary`-package
+#' @keywords internal
 
 fmt_labels_md <- function(tab, position = c("both", "row", "column")) {
   out <- tab

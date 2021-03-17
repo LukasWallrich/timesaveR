@@ -199,6 +199,7 @@ cut_p <- function(x, p, ties.method = "random", fct_levels = NULL) {
 #'
 #' @param x Numeric, to be rounded
 #' @param i Iterator. floor() will be used on x for odd i, ceiling() for even i
+#' @keywords internal
 
 .floor_ceiling <- function(x, i) {
   if (i %% 2 == 1) {
@@ -208,16 +209,13 @@ cut_p <- function(x, p, ties.method = "random", fct_levels = NULL) {
 }
 
 
-
-
-
 #' Scales a vector and returns it without attributes
 #'
 #' The `base::scale()` function adds attributes to the output that can lead to
 #' problems later on. This function scales a vector and strips the attributes.
 #'
 #' @inheritParams base::scale
-#' @export
+#' @keywords internal
 
 scale_blank <- function(x, center = TRUE, scale = TRUE) {
   as.numeric(scale(x))
@@ -227,7 +225,7 @@ scale_blank <- function(x, center = TRUE, scale = TRUE) {
 
 
 
-#' Converts a tibble/dataframe to tribble code
+#' Convert a tibble/dataframe to tribble code
 #'
 #' Tribbles are an easy way to legibly input data, and therefore helpful for teaching
 #' and interactive work. This function takes
@@ -396,7 +394,7 @@ get_coef_rename_tribble <- function(mod, show = TRUE) {
 #' @param col_names Logical. Should column names be copied?
 #' @param ... Further arguments passed to `write.table`
 #' @source https://www.r-bloggers.com/copying-data-from-excel-to-r-and-back/
-
+#' @export
 
 clip_excel <- function(df, row_names = FALSE, col_names = TRUE, ...) {
   utils::write.table(df, "clipboard", sep = "\t", row.names = row_names, col.names = col_names, ...)
@@ -515,9 +513,19 @@ rm_na <- function(x) {
 #'
 #' @param x An object
 #' @param class_to_add String of the class to add, defaults to "exp"
-
+#' @keywords internal
 
 add_class <- function(x, class_to_add = "exp") {
   class(x) <- c(class_to_add, class(x))
   x
+}
+
+#' Tests whether a column in dataframe, specified by string, is numeric
+#'
+#' @param col Character indicating column name
+#' @param df Dataframe that contains `col`
+#' @keywords internal
+
+.is.numeric_col <- function(col, df) {
+  is.numeric(magrittr::extract2(df, col))
 }

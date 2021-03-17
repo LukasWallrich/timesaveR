@@ -129,6 +129,7 @@ writeLines(notes, here("last_complete_run.txt"))
 #' add_package_snippets()
 #' }
 #' @source https://stackoverflow.com/a/62223103/10581449
+#' @keywords internal
 
 add_package_snippets <- function() {
   added <- FALSE

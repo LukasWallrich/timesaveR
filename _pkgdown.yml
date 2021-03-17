@@ -1,1 +1,74 @@
 url: https://lukaswallrich.github.io/timesaveR/
+reference:
+- title: "Report correlations, regressions and summaries"
+  desc: >
+    Functions to create publication-ready tables for
+    common analysis tasks
+- contents: 
+  - matches("report_")
+- title: "Calculate correlation matrices"
+  desc: >
+    It can be surprisingly difficult to calculate correlation
+    matrices, particularly when data is weighted or incomplete
+- contents: 
+  - matches("cor_matrix")
+- title: "Formatters and reporting helpers"
+  desc: >
+    Functions to format numbers for statistical reporting and
+    other helpers for statistical reporting
+- contents:
+  - starts_with("fmt")
+  - round_
+  - round_df
+  - sigstars
+  - get_pairwise_letters
+  - rename_cat_variables
+  - get_rename_tribbles
+  - get_coef_rename_tribble
+  - na_share
+  - cut_p
+  - gt_apa_style
+  - gt_add_plots
+- title: "Plot distributions and mediation models"
+- contents:
+  - plot_distributions
+  - plot_mediation
+- title: "Make and assess scales"
+  desc: >
+    Psychologists often use multiple items to measure
+    a construct. These functions create scale scores
+    and assess reliability (internal consistency)
+- contents:
+  - make_scale
+  - make_scales
+  - spearman_brown
+- title: "Statistical tests"
+  desc: >
+    Some functions to facilitate running common tests
+    with uncommon requirements
+- contents:
+  - lm_std
+  - t_test_mi
+  - paired_t_test_d
+  - pairwise_t_tests
+  - svy_pairwise.t.test
+  - pairwise_t_test_mi
+- title: "Survey functions"
+  desc: "Functions to work with survey data"
+- contents:
+  - starts_with("svy")
+- title: "Demo datasets"
+- contents:
+  - ess_health
+- title: "Workflow functions"
+  desc: >
+    Miscellaneous functions that can improve your workflow,
+    from setting up structured analysis projects to using 
+    the clipboard
+- contents:  
+  - setup_analysis_project
+  - clip_excel
+  - dump_to_clip
+  - to_tribble
+  - line_to_vector
+  - ggsave_show

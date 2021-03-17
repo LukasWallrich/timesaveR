@@ -1,4 +1,4 @@
-#' Creates a scale by calculating item mean and returns descriptives
+#' Create a scale by calculating item mean and returns descriptives
 #'
 #' This function creates a scale by calculating the mean of a set of items,
 #' and prints and returns descriptives that allow to assess internal consistency
@@ -121,7 +121,7 @@ make_scale <- function(df, scale_items, scale_name, reverse = c(
   alpha_obj$scores
 }
 
-#' Creates multiple scales by calculating item means and returns descriptives
+#' Create multiple scales by calculating item means and returns descriptives
 #'
 #' This function creates multiple scales, returns descriptives and supports
 #' reverse-coding of items.
@@ -230,7 +230,7 @@ spearman_brown <- function(df, items, name = "", SB_only = FALSE) {
   return(result)
 }
 
-#' Creates scale by calculating item mean and returns descriptives for srvyr objects
+#' Create scale by calculating item mean and returns descriptives for srvyr objects
 #'
 #' This function creates a scale by calculating the mean of a set of items,
 #' and prints and returns descriptives that allow to assess internal consistency

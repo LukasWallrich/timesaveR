@@ -14,3 +14,4 @@
 \description{
 Iterates between floor() and ceiling()
 }
+\keyword{internal}

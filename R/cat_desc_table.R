@@ -30,7 +30,7 @@
 #' `gt`-table (`tab`) and the HTML code (`html_code`) with `css_tags` added
 #' @examples
 #'
-#' cat_var_table(iris, Sepal.Length, Species)
+#' report_cat_vars(iris, Sepal.Length, Species)
 #'
 #' # You can rename variables and levels reasonably easily
 #' # Use get_rename_tribbles() to get the basis of these tibbles
@@ -50,13 +50,13 @@
 #'  "cntry",  "GB",       "UK"
 #'  )
 #'  
-#' cat_var_table(ess_health, health, gndr, cntry, var_names = var_renames, 
+#' report_cat_vars(ess_health, health, gndr, cntry, var_names = var_renames, 
 #'              level_names = level_renames)
 #' @export
 
 # TK - implement dv = NULL to only show distribution
 
-cat_var_table <- function(df, dv, ..., var_names = NULL, level_names = NULL,
+report_cat_vars <- function(df, dv, ..., var_names = NULL, level_names = NULL,
                           p_adjust = p.adjust.methods, alpha_level = .05,
                           filename = NULL, notes = list(), dv_name = NULL,
                           bold_vars = TRUE, css_tags = list(), na.rm = TRUE,

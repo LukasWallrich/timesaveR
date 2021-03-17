@@ -22,3 +22,4 @@ A convenience function to render markdown to html in row and column labels
 This function only works for HTML output, since the `gt` render tools
 are less developed for LaTeX and RTF output.
 }
+\keyword{internal}

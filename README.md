@@ -125,7 +125,7 @@ level_renames <- tibble::tribble(
     "cntry",  "GB",       "UK"
 )
 
-cat_var_table(ess_health, health, gndr, cntry, var_names = var_renames, 
+report_cat_vars(ess_health, health, gndr, cntry, var_names = var_renames, 
               level_names = level_renames)
 ```
 

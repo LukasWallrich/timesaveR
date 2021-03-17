@@ -16,3 +16,4 @@ This function adds a given class to an object, so that
 different S3 methods can be called (e.g., `tidy.exp` to get OR for logistic regression models
 (e.g., in `modelsummary::msummary`)
 }
+\keyword{internal}

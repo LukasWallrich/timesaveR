@@ -214,7 +214,7 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
 
 
 
-#' Calculates correlation matrix with significance tests and descriptives
+#' Calculate correlation matrix with significance tests and descriptives
 #'
 #' Calculates the correlation matrix between the numeric variables in a given dataframe and
 #' includes descriptives (mean and standard deviation) - ready for creating a nice table with \code{\link{report_cor_table}}
