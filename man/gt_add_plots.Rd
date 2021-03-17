@@ -21,8 +21,9 @@ This function takes a list of ggplot2 plots and adds them into a gt table column
 var_names <- c(wt = "Weight", am = "Transmission", mpg = "Consumption (mpg)", gear = "Gears")
 cor_table <- cor_matrix(mtcars, var_names) \%>\%
   report_cor_table(extras = tibble::tibble(Distributions = c(1:length(var_names))))
-large_text <- ggplot2::theme(axis.text.x = ggplot2::element_text(size=40))
+large_text <- ggplot2::theme(axis.text.x = ggplot2::element_text(size = 40))
 distr_plots <- plot_distributions(mtcars, var_names, plot_theme = large_text)
 gt_add_plots(cor_table, distr_plots, 3)
 }
+
 }

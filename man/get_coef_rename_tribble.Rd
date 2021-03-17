@@ -29,5 +29,4 @@ unless the max_levels argument is increased.
 \examples{
 mod <- lm(mpg ~ wt, mtcars)
 get_coef_rename_tribble(mod)
-
 }

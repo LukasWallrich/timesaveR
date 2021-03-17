@@ -71,9 +71,9 @@ each level and the significance of pairwise comparisons between these means.
 
 cat_var_table(iris, Sepal.Length, Species)
 
-#You can rename variables and levels reasonably easily
-#Use get_rename_tribbles() to get the basis of these tibbles
- 
+# You can rename variables and levels reasonably easily
+# Use get_rename_tribbles() to get the basis of these tibbles
+
 var_renames <- tibble::tribble(
  ~old,     ~new,     
  "gndr",   "Gender",  

@@ -15,7 +15,7 @@ get_rename_tribbles(
 \arguments{
 \item{df}{A dataframe that contains the variables - only used to extract their possible levels.}
 
-\item{...}{The variables to be included in the rename tribbles. If none are 
+\item{...}{The variables to be included in the rename tribbles. If none are
 specified, all are included, unless there are more than `max_level` variables in the df}
 
 \item{show}{Logical - should the output be printed to the console. In any case, it is returned invisibly}
@@ -40,5 +40,4 @@ unless the max_levels argument is increased.
 }
 \examples{
 get_rename_tribbles(iris)
-
 }

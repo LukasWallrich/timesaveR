@@ -71,8 +71,8 @@ in the model object, e.g. c("hp:mpg"="hp X mpg") for an interaction term.}
   }}
 }
 \value{
-A list with `gt_tab` (the gt-table object including the parts of the table 
-that can be created with gt. This can be post-processed and formatted with functions in 
+A list with `gt_tab` (the gt-table object including the parts of the table
+that can be created with gt. This can be post-processed and formatted with functions in
 the gt-package, but does not include the lower part with model statistics, e.g., R^2.) and
 `html_code` (the code that creates the full table, and is used to render it in
 the Viewer).
@@ -84,10 +84,10 @@ side-by-side. Several pairs of such models can be compared side-by-side.
 }
 \examples{
 
-#Standard lm model
+# Standard lm model
 mod1 <- lm(mpg ~ hp + wt, mtcars)
 
-#Model with standardised coefficients
+# Model with standardised coefficients
 
 mod2 <- lm_std(mpg ~ hp + wt, mtcars)
 

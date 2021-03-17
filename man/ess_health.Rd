@@ -33,9 +33,9 @@ A dataframe with 7,226 rows and 23 columns
 }
 }
 \description{
-This dataset contains data from the ESS Wave 7 (2014) for Germany, 
+This dataset contains data from the ESS Wave 7 (2014) for Germany,
 the UK and France that describes respondents physical and mental
-health as well as specific health behaviours. It can be used to 
+health as well as specific health behaviours. It can be used to
 demonstrate most functions of this package.
 }
 \references{

@@ -5,8 +5,8 @@
 \title{Create a correlation table with summary statistics in APA style}
 \source{
 Based on the apaTables \code{apa.cor.table()} function, but adapted to
-accept weighted correlation matrices and work with the `gt` package instead. Code 
-for calculation of confidence intervals adapted from 
+accept weighted correlation matrices and work with the `gt` package instead. Code
+for calculation of confidence intervals adapted from
 https://medium.com/@shandou/how-to-compute-confidence-interval-for-pearsons-r-a-brief-guide-951445b9cb2d`
 }
 \usage{
@@ -30,25 +30,25 @@ report_cor_table(
 \code{cor_matrix()}, \code{svy_cor_matrix()}, or \code{wtd_cor_matrix_mi()}}
 
 \item{ci}{Method to create CI - default is to use any given in the cor_matrix,
-and otherwise to compute them using z-transformations. The simple SE method 
+and otherwise to compute them using z-transformations. The simple SE method
 should not be used, but is provided for compatibility.}
 
-\item{n}{Number of observations to calculate confidence intervals - only 
-needed if cor_matrix does not contain degrees of freedom (df) and confidence 
+\item{n}{Number of observations to calculate confidence intervals - only
+needed if cor_matrix does not contain degrees of freedom (df) and confidence
 intervals are to be calculated using z-transformations}
 
 \item{add_distributions}{Add graphs showing variable distributions?}
 
 \item{data}{Original data, only needed if \code{add_distribution = TRUE}}
 
-\item{filename}{the file name to create on disk. Include '.html' extension to 
+\item{filename}{the file name to create on disk. Include '.html' extension to
 best preserve formatting (see gt::gtsave for details)}
 
 \item{notes}{List of additional notes to show under the table.}
 
 \item{stars}{A character vector to change the significance symbols (see details in `sigstars`)}
 
-\item{add_title}{Should title be added to table? Set to TRUE for default 
+\item{add_title}{Should title be added to table? Set to TRUE for default
 title or to character for custom title}
 
 \item{extras}{Tibble of additional columns to be added after the descriptives column -

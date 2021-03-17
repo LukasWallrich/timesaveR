@@ -38,4 +38,5 @@ or density charts.
 plot_distributions(mtcars, var_names = c(wt = "Weight", mpg = "Efficiency",
                    am = "Transmission", gear = "Gears"))
 }
+
 }

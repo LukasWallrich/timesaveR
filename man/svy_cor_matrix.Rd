@@ -11,7 +11,7 @@ svy_cor_matrix(svy_df, var_names)
 numeric variables will be included in the result.}
 
 \item{var_names}{A named character vector with new variable names or a tibble as provided by \code{\link{get_rename_tribbles}}
-for variables. If NULL, then the variables are not renamed. If names are provided, only the variables included here are retained. 
+for variables. If NULL, then the variables are not renamed. If names are provided, only the variables included here are retained.
 This is most helpful when the results are passed to some print function, such as \code{\link{report_cor_table}}}
 }
 \value{
@@ -27,16 +27,18 @@ statistics. Only numeric variables are included in the result.
 \examples{
 \dontrun{
 if (requireNamespace("survey") & requireNamespace("srvyr")) {
-library(survey)
-library(srvyr)
-data(api)
-dstrat <- apistrat \%>\% as_survey_design(1, strata = stype, fpc = fpc, weight = pw)
+  library(survey)
+  library(srvyr)
+  data(api)
+  # Create survey design object
+  dstrat <- apistrat \%>\% as_survey_design(1, strata = stype, fpc = fpc, weight = pw)
 
 var_names <- c(meals = "Share subsidized meals", ell = "English language learners",
               growth = "Performance Change")
 
-# Print correlation matrix
-svy_cor_matrix(dstrat, var_names)
+  # Print correlation matrix
+  svy_cor_matrix(dstrat, var_names)
 }
 }
+
 }

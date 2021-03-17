@@ -6,11 +6,11 @@
 \alias{timesaveR-package}
 \title{Functions to Accelerate (Academic) Data Analysis and Reporting}
 \description{
-Functions and templates in this package facilitate common tasks 
-in the course of most research projects in social psychology and related 
+Functions and templates in this package facilitate common tasks
+in the course of most research projects in social psychology and related
 fields. These include creating scales, reporting descriptive statistics,
-correlations and distributions, reporting linear regression models with 
-standardized coefficients and F-change comparisons, as well as plotting 
+correlations and distributions, reporting linear regression models with
+standardized coefficients and F-change comparisons, as well as plotting
 mediation models.
 }
 \seealso{
