@@ -6,3 +6,7 @@
 ^LICENSE\.md$
 ^Meta$
 ^\.lintr$
+^Notes.*
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

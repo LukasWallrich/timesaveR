@@ -1,4 +1,4 @@
-# timesaveR
+# timesaveR <img src='man/figures/logo.png' align="right" height="139" />
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/LukasWallrich/timesaveR/workflows/R-CMD-check/badge.svg)](https://github.com/LukasWallrich/timesaveR/actions)
