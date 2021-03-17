@@ -10,9 +10,6 @@
     <loc>https://lukaswallrich.github.io/timesaveR//reference/add_package_snippets.html</loc>
   </url>
   <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/cat_var_table.html</loc>
-  </url>
-  <url>
     <loc>https://lukaswallrich.github.io/timesaveR//reference/clip_excel.html</loc>
   </url>
   <url>
@@ -112,6 +109,9 @@
     <loc>https://lukaswallrich.github.io/timesaveR//reference/rename_cat_variables.html</loc>
   </url>
   <url>
+    <loc>https://lukaswallrich.github.io/timesaveR//reference/report_cat_vars.html</loc>
+  </url>
+  <url>
     <loc>https://lukaswallrich.github.io/timesaveR//reference/report_cor_table.html</loc>
   </url>
   <url>
@@ -127,9 +127,6 @@
     <loc>https://lukaswallrich.github.io/timesaveR//reference/round_df.html</loc>
   </url>
   <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/run_lm.html</loc>
-  </url>
-  <url>
     <loc>https://lukaswallrich.github.io/timesaveR//reference/scale_blank.html</loc>
   </url>
   <url>
@@ -140,9 +137,6 @@
   </url>
   <url>
     <loc>https://lukaswallrich.github.io/timesaveR//reference/spearman_brown.html</loc>
-  </url>
-  <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/summary.rN_lm.html</loc>
   </url>
   <url>
     <loc>https://lukaswallrich.github.io/timesaveR//reference/svy_cohen_d_pair.html</loc>
