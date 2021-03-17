@@ -34,5 +34,4 @@ airquality$month <- factor(airquality$Month, labels = month.abb[5:9])
 x <- pairwise.t.test(airquality$Ozone, airquality$Month)
 
 get_pairwise_letters(x)
-
 }

@@ -7,7 +7,7 @@
 \method{print}{timesaveR_raw_html}(x, ...)
 }
 \arguments{
-\item{x}{Either a character vector containing HTML code 
+\item{x}{Either a character vector containing HTML code
 or a list with a html_code element}
 
 \item{...}{

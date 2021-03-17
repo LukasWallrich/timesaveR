@@ -14,6 +14,6 @@ fmt_ci(lower, upper, digits = 2)
 \item{digits}{Number of significant digits, defaults to 2}
 }
 \description{
-Constructs a confidence intervals from upper and lower bounds, 
+Constructs a confidence intervals from upper and lower bounds,
 placing them in between square brackets
 }

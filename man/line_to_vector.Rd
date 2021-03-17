@@ -32,7 +32,7 @@ in most spreadsheet programs such as Excel and use this function to pull them
 from the clipboard and turn them into code that creates a vector.
 }
 \details{
-If x is not split by spaces, stringr::str_trim() is used to trim whitespace from the start 
+If x is not split by spaces, stringr::str_trim() is used to trim whitespace from the start
 and end of each element of the vector.
 }
 \examples{
@@ -45,5 +45,4 @@ line_to_vector("Hello World!
                 Thanks for being here.")
 
 weekend <- line_to_vector("Friday Saturday Sunday", return = "vector")
-  
 }

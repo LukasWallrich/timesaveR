@@ -14,12 +14,11 @@ to_tribble(x, show = FALSE, digits = 5)
 \item{digits}{Number of digits to round numeric columns to.}
 }
 \description{
-Tribbles are an easy way to legibly input data, and therefore helpful for teaching 
+Tribbles are an easy way to legibly input data, and therefore helpful for teaching
 and interactive work. This function takes
 a tibble and returns code that can recreate it. Note that this function converts
 "NA" to NA and converts factors to characters to retain the levels.
 }
 \examples{
 to_tribble(mtcars, show = TRUE)
-
 }
