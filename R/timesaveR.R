@@ -186,12 +186,6 @@ knit_print.timesaveR_raw_html <- function(x, ...) {
   res <- stringr::str_remove(res, "<!DOCTYPE html>")
   res <- stringr::str_remove(res, "<html>")
   res <- stringr::str_remove(res, "</html>")
-  browser()
-  knitr::asis_output(x)
 
-
-  # knitr::asis_output(res)
-  # } else {
-  #
-  # }
+  knitr::asis_output(res)
 }
