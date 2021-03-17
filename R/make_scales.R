@@ -84,20 +84,20 @@ make_scale <- function(df, scale_items, scale_name, reverse = c(
     ), RevMax = ifelse(length(reversed) > 0, max(scale_vals, na.rm = T), NA))
   }
   if (print_desc) {
-    print(paste0("Descriptives for scale ", scale_name))
-    print(paste0(ifelse(length(scale_items) == 2, paste0(two_items_reliability, ": "),
-      "Cronbach's alpha: "
-    ), round_(reliab, 2)))
-    print(paste0("Scale mean: ", mean(alpha_obj$scores, na.rm = T)))
-    print(paste0("Scale SD: ", sd(alpha_obj$scores, na.rm = T)))
+    print(glue::glue('
+    
+                     Descriptives for {scale_name} scale:
+                     Mean: {round_(mean(alpha_obj$scores, na.rm = TRUE), 3)}  SD: {round_(sd(alpha_obj$scores, na.rm = TRUE), 3)}
+                     {paste0(ifelse(length(scale_items) == 2, paste0(two_items_reliability, ": "),
+                                    "Cronbach\'s alpha: "), round_(reliab, 2))}'))
 
     if (length(reversed) > 0) {
-      print(paste(c("The following items are reverse coded: ", reversed),
+      print(paste(c("The following items were reverse coded: ", reversed),
         sep = ", ",
         collapse = ", "
       ))
       print(paste(
-        "The min and max used for reverse coding:", min(scale_vals, na.rm = T),
+        "Min and max used for reverse coding:", min(scale_vals, na.rm = T),
         max(scale_vals, na.rm = T)
       ))
     }
@@ -109,10 +109,11 @@ make_scale <- function(df, scale_items, scale_name, reverse = c(
         factor_key = TRUE
       ) %>%
       ggplot2::ggplot(ggplot2::aes(x = .data$resp)) +
-      ggplot2::geom_histogram(binwidth = 0.5) +
+      ggplot2::geom_histogram(binwidth = 0.5, na.rm=TRUE) +
       ggplot2::facet_wrap(~ .data$category) +
-      ggplot2::ggtitle(paste0("Histogram for ", scale_name))) %>%
-      print() # Remember: %>% has higher precedence than +
+      ggplot2::xlab("Response") + ggplot2::ylab("Count") +
+      ggplot2::ggtitle(paste0("Histograms for ", scale_name, " scale and items"))) %>%
+      print(.) # %>% takes precedence over +!
   }
   if (return_list) {
     return(list(scores = alpha_obj$scores, descriptives = descriptives))

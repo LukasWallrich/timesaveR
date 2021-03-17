@@ -21,6 +21,7 @@
 #' @param dv_name Optional. A different name to use for the dependent variable
 #' in the automatic table footnote explaining the M(SD) column. Defaults to dv.
 #' @param bold_vars Should rows with variable names be bold. Defaults to TRUE
+#' @param apa_style Logical, should APA-style formatting be applied
 #' @param css_tags List of css tags to be added, each named with the class that
 #' the tag should be added to.
 #' @param na.rm Should missing values be dropped in the dv when summary statistics are calculated?
@@ -59,8 +60,8 @@
 report_cat_vars <- function(df, dv, ..., var_names = NULL, level_names = NULL,
                           p_adjust = p.adjust.methods, alpha_level = .05,
                           filename = NULL, notes = list(), dv_name = NULL,
-                          bold_vars = TRUE, css_tags = list(), na.rm = TRUE,
-                          exclude_na = FALSE) {
+                          bold_vars = TRUE, apa_style = TRUE, css_tags = list(), 
+                          na.rm = TRUE, exclude_na = FALSE) {
   assert_data_frame(df)
   if (!is.null(var_names)) {
     assert_data_frame(var_names)
@@ -182,7 +183,9 @@ report_cat_vars <- function(df, dv, ..., var_names = NULL, level_names = NULL,
   for (i in seq_along(notes)) {
     tab <- tab %>% gt::tab_source_note(gt::md(notes[[i]]))
   }
-
+  
+  if (apa_style) tab <- tab %>% gt_apa_style()
+  
   temp_file <- tempfile()
   tab %>%
     htmltools::as.tags() %>%

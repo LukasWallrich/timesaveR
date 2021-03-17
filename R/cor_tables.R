@@ -672,7 +672,7 @@ plot_distributions <- function(data, var_names = NULL, plot_type = c("auto", "hi
   plots <- purrr::map2(names(var_names), plot_hist, function(var_name, plot_hist) {
     out <- ggplot2::ggplot(data, ggplot2::aes_string(var_name))
     if (plot_hist) {
-      out <- out + ggplot2::geom_histogram(bins = (data[[var_name]] %>% unique() %>% rm_na() %>% length()), col = "white", size = 3)
+      out <- out + ggplot2::geom_histogram(na.rm = TRUE, bins = (data[[var_name]] %>% unique() %>% rm_na() %>% length()), col = "white", size = 3)
       breaks <- (data[[var_name]] %>% unique() %>% rm_na())
       if (length(breaks) <= 5) {
         return(out + ggplot2::scale_x_continuous(breaks = breaks))
@@ -680,7 +680,7 @@ plot_distributions <- function(data, var_names = NULL, plot_type = c("auto", "hi
         return(out + ggplot2::scale_x_continuous(breaks = scales::breaks_extended(5)))
       }
     } else {
-      out + ggplot2::geom_density(fill = "grey", outline.type = "full")
+      out + ggplot2::geom_density(na.rm = TRUE, fill = "grey", outline.type = "full")
     }
   })
 

@@ -283,7 +283,7 @@ to_tribble <- function(x, show = FALSE, digits = 5) {
 #'
 #' Renaming categorical variables and their levels, for instance for summary tables, can be fiddly. This
 #' function generates code in which only the new names need to be modified, and which can then be passed
-#' to either \code{\link{rename_cat_variables}} or directly to \code{\link{cat_var_table}}
+#' to either \code{\link{rename_cat_variables}} or directly to \code{\link{report_cat_vars}}
 #'
 #' Only categorical variables should be passed to the function if code for levels is
 #' requested. If a variable has more than 20 distinct values, it is dropped from the levels-tribble-code,
@@ -298,7 +298,8 @@ to_tribble <- function(x, show = FALSE, digits = 5) {
 #' @param max_levels The maximum number of levels before a variable is dropped from the levels_tribble. Defaults to 20
 #'
 #' @return Code to be edited and passed to tibble::tribble() to create var_names and level_names arguments for
-#' \code{\link{rename_cat_variables}} and \code{\link{cat_var_table}}
+#' \code{\link{rename_cat_variables}} and \code{\link{report_cat_vars}}. 'New' variable and level names are minimally
+#' transformed, but are primarily intended to be placeholders.
 #'
 #' @examples
 #' get_rename_tribbles(iris)
@@ -323,7 +324,7 @@ get_rename_tribbles <- function(df, ..., show = TRUE, which = c("both", "vars", 
 
   out <- list()
   if (which[1] %in% c("both", "vars")) {
-    vars_tribble <- tibble::tibble(old = vars_chr, new = vars_chr) %>% to_tribble(show = show)
+    vars_tribble <- tibble::tibble(old = vars_chr, new = vars_chr %>% stringr::str_replace_all("_", " ") %>% stringr::str_to_title()) %>% to_tribble(show = show)
     out <- c(out, rename_vars = vars_tribble)
   }
   if (which[1] %in% c("both", "levels")) {
@@ -337,7 +338,7 @@ get_rename_tribbles <- function(df, ..., show = TRUE, which = c("both", "vars", 
     levels_list <- Filter(function(x) length(x) <= max_levels, levels_list)
     if (length(levels_list) >= 1) {
       mt <- function(x, name) {
-        tibble::tibble(var = name, level_old = x, level_new = x)
+        tibble::tibble(var = name, level_old = x, level_new = x %>% stringr::str_replace_all("_", " ") %>% stringr::str_to_title())
       }
       levels_tribble <- purrr::lmap(levels_list, function(x) purrr::map(x, mt, names(x))) %>%
         purrr::map_dfr(rbind) %>%
@@ -351,16 +352,12 @@ get_rename_tribbles <- function(df, ..., show = TRUE, which = c("both", "vars", 
 }
 
 
-#' Get code to generate tibbles to rename categorical variables and their levels
+#' Get code to rename model coefficients in summary tables
 #'
-#' Renaming categorical variables and their levels, for instance for summary tables, can be fiddly. This
-#' function generates code in which only the new names need to be modified, and which can then be passed
-#' to either \code{\link{rename_cat_variables}} or directly to \code{\link{cat_var_table}}
-#'
-#' Only categorical variables should be passed to the function if code for levels is
-#' requested. If a variable has more than 20 distinct values, it is dropped from the levels-tribble-code,
-#' unless the max_levels argument is increased.
-#'
+#' Usually, the coefficients in a statistical model such as those returned from `lm()`
+#' need to be renamed for reporting, particularly when dummy/indicator variables are involved.
+#' This function returns the code to set up a rename tribble that can then be adjusted
+#' and passed, for instance, to the \code{\link{report_lm_with_std}} function. 
 #'
 #' @param mod A model (e.g., returned from lm). coef() is called to extract the coefficient names.
 #' @param show Logical - should the output be printed to the console. In any case, it is returned invisibly

@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 
 This vignette introduces some of the basic functions that quickly get you from a dataset to publication-ready outputs. It uses `tidyverse`/`dplyr`-functions alongside `timesaveR` as that is the recommended workflow.
 
-```{r setup}
+```{r setup, message=FALSE}
 library(timesaveR)
 library(dplyr)
 ```
@@ -32,7 +32,7 @@ library(dplyr)
 Let's create scales for health behaviours and depressive symptoms, each including some reverse coding. For that, scale items need to be included into a named character vector; if any items are to be reversed, they should be added into another character vector.
 
 ```{r}
-scales <- list(
+scales_items <- list(
   depression = c("fltdpr", "flteeff", "slprl", "wrhpp", "fltlnl", 
                  "enjlf", "fltsd", "cldgng"),
   healthy_eating = c("etfruit", "eatveg")
@@ -45,14 +45,14 @@ scales_reverse <- list(
 
 ```
 
-Then, the `make_scales()` command can be used to calculate scale scores as well as descriptives. By default, it also returns histograms showing the distribution of each item and the resulting scale, which can help to spot problems. By default, it also returns both scale `scores` and `descriptives` that can be processed separately.
+Then, the `make_scales()` command can be used to **calculate scale scores as well as descriptives**. By default, it also returns histograms showing the distribution of each item and the resulting scale, which can help to spot problems. By default, it also returns both scale `scores` and `descriptives` that can be processed separately.
 
 ```{r}
 
-scales <- make_scales(ess_health, items = scales, reversed = scales_reverse)
+scales <- make_scales(ess_health, items = scales_items, reversed = scales_reverse)
 
 #Check descriptives, including reliability
-scales$descriptives
+scales$descriptives %>% round_df()
 
 #Add scale scores to dataset
 ess_health <- cbind(ess_health, scales$scores)
@@ -61,7 +61,7 @@ ess_health <- cbind(ess_health, scales$scores)
 
 # Report correlations and descriptive statistics
 
-Next, we are often interested in descriptive statistics, variable distributions and correlations. As far as numerical variables are concerned, all of them can be reported in a pretty table with the `report_cor_table()` function. That function needs a correlation matrix as its first argument, which can usually be created with the `cor_matrix()` function.
+At the start of a data analysis project, we are often interested in descriptive statistics, variable distributions and correlations. As far as numerical variables are concerned, all of them can be reported in a pretty table with the `report_cor_table()` function. That function needs a correlation matrix as its first argument, which can usually be created with the `cor_matrix()` function.
 
 ```{r}
 ess_health %>%
@@ -71,23 +71,24 @@ ess_health %>%
 
 ```
 
-It is often helpful to use different variable names for display. For this, functions in the package typically accept rename tibbles that contain an `old` and a `new` function. Given the `tribble` notation, they can be entered more cleanly that named character vectors, and the `get_rename_tribble()` helper function creates most of the code.
+It is often helpful to use different variable names for display. For this, functions in the package typically accept rename tibbles that contain an `old` and a `new` column. By using the `tibble::tribble` notation, they can be entered more cleanly that named character vectors, and the `get_rename_tribble()` helper function creates most of the code.
 
 ```{r}
 #Use get_rename_tribbles to get most of this code
 var_renames <- tibble::tribble(
-    ~old,     ~new,     
-    "agea",   "Age",  
-    "health",  "Poor health",
-    "depression",  "Depression",
-    "healthy_eating",  "Healthy eating"
+  ~old,             ~new,             
+   "agea",           "Age",          
+   "health",         "Poor health",        
+   "depression",     "Depression",    
+   "healthy_eating",  "Healthy eating"
 )
 
-#If var_names are provided, only variables included in that are included in the correlation table
+# If var_names are provided, only variables included in that argument 
+# are included in the correlation table
 ess_health %>% cor_matrix(var_names = var_renames) %>% report_cor_table()
 ```
 
-Often, it is interesting to also include variable distributions into this initial data summary table. This can also be done with the `report_cor_table()` function. By default, variables with 5 distinct values or fewer are shown with a histogram, while for those with more values, a density plot is provided - but this can be changed with the `plot_type` argument. 
+Often, it is interesting to also **include variable distributions** into this initial data summary table. This can also be done with the `report_cor_table()` function. By default, variables with 5 distinct values or fewer are shown with a histogram, while for those with more values, a density plot is provided - but this can be changed with the `plot_type` argument. 
 
 ```{r}
 ess_health %>% cor_matrix(var_names = var_renames) %>%
@@ -129,7 +130,7 @@ report_cat_vars(ess_health, health, gndr, cntry, var_names = var_renames,
 
 # Report regression models with standardized coefficients
 
-In psychology, it is often expected that regression models are reported with both unstandardised (B) and standardized (&beta;) coefficients. This can be fiddly and lead to redundant information. The `lm_std()` function easily runs linear regression models that return standardised coefficients and the `report_lm_with_std()` function creates side-by-side regression tables.
+In psychology, it is often expected that regression models are reported with both unstandardised (B) and standardized (&beta;) coefficients. This can be fiddly and lead to redundant information. The `lm_std()` function easily runs linear regression models that return standardised coefficients and the `report_lm_with_std()` function creates side-by-side regression tables that minimise redundancy.
 
 At the most basic, you just need to run two models and pass them to the reporting function:
 
@@ -164,7 +165,7 @@ coef_names <- tibble::tribble(
 report_lm_with_std(mod1, mod2, coef_renames = coef_names)
 ```
 
-You can also display two nested models side-by-side and get the F-change significance test. (More models can be displayed, but not yet statistically tested against each other.) To enable model comparisons, all models need to be fitted on the same dataset, so that I will first omit missing data.
+You can also **display two nested models side-by-side and get the F-change significance test.** (More models can be displayed, but not yet statistically tested against each other.) To enable model comparisons, all models need to be fitted on the same dataset, so that I will first omit missing data.
 
 ```{r}
 
@@ -193,5 +194,5 @@ report_lm_with_std(mod = list(mod1, mod3), mod_std = list(mod2, mod4),
                    coef_renames = coef_names, R2_change = TRUE)
 ```
 
-
+Happy exploring, and please do report bugs and unexpected behaviors by opening an [issue on GitHub](https://github.com/LukasWallrich/timesaveR/issues) or emailing me on [lukas.wallrich@gmail.com](mailto:lukas.wallrich@gmail.com)
 
