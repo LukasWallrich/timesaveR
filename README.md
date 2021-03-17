@@ -1,7 +1,7 @@
 # timesaveR
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/LukasWallrich/timesaveR/workflows/R-CMD-check/badge.svg)](https://github.com/LukasWallrich/timesaveR/actions)
+[![R-CMD-check](https://github.com/LukasWallrich/timesaveR/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/LukasWallrich/timesaveR/actions)
 <!-- badges: end -->
 
 
