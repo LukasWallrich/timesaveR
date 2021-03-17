@@ -78,7 +78,7 @@ ess_health <- cbind(ess_health, scales$scores)
 Next, we are often interested in descriptive statistics, variable distributions and correlations.
 
 ```r
-ess_health %>% select(agea, health, depression, healthy_eating) %>% cor_matrix() %>% apa_cor_table()
+ess_health %>% select(agea, health, depression, healthy_eating) %>% cor_matrix() %>% report_cor_table()
 
 #It is often helpful to rename variables in this step
 #Use get_rename_tribbles to get most of this code
@@ -91,10 +91,11 @@ var_renames <- tibble::tribble(
 )
 
 #A rename tibble or vector automatically only selects the variables included into it
-ess_health %>% cor_matrix(var_names = var_renames) %>% apa_cor_table()
+ess_health %>% cor_matrix(var_names = var_renames) %>% report_cor_table()
 
 #Often, it is also interesting to include variable distributions
-ess_health %>% cor_matrix(var_names = var_renames) %>% apa_cor_table(add_distributions = TRUE, data = ess_health)
+ess_health %>% cor_matrix(var_names = var_renames) %>%
+    report_cor_table(add_distributions = TRUE, data = ess_health)
 
 
 ```
@@ -188,6 +189,6 @@ report_lm_with_std(mod = list(mod1, mod3), mod_std = list(mod2, mod4),
 
 # Related/alternative packages
 
-- (`modelsummary`)[https://vincentarelbundock.github.io/modelsummary/] allows you to create highly customisable tables with data summaries or the output of statistical models that can be saved in a wide range of formats.
-- (`apa`)[https://cran.r-project.org/web/packages/apa/apa.pdf] mostly offers functions that turn the output of statistical tests (e.g., t-tests) into text, in line with APA guidelines.
-- (`papaja`)[https://github.com/crsh/papaja] offers the opportunity to create full APA-style journal manuscripts in R. It's `apa_table` function is a generic alternative to the table functions in this package, which support many more types of models, but includes fewer details. 
+- [`modelsummary`](https://vincentarelbundock.github.io/modelsummary/) allows you to create highly customisable tables with data summaries or the output of statistical models that can be saved in a wide range of formats.
+- [`apa`](https://cran.r-project.org/web/packages/apa/apa.pdf) mostly offers functions that turn the output of statistical tests (e.g., t-tests) into text, in line with APA guidelines.
+- [`papaja`](https://github.com/crsh/papaja) offers the opportunity to create full APA-style journal manuscripts in R. It's `apa_table` function is a generic alternative to the table functions in this package, which support many more types of models, but includes fewer details. 
