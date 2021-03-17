@@ -3,7 +3,7 @@ on:
     paths:
       - 'DESCRIPTION'
 
-name: Document-and-check
+name: R-CMD-check
 
 jobs:
   document-and-dispatch:
