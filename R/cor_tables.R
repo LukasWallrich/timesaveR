@@ -772,7 +772,8 @@ tidy.cor_matrix <- function(x, both_directions = TRUE, ...) {
     )
     names(res)[3] <- name
     res
-  }) %>% purrr::reduce(dplyr::left_join, by = c("column1", "column2"))
+  }) %>% purrr::reduce(dplyr::left_join, by = c("column1", "column2")) %>%
+    dplyr::rename(estimate = cors, conf.high = ci.high, conf.low = ci.low, statistic = t.values, std.error = std.err, p.value = p.values)
 
   if (both_directions) {
     out <- out %>%
