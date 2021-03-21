@@ -407,6 +407,7 @@ cor_matrix <- function(df,
   if (exists("used_vars")) {
     cor_matrix$var_renames <- tibble::tibble(old = names(var_names[match(used_vars, var_names)]), new = var_names[match(used_vars, var_names)])
   }
+  cor_matrix %<>% add_class("cor_matrix")
   cor_matrix
 }
 
@@ -730,3 +731,55 @@ gt_add_plots <- function(gt_table, plots, col_index) {
   })
   gt_table
 }
+
+#' Tidy a correlation matrix
+#' 
+#' This function turns the correlation matrix returned by \code{\link{cor_matrix}} and 
+#' its relatives into a tidy dataframe. Note that by default, results for both the \code{cor(A, B)} 
+#' and \code{cor(B, A)} are returned, while entries for \code{A, A}, i.e. the values on the diagonal, 
+#' are never included.
+#' 
+#' @param x A \code{cor_marix} object returned from
+#' \code{\link{cor_matrix}}
+#' @param both_directions Should both  \code{cor(A, B)} 
+#' and \code{cor(B, A)} be returned. Defaults to \code{TRUE}.
+#' @param ... Additional arguments. Not used. Needed to match generic signature
+#' only. 
+#' @return A \code{\link[tibble:tibble]{tibble::tibble()}} with columns:
+#' \item{column1}{Name of the first variable}
+#' \item{column2}{Name of the second variable}
+#' \item{estimate}{The estimated value of the correlation}
+#' \item{statistic}{The t-statistic used for significance testing}
+#' \item{p.value}{The two-sided p-value of the correlation}
+#' \item{n}{Number of observations used to compute the correlation}
+#' \item{ci.low}{Lower bound of confidence interval. Width is determined in call to \code{\link{cor_matrix}}}
+#' \item{ci.high}{Upper bound of confidence interval. Width is determined in call to \code{\link{cor_matrix}}}
+#' @export
+
+tidy.cor_matrix <- function(x, both_directions = TRUE, ...) {
+  extras <- list(...)
+  if ("conf_level" %in% names(extras)) {
+    stop("conf_level cannot be changed in this tidy function. Please recreate the cor_matrix with the desired confidence level")
+  }
+
+  out <- purrr::map2(x[1:7], names(x[1:7]), function(m, name) {
+    ind <- which(lower.tri(m, diag = FALSE), arr.ind = TRUE)
+    nn <- dimnames(m)
+    res <- tibble::tibble(
+      column1 = nn[[1]][ind[, 1]],
+      column2 = nn[[2]][ind[, 2]],
+      val = m[ind]
+    )
+    names(res)[3] <- name
+    res
+  }) %>% purrr::reduce(dplyr::left_join, by = c("column1", "column2"))
+
+  if (both_directions) {
+    out <- out %>%
+      dplyr::rename(column2 = column1, column1 = column2) %>%
+      dplyr::bind_rows(out)
+  }
+  out
+}
+
+
