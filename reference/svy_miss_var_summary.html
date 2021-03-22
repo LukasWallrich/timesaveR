@@ -47,7 +47,7 @@
 
 
 <meta property="og:title" content="Create overview over missing data in survey object — svy_miss_var_summary" />
-<meta property="og:description" content="This function recreates the [[naniar]]miss_var_summary
+<meta property="og:description" content="This function recreates the miss_var_summary
 output with survey weights for missing counts and proportions." />
 
 
@@ -140,11 +140,16 @@ output with survey weights for missing counts and proportions." />
     </div>
 
     <div class="ref-description">
-    <p>This function recreates the <code>[[naniar]]miss_var_summary</code>
+    <p>This function recreates the <code>miss_var_summary</code>
 output with survey weights for missing counts and proportions.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>svy_miss_var_summary</span><span class='op'>(</span><span class='va'>svy_df</span>, <span class='va'>...</span>, .any_missing <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>svy_miss_var_summary</span><span class='op'>(</span>
+  <span class='va'>svy_df</span>,
+  <span class='va'>...</span>,
+  .any_missing <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  .include_complete <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -164,6 +169,11 @@ a tidyselect helper function (e.g., `starts_with()` or `where(is.numeric)`).</p>
       <td><p>Should a row be shown at the start of the return with the
 number and share of (weighted) responses that have missing data on at least one
 of the variables considered? Defaults to TRUE.</p></td>
+    </tr>
+    <tr>
+      <th>.include_complete</th>
+      <td><p>Should variables with no missing data be included
+in the returned tibble? Defaults to FALSE.</p></td>
     </tr>
     </table>
 

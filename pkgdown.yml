@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   getting_started: getting_started.html
   survey-functions: survey-functions.html
-last_built: 2021-03-22T19:32Z
+last_built: 2021-03-22T21:27Z
 urls:
   reference: https://lukaswallrich.github.io/timesaveR//reference
   article: https://lukaswallrich.github.io/timesaveR//articles
