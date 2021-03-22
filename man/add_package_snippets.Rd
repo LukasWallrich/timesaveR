@@ -21,3 +21,4 @@ boolean invisible(FALSE) if nothing was added, invisible(TRUE) if snipped defini
 add_package_snippets()
 }
 }
+\keyword{internal}

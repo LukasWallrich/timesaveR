@@ -13,5 +13,5 @@ fmt_p(p_value, digits = 3)
 }
 \description{
 Formats p-value in line with APA standard, returning it without leading 0 and
-as < .001 when it is that small.
+as < .001 and > .99 when it is extremely small or large.
 }

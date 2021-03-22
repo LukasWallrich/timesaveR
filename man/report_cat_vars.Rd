@@ -17,6 +17,7 @@ report_cat_vars(
   notes = list(),
   dv_name = NULL,
   bold_vars = TRUE,
+  apa_style = TRUE,
   css_tags = list(),
   na.rm = TRUE,
   exclude_na = FALSE
@@ -49,6 +50,8 @@ renamed for display. See \code{\link{get_rename_tribbles}} for required format}
 in the automatic table footnote explaining the M(SD) column. Defaults to dv.}
 
 \item{bold_vars}{Should rows with variable names be bold. Defaults to TRUE}
+
+\item{apa_style}{Logical, should APA-style formatting be applied}
 
 \item{css_tags}{List of css tags to be added, each named with the class that
 the tag should be added to.}

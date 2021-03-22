@@ -33,3 +33,15 @@ Otherwise, are placed in root folder}
 \description{
 Set up simple folder structure and template files for analysis project.
 }
+\details{
+This template includes two helpers worth highlighting. The `take_note()`
+function allows to add character strings to a note file that is saved at
+the end of each script. Usage should follow the first example: 
+`take_note("Note created:", timestamp(quiet = TRUE))`. Note that this modifies
+`notes` in place, so the result should not be assigned.
+
+Then there is the `0_run_all.R` file, which runs all analysis scripts in order
+and documents when this last happened. It offers to clear the global environment
+between each file, which is helpful in ensuring that they are self-contained. 
+However, this obviously deletes data, so should be used with care.
+}

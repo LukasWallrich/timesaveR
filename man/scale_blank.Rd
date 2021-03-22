@@ -21,3 +21,4 @@ scale_blank(x, center = TRUE, scale = TRUE)
 The `base::scale()` function adds attributes to the output that can lead to
 problems later on. This function scales a vector and strips the attributes.
 }
+\keyword{internal}

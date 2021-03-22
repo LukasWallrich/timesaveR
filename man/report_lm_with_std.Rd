@@ -2,7 +2,7 @@
 % Please edit documentation in R/lm_tables.R
 \name{report_lm_with_std}
 \alias{report_lm_with_std}
-\title{Creates a summary table comparing standardised and non-standardised linear models}
+\title{Create a summary table comparing standardised and non-standardised linear models}
 \usage{
 report_lm_with_std(
   mod,

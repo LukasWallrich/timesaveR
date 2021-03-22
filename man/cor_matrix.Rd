@@ -2,7 +2,7 @@
 % Please edit documentation in R/cor_tables.R
 \name{cor_matrix}
 \alias{cor_matrix}
-\title{Calculates correlation matrix with significance tests and descriptives}
+\title{Calculate correlation matrix with significance tests and descriptives}
 \source{
 Adapted from
  http://www.sthda.com/english/wiki/elegant-correlation-table-using-xtable-r-package

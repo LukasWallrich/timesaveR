@@ -26,12 +26,13 @@ specified, all are included, unless there are more than `max_level` variables in
 }
 \value{
 Code to be edited and passed to tibble::tribble() to create var_names and level_names arguments for
-\code{\link{rename_cat_variables}} and \code{\link{cat_var_table}}
+\code{\link{rename_cat_variables}} and \code{\link{report_cat_vars}}. 'New' variable and level names are minimally
+transformed, but are primarily intended to be placeholders.
 }
 \description{
 Renaming categorical variables and their levels, for instance for summary tables, can be fiddly. This
 function generates code in which only the new names need to be modified, and which can then be passed
-to either \code{\link{rename_cat_variables}} or directly to \code{\link{cat_var_table}}
+to either \code{\link{rename_cat_variables}} or directly to \code{\link{report_cat_vars}}
 }
 \details{
 Only categorical variables should be passed to the function if code for levels is

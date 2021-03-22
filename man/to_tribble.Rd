@@ -2,7 +2,7 @@
 % Please edit documentation in R/misc.R
 \name{to_tribble}
 \alias{to_tribble}
-\title{Converts a tibble/dataframe to tribble code}
+\title{Convert a tibble/dataframe to tribble code}
 \usage{
 to_tribble(x, show = FALSE, digits = 5)
 }

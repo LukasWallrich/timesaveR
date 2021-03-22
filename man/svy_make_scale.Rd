@@ -2,13 +2,14 @@
 % Please edit documentation in R/make_scales.R
 \name{svy_make_scale}
 \alias{svy_make_scale}
-\title{Creates scale by calculating item mean and returns descriptives for srvyr objects}
+\title{Create scale by calculating item mean and returns descriptives for srvyr objects}
 \usage{
 svy_make_scale(
   df,
   scale_items,
   scale_name,
-  print_hist = T,
+  print_hist = TRUE,
+  print_desc = TRUE,
   scale_title = scale_name,
   reversed = NULL,
   r_key = NULL
@@ -23,6 +24,8 @@ svy_make_scale(
 \item{scale_name}{Character. The name of the variable the scale should be saved as}
 
 \item{print_hist}{Logical. Should histograms of the scale and its items be printed.}
+
+\item{print_desc}{Logical. Should descriptive statistics for the scale be printed.}
 
 \item{scale_title}{Character. Name of scale for printing. Defaults to scale_name}
 
@@ -41,4 +44,15 @@ This function creates a scale by calculating the mean of a set of items,
 and prints and returns descriptives that allow to assess internal consistency
 and spread. It is primarily based on the \code{psych::alpha} function, with
 more parsimonious output and some added functionality.
+}
+\examples{
+
+library(survey)
+data(api)
+
+svy_df <- svydesign(id = ~1, strata = ~stype, weights = ~pw, 
+                   data = apistrat, fpc = ~fpc)
+scale_items <- c("ell", "meals", "mobility", "col.grad", "full")
+scale_reversed <- c("col.grad", "full")                    
+svy_make_scale(svy_df, scale_items, "SES", reversed = scale_reversed)    
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/make_scales.R
 \name{make_scale}
 \alias{make_scale}
-\title{Creates a scale by calculating item mean and returns descriptives}
+\title{Create a scale by calculating item mean and returns descriptives}
 \usage{
 make_scale(
   df,

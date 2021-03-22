@@ -2,7 +2,7 @@
 % Please edit documentation in R/lm_tables.R
 \name{report_polr_with_std}
 \alias{report_polr_with_std}
-\title{Creates a summary table comparing standardised and non-standardised
+\title{Create a summary table comparing standardised and non-standardised
 proportional odd logistic regression models}
 \usage{
 report_polr_with_std(
@@ -58,7 +58,7 @@ stating that dummy variables were not scaled in standardisation. If you approach
     \item{\code{output}}{filename or object type (character string)
 \itemize{
   \item Supported filename extensions: .html, .tex, .md, .txt, .png, .jpg.
-  \item Supported object types: "default", "html", "markdown", "latex", "data.frame", "gt", "kableExtra", "huxtable", "flextable".
+  \item Supported object types: "default", "html", "markdown", "latex", "latex_tabular", "data.frame", "gt", "kableExtra", "huxtable", "flextable".
   \item Warning: the `output` argument \emph{cannot} be used when customizing tables with external packages. See the 'Details' section below.
 }}
     \item{\code{estimate}}{string or `glue` string of the estimate to display (or a
