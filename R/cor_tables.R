@@ -66,9 +66,9 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
     }
 
     if (is.null(extras)) {
-      extras <- tibble::tibble(Distributions = 1:nrow(cor_matrix$cors))
+      extras <- tibble::tibble(Distributions = seq_len(nrow(cor_matrix$cors)))
     } else {
-      extras <- cbind(tibble::tibble(Distributions = 1:nrow(cor_matrix$cors)), extras)
+      extras <- cbind(tibble::tibble(Distributions = seq_len(nrow(cor_matrix$cors))), extras)
     }
   }
   df_col <- dim(cor_matrix[[1]])[2]
@@ -80,7 +80,7 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
     " ", number_variables,
     1
   )
-  output_variable_names <- paste(as.character(1:number_variables),
+  output_variable_names <- paste(as.character(seq_len(number_variables)),
     ". ", rownames(cor_matrix[[1]]),
     sep = ""
   )
@@ -133,12 +133,12 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
 
 
 
-  for (i in 1:number_variables) {
+  for (i in seq_len(number_variables)) {
     output_descriptives[i, 1] <- paste0(
       sprintf("%.2f", cor_matrix$desc[i, 2]),
       " (", sprintf("%.2f", cor_matrix$desc[i, 3]), ")"
     )
-    for (j in 1:number_variables) {
+    for (j in seq_len(number_variables)) {
       if ((j < i)) {
         cor.r <- cor_matrix$cors[i, j]
         cor.p <- cor_matrix$p.values[i, j]
@@ -361,7 +361,7 @@ cor_matrix <- function(df,
       magrittr::set_rownames(vars_used) %>%
       magrittr::set_colnames(vars_used)
     fill_matrix <- function(x) {
-      for (i in 1:(ncol(m) - 1)) {
+      for (i in seq_len(ncol(m) - 1)) {
         for (j in seq(i + 1, nrow(m))) {
           m[j, i] <- res[[x]][(res$rhs == colnames(m)[i] & res$lhs == rownames(m)[j]) |
                                (res$lhs == colnames(m)[i] & res$rhs == rownames(m)[j])]        }
@@ -538,7 +538,7 @@ wtd_cor_matrix_mi <- function(mi_list, weights, var_names = NULL) {
 
   df <- NULL
 
-  for (i in 1:(ct - 1)) {
+  for (i in seq_len(ct - 1)) {
     for (j in (i + 1):ct) {
       if (i != j) {
         ii <- variables[i]
@@ -575,7 +575,7 @@ wtd_cor_matrix_mi <- function(mi_list, weights, var_names = NULL) {
 
 
   desc <- NULL
-  for (i in 1:ct) {
+  for (i in seq_len(ct)) {
     M <- mitools::MIcombine(with(imp_svy, survey::svymean(as.formula(paste0("~", variables[i])), design = .design)))[[1]]
     SD <- sqrt(mitools::MIcombine(with(imp_svy, survey::svyvar(as.formula(paste0("~", variables[i])), design = .design)))[[1]])
     desc <- rbind(desc, data.frame(var = variables[i], M = M, SD = SD))
@@ -708,14 +708,14 @@ plot_distributions <- function(data, var_names = NULL, plot_type = c("auto", "hi
 #' \dontrun{
 #' var_names <- c(wt = "Weight", am = "Transmission", mpg = "Consumption (mpg)", gear = "Gears")
 #' cor_table <- cor_matrix(mtcars, var_names) %>%
-#'   report_cor_table(extras = tibble::tibble(Distributions = c(1:length(var_names))))
+#'   report_cor_table(extras = tibble::tibble(Distributions = c(seq_len(var_names))))
 #' large_text <- ggplot2::theme(axis.text.x = ggplot2::element_text(size = 40))
 #' distr_plots <- plot_distributions(mtcars, var_names, plot_theme = large_text)
 #' gt_add_plots(cor_table, distr_plots, 3)
 #' }
 #'
 gt_add_plots <- function(gt_table, plots, col_index) {
-  purrr::walk(1:length(plots), function(x) {
+  purrr::walk(seq_len(plots), function(x) {
     gt_table <<- gt::text_transform(gt_table, gt::cells_body(col_index, x), fn = function(y) {
       plots[[x]] %>%
         gt::ggplot_image(height = gt::px(50))

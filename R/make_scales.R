@@ -37,7 +37,7 @@ make_scale <- function(df, scale_items, scale_name, reverse = c(
   if (!all(scale_items %in% names(df))) stop("Not all scale_items can be found in the dataset. The following are missing: ", paste(setdiff(scale_items, names(df)), collapse = ", "), call. = FALSE)
 
   if (df %>% dplyr::select(dplyr::any_of(scale_items)) %>% {
-    all(sapply(., checkmate::allMissing))
+    all(vapply(., FUN = checkmate::allMissing, FUN.VALUE = logical(1)))
   }) {
     stop("All variables for scale ", scale_name, " only contain missing values.", call. = FALSE)
   }
@@ -65,23 +65,23 @@ make_scale <- function(df, scale_items, scale_name, reverse = c(
   reversed <- names(alpha_obj$keys[alpha_obj$keys == -1])
   if (length(scale_items) == 2) {
     if (two_items_reliability[1] == "spearman_brown") {
-      reliab <- spearman_brown(df, items = scale_items, SB_only = T)
+      reliab <- spearman_brown(df, items = scale_items, SB_only = TRUE)
     } else if (two_items_reliability[1] == "cronbachs_alpha") {
       reliab <- alpha_obj$total$std.alpha
     } else if (two_items_reliability[1] == "r") {
-      reliab <- cor.test(df[, scale_items[1]], df[, scale_items[2]], na.rm = T)$estimate
+      reliab <- cor.test(df[, scale_items[1]], df[, scale_items[2]], na.rm = TRUE)$estimate
     }
   } else {
     reliab <- alpha_obj$total$std.alpha
   }
   if (return_list) {
     descriptives <- list(NoItems = length(scale_items), Reliability = reliab, mean = mean(alpha_obj$scores,
-      na.rm = T
-    ), SD = sd(alpha_obj$scores, na.rm = T), Reversed = paste0(reversed,
+      na.rm = TRUE
+    ), SD = sd(alpha_obj$scores, na.rm = TRUE), Reversed = paste0(reversed,
       collapse = " "
-    ), RevMin = ifelse(length(reversed) > 0, min(scale_vals, na.rm = T),
+    ), RevMin = ifelse(length(reversed) > 0, min(scale_vals, na.rm = TRUE),
       NA
-    ), RevMax = ifelse(length(reversed) > 0, max(scale_vals, na.rm = T), NA))
+    ), RevMax = ifelse(length(reversed) > 0, max(scale_vals, na.rm = TRUE), NA))
   }
   if (print_desc) {
     print(glue::glue('
@@ -97,8 +97,8 @@ make_scale <- function(df, scale_items, scale_name, reverse = c(
         collapse = ", "
       ))
       print(paste(
-        "Min and max used for reverse coding:", min(scale_vals, na.rm = T),
-        max(scale_vals, na.rm = T)
+        "Min and max used for reverse coding:", min(scale_vals, na.rm = TRUE),
+        max(scale_vals, na.rm = TRUE)
       ))
     }
   }
@@ -158,7 +158,7 @@ make_scales <- function(df, items, reversed = NULL, two_items_reliability = c(
         scale_items = items[scales_rev], scale_name = scales_rev,
         reverse_items = reversed[scales_rev]
       ), make_scale,
-      df = df, return_list = T,
+      df = df, return_list = TRUE,
       reverse = "spec", two_items_reliability, ...
       ) %>% purrr::transpose()
     } else {
@@ -176,7 +176,7 @@ make_scales <- function(df, items, reversed = NULL, two_items_reliability = c(
 
     scales_n_rev_values <- purrr::map2(items[scales_n_rev], scales_n_rev, make_scale,
       df = df,
-      return_list = T, reverse = "none", two_items_reliability = two_items_reliability, ...
+      return_list = TRUE, reverse = "none", two_items_reliability = two_items_reliability, ...
     ) %>% purrr::transpose()
   }
 
@@ -222,7 +222,7 @@ make_scales <- function(df, items, reversed = NULL, two_items_reliability = c(
 #' @source https://www.r-bloggers.com/five-ways-to-calculate-internal-consistency/
 #'
 spearman_brown <- function(df, items, name = "", SB_only = FALSE) {
-  cor_value <- cor.test(magrittr::extract2(df, items[1]), magrittr::extract2(df, items[2]), na.rm = T)$estimate
+  cor_value <- cor.test(magrittr::extract2(df, items[1]), magrittr::extract2(df, items[2]), na.rm = TRUE)$estimate
   SB_value <- (abs(cor_value) * 2) / (1 + abs(cor_value))
   if (SB_only) {
     return(SB_value)
