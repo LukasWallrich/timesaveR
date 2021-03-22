@@ -109,69 +109,66 @@ svy_pairwise.t.test <- function(df, dv, iv, cats, ...) {
 #' This runs lm() after standardising all continuous variables, while leaving
 #' factors intact.
 #'
-#' In the model call, the weights variable will always be called weights. This might
+#' In the model call, the weights variable will always be called `.weights`. This might
 #' pose a problem when you update the model later on, for  the moment the only workaround
 #' is to rename the weights variable accordingly (or to fix it and contribute a PR on
 #' Github).
 #'
 #' @inheritParams stats::lm
-#' @param rename_std Logical. Should standardised variables be indicated by _sd
-#' suffix
-#' @inheritDotParams stats::lm -data
+#' @inheritDotParams stats::lm -data -subset
 #' @references See (Fox, 2015) for an argument why dummy variables should never
 #' be standardised. If you want to run a model with all variables standardised,
 #' one option is `QuantPsyc::lm.beta()`
+#' @examples 
+#' lm_std(Sepal.Length ~ Sepal.Width + Species, iris)
 #' @export
 
-lm_std <- function(formula, data = NULL, weights = NULL, rename_std = FALSE, ...) {
+lm_std <- function(formula, data = NULL, weights = NULL, ...) {
   if (any(stringr::str_detect(as.character(formula), "factor\\("))) stop("Functions in the formula are applied after standardising - thus factor() needs to be used before lm_std() is called")
 
-  parent <- parent.frame()
-  here <- environment()
   vars <- all.vars(formula)
 
-  if (!is.null(data)) {
-    attach(data, name = "rN_lm_std_df")
-    on.exit(detach("rN_lm_std_df"))
-  }
-  vars_num <- vars[purrr::map_lgl(vars, ~ is.numeric(get(.x, parent)))]
+  extras <- list(...)
 
-  vars_dummies <- vars_num[purrr::map_lgl(vars_num, ~ dplyr::n_distinct(get(.x, parent)) < 3)]
+    if("subset" %in% names(extras)) stop("Cannot subset in this function as that would happen after standardisation - please subset first.")
+  
+  if(is.null(data)) {
+    data <- purrr::map_dfc(vars, ~tibble::tibble(!!.x := get(.x, pos = parent.frame())))
+    if (!is.null(weights)) data$.weights <- weights
+  }
+  
+  if(!is.null(data)) {
+    weights <- rlang::enquo(weights)
+    
+        if(!rlang::quo_is_null(weights)) {
+    if(rlang::as_label(weights) %in% names(data)) 
+    {data <- dplyr::rename(data, .weights = !!weights) } else {
+        data$.weights <- rlang::eval_tidy(weights)
+    }
+    data <- data[c(vars, ".weights")]
+    } else {
+      data <- data[vars]
+    }
+    }
+  
+  
+  vars_num <- vars[purrr::map_lgl(data, is.numeric)]
+  vars_num <- vars_num[!is.na(vars_num)]
+  
+  vars_dummies <- vars_num[purrr::map_lgl(vars_num, ~ dplyr::n_distinct(data[[.x]]) < 3)]
 
   if (length(vars_dummies) > 0) warning("The following variables have less than three distinct values but are of type numeric: ", paste0(vars_dummies, collapse = ", "), ". Check whether they should not be factors instead. As it stands, they are standardised, which is typically not recommended.")
 
-  if (rename_std) {
-    vars_num_sc <- paste0(vars_num, "_sd")
-  } else {
-    vars_num_sc <- vars_num
-  }
+  data %<>% dplyr::mutate(dplyr::across(dplyr::all_of(vars_num), scale_blank))
 
-  assign_scaled <- function(x, y) {
-    assign(y, scale_blank(get(x, parent)), pos = here)
-  }
-
-  purrr::map2(vars_num, vars_num_sc, assign_scaled)
-
-  other_vars <- setdiff(vars, vars_num)
-
-  purrr::map(other_vars, ~ assign(.x, get(.x, parent), pos = here))
-
-  if (!is.null(weights)) weights <- weights
   formula <- Reduce(paste, deparse(formula))
 
-  if (rename_std) {
-    repl <- paste0(vars_num, "_sd")
-    names(repl) <- vars_num
-    formula <- formula %>%
-      stringr::str_replace_all(c(repl))
-  }
-  # formula <- as.formula(formula) #Rebuilds formula in current environment
-  if (!is.null(weights)) {
-    mod <- eval(parse(text = glue::glue("lm({formula}, weights = weights, ...)")))
+  if (!rlang::quo_is_null(weights)) {
+    mod <- eval(parse(text = glue::glue("lm({formula}, data = data, weights = .weights, ...)")))
   } else {
-    mod <- eval(parse(text = glue::glue("lm({formula}, ...)")))
+    mod <- eval(parse(text = glue::glue("lm({formula}, data = data, ...)")))
   }
-  # mod <- lm(formula, weights = weights, ...)
+  
   mod$call_fmt <- c(sys.call(), "Note: DV and continuous IVs were standardised")
   class(mod) <- c("rN_std", class(mod))
   mod
