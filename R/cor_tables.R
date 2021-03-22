@@ -315,18 +315,10 @@ cor_matrix <- function(df,
       dplyr::select(.data$var, M = .data$mean, SD = .data$sd)
   } else {
     .check_req_packages("lavaan", "FIML method for dealing with missing data uses the lavaan package. ")
+    
+    mod <- lavaan::lavCor(df, missing = "fiml", estimator = "ML", output = "fit", se = "standard")
+    
     vars_used <- names(df)
-    covars <- utils::combn(vars_used, 2) %>%
-      t() %>%
-      data.frame() %>%
-      dplyr::mutate(covar = paste(.data$X1, "~~", .data$X2)) %>%
-      dplyr::pull() %>%
-      paste(collapse = "\n ")
-    vars <- paste(vars_used, "~~", vars_used, collapse = "\n")
-
-    # Estimate descriptive statistics
-    mod <- paste(vars, covars, sep = "\n") %>%
-      lavaan::sem(df, estimator = "MLR", meanstructure = TRUE)
 
     Ms <- lavaan::parameterestimates(mod) %>%
       dplyr::filter(.data$op == "~1") %>%
@@ -334,23 +326,25 @@ cor_matrix <- function(df,
 
     desc_stat <- lavaan::parameterestimates(mod) %>%
       dplyr::filter(.data$op == "~~" & .data$lhs == .data$rhs) %>%
-      dplyr::select(var = .data$lhs, SD = .data$est) %>%
-      dplyr::mutate(SD = sqrt(.data$SD)) %>%
+      dplyr::transmute(var = .data$lhs, SD = sqrt(.data$est)) %>%
       dplyr::left_join(Ms, ., by = "var")
-
-    mod <- paste(vars, covars, sep = "\n") %>% lavaan::sem(df, estimator = "MLR", std.ov = TRUE)
 
     if (!is.null(bootstrap)) {
       message("Starting to bootstrap ", bootstrap, " resamples. This might take a while.")
 
       # Estimate correlations with CIs
-      res <- lavaan::bootstrapLavaan(mod, R = bootstrap, FUN = "coef") %>%
+      extract_correlations <- function(mod) {
+        res <- lavaan::standardizedsolution(mod) %>% 
+          dplyr::filter(op == "~~", lhs != rhs)
+        out <- res$est %>% set_names(paste0(res$lhs, "~~", res$rhs))
+      }
+      
+      
+      res <- lavaan::bootstrapLavaan(mod, R = bootstrap, FUN = extract_correlations) %>%
         t() %>%
         data.frame() %>%
         tibble::rownames_to_column("rowid") %>%
-        dplyr::filter(stringr::str_detect(.data$rowid, "~~")) %>%
         tidyr::separate(.data$rowid, c("rhs", "lhs"), sep = "~~") %>%
-        dplyr::filter(!.data$lhs == .data$rhs) %>%
         tidyr::gather(-.data$lhs, -.data$rhs, key = "rep", value = "coef") %>%
         dplyr::group_by(.data$lhs, .data$rhs) %>%
         dplyr::summarise(
@@ -361,12 +355,11 @@ cor_matrix <- function(df,
         ) %>%
         dplyr::rename(est = .data$M)
     } else {
-      res <- lavaan::parameterestimates(mod) %>% dplyr::filter(.data$rhs != .data$lhs)
+      res <- lavaan::standardizedsolution(mod) %>% dplyr::filter(.data$rhs != .data$lhs) %>% dplyr::rename(est = est.std)
     }
     m <- matrix(nrow = length(vars_used), ncol = length(vars_used)) %>%
       magrittr::set_rownames(vars_used) %>%
       magrittr::set_colnames(vars_used)
-
     fill_matrix <- function(x) {
       for (i in 1:(ncol(m) - 1)) {
         for (j in seq(i + 1, nrow(m))) {
@@ -375,7 +368,6 @@ cor_matrix <- function(df,
       }
       m
     }
-
     cors <- fill_matrix("est")
     std.err <- fill_matrix("se")
     p.values <- fill_matrix("pvalue")
