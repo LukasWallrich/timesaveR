@@ -18,7 +18,7 @@ round_df <- function(df, digits = 2) {
 #' Format p-value in line with APA standard (no leading 0)
 #'
 #' Formats p-value in line with APA standard, returning it without leading 0 and
-#' as < .001 when it is that small.
+#' as < .001 and > .99 when it is extremely small or large.
 #'
 #' @param p_value Numeric, or a vector of numbers
 #' @param digits Number of significant digits, defaults to 3
@@ -30,11 +30,13 @@ fmt_p <- function(p_value, digits = 3) {
     paste0("= ", sprintf(fmt, x)) %>%
       stringr::str_replace(" 0.", " .")
   }
-  exact <- ifelse(p_value < .001, FALSE, TRUE)
+  exact <- ifelse(p_value < .001 | p_value > .99, FALSE, TRUE)
   exact[is.na(exact)] <- TRUE
   out <- p_value
   out[exact] <- purrr::map_chr(out[exact], fmt_p)
   out[!exact] <- "< .001"
+  large <- ifelse(p_value > .99, TRUE, FALSE)
+  out[large] <- "> .99"
   out[p_value > 1] <- "> 1 (!!)"
   out[is.na(p_value)] <- NA
   attributes(out) <- attributes(p_value)
