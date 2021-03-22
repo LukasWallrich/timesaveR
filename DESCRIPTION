@@ -1,7 +1,7 @@
 Package: timesaveR
 Title: Functions to Accelerate (Academic) Data Analysis and
     Reporting
-Version: 0.0.1.9007
+Version: 0.0.1.9008
 Authors@R: 
     person(given = "Lukas",
            family = "Wallrich",
@@ -30,7 +30,7 @@ Imports:
     magrittr,
     psych,
     purrr,
-    rlang,
+    rlang (>= 0.1.2),
     scales,
     stringi,
     stringr,
