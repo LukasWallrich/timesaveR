@@ -335,8 +335,8 @@ cor_matrix <- function(df,
       # Estimate correlations with CIs
       extract_correlations <- function(mod) {
         res <- lavaan::standardizedsolution(mod) %>% 
-          dplyr::filter(op == "~~", lhs != rhs)
-        out <- res$est %>% set_names(paste0(res$lhs, "~~", res$rhs))
+          dplyr::filter(.data$op == "~~", .data$lhs != .data$rhs)
+        out <- res$est %>% magrittr::set_names(paste0(res$lhs, "~~", res$rhs))
       }
       
       
@@ -355,7 +355,7 @@ cor_matrix <- function(df,
         ) %>%
         dplyr::rename(est = .data$M)
     } else {
-      res <- lavaan::standardizedsolution(mod) %>% dplyr::filter(.data$rhs != .data$lhs) %>% dplyr::rename(est = est.std)
+      res <- lavaan::standardizedsolution(mod) %>% dplyr::filter(.data$rhs != .data$lhs) %>% dplyr::rename(est = .data$est.std)
     }
     m <- matrix(nrow = length(vars_used), ncol = length(vars_used)) %>%
       magrittr::set_rownames(vars_used) %>%
@@ -765,11 +765,11 @@ tidy.cor_matrix <- function(x, both_directions = TRUE, ...) {
     names(res)[3] <- name
     res
   }) %>% purrr::reduce(dplyr::left_join, by = c("column1", "column2")) %>%
-    dplyr::rename(estimate = cors, conf.high = ci.high, conf.low = ci.low, statistic = t.values, std.error = std.err, p.value = p.values)
+    dplyr::rename(estimate = .data$cors, conf.high = .data$ci.high, conf.low = .data$ci.low, statistic = .data$t.values, std.error = .data$std.err, p.value = .data$p.values)
 
   if (both_directions) {
     out <- out %>%
-      dplyr::rename(column2 = column1, column1 = column2) %>%
+      dplyr::rename(column2 = .data$column1, column1 = .data$column2) %>%
       dplyr::bind_rows(out)
   }
   out

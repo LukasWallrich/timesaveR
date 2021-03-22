@@ -35,7 +35,8 @@ Imports:
     stringi,
     stringr,
     tibble,
-    tidyr
+    tidyr,
+    tidyselect
 Suggests:
     clipr,
     DiagrammeR,

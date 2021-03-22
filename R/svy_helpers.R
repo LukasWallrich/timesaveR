@@ -1,6 +1,6 @@
 #' Create overview over missing data in survey object
 #'
-#' This function recreates the \code{\link{[[naniar]]miss_var_summary}}
+#' This function recreates the \code{\link[naniar]{miss_var_summary}}
 #' output with survey weights for missing counts and proportions.
 #'
 #' @param svy_df A survey object created with the survey package
@@ -10,6 +10,8 @@
 #' @param .any_missing Should a row be shown at the start of the return with the
 #' number and share of (weighted) responses that have missing data on at least one
 #' of the variables considered? Defaults to TRUE.
+#' @param .include_complete Should variables with no missing data be included
+#' in the returned tibble? Defaults to FALSE.
 #' @examples
 #' library(survey)
 #' data(api)
@@ -20,8 +22,8 @@
 
 #' @export
 
-svy_miss_var_summary <- function(svy_df, ..., .any_missing = TRUE) {
-  .check_req_packages(c("naniar", "survey"))
+svy_miss_var_summary <- function(svy_df, ..., .any_missing = TRUE, .include_complete = FALSE) {
+  .check_req_packages(c("survey"))
 
   assert_class(svy_df, "survey.design")
   
@@ -29,16 +31,20 @@ svy_miss_var_summary <- function(svy_df, ..., .any_missing = TRUE) {
 
   # Complications to enable use of tidyselect functions
   if (missing(...)) vars <- rlang::expr(dplyr::everything())
-  if (!missing(...)) vars <- expr(c(...))
+  if (!missing(...)) vars <- rlang::expr(c(...))
 
   loc <- tidyselect::eval_select(vars, svy_df$variables)
-  vars <- syms(names(svy_df$variables)[loc])
+  vars <- rlang::syms(names(svy_df$variables)[loc])
+
+  any_miss_fun <- function(x) {
+    apply(data.frame(x), MARGIN = 1, FUN = function(x) anyNA(x))
+  }
 
   any_miss <- svy_df$variables %>%
-    naniar::add_any_miss(!!!vars) %>%
-    dplyr::mutate(any_miss_vars = dplyr::case_when(any_miss_vars == "complete" ~ FALSE, TRUE ~ TRUE)) %>%
+    dplyr::select(!!!vars) %>%
+    dplyr::mutate(any_miss_vars = any_miss_fun(.)) %>%
     dplyr::pull()
-
+  
   svy_df_NAs <- svy_df %>% srvyr::mutate(srvyr::across(c(!!!vars), is.na))
 
   svy_df_NAs$variables$.any_missing <- any_miss
@@ -55,8 +61,10 @@ svy_miss_var_summary <- function(svy_df, ..., .any_missing = TRUE) {
   tbl <- survey::svytable(as.formula("~.any_missing"), svy_df_NAs)
 
   res[is.na(res)] <- 0
-  res %<>% dplyr::arrange(dplyr::desc(n_miss))
+  res %<>% dplyr::arrange(dplyr::desc(.data$n_miss))
 
+  if(!.include_complete) res %<>% dplyr::filter(.data$n_miss>0)
+  
   if (.any_missing) {
     res <- dplyr::bind_rows(tibble::tibble(
       variable = ".any_missing", n_miss = round(tbl["TRUE"]),
