@@ -48,7 +48,6 @@
 
 <meta property="og:title" content="Set up analysis project folder and script files — setup_analysis_project" />
 <meta property="og:description" content="Set up simple folder structure and template files for analysis project." />
-<meta property="og:image" content="https://lukaswallrich.github.io/timesaveR/logo.png" />
 
 
 
@@ -185,6 +184,17 @@ Otherwise, are placed in root folder</p></td>
     <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
 
     <p>The structure is based on https://towardsdatascience.com/how-to-keep-your-research-projects-organized-part-1-folder-structure-10bd56034d3a, with some simplifications and additions.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>This template includes two helpers worth highlighting. The `take_note()`
+function allows to add character strings to a note file that is saved at
+the end of each script. Usage should follow the first example: 
+`take_note("Note created:", timestamp(quiet = TRUE))`. Note that this modifies
+`notes` in place, so the result should not be assigned.</p>
+<p>Then there is the `0_run_all.R` file, which runs all analysis scripts in order
+and documents when this last happened. It offers to clear the global environment
+between each file, which is helpful in ensuring that they are self-contained. 
+However, this obviously deletes data, so should be used with care.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

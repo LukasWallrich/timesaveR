@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get code to rename model coefficients in summary tables — get_coef_rename_tribble • timesaveR</title>
+<title>Report (model comparison) ANOVA tests — report_anova • timesaveR</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,11 +46,8 @@
 
 
 
-<meta property="og:title" content="Get code to rename model coefficients in summary tables — get_coef_rename_tribble" />
-<meta property="og:description" content="Usually, the coefficients in a statistical model such as those returned from `lm()`
-need to be renamed for reporting, particularly when dummy/indicator variables are involved.
-This function returns the code to set up a rename tribble that can then be adjusted
-and passed, for instance, to the report_lm_with_std function." />
+<meta property="og:title" content="Report (model comparison) ANOVA tests — report_anova" />
+<meta property="og:description" content="This is under development and thus not yet exported." />
 
 
 
@@ -136,47 +133,30 @@ and passed, for instance, to the report_lm_with_std function." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get code to rename model coefficients in summary tables</h1>
-    <small class="dont-index">Source: <a href='https://github.com/LukasWallrich/timesaveR/blob/master/R/misc.R'><code>R/misc.R</code></a></small>
-    <div class="hidden name"><code>get_coef_rename_tribble.Rd</code></div>
+    <h1>Report (model comparison) ANOVA tests</h1>
+    <small class="dont-index">Source: <a href='https://github.com/LukasWallrich/timesaveR/blob/master/R/report_stats.R'><code>R/report_stats.R</code></a></small>
+    <div class="hidden name"><code>report_anova.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Usually, the coefficients in a statistical model such as those returned from `lm()`
-need to be renamed for reporting, particularly when dummy/indicator variables are involved.
-This function returns the code to set up a rename tribble that can then be adjusted
-and passed, for instance, to the <code><a href='report_lm_with_std.html'>report_lm_with_std</a></code> function.</p>
+    <p>This is under development and thus not yet exported.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_coef_rename_tribble</span><span class='op'>(</span><span class='va'>mod</span>, show <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>report_anova</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>mod</th>
-      <td><p>A model (e.g., returned from lm). coef() is called to extract the coefficient names.</p></td>
-    </tr>
-    <tr>
-      <th>show</th>
-      <td><p>Logical - should the output be printed to the console. In any case, it is returned invisibly</p></td>
+      <th>x</th>
+      <td><p>An object returned from an anova() function</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Code to be edited and passed to tibble::tribble() to create the coef_renames argument for
-<code><a href='report_lm_with_std.html'>report_lm_with_std</a></code> and similar functions. 'New' coefficient names are minimally
-transformed, but are primarily intended to be placeholders.</p>
+    <p>A character string reporting the anova in APA style</p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>mod</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>mpg</span> <span class='op'>~</span> <span class='va'>wt</span>, <span class='va'>mtcars</span><span class='op'>)</span>
-<span class='fu'>get_coef_rename_tribble</span><span class='op'>(</span><span class='va'>mod</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; tibble::tribble(
-#&gt;   ~old,           ~new,           
-#&gt;    "(Intercept)",  "(Intercept)", 
-#&gt;    "wt",           "Wt"
-#&gt; )</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

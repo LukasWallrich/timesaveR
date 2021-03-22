@@ -4,73 +4,19 @@
     <loc>https://lukaswallrich.github.io/timesaveR//index.html</loc>
   </url>
   <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/add_class.html</loc>
-  </url>
-  <url>
     <loc>https://lukaswallrich.github.io/timesaveR//reference/add_package_snippets.html</loc>
-  </url>
-  <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/clip_excel.html</loc>
   </url>
   <url>
     <loc>https://lukaswallrich.github.io/timesaveR//reference/cor_matrix.html</loc>
   </url>
   <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/cut_p.html</loc>
-  </url>
-  <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/dot-floor_ceiling.html</loc>
-  </url>
-  <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/dot-is.numeric_col.html</loc>
-  </url>
-  <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/dump_to_clip.html</loc>
-  </url>
-  <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/ess_health.html</loc>
-  </url>
-  <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/fmt_ci.html</loc>
-  </url>
-  <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/fmt_cor.html</loc>
-  </url>
-  <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/fmt_labels_md.html</loc>
-  </url>
-  <url>
     <loc>https://lukaswallrich.github.io/timesaveR//reference/fmt_p.html</loc>
-  </url>
-  <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/fmt_pct.html</loc>
   </url>
   <url>
     <loc>https://lukaswallrich.github.io/timesaveR//reference/get_coef_rename_tribble.html</loc>
   </url>
   <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/get_pairwise_letters.html</loc>
-  </url>
-  <url>
     <loc>https://lukaswallrich.github.io/timesaveR//reference/get_rename_tribbles.html</loc>
-  </url>
-  <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/ggsave_show.html</loc>
-  </url>
-  <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/glance.mira.html</loc>
-  </url>
-  <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/gt_add_plots.html</loc>
-  </url>
-  <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/gt_apa_style.html</loc>
-  </url>
-  <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/line_to_vector.html</loc>
-  </url>
-  <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/lm_std.html</loc>
   </url>
   <url>
     <loc>https://lukaswallrich.github.io/timesaveR//reference/make_scale.html</loc>
@@ -79,40 +25,10 @@
     <loc>https://lukaswallrich.github.io/timesaveR//reference/make_scales.html</loc>
   </url>
   <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/mira.lm_F_test.html</loc>
-  </url>
-  <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/na_share.html</loc>
-  </url>
-  <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/paired_t_test_d.html</loc>
-  </url>
-  <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/pairwise_t_test_mi.html</loc>
-  </url>
-  <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/pairwise_t_tests.html</loc>
-  </url>
-  <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/plot_distributions.html</loc>
-  </url>
-  <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/plot_mediation.html</loc>
-  </url>
-  <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/print.timesaveR_raw_html.html</loc>
-  </url>
-  <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/reexports.html</loc>
-  </url>
-  <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/rename_cat_variables.html</loc>
+    <loc>https://lukaswallrich.github.io/timesaveR//reference/report_anova.html</loc>
   </url>
   <url>
     <loc>https://lukaswallrich.github.io/timesaveR//reference/report_cat_vars.html</loc>
-  </url>
-  <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/report_cor_table.html</loc>
   </url>
   <url>
     <loc>https://lukaswallrich.github.io/timesaveR//reference/report_lm_with_std.html</loc>
@@ -121,52 +37,22 @@
     <loc>https://lukaswallrich.github.io/timesaveR//reference/report_polr_with_std.html</loc>
   </url>
   <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/round_.html</loc>
-  </url>
-  <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/round_df.html</loc>
-  </url>
-  <url>
     <loc>https://lukaswallrich.github.io/timesaveR//reference/scale_blank.html</loc>
   </url>
   <url>
     <loc>https://lukaswallrich.github.io/timesaveR//reference/setup_analysis_project.html</loc>
   </url>
   <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/sigstars.html</loc>
-  </url>
-  <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/spearman_brown.html</loc>
-  </url>
-  <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/svy_cohen_d_pair.html</loc>
-  </url>
-  <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/svy_cor_matrix.html</loc>
-  </url>
-  <url>
     <loc>https://lukaswallrich.github.io/timesaveR//reference/svy_make_scale.html</loc>
   </url>
   <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/svy_pairwise.t.test.html</loc>
+    <loc>https://lukaswallrich.github.io/timesaveR//reference/svy_miss_var_summary.html</loc>
   </url>
   <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/t_test_mi.html</loc>
-  </url>
-  <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/tidy.mira.html</loc>
-  </url>
-  <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/tidy.rN_std.html</loc>
-  </url>
-  <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/timesaveR.html</loc>
+    <loc>https://lukaswallrich.github.io/timesaveR//reference/tidy.cor_matrix.html</loc>
   </url>
   <url>
     <loc>https://lukaswallrich.github.io/timesaveR//reference/to_tribble.html</loc>
-  </url>
-  <url>
-    <loc>https://lukaswallrich.github.io/timesaveR//reference/wtd_cor_matrix_mi.html</loc>
   </url>
   <url>
     <loc>https://lukaswallrich.github.io/timesaveR//articles/getting_started.html</loc>

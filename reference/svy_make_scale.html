@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Creates scale by calculating item mean and returns descriptives for srvyr objects — svy_make_scale • timesaveR</title>
+<title>Create scale by calculating item mean and returns descriptives for srvyr objects — svy_make_scale • timesaveR</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,12 +46,11 @@
 
 
 
-<meta property="og:title" content="Creates scale by calculating item mean and returns descriptives for srvyr objects — svy_make_scale" />
+<meta property="og:title" content="Create scale by calculating item mean and returns descriptives for srvyr objects — svy_make_scale" />
 <meta property="og:description" content="This function creates a scale by calculating the mean of a set of items,
 and prints and returns descriptives that allow to assess internal consistency
 and spread. It is primarily based on the psych::alpha function, with
 more parsimonious output and some added functionality." />
-<meta property="og:image" content="https://lukaswallrich.github.io/timesaveR/logo.png" />
 
 
 
@@ -137,7 +136,7 @@ more parsimonious output and some added functionality." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Creates scale by calculating item mean and returns descriptives for srvyr objects</h1>
+    <h1>Create scale by calculating item mean and returns descriptives for srvyr objects</h1>
     <small class="dont-index">Source: <a href='https://github.com/LukasWallrich/timesaveR/blob/master/R/make_scales.R'><code>R/make_scales.R</code></a></small>
     <div class="hidden name"><code>svy_make_scale.Rd</code></div>
     </div>
@@ -153,7 +152,8 @@ more parsimonious output and some added functionality.</p>
   <span class='va'>df</span>,
   <span class='va'>scale_items</span>,
   <span class='va'>scale_name</span>,
-  print_hist <span class='op'>=</span> <span class='cn'>T</span>,
+  print_hist <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  print_desc <span class='op'>=</span> <span class='cn'>TRUE</span>,
   scale_title <span class='op'>=</span> <span class='va'>scale_name</span>,
   reversed <span class='op'>=</span> <span class='cn'>NULL</span>,
   r_key <span class='op'>=</span> <span class='cn'>NULL</span>
@@ -180,6 +180,10 @@ more parsimonious output and some added functionality.</p>
       <td><p>Logical. Should histograms of the scale and its items be printed.</p></td>
     </tr>
     <tr>
+      <th>print_desc</th>
+      <td><p>Logical. Should descriptive statistics for the scale be printed.</p></td>
+    </tr>
+    <tr>
       <th>scale_title</th>
       <td><p>Character. Name of scale for printing. Defaults to scale_name</p></td>
     </tr>
@@ -200,6 +204,28 @@ the observed maximum</p></td>
 
     <p>The survey object with the scale added as an additional variable.</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://r-survey.r-forge.r-project.org/survey/'>survey</a></span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Loading required package: grid</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: Matrix</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: survival</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: ‘survey’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:graphics’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    dotchart</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>api</span><span class='op'>)</span>
+
+<span class='va'>svy_df</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/survey/man/svydesign.html'>svydesign</a></span><span class='op'>(</span>id <span class='op'>=</span> <span class='op'>~</span><span class='fl'>1</span>, strata <span class='op'>=</span> <span class='op'>~</span><span class='va'>stype</span>, weights <span class='op'>=</span> <span class='op'>~</span><span class='va'>pw</span>, 
+                   data <span class='op'>=</span> <span class='va'>apistrat</span>, fpc <span class='op'>=</span> <span class='op'>~</span><span class='va'>fpc</span><span class='op'>)</span>
+<span class='va'>scale_items</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ell"</span>, <span class='st'>"meals"</span>, <span class='st'>"mobility"</span>, <span class='st'>"col.grad"</span>, <span class='st'>"full"</span><span class='op'>)</span>
+<span class='va'>scale_reversed</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"col.grad"</span>, <span class='st'>"full"</span><span class='op'>)</span>                    
+<span class='fu'>svy_make_scale</span><span class='op'>(</span><span class='va'>svy_df</span>, <span class='va'>scale_items</span>, <span class='st'>"SES"</span>, reversed <span class='op'>=</span> <span class='va'>scale_reversed</span><span class='op'>)</span>    
+</div><div class='output co'>#&gt;     
+#&gt; Descriptives for SES scale:
+#&gt; Mean: 41.113  SD: 13.525
+#&gt; Cronbach's alpha: .74
+#&gt; 
+#&gt; The following items were reverse coded (with min and max values):                        
+#&gt; col.grad (0, 100)
+#&gt; full (24, 100)</div><div class='img'><img src='svy_make_scale-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; Stratified Independent Sampling design
+#&gt; update(df, SES = rowMeans(df[, scale_items_num]$variables, na.rm = T))</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

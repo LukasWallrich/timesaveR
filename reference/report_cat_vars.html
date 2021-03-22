@@ -53,7 +53,6 @@ relationship with a continuous outcome variable — report_cat_vars" />
 and produces a table that shows the distribution of data across the levels of
 the categorical variables, as well as the mean of the dependent variable for
 each level and the significance of pairwise comparisons between these means." />
-<meta property="og:image" content="https://lukaswallrich.github.io/timesaveR/logo.png" />
 
 
 
@@ -164,6 +163,7 @@ each level and the significance of pairwise comparisons between these means.</p>
   notes <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
   dv_name <span class='op'>=</span> <span class='cn'>NULL</span>,
   bold_vars <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  apa_style <span class='op'>=</span> <span class='cn'>TRUE</span>,
   css_tags <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
   na.rm <span class='op'>=</span> <span class='cn'>TRUE</span>,
   exclude_na <span class='op'>=</span> <span class='cn'>FALSE</span>
@@ -220,6 +220,10 @@ in the automatic table footnote explaining the M(SD) column. Defaults to dv.</p>
     <tr>
       <th>bold_vars</th>
       <td><p>Should rows with variable names be bold. Defaults to TRUE</p></td>
+    </tr>
+    <tr>
+      <th>apa_style</th>
+      <td><p>Logical, should APA-style formatting be applied</p></td>
     </tr>
     <tr>
       <th>css_tags</th>

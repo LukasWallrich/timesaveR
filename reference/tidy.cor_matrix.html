@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get code to rename model coefficients in summary tables — get_coef_rename_tribble • timesaveR</title>
+<title>Tidy a correlation matrix — tidy.cor_matrix • timesaveR</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,11 +46,11 @@
 
 
 
-<meta property="og:title" content="Get code to rename model coefficients in summary tables — get_coef_rename_tribble" />
-<meta property="og:description" content="Usually, the coefficients in a statistical model such as those returned from `lm()`
-need to be renamed for reporting, particularly when dummy/indicator variables are involved.
-This function returns the code to set up a rename tribble that can then be adjusted
-and passed, for instance, to the report_lm_with_std function." />
+<meta property="og:title" content="Tidy a correlation matrix — tidy.cor_matrix" />
+<meta property="og:description" content="This function turns the correlation matrix returned by cor_matrix and 
+its relatives into a tidy dataframe. Note that by default, results for both the cor(A, B) 
+and cor(B, A) are returned, while entries for A, A, i.e. the values on the diagonal, 
+are never included." />
 
 
 
@@ -136,47 +136,54 @@ and passed, for instance, to the report_lm_with_std function." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get code to rename model coefficients in summary tables</h1>
-    <small class="dont-index">Source: <a href='https://github.com/LukasWallrich/timesaveR/blob/master/R/misc.R'><code>R/misc.R</code></a></small>
-    <div class="hidden name"><code>get_coef_rename_tribble.Rd</code></div>
+    <h1>Tidy a correlation matrix</h1>
+    <small class="dont-index">Source: <a href='https://github.com/LukasWallrich/timesaveR/blob/master/R/cor_tables.R'><code>R/cor_tables.R</code></a></small>
+    <div class="hidden name"><code>tidy.cor_matrix.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Usually, the coefficients in a statistical model such as those returned from `lm()`
-need to be renamed for reporting, particularly when dummy/indicator variables are involved.
-This function returns the code to set up a rename tribble that can then be adjusted
-and passed, for instance, to the <code><a href='report_lm_with_std.html'>report_lm_with_std</a></code> function.</p>
+    <p>This function turns the correlation matrix returned by <code><a href='cor_matrix.html'>cor_matrix</a></code> and 
+its relatives into a tidy dataframe. Note that by default, results for both the <code><a href='https://rdrr.io/r/stats/cor.html'>cor(A, B)</a></code> 
+and <code><a href='https://rdrr.io/r/stats/cor.html'>cor(B, A)</a></code> are returned, while entries for <code>A, A</code>, i.e. the values on the diagonal, 
+are never included.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_coef_rename_tribble</span><span class='op'>(</span><span class='va'>mod</span>, show <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='co'># S3 method for cor_matrix</span>
+<span class='fu'>tidy</span><span class='op'>(</span><span class='va'>x</span>, both_directions <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>mod</th>
-      <td><p>A model (e.g., returned from lm). coef() is called to extract the coefficient names.</p></td>
+      <th>x</th>
+      <td><p>A <code>cor_marix</code> object returned from
+<code><a href='cor_matrix.html'>cor_matrix</a></code></p></td>
     </tr>
     <tr>
-      <th>show</th>
-      <td><p>Logical - should the output be printed to the console. In any case, it is returned invisibly</p></td>
+      <th>both_directions</th>
+      <td><p>Should both  <code><a href='https://rdrr.io/r/stats/cor.html'>cor(A, B)</a></code> 
+and <code><a href='https://rdrr.io/r/stats/cor.html'>cor(B, A)</a></code> be returned. Defaults to <code>TRUE</code>.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Additional arguments. Not used. Needed to match generic signature
+only.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Code to be edited and passed to tibble::tribble() to create the coef_renames argument for
-<code><a href='report_lm_with_std.html'>report_lm_with_std</a></code> and similar functions. 'New' coefficient names are minimally
-transformed, but are primarily intended to be placeholders.</p>
+    <p>A <code><a href='https://tibble.tidyverse.org/reference/tibble.html'>tibble::tibble()</a></code> with columns:</p>
+<dt>column1</dt><dd><p>Name of the first variable</p></dd>
+<dt>column2</dt><dd><p>Name of the second variable</p></dd>
+<dt>estimate</dt><dd><p>The estimated value of the correlation</p></dd>
+<dt>statistic</dt><dd><p>The t-statistic used for significance testing</p></dd>
+<dt>p.value</dt><dd><p>The two-sided p-value of the correlation</p></dd>
+<dt>n</dt><dd><p>Number of observations used to compute the correlation</p></dd>
+<dt>ci.low</dt><dd><p>Lower bound of confidence interval. Width is determined in call to <code><a href='cor_matrix.html'>cor_matrix</a></code></p></dd>
+<dt>ci.high</dt><dd><p>Upper bound of confidence interval. Width is determined in call to <code><a href='cor_matrix.html'>cor_matrix</a></code></p></dd>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>mod</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>mpg</span> <span class='op'>~</span> <span class='va'>wt</span>, <span class='va'>mtcars</span><span class='op'>)</span>
-<span class='fu'>get_coef_rename_tribble</span><span class='op'>(</span><span class='va'>mod</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; tibble::tribble(
-#&gt;   ~old,           ~new,           
-#&gt;    "(Intercept)",  "(Intercept)", 
-#&gt;    "wt",           "Wt"
-#&gt; )</div></pre>
+
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

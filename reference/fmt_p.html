@@ -48,8 +48,7 @@
 
 <meta property="og:title" content="Format p-value in line with APA standard (no leading 0) — fmt_p" />
 <meta property="og:description" content="Formats p-value in line with APA standard, returning it without leading 0 and
-as &amp;lt; .001 when it is that small." />
-<meta property="og:image" content="https://lukaswallrich.github.io/timesaveR/logo.png" />
+as &amp;lt; .001 and &amp;gt; .99 when it is extremely small or large." />
 
 
 
@@ -142,7 +141,7 @@ as &amp;lt; .001 when it is that small." />
 
     <div class="ref-description">
     <p>Formats p-value in line with APA standard, returning it without leading 0 and
-as &lt; .001 when it is that small.</p>
+as &lt; .001 and &gt; .99 when it is extremely small or large.</p>
     </div>
 
     <pre class="usage"><span class='fu'>fmt_p</span><span class='op'>(</span><span class='va'>p_value</span>, digits <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span></pre>

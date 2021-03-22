@@ -49,8 +49,7 @@
 <meta property="og:title" content="Get code to generate tibbles to rename categorical variables and their levels — get_rename_tribbles" />
 <meta property="og:description" content="Renaming categorical variables and their levels, for instance for summary tables, can be fiddly. This
 function generates code in which only the new names need to be modified, and which can then be passed
-to either rename_cat_variables or directly to cat_var_table" />
-<meta property="og:image" content="https://lukaswallrich.github.io/timesaveR/logo.png" />
+to either rename_cat_variables or directly to report_cat_vars" />
 
 
 
@@ -144,7 +143,7 @@ to either rename_cat_variables or directly to cat_var_table" />
     <div class="ref-description">
     <p>Renaming categorical variables and their levels, for instance for summary tables, can be fiddly. This
 function generates code in which only the new names need to be modified, and which can then be passed
-to either <code><a href='rename_cat_variables.html'>rename_cat_variables</a></code> or directly to <code>cat_var_table</code></p>
+to either <code>rename_cat_variables</code> or directly to <code><a href='report_cat_vars.html'>report_cat_vars</a></code></p>
     </div>
 
     <pre class="usage"><span class='fu'>get_rename_tribbles</span><span class='op'>(</span>
@@ -184,7 +183,8 @@ specified, all are included, unless there are more than `max_level` variables in
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Code to be edited and passed to tibble::tribble() to create var_names and level_names arguments for
-<code><a href='rename_cat_variables.html'>rename_cat_variables</a></code> and <code>cat_var_table</code></p>
+<code>rename_cat_variables</code> and <code><a href='report_cat_vars.html'>report_cat_vars</a></code>. 'New' variable and level names are minimally
+transformed, but are primarily intended to be placeholders.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Only categorical variables should be passed to the function if code for levels is
