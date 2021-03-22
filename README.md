@@ -2,6 +2,7 @@
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/LukasWallrich/timesaveR/workflows/R-CMD-check/badge.svg)](https://github.com/LukasWallrich/timesaveR/actions)
+[![Codecov test coverage](https://codecov.io/gh/LukasWallrich/timesaveR/branch/master/graph/badge.svg)](https://codecov.io/gh/LukasWallrich/timesaveR?branch=master)
 <!-- badges: end -->
 
 
