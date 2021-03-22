@@ -1,6 +1,17 @@
 #' Set up analysis project folder and script files
 #'
 #' Set up simple folder structure and template files for analysis project.
+#' 
+#' This template includes two helpers worth highlighting. The `take_note()`
+#' function allows to add character strings to a note file that is saved at
+#' the end of each script. Usage should follow the first example: 
+#' `take_note("Note created:", timestamp(quiet = TRUE))`. Note that this modifies
+#' `notes` in place, so the result should not be assigned.
+#' 
+#' Then there is the `0_run_all.R` file, which runs all analysis scripts in order
+#' and documents when this last happened. It offers to clear the global environment
+#' between each file, which is helpful in ensuring that they are self-contained. 
+#' However, this obviously deletes data, so should be used with care. 
 #'
 #' @param folder Root folder of the project to be set up. Defaults to here::here()
 #' @param analyses Character vector of analysis steps. R files will be set up in order.
@@ -71,7 +82,7 @@ pipelinedir <- "3_{pipeline_name}"
 #df <- read_!!!(here(pipelinedir, "{{previous_name}}", "!!!"))
 
 notes <- character()
-notes <- c(notes, "Note created:", timestamp(quiet = TRUE))
+take_note("Note created:", timestamp(quiet = TRUE))
 
 
 # ------------
@@ -96,9 +107,17 @@ management_functions_file <- ("
 }}
 
   stringr::str_replace(stringr::str_replace(pipeline, here(), ''), '^/', '')
+  }}
+
+take_note <- function(...) {{
+  x <- list(...) %>% unlist()
+  cat(paste(x, collapse = ' '))
+  notes <<- c(notes, paste(x, collapse = ' '))
+  invisible(x[[1]])
 }}
 
                               ")
+
 
 run_all_file <- ('
 if (!require("pacman")) install.packages("pacman")
