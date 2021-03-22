@@ -708,14 +708,14 @@ plot_distributions <- function(data, var_names = NULL, plot_type = c("auto", "hi
 #' \dontrun{
 #' var_names <- c(wt = "Weight", am = "Transmission", mpg = "Consumption (mpg)", gear = "Gears")
 #' cor_table <- cor_matrix(mtcars, var_names) %>%
-#'   report_cor_table(extras = tibble::tibble(Distributions = c(seq_len(var_names))))
+#'   report_cor_table(extras = tibble::tibble(Distributions = c(seq_along(var_names))))
 #' large_text <- ggplot2::theme(axis.text.x = ggplot2::element_text(size = 40))
 #' distr_plots <- plot_distributions(mtcars, var_names, plot_theme = large_text)
 #' gt_add_plots(cor_table, distr_plots, 3)
 #' }
 #'
 gt_add_plots <- function(gt_table, plots, col_index) {
-  purrr::walk(seq_len(plots), function(x) {
+  purrr::walk(seq_along(plots), function(x) {
     gt_table <<- gt::text_transform(gt_table, gt::cells_body(col_index, x), fn = function(y) {
       plots[[x]] %>%
         gt::ggplot_image(height = gt::px(50))
