@@ -4,7 +4,12 @@
 \alias{svy_miss_var_summary}
 \title{Create overview over missing data in survey object}
 \usage{
-svy_miss_var_summary(svy_df, ..., .any_missing = TRUE)
+svy_miss_var_summary(
+  svy_df,
+  ...,
+  .any_missing = TRUE,
+  .include_complete = FALSE
+)
 }
 \arguments{
 \item{svy_df}{A survey object created with the survey package}
@@ -16,9 +21,12 @@ a tidyselect helper function (e.g., `starts_with()` or `where(is.numeric)`).}
 \item{.any_missing}{Should a row be shown at the start of the return with the
 number and share of (weighted) responses that have missing data on at least one
 of the variables considered? Defaults to TRUE.}
+
+\item{.include_complete}{Should variables with no missing data be included
+in the returned tibble? Defaults to FALSE.}
 }
 \description{
-This function recreates the \code{\link{[[naniar]]miss_var_summary}}
+This function recreates the \code{\link[naniar]{miss_var_summary}}
 output with survey weights for missing counts and proportions.
 }
 \examples{
