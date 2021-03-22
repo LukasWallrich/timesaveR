@@ -242,6 +242,7 @@ spearman_brown <- function(df, items, name = "", SB_only = FALSE) {
 #' @param scale_items A characters vector containing the items for that scale
 #'   (variables in df)
 #' @param scale_name Character. The name of the variable the scale should be saved as
+#' @param print_desc Logical. Should descriptive statistics for the scale be printed.
 #' @param print_hist Logical. Should histograms of the scale and its items be printed.
 #' @param scale_title Character. Name of scale for printing. Defaults to scale_name
 #' @param reversed (optional) A characters vector containing the items that should be reverse-coded (
@@ -250,19 +251,27 @@ spearman_brown <- function(df, items, name = "", SB_only = FALSE) {
 #' if the whole scale should be reversed, or to -1 to reverse the scale based on
 #' the observed maximum
 #' @return The survey object with the scale added as an additional variable.
+#' @examples 
+#' 
+#' library(survey)
+#' data(api)
+#' 
+#' svy_df <- svydesign(id = ~1, strata = ~stype, weights = ~pw, 
+#'                    data = apistrat, fpc = ~fpc)
+#' scale_items <- c("ell", "meals", "mobility", "col.grad", "full")
+#' scale_reversed <- c("col.grad", "full")                    
+#' svy_make_scale(svy_df, scale_items, "SES", reversed = scale_reversed)    
+
 #' @export
 
 ## TODO
 ### Merge/align with standard make_scale functions
 
 
-svy_make_scale <- function(df, scale_items, scale_name, print_hist = T, scale_title = scale_name,
-                           reversed = NULL, r_key = NULL) {
-  if (!requireNamespace("survey", quietly = TRUE)) {
-    stop("Package \"survey\" needed for this function to work. Please install it.",
-      call. = FALSE
-    )
-  }
+svy_make_scale <- function(df, scale_items, scale_name, print_hist = TRUE, print_desc = TRUE, 
+                           scale_title = scale_name, reversed = NULL, r_key = NULL) {
+ 
+  .check_req_packages("survey")
 
   if (!scale_title == scale_name) {
     scale_title <- paste0(scale_title, " (", scale_name, ")")
@@ -282,6 +291,7 @@ svy_make_scale <- function(df, scale_items, scale_name, print_hist = T, scale_ti
       "r"
     ))
     for (i in 1:length(reversed)) {
+      
       df <- eval(parse(text = paste0("update(df,", reversed_num[i], "r = psych::reverse.code(-1, df[,reversed_num[i]]$variables))")))
     }
   }
@@ -303,18 +313,32 @@ svy_make_scale <- function(df, scale_items, scale_name, print_hist = T, scale_ti
       )))
     }
   }
+  
 
-  # Print scale descriptives
-  cat(paste0("Descriptive stats for ", scale_title, "\n", "Cronbach's alpha:", round_(survey::svycralpha(as.formula(.scale_formula(scale_items_num)),
-    df,
-    na.rm = T
-  ), 2), "\nMean: ", round_(survey::svymean(as.formula(paste0("~", scale_name)),
-    df,
-    na.rm = T
-  )[1], 2), "  SD: ", round_(sqrt(survey::svyvar(as.formula(paste0("~", scale_name)),
-    df,
-    na.rm = T
-  )[1]), 2)))
+  if (print_desc) {
+    if (!is.null(reversed)) {
+      reversed_min <- numeric()
+      reversed_max <- numeric()
+      for (i in 1:length(reversed)) {
+    reversed_min[i] <- min(df[,reversed_num[i]]$variables, na.rm = TRUE)
+    reversed_max[i] <- max(df[,reversed_num[i]]$variables, na.rm = TRUE)
+      }}
+
+    print(glue::glue('
+    
+                     Descriptives for {scale_title} scale:
+                     Mean: {round_(survey::svymean(as.formula(paste0("~", scale_name)), 
+                     df, na.rm = TRUE)[1], 3)}  SD: {round_(sqrt(survey::svyvar(as.formula(paste0("~", scale_name)), 
+                     df, na.rm = TRUE)[1]), 3)}
+                     Cronbach\'s alpha: {fmt_cor(survey::svycralpha(as.formula(.scale_formula(scale_items_num)), df, na.rm = TRUE))}'))
+    
+    if (length(reversed) > 0) {
+      print(glue::glue('
+
+The following items were reverse coded (with min and max values): \\
+                       {paste0("\n", reversed, " (", reversed_min, ", ", reversed_max, ")", collapse = "")}'))
+    }
+  }
 
   # Print histograms of items and scale
   if (print_hist) {
@@ -330,7 +354,7 @@ svy_make_scale <- function(df, scale_items, scale_name, print_hist = T, scale_ti
       df2 %<>% rbind(x)
     }
     print(ggplot2::ggplot(df2, ggplot2::aes(.data$val, y = .data$Freq)) +
-      ggplot2::geom_bar(stat = "identity") +
+      ggplot2::geom_bar(stat = "identity", na.rm = TRUE) +
       ggplot2::facet_wrap(~var))
   }
   return(df)
