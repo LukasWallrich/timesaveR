@@ -133,7 +133,12 @@ lm_std <- function(formula, data = NULL, weights = NULL, ...) {
     if("subset" %in% names(extras)) stop("Cannot subset in this function as that would happen after standardisation - please subset first.")
   
   if(is.null(data)) {
-    data <- purrr::map_dfc(vars, ~tibble::tibble(!!.x := get(.x, pos = parent.frame())))
+    data <- NULL
+    for (i in seq_along(vars)) {
+      #Odd extraction to work with with() call environments
+      x <- get(vars[i], pos = parent.frame())
+      data <- dplyr::bind_cols(data, tibble::tibble(!!vars[i] := x))
+    }
     if (!is.null(weights)) data$.weights <- weights
   }
   
@@ -170,7 +175,7 @@ lm_std <- function(formula, data = NULL, weights = NULL, ...) {
   }
   
   mod$call_fmt <- c(sys.call(), "Note: DV and continuous IVs were standardised")
-  class(mod) <- c("rN_std", class(mod))
+  class(mod) <- c("tsR_std", class(mod))
   mod
 }
 
@@ -446,4 +451,78 @@ pairwise_t_tests <- function(df, outcome, groups, p.adjust.method = p.adjust.met
   out$apa <- paste0("t(", round(out$df), ") = ", round_(out$t_value, 2), ", p ", fmt_p(out$p_value), ", d = ", round_(out$cohens_d, 2))
 
   out
+}
+
+#' polr() with standardised continuous variables
+#'
+#' This runs \code{\link[MASS]{polr()}} after standardising all continuous predictors, while leaving
+#' factors intact.
+#'
+#' In the model call, the weights variable will always be called `.weights`. This might
+#' pose a problem when you update the model later on, for  the moment the only workaround
+#' is to rename the weights variable accordingly (or to fix it and contribute a PR on
+#' Github).
+#'
+#' @inheritParams MASS::polr
+#' @inheritDotParams stats::lm -data -subset -Hess
+#' @references See (Fox, 2015) for an argument why dummy variables should never
+#' be standardised. 
+#' @examples 
+#' polr_std(poverty ~ religion + age + gender, WVS)
+#' @export
+
+polr_std <- function(formula, data = NULL, weights = NULL, ...) {
+
+  if (any(stringr::str_detect(deparse(formula, width.cutoff = 200), "~.*factor\\("))) stop("Functions in the formula are applied after standardising - thus factor() needs to be used before polr_std() is called")
+  
+  vars <- all.vars(formula)
+  
+  extras <- list(...)
+  
+  if("subset" %in% names(extras)) stop("Cannot subset in this function as that would happen after standardisation - please subset first.")
+  if("Hess" %in% names(extras)) stop("Cannot use Hess argument - Hess is always set to TRUE in this function.")
+  
+  if(is.null(data)) {
+    data <- NULL
+    for (i in seq_along(vars)) {
+      #Odd extraction to work with with() call environments
+      x <- get(vars[i], pos = parent.frame())
+      data <- dplyr::bind_cols(data, tibble::tibble(!!vars[i] := x))
+    }
+    if (!is.null(weights)) data$.weights <- weights
+  }
+  
+  if(!is.null(data)) {
+    weights <- rlang::enquo(weights)
+    
+    if(!rlang::quo_is_null(weights)) {
+      if(rlang::as_label(weights) %in% names(data)) 
+      {data <- dplyr::rename(data, .weights = !!weights) } else {
+        data$.weights <- rlang::eval_tidy(weights)
+      }
+      data <- data[c(vars, ".weights")]
+    } else {
+      data <- data[vars]
+    }
+  }
+  
+  vars_num <- vars[purrr::map_lgl(data, is.numeric)]
+  vars_num <- vars_num[!is.na(vars_num)]
+  
+  vars_dummies <- vars_num[purrr::map_lgl(vars_num, ~ dplyr::n_distinct(data[[.x]]) < 3)]
+  
+  if (length(vars_dummies) > 0) warning("The following variables have less than three distinct values but are of type numeric: ", paste0(vars_dummies, collapse = ", "), ". Check whether they should not be factors instead. As it stands, they are standardised, which is typically not recommended.")
+  
+  data %<>% dplyr::mutate(dplyr::across(dplyr::all_of(vars_num), scale_blank))
+  
+  formula <- Reduce(paste, deparse(formula))
+  
+  if (!rlang::quo_is_null(weights)) {
+    mod <- eval(parse(text = glue::glue("polr({formula}, data = data, Hess = TRUE, weights = .weights, ...)")))
+  } else {
+    mod <- eval(parse(text = glue::glue("polr({formula}, data = data, Hess = TRUE, ...)")))
+  }
+  
+  class(mod) <- c("tsR_std", class(mod))
+  mod
 }

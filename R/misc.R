@@ -145,12 +145,15 @@ sigstars <- function(p, stars = NULL, pad_html = FALSE, ns = FALSE, return_NAs =
 #' @param ties.method Currently accepts only "random" - could be expanded in the
 #' future, though it is unclear what a better method would be
 #' @param fct_levels Character vector with names for levels. If it is NULL, the
-#' groups will be labeled with their number and the cut-points employed.
+#' groups will be labelled with their number and the cut-points employed.
+#' @param verbose Should boundaries of groups be reported as message?
 #' @return Factor variable with x cut into length(p) categories in given
 #' proportions
+#' @examples
+#' cut_p(iris$Sepal.Length, p = c(.25, .50, .25), fct_levels = c("short", "middling", "long"))
 #' @export
 
-cut_p <- function(x, p, ties.method = "random", fct_levels = NULL) {
+cut_p <- function(x, p, ties.method = "random", fct_levels = NULL, verbose = TRUE) {
   if (!ties.method == "random") stop('Currently, only "random" is accepted as ties.method.', call. = FALSE)
   if (sum(p) != 1) {
     message("p should be probabilities that add up to 1 - will be scaled accordingly")
@@ -178,6 +181,9 @@ cut_p <- function(x, p, ties.method = "random", fct_levels = NULL) {
   if (!is.null(fct_levels)) {
     if (!length(fct_levels) == length(p)) {
       stop("Arguments fct_levels and p need to have same length", call. = FALSE)
+    }
+    if(verbose) {
+      message("Factor levels were assigned as follows:\n", paste(levels(out), fct_levels, sep = ": ", collapse = "\n"))
     }
     levels(out) <- fct_levels
   }
@@ -526,4 +532,34 @@ add_class <- function(x, class_to_add = "exp") {
 
 .is.numeric_col <- function(col, df) {
   is.numeric(magrittr::extract2(df, col))
+}
+
+#' Tidy function to exponentiate coefficients
+#'
+#' This function calls the tidy method based on the second class of the
+#' object (i.e. after removing the "exp" class that led to it being called),
+#' and then exponentiates the returned estimates and confidence intervals (if any)
+#' in the tibble. This is usually used to turn coefficients of logistic
+#' regression models into Odds Ratios.
+#'
+#'
+#' @param x An object, usually containing a logistic regression model. Should
+#' have the class "exp" as the first of its classes, and then a class that dispatches
+#' it to an appropriate `generics::tidy`` function
+#' @param ... Arguments passed on to the appropriate `tidy` function
+#' @export
+
+tidy.exp <- function(x, ...) {
+  class(x) <- class(x)[-1]
+  if ("polr" %in% class(x)) {
+  out <- generics::tidy(x, p.values = TRUE, ...)
+  } else {
+  out <- generics::tidy(x, ...)
+  }
+  out$estimate <- exp(out$estimate)
+  if ("conf.high" %in% names(out)) {
+    out$conf.high <- exp(out$conf.high)
+    out$conf.low <- exp(out$conf.low)
+  }
+  out
 }

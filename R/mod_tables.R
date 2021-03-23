@@ -1,11 +1,11 @@
-#' Create a summary table comparing standardised and non-standardised linear models
+#' Create a summary table comparing standardized and non-standardized linear models
 #'
 #' This function creates a summary table for lm models (including mice::mira objects
-#' containing lm-models) that shows a standardised and non-standardised version of the model
+#' containing lm-models) that shows a standardized and non-standardized version of the model
 #' side-by-side. Several pairs of such models can be compared side-by-side.
 #'
-#' @param mod A lm-model/mira object of lm models, with variables not standardised (or a list of such models)
-#' @param mod_std A lm-model/mira object of lm models, with standardised variables. Can be
+#' @param mod A lm-model/mira object of lm models, with variables not standardized (or a list of such models)
+#' @param mod_std A lm-model/mira object of lm models, with standardized variables. Can be
 #' created with \code{\link{lm_std}} (or a list of such models)
 #' @param conf_level Confidence level to use for confidence intervals, defaults to .95
 #' @param coef_renames A named character vector with new names for the coefficients or a tibble as provided by \code{\link{get_coef_rename_tribble}}
@@ -14,10 +14,10 @@
 #' @param model_names If several pairs of models are to be plotted side by side, indicate the label for each *pair* here
 #' @param show_nimp Logical. If mira objects are passed, this determines whether the number of imputations will be reported as a model statistic
 #' @param R2_change Logical. Report R2 change and F-test to compare models. Only implemented for comparing two pairs of models.
-#' @param notes List of notes to append to bottom of table. An explanation of significance stars is automatically added. If the std models were run with a helper function in this package, a note regarding the standardisation is also automatically added.
+#' @param notes List of notes to append to bottom of table. An explanation of significance stars is automatically added. If the std models were run with a helper function in this package, a note regarding the standardization is also automatically added.
 #' @param apa_style Logical, should APA-style formatting be applied
 #' @param statistic_vertical Should standard errors and CIs be shown below coefficients? Defaults to horizontal layout
-#' @param stars Named vector of significance stars and their thresholds, check `rNuggets:::std_stars_pad` for default.
+#' @param stars Named vector of significance stars and their thresholds, check `timesaveR:::std_stars_pad` for default.
 #' @inheritParams modelsummary::modelsummary
 #' @inheritDotParams modelsummary::modelsummary coef_map coef_omit coef_rename
 #' @return A list with `gt_tab` (the gt-table object including the parts of the table
@@ -30,7 +30,7 @@
 #' # Standard lm model
 #' mod1 <- lm(mpg ~ hp + wt, mtcars)
 #'
-#' # Model with standardised coefficients
+#' # Model with standardized coefficients
 #'
 #' mod2 <- lm_std(mpg ~ hp + wt, mtcars)
 #'
@@ -48,7 +48,7 @@ report_lm_with_std <- function(mod, mod_std, conf_level = .95, coef_renames = NU
   if ((class(mod)[1] == "list" | class(mod_std)[1] == "list") & !(length(mod) == length(mod_std))) {
     stop("Same number of models need to be included in mod and mod_std arguments")
   }
-
+  
   if (!is.null(model_names) & !length(model_names) == length(mod)) {
     stop("Length of model names needs to be the same as length of model")
   }
@@ -61,6 +61,19 @@ report_lm_with_std <- function(mod, mod_std, conf_level = .95, coef_renames = NU
   if (!("list" %in% class(mod))) mod <- list(mod)
   if (!("list" %in% class(mod_std))) mod_std <- list(mod_std)
 
+  #For simplicity, only class of first model is tested 
+if (!("lm" %in% class(mod[[1]]) | ("mira" %in% class(mod[[1]]) &
+  "lm" %in% class(mod[[1]]$analyses[[1]])))) {
+  stop("Models need to be of class lm or mira objects with lm-analyses")
+}
+if (!("lm" %in% class(mod_std[[1]]) | ("mira" %in% class(mod_std[[1]]) &
+  "lm" %in% class(mod_std[[1]]$analyses[[1]])))) {
+  stop("Models need to be of class lm or mira objects with lm-analyses")
+}
+  
+  if ("tsR_std" %in% class(mod_std[[1]]) || ("mira" %in% class(mod_std[[1]]) && "tsR_std" %in% class(mod_std[[1]]$analyses[[1]]))) {
+    notes %<>% c("Given that dummy variables lose their interpretability when standardized (Fox, 2015), &beta; for dummy variables are semi-standardized, indicating the impact of that dummy on the standardized outcome variable.")
+  }
 
   gof_map <- tibble::tribble(
     ~raw, ~clean, ~fmt, ~omit,
@@ -95,6 +108,15 @@ report_lm_with_std <- function(mod, mod_std, conf_level = .95, coef_renames = NU
   mod_tidy <- list()
   mod_std_tidy <- list()
   stat_list <- list()
+  
+  #Remove tidy.lm warning for mira objects
+  for (i in seq_along(mod_std)) {
+    if("mira" %in% class(mod_std[[i]])) {
+      for (j in seq_along(mod_std[[i]][["analyses"]])) {
+        class(mod_std[[i]][["analyses"]][[j]]) <- "lm"
+      }
+    }
+  }
 
   for (i in seq_len(length(mod))) {
     mod_tidy[[i]] <- tidy(mod[[i]])
@@ -116,9 +138,7 @@ report_lm_with_std <- function(mod, mod_std, conf_level = .95, coef_renames = NU
   col_labels <- rep(list(gt::md("*<center>B (SE)</center>*"), gt::md("*<center>&beta; [95% CI]</center>*")), times = length(mod)) %>% stats::setNames(names(mods))
 
 
-  if ("rN_std" %in% class(mod_std[[1]]) | ("mira" %in% class(mod_std[[1]]) & "rN_std" %in% class(mod_std[[1]]$analyses[[1]]))) {
-    notes %<>% c("Given that dummy variables lose their interpretability when standardised (Fox, 2015), &beta; for dummy variables are semi-standardised, indicating the impact of that dummy on the standardised outcome variable.")
-  }
+
 
   notes %<>% c(.make_stars_note())
 
@@ -274,11 +294,11 @@ mira.lm_F_test <- function(mod, return_list = FALSE) {
       magrittr::extract2("fstatistic") %>%
       magrittr::extract(1)
   }
-  F <- purrr::map_dbl(mod$analyses, extract_F)
+  Fs <- purrr::map_dbl(mod$analyses, extract_F)
 
   DoF <- summary(mod$analyses[[1]])$fstatistic[2]
 
-  f.statistics <- miceadds::micombine.F(F, df1 = DoF, display = FALSE)
+  f.statistics <- miceadds::micombine.F(Fs, df1 = DoF, display = FALSE)
   f.stat <- f.statistics["D.numdf"]
 
   DoF_residual <- summary(mod$analyses[[1]])$fstatistic[3]
@@ -293,43 +313,45 @@ mira.lm_F_test <- function(mod, return_list = FALSE) {
   fmt_0 <- "%.0f"
 
   paste0(
-    "*F*(", DoF, ", ", DoF_residual, ") = ", sprintf(fmt, f.stat), ", *p* = ",
+    "*F*(", DoF, ", ", DoF_residual, ") = ", sprintf(fmt, f.stat), ", *p* ",
     fmt_p(p_value)
   )
 }
 
-
-#' Create a summary table comparing standardised and non-standardised
+#' Create a summary table comparing standardized and non-standardized
 #' proportional odd logistic regression models
 #'
 #' This function creates a summary table for polr models (including mice::mira objects
-#' containing polr-models) that shows a standardised and non-standardised version of the model
+#' containing polr-models) that shows a standardized and non-standardized version of the model
 #' side-by-side. Several pairs of such models can be compared side-by-side.
+#' 
+#' The R2 shown is the maximum likelihood pseudo R2 returned by \link[pscl]{pR2}.
 #'
-#' @param mod A polr-model/mira object of polr models, with variables not standardised (or a list of such models)
-#' @param mod_std A polr-model/mira object of polr models, with standardised predictor variables (or a list of such models)
+#' @param mod A polr-model/mira object of polr models, with variables not standardized (or a list of such models)
+#' @param mod_std A polr-model/mira object of polr models, with standardized predictor variables (or a list of such models)
 #' @param conf_level Confidence level to use for confidence intervals, defaults to .95
 #' @param OR Logical. Should odds ratios be shown instead of typical coefficients. If TRUE, estimates are exponentiated
 #' @param filename the file name to create on disk. Include '.html' extension to best preserve formatting (see gt::gtsave for details)
 #' @param model_names If several pairs of models are to be plotted side by side, indicate the label for each *pair* here
 #' @param show_nimp Logical. If mira objects are passed, this determines whether the number of imputations will be reported as a model statistic
 #' @param notes List of notes to append to bottom of table. An explanation of significance stars is automatically added. A note is also added
-#' stating that dummy variables were not scaled in standardisation. If you approached standardisation differently, that should be removed.
+#' stating that dummy variables were not scaled in standardization. If you approached standardisation differently, that should be removed.
 #' @param apa_style Logical, should APA-style formatting be applied
-#' @param stars Named vector of significance stars and their thresholds, check `rNuggets:::std_stars_pad` for default.
+#' @param stars Named vector of significance stars and their thresholds, check `timesaveR:::std_stars_pad` for default.
 #' @param statistic_vertical Should standard errors and CIs be shown below coefficients? Defaults to horizontal layout
 #' @inheritParams modelsummary::modelsummary
 #' @inheritDotParams modelsummary::modelsummary -models -statistic -conf_level -stars
+#' @examples 
+#' library(MASS)
+#' pov_att <- polr(poverty ~ religion + age + gender, data = WVS)
+#' pov_att_std <- polr_std(poverty ~ religion + age + gender, data = WVS)
+#' report_polr_with_std(pov_att, pov_att_std, coef_omit = "\\|")
 #' @export
 
 report_polr_with_std <- function(mod, mod_std, OR = TRUE, conf_level = .95, fmt = "%.2f", statistic_vertical = FALSE, filename = NULL, model_names = NULL, show_nimp = FALSE, notes = list(), apa_style = TRUE, stars = std_stars_pad, ...) {
   .check_req_packages(c("modelsummary", "gt", "htmltools", "readr", "pscl"))
 
-  # TK: add polr_std function and show this note only when that function was used.
-
-  notes %<>% c("Given that dummy variables loose their interpretability when standardised (Fox, 2015), standardised OR are only shown for continuous predictors.")
-
-  if ((is.list(mod) | is.list(mod_std)) & !(length(mod) == length(mod_std))) {
+  if (("list" %in% class(mod) | "list" %in% class(mod_std)) & !(length(mod) == length(mod_std))) {
     stop("Same number of models need to be included in mod and mod_std arguments")
   }
 
@@ -340,6 +362,11 @@ report_polr_with_std <- function(mod, mod_std, OR = TRUE, conf_level = .95, fmt 
     stop("Length of model names needs to be the same as length of model")
   }
 
+  if ("tsR_std" %in% class(mod_std[[1]]) || ("mira" %in% class(mod_std[[1]]) && "tsR_std" %in% class(mod_std[[1]]$analyses[[1]]))) {
+    notes %<>% c("Given that dummy variables lose their interpretability when standardized, only continuous predictors are standardized.")
+  }
+  
+  
   mod <- purrr::map(mod, function(x) {
     if (class(x)[1] == "polr") add_class(x, "polr_p") else x
   })
@@ -446,12 +473,12 @@ report_polr_with_std <- function(mod, mod_std, OR = TRUE, conf_level = .95, fmt 
     <td class="gt_row gt_left" rowspan="1" colspan="1">  <em>R<sup>2</sup>     </td>'
 
   R2s <- numeric()
-
-  for (i in seq_along(mods)) {
-    if (class(mods[[i]])[1] %in% c("glm", "polr", "multinorm")) {
-      R2s[i] <- pscl::pR2(mods[[i]]) %>% magrittr::extract("r2ML")
-    } else if ("mira" %in% class(mods[[i]])) {
-      R2s[i] <- mean(purrr::map_dbl(mods[[i]]$analyses, function(x) pscl::pR2(x) %>% magrittr::extract("r2ML")))
+  
+  for (i in seq_along(mod)) {
+    if (any(c("glm", "polr", "multinorm") %in% class(mod[[i]]))) {
+      R2s[i] <- pscl::pR2(mod[[i]]) %>% magrittr::extract("r2ML")
+    } else if ("mira" %in% class(mod[[i]])) {
+      R2s[i] <- mean(purrr::map_dbl(mod[[i]]$analyses, function(x) pscl::pR2(x) %>% magrittr::extract("r2ML")))
     }
   }
 
@@ -559,15 +586,17 @@ glance.mira <- function(x, ...) {
   return(out)
 }
 
-#' Helper function to enable tidy.lm to be used on lm_std() models
+#' Helper function to enable tidiers to be used on standardized models
 #'
-#' Strips rN_std class and calls tidy() again
-#' @param x An object with class rN_std
+#' Strips tsR_std class and calls tidy() again 
+#' (for use with lm_std() and polr_std() outputs)
+#' 
+#' @param x An object with class tsR_std
 #' @param ... arguments passed on to tidy method
 #' @export
 
-tidy.rN_std <- function(x, ...) {
-  class(x) <- class(x)[class(x) != "rN_std"]
+tidy.tsR_std <- function(x, ...) {
+  class(x) <- class(x)[class(x) != "tsR_std"]
   generics::tidy(x, ...)
 }
 

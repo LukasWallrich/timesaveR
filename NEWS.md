@@ -2,7 +2,8 @@
 
 ## New capabilities
 
-* Added `svy_miss_var_summary()` tp quickly check for missing data in survey objects
+* Added `svy_miss_var_summary()` to quickly check for missing data in survey objects
+* Added `polr_std()` function to run proportional-odds model with continuous predictors standardised (analogous to `lm_std()`)
 
 ## Enhancements
 
