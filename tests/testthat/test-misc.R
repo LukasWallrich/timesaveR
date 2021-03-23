@@ -19,3 +19,14 @@ test_that("line_to_vector works", {
     "c(1, 2, 3)"
   )
 })
+
+set.seed(300688)
+x <- cut_p(iris$Sepal.Length, p = c(.25, .50, .25), fct_levels = c("short", "middling", "long"), verbose = FALSE)
+
+test_that("cut_p works", {
+  expect_equal(levels(x), c("short", "middling", "long"))
+  expect_equal(prop.table(table(x))[2], .5, ignore_attr = TRUE)
+})
+
+library(broom)
+mylogit <- glm(am ~ mpg + wt, data = mtcars, family = "binomial")
