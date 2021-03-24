@@ -456,7 +456,8 @@ pairwise_t_tests <- function(df, outcome, groups, p.adjust.method = p.adjust.met
 #' polr() with standardised continuous variables
 #'
 #' This runs \code{\link[MASS]{polr()}} after standardising all continuous predictors, while leaving
-#' factors intact.
+#' factors intact. Note that the Hessian (the observed information matrix)
+#' is always returned, so that the `Hess` argument cannot be used.
 #'
 #' In the model call, the weights variable will always be called `.weights`. This might
 #' pose a problem when you update the model later on, for  the moment the only workaround
@@ -464,7 +465,7 @@ pairwise_t_tests <- function(df, outcome, groups, p.adjust.method = p.adjust.met
 #' Github).
 #'
 #' @inheritParams MASS::polr
-#' @inheritDotParams stats::lm -data -subset -Hess
+#' @inheritDotParams MASS::polr -data -subset -Hess
 #' @references See (Fox, 2015) for an argument why dummy variables should never
 #' be standardised. 
 #' @examples 
