@@ -80,7 +80,7 @@ factors intact." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9010</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9012</span>
       </span>
     </div>
 
@@ -144,7 +144,7 @@ factors intact." />
 factors intact.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>lm_std</span><span class='op'>(</span><span class='va'>formula</span>, data <span class='op'>=</span> <span class='cn'>NULL</span>, weights <span class='op'>=</span> <span class='cn'>NULL</span>, rename_std <span class='op'>=</span> <span class='cn'>FALSE</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>lm_std</span><span class='op'>(</span><span class='va'>formula</span>, data <span class='op'>=</span> <span class='cn'>NULL</span>, weights <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -173,15 +173,8 @@ factors intact.</p>
     ordinary least squares is used.  See also &#8216;Details&#8217;,</p></td>
     </tr>
     <tr>
-      <th>rename_std</th>
-      <td><p>Logical. Should standardised variables be indicated by _sd
-suffix</p></td>
-    </tr>
-    <tr>
       <th>...</th>
       <td><p>Arguments passed on to <code><a href='https://rdrr.io/r/stats/lm.html'>stats::lm</a></code></p><dl>
-    <dt><code>subset</code></dt><dd><p>an optional vector specifying a subset of observations
-    to be used in the fitting process.</p></dd>
     <dt><code>na.action</code></dt><dd><p>a function which indicates what should happen
     when the data contain <code>NA</code>s.  The default is set by
     the <code>na.action</code> setting of <code><a href='https://rdrr.io/r/base/options.html'>options</a></code>, and is
@@ -220,7 +213,7 @@ suffix</p></td>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>In the model call, the weights variable will always be called weights. This might
+    <p>In the model call, the weights variable will always be called `.weights`. This might
 pose a problem when you update the model later on, for  the moment the only workaround
 is to rename the weights variable accordingly (or to fix it and contribute a PR on
 Github).</p>
@@ -230,6 +223,16 @@ Github).</p>
 be standardised. If you want to run a model with all variables standardised,
 one option is `QuantPsyc::lm.beta()`</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>lm_std</span><span class='op'>(</span><span class='va'>Sepal.Length</span> <span class='op'>~</span> <span class='va'>Sepal.Width</span> <span class='op'>+</span> <span class='va'>Species</span>, <span class='va'>iris</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; 
+#&gt; Call:
+#&gt; lm(formula = Sepal.Length ~ Sepal.Width + Species, data = data)
+#&gt; 
+#&gt; Coefficients:
+#&gt;       (Intercept)        Sepal.Width  Speciesversicolor   Speciesvirginica  
+#&gt;            -1.371              0.423              1.762              2.351  
+#&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

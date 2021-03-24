@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create a correlation matrix from multiply imputed data with weights — wtd_cor_matrix_mi • timesaveR</title>
+<title>Tidy function to exponentiate coefficients — tidy.exp • timesaveR</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,10 +46,12 @@
 
 
 
-<meta property="og:title" content="Create a correlation matrix from multiply imputed data with weights — wtd_cor_matrix_mi" />
-<meta property="og:description" content="This function takes an imputationList with a vector of weights and returns
-a correlation matrix for all numeric variables as well as a list of
-descriptives that pools the results across all imputations." />
+<meta property="og:title" content="Tidy function to exponentiate coefficients — tidy.exp" />
+<meta property="og:description" content="This function calls the tidy method based on the second class of the
+object (i.e. after removing the &quot;exp&quot; class that led to it being called),
+and then exponentiates the returned estimates and confidence intervals (if any)
+in the tibble. This is usually used to turn coefficients of logistic
+regression models into Odds Ratios." />
 
 
 
@@ -135,54 +137,37 @@ descriptives that pools the results across all imputations." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create a correlation matrix from multiply imputed data with weights</h1>
-    <small class="dont-index">Source: <a href='https://github.com/LukasWallrich/timesaveR/blob/master/R/cor_tables.R'><code>R/cor_tables.R</code></a></small>
-    <div class="hidden name"><code>wtd_cor_matrix_mi.Rd</code></div>
+    <h1>Tidy function to exponentiate coefficients</h1>
+    <small class="dont-index">Source: <a href='https://github.com/LukasWallrich/timesaveR/blob/master/R/misc.R'><code>R/misc.R</code></a></small>
+    <div class="hidden name"><code>tidy.exp.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function takes an imputationList with a vector of weights and returns
-a correlation matrix for all numeric variables as well as a list of
-descriptives that pools the results across all imputations.</p>
+    <p>This function calls the tidy method based on the second class of the
+object (i.e. after removing the "exp" class that led to it being called),
+and then exponentiates the returned estimates and confidence intervals (if any)
+in the tibble. This is usually used to turn coefficients of logistic
+regression models into Odds Ratios.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>wtd_cor_matrix_mi</span><span class='op'>(</span><span class='va'>mi_list</span>, <span class='va'>weights</span>, var_names <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='co'># S3 method for exp</span>
+<span class='fu'><a href='https://generics.r-lib.org/reference/tidy.html'>tidy</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>mi_list</th>
-      <td><p>A list of dataframes of multiple imputation results</p></td>
+      <th>x</th>
+      <td><p>An object, usually containing a logistic regression model. Should
+have the class "exp" as the first of its classes, and then a class that dispatches
+it to an appropriate `generics::tidy`` function</p></td>
     </tr>
     <tr>
-      <th>weights</th>
-      <td><p>A variable within mi_list that gives the survey weights</p></td>
-    </tr>
-    <tr>
-      <th>var_names</th>
-      <td><p>A named character vector with new variable names or a tibble as provided by <code><a href='get_rename_tribbles.html'>get_rename_tribbles</a></code>
-for variables. If NULL, then the variables are not renamed. If names are provided, only the variables included here are retained.
-This is most helpful when the results are passed to some print function, such as <code><a href='report_cor_table.html'>report_cor_table</a></code>
-To facilitate post-processing, correlations with original variable
-names are returned in the `tests` element.</p></td>
+      <th>...</th>
+      <td><p>Arguments passed on to the appropriate `tidy` function</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
-
-    <p>Takes some code from the <code><a href='https://rdrr.io/pkg/miceadds/man/micombine.cor.html'>miceadds::micombine.cor</a></code> function,
-but adapted to use weights and return in the format accepted by
-<code>report_cor_table</code></p>
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>A correlation matrix list similar to the format provided by
-<code><a href='https://jtools.jacob-long.com/reference/svycor.html'>jtools::svycor()</a></code> with the addition of a <code>desc</code>-element with means
-and standard deviations of the variables.</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>Variables starting with . are dropped, as these are likely to be .imp and .id
-from mice. If you want correlations for such variables, rename them.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

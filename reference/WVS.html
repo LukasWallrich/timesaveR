@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create a correlation matrix from multiply imputed data with weights — wtd_cor_matrix_mi • timesaveR</title>
+<title>Sample data: World Values Survey — WVS • timesaveR</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,10 +46,10 @@
 
 
 
-<meta property="og:title" content="Create a correlation matrix from multiply imputed data with weights — wtd_cor_matrix_mi" />
-<meta property="og:description" content="This function takes an imputationList with a vector of weights and returns
-a correlation matrix for all numeric variables as well as a list of
-descriptives that pools the results across all imputations." />
+<meta property="og:title" content="Sample data: World Values Survey — WVS" />
+<meta property="og:description" content="This dataset contains responses from the World Values Surveys 1995-1997 for 
+Australia, Norway, Sweden, and the United States. It is taken from the
+carData package." />
 
 
 
@@ -135,54 +135,35 @@ descriptives that pools the results across all imputations." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create a correlation matrix from multiply imputed data with weights</h1>
-    <small class="dont-index">Source: <a href='https://github.com/LukasWallrich/timesaveR/blob/master/R/cor_tables.R'><code>R/cor_tables.R</code></a></small>
-    <div class="hidden name"><code>wtd_cor_matrix_mi.Rd</code></div>
+    <h1>Sample data: World Values Survey</h1>
+    <small class="dont-index">Source: <a href='https://github.com/LukasWallrich/timesaveR/blob/master/R/data_documentation.R'><code>R/data_documentation.R</code></a></small>
+    <div class="hidden name"><code>WVS.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function takes an imputationList with a vector of weights and returns
-a correlation matrix for all numeric variables as well as a list of
-descriptives that pools the results across all imputations.</p>
+    <p>This dataset contains responses from the World Values Surveys 1995-1997 for 
+Australia, Norway, Sweden, and the United States. It is taken from the
+<code>carData</code> package.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>wtd_cor_matrix_mi</span><span class='op'>(</span><span class='va'>mi_list</span>, <span class='va'>weights</span>, var_names <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>mi_list</th>
-      <td><p>A list of dataframes of multiple imputation results</p></td>
-    </tr>
-    <tr>
-      <th>weights</th>
-      <td><p>A variable within mi_list that gives the survey weights</p></td>
-    </tr>
-    <tr>
-      <th>var_names</th>
-      <td><p>A named character vector with new variable names or a tibble as provided by <code><a href='get_rename_tribbles.html'>get_rename_tribbles</a></code>
-for variables. If NULL, then the variables are not renamed. If names are provided, only the variables included here are retained.
-This is most helpful when the results are passed to some print function, such as <code><a href='report_cor_table.html'>report_cor_table</a></code>
-To facilitate post-processing, correlations with original variable
-names are returned in the `tests` element.</p></td>
-    </tr>
-    </table>
 
-    <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
-
-    <p>Takes some code from the <code><a href='https://rdrr.io/pkg/miceadds/man/micombine.cor.html'>miceadds::micombine.cor</a></code> function,
-but adapted to use weights and return in the format accepted by
-<code>report_cor_table</code></p>
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>A correlation matrix list similar to the format provided by
-<code><a href='https://jtools.jacob-long.com/reference/svycor.html'>jtools::svycor()</a></code> with the addition of a <code>desc</code>-element with means
-and standard deviations of the variables.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Variables starting with . are dropped, as these are likely to be .imp and .id
-from mice. If you want correlations for such variables, rename them.</p>
+    <p>#' @format A dataframe with 5,381 rows and 23 columns</p><dl>
+ <dt>poverty</dt><dd><p>“Do you think that what the government is doing for people in 
+ poverty in this country is about the right amount, too much, or too little?” (ordered): <code>Too Little, About Right, Too Much</code></p></dd>
+ <dt>religion</dt><dd><p>Member of a religion: <code>yes</code> or <code>no</code></p></dd>
+ <dt>degree</dt><dd><p>Held a university degree: <code>yes</code> or <code>no</code></p></dd>
+ <dt>country</dt><dd><p><code>Australia, Norway, Sweden</code> or <code>USA</code></p></dd>
+ <dt>age</dt><dd><p>in years</p></dd>
+ <dt>gender</dt><dd><p><code>male</code> or <code>female</code></p></dd>
+ 
+</dl>
+
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Taken from carData package</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

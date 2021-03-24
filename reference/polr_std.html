@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create a correlation matrix from multiply imputed data with weights — wtd_cor_matrix_mi • timesaveR</title>
+<title>polr() with standardised continuous variables — polr_std • timesaveR</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,10 +46,10 @@
 
 
 
-<meta property="og:title" content="Create a correlation matrix from multiply imputed data with weights — wtd_cor_matrix_mi" />
-<meta property="og:description" content="This function takes an imputationList with a vector of weights and returns
-a correlation matrix for all numeric variables as well as a list of
-descriptives that pools the results across all imputations." />
+<meta property="og:title" content="polr() with standardised continuous variables — polr_std" />
+<meta property="og:description" content="This runs polr() after standardising all continuous predictors, while leaving
+factors intact. Note that the Hessian (the observed information matrix)
+is always returned, so that the `Hess` argument cannot be used." />
 
 
 
@@ -135,55 +135,84 @@ descriptives that pools the results across all imputations." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create a correlation matrix from multiply imputed data with weights</h1>
-    <small class="dont-index">Source: <a href='https://github.com/LukasWallrich/timesaveR/blob/master/R/cor_tables.R'><code>R/cor_tables.R</code></a></small>
-    <div class="hidden name"><code>wtd_cor_matrix_mi.Rd</code></div>
+    <h1>polr() with standardised continuous variables</h1>
+    <small class="dont-index">Source: <a href='https://github.com/LukasWallrich/timesaveR/blob/master/R/stat_tests.R'><code>R/stat_tests.R</code></a></small>
+    <div class="hidden name"><code>polr_std.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function takes an imputationList with a vector of weights and returns
-a correlation matrix for all numeric variables as well as a list of
-descriptives that pools the results across all imputations.</p>
+    <p>This runs <code>polr()</code> after standardising all continuous predictors, while leaving
+factors intact. Note that the Hessian (the observed information matrix)
+is always returned, so that the `Hess` argument cannot be used.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>wtd_cor_matrix_mi</span><span class='op'>(</span><span class='va'>mi_list</span>, <span class='va'>weights</span>, var_names <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>polr_std</span><span class='op'>(</span><span class='va'>formula</span>, data <span class='op'>=</span> <span class='cn'>NULL</span>, weights <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>mi_list</th>
-      <td><p>A list of dataframes of multiple imputation results</p></td>
+      <th>formula</th>
+      <td><p>a formula expression as for regression models, of the form
+    <code>response ~ predictors</code>. The response should be a factor
+    (preferably an ordered factor), which will be interpreted as an
+    ordinal response, with levels ordered as in the factor.  
+    The model must have an intercept: attempts to remove one will
+    lead to a warning and be ignored.  An offset may be used.  See the
+    documentation of <code><a href='https://rdrr.io/r/stats/formula.html'>formula</a></code> for other details.</p></td>
+    </tr>
+    <tr>
+      <th>data</th>
+      <td><p>an optional data frame, list or environment in which to interpret
+    the variables occurring in <code>formula</code>.</p></td>
     </tr>
     <tr>
       <th>weights</th>
-      <td><p>A variable within mi_list that gives the survey weights</p></td>
+      <td><p>optional case weights in fitting.  Default to 1.</p></td>
     </tr>
     <tr>
-      <th>var_names</th>
-      <td><p>A named character vector with new variable names or a tibble as provided by <code><a href='get_rename_tribbles.html'>get_rename_tribbles</a></code>
-for variables. If NULL, then the variables are not renamed. If names are provided, only the variables included here are retained.
-This is most helpful when the results are passed to some print function, such as <code><a href='report_cor_table.html'>report_cor_table</a></code>
-To facilitate post-processing, correlations with original variable
-names are returned in the `tests` element.</p></td>
+      <th>...</th>
+      <td><p>Arguments passed on to <code><a href='https://rdrr.io/pkg/MASS/man/polr.html'>MASS::polr</a></code></p><dl>
+    <dt><code>start</code></dt><dd><p>initial values for the parameters.  This is in the format
+    <code><a href='https://rdrr.io/r/base/c.html'>c(coefficients, zeta)</a></code>: see the Values section.</p></dd>
+    <dt><code>na.action</code></dt><dd><p>a function to filter missing data.</p></dd>
+    <dt><code>contrasts</code></dt><dd><p>a list of contrasts to be used for some or all of
+    the factors appearing as variables in the model formula.</p></dd>
+    <dt><code>model</code></dt><dd><p>logical for whether the model matrix should be returned.</p></dd>
+    <dt><code>method</code></dt><dd><p>logistic or probit or (complementary) log-log or cauchit
+    (corresponding to a Cauchy latent variable).</p></dd>
+  
+</dl></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
-
-    <p>Takes some code from the <code><a href='https://rdrr.io/pkg/miceadds/man/micombine.cor.html'>miceadds::micombine.cor</a></code> function,
-but adapted to use weights and return in the format accepted by
-<code>report_cor_table</code></p>
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>A correlation matrix list similar to the format provided by
-<code><a href='https://jtools.jacob-long.com/reference/svycor.html'>jtools::svycor()</a></code> with the addition of a <code>desc</code>-element with means
-and standard deviations of the variables.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Variables starting with . are dropped, as these are likely to be .imp and .id
-from mice. If you want correlations for such variables, rename them.</p>
+    <p>In the model call, the weights variable will always be called `.weights`. This might
+pose a problem when you update the model later on, for  the moment the only workaround
+is to rename the weights variable accordingly (or to fix it and contribute a PR on
+Github).</p>
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
+    <p>See (Fox, 2015) for an argument why dummy variables should never
+be standardised.</p>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>polr_std</span><span class='op'>(</span><span class='va'>poverty</span> <span class='op'>~</span> <span class='va'>religion</span> <span class='op'>+</span> <span class='va'>age</span> <span class='op'>+</span> <span class='va'>gender</span>, <span class='va'>WVS</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; Call:
+#&gt; MASS::polr(formula = poverty ~ religion + age + gender, data = data, 
+#&gt;     Hess = TRUE)
+#&gt; 
+#&gt; Coefficients:
+#&gt; religionyes         age  gendermale 
+#&gt;  -0.0557976   0.2255645   0.1507886 
+#&gt; 
+#&gt; Intercepts:
+#&gt; Too Little|About Right   About Right|Too Much 
+#&gt;             0.03750694             1.77373803 
+#&gt; 
+#&gt; Residual Deviance: 10655.85 
+#&gt; AIC: 10665.85 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create a summary table comparing standardised and non-standardised
+<title>Create a summary table comparing standardized and non-standardized
 proportional odd logistic regression models — report_polr_with_std • timesaveR</title>
 
 <!-- favicons -->
@@ -47,10 +47,10 @@ proportional odd logistic regression models — report_polr_with_std • timesav
 
 
 
-<meta property="og:title" content="Create a summary table comparing standardised and non-standardised
+<meta property="og:title" content="Create a summary table comparing standardized and non-standardized
 proportional odd logistic regression models — report_polr_with_std" />
 <meta property="og:description" content="This function creates a summary table for polr models (including mice::mira objects
-containing polr-models) that shows a standardised and non-standardised version of the model
+containing polr-models) that shows a standardized and non-standardized version of the model
 side-by-side. Several pairs of such models can be compared side-by-side." />
 
 
@@ -83,7 +83,7 @@ side-by-side. Several pairs of such models can be compared side-by-side." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9010</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9012</span>
       </span>
     </div>
 
@@ -137,15 +137,15 @@ side-by-side. Several pairs of such models can be compared side-by-side." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create a summary table comparing standardised and non-standardised
+    <h1>Create a summary table comparing standardized and non-standardized
 proportional odd logistic regression models</h1>
-    <small class="dont-index">Source: <a href='https://github.com/LukasWallrich/timesaveR/blob/master/R/lm_tables.R'><code>R/lm_tables.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/LukasWallrich/timesaveR/blob/master/R/mod_tables.R'><code>R/mod_tables.R</code></a></small>
     <div class="hidden name"><code>report_polr_with_std.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>This function creates a summary table for polr models (including mice::mira objects
-containing polr-models) that shows a standardised and non-standardised version of the model
+containing polr-models) that shows a standardized and non-standardized version of the model
 side-by-side. Several pairs of such models can be compared side-by-side.</p>
     </div>
 
@@ -170,11 +170,11 @@ side-by-side. Several pairs of such models can be compared side-by-side.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>mod</th>
-      <td><p>A polr-model/mira object of polr models, with variables not standardised (or a list of such models)</p></td>
+      <td><p>A polr-model/mira object of polr models, with variables not standardized (or a list of such models)</p></td>
     </tr>
     <tr>
       <th>mod_std</th>
-      <td><p>A polr-model/mira object of polr models, with standardised predictor variables (or a list of such models)</p></td>
+      <td><p>A polr-model/mira object of polr models, with standardized predictor variables (or a list of such models)</p></td>
     </tr>
     <tr>
       <th>OR</th>
@@ -211,7 +211,7 @@ side-by-side. Several pairs of such models can be compared side-by-side.</p>
     <tr>
       <th>notes</th>
       <td><p>List of notes to append to bottom of table. An explanation of significance stars is automatically added. A note is also added
-stating that dummy variables were not scaled in standardisation. If you approached standardisation differently, that should be removed.</p></td>
+stating that dummy variables were not scaled in standardization. If you approached standardisation differently, that should be removed.</p></td>
     </tr>
     <tr>
       <th>apa_style</th>
@@ -219,7 +219,7 @@ stating that dummy variables were not scaled in standardisation. If you approach
     </tr>
     <tr>
       <th>stars</th>
-      <td><p>Named vector of significance stars and their thresholds, check `rNuggets:::std_stars_pad` for default.</p></td>
+      <td><p>Named vector of significance stars and their thresholds, check `timesaveR:::std_stars_pad` for default.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -276,7 +276,414 @@ column center-aligned, and the 3rd column right-aligned.</p></dd>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
+    <p>The R2 shown is the maximum likelihood pseudo R2 returned by <a href='https://rdrr.io/pkg/pscl/man/pR2.html'>pR2</a>.</p>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://www.stats.ox.ac.uk/pub/MASS4/'>MASS</a></span><span class='op'>)</span>
+<span class='va'>pov_att</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/MASS/man/polr.html'>polr</a></span><span class='op'>(</span><span class='va'>poverty</span> <span class='op'>~</span> <span class='va'>religion</span> <span class='op'>+</span> <span class='va'>age</span> <span class='op'>+</span> <span class='va'>gender</span>, data <span class='op'>=</span> <span class='va'>WVS</span><span class='op'>)</span>
+<span class='va'>pov_att_std</span> <span class='op'>&lt;-</span> <span class='fu'><a href='polr_std.html'>polr_std</a></span><span class='op'>(</span><span class='va'>poverty</span> <span class='op'>~</span> <span class='va'>religion</span> <span class='op'>+</span> <span class='va'>age</span> <span class='op'>+</span> <span class='va'>gender</span>, data <span class='op'>=</span> <span class='va'>WVS</span><span class='op'>)</span>
+<span class='fu'>report_polr_with_std</span><span class='op'>(</span><span class='va'>pov_att</span>, <span class='va'>pov_att_std</span>, coef_omit <span class='op'>=</span> <span class='st'>"\\|"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Re-fitting to get Hessian</span></div><div class='output co'>#&gt; fitting null model for pseudo-r2</div><div class='output co'>#&gt; &lt;!DOCTYPE html&gt;
+#&gt; &lt;html lang="en"&gt;
+#&gt; &lt;head&gt;
+#&gt; &lt;meta charset="utf-8"/&gt;
+#&gt; &lt;style&gt;body{background-color:white;}&lt;/style&gt;
+#&gt; 
+#&gt; 
+#&gt; &lt;/head&gt;
+#&gt; &lt;body&gt;
+#&gt; &lt;style&gt;html {
+#&gt;   font-family: times, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+#&gt; }
+#&gt; 
+#&gt; #vuzjcdmfnb .gt_table {
+#&gt;   display: table;
+#&gt;   border-collapse: collapse;
+#&gt;   margin-left: auto;
+#&gt;   margin-right: auto;
+#&gt;   color: #333333;
+#&gt;   font-size: 12px;
+#&gt;   font-weight: normal;
+#&gt;   font-style: none;
+#&gt;   background-color: #FFFFFF;
+#&gt;   width: auto;
+#&gt;   border-top-style: none;
+#&gt;   border-top-width: 2px;
+#&gt;   border-top-color: white;
+#&gt;   border-right-style: none;
+#&gt;   border-right-width: 2px;
+#&gt;   border-right-color: #D3D3D3;
+#&gt;   border-bottom-style: none;
+#&gt;   border-bottom-width: 2px;
+#&gt;   border-bottom-color: #A8A8A8;
+#&gt;   border-left-style: none;
+#&gt;   border-left-width: 2px;
+#&gt;   border-left-color: #D3D3D3;
+#&gt; }
+#&gt; 
+#&gt; #vuzjcdmfnb .gt_heading {
+#&gt;   background-color: #FFFFFF;
+#&gt;   text-align: center;
+#&gt;   border-bottom-color: #FFFFFF;
+#&gt;   border-left-style: none;
+#&gt;   border-left-width: 1px;
+#&gt;   border-left-color: #D3D3D3;
+#&gt;   border-right-style: none;
+#&gt;   border-right-width: 1px;
+#&gt;   border-right-color: #D3D3D3;
+#&gt; }
+#&gt; 
+#&gt; #vuzjcdmfnb .gt_title {
+#&gt;   color: #333333;
+#&gt;   font-size: 12px;
+#&gt;   font-weight: initial;
+#&gt;   padding-top: 4px;
+#&gt;   padding-bottom: 4px;
+#&gt;   border-bottom-color: #FFFFFF;
+#&gt;   border-bottom-width: 0;
+#&gt; }
+#&gt; 
+#&gt; #vuzjcdmfnb .gt_subtitle {
+#&gt;   color: #333333;
+#&gt;   font-size: 12px;
+#&gt;   font-weight: initial;
+#&gt;   padding-top: 0;
+#&gt;   padding-bottom: 4px;
+#&gt;   border-top-color: #FFFFFF;
+#&gt;   border-top-width: 0;
+#&gt; }
+#&gt; 
+#&gt; #vuzjcdmfnb .gt_bottom_border {
+#&gt;   border-bottom-style: solid;
+#&gt;   border-bottom-width: 2px;
+#&gt;   border-bottom-color: black;
+#&gt; }
+#&gt; 
+#&gt; #vuzjcdmfnb .gt_col_headings {
+#&gt;   border-top-style: none;
+#&gt;   border-top-width: 2px;
+#&gt;   border-top-color: #D3D3D3;
+#&gt;   border-bottom-style: solid;
+#&gt;   border-bottom-width: 1px;
+#&gt;   border-bottom-color: black;
+#&gt;   border-left-style: none;
+#&gt;   border-left-width: 1px;
+#&gt;   border-left-color: #D3D3D3;
+#&gt;   border-right-style: none;
+#&gt;   border-right-width: 1px;
+#&gt;   border-right-color: #D3D3D3;
+#&gt; }
+#&gt; 
+#&gt; #vuzjcdmfnb .gt_col_heading {
+#&gt;   color: #333333;
+#&gt;   background-color: #FFFFFF;
+#&gt;   font-size: 100%;
+#&gt;   font-weight: normal;
+#&gt;   text-transform: inherit;
+#&gt;   border-left-style: none;
+#&gt;   border-left-width: 1px;
+#&gt;   border-left-color: #D3D3D3;
+#&gt;   border-right-style: none;
+#&gt;   border-right-width: 1px;
+#&gt;   border-right-color: #D3D3D3;
+#&gt;   vertical-align: bottom;
+#&gt;   padding-top: 5px;
+#&gt;   padding-bottom: 6px;
+#&gt;   padding-left: 5px;
+#&gt;   padding-right: 5px;
+#&gt;   overflow-x: hidden;
+#&gt; }
+#&gt; 
+#&gt; #vuzjcdmfnb .gt_column_spanner_outer {
+#&gt;   color: #333333;
+#&gt;   background-color: #FFFFFF;
+#&gt;   font-size: 100%;
+#&gt;   font-weight: normal;
+#&gt;   text-transform: inherit;
+#&gt;   padding-top: 0;
+#&gt;   padding-bottom: 0;
+#&gt;   padding-left: 4px;
+#&gt;   padding-right: 4px;
+#&gt; }
+#&gt; 
+#&gt; #vuzjcdmfnb .gt_column_spanner_outer:first-child {
+#&gt;   padding-left: 0;
+#&gt; }
+#&gt; 
+#&gt; #vuzjcdmfnb .gt_column_spanner_outer:last-child {
+#&gt;   padding-right: 0;
+#&gt; }
+#&gt; 
+#&gt; #vuzjcdmfnb .gt_column_spanner {
+#&gt;   border-bottom-style: solid;
+#&gt;   border-bottom-width: 1px;
+#&gt;   border-bottom-color: black;
+#&gt;   vertical-align: bottom;
+#&gt;   padding-top: 5px;
+#&gt;   padding-bottom: 6px;
+#&gt;   overflow-x: hidden;
+#&gt;   display: inline-block;
+#&gt;   width: 100%;
+#&gt; }
+#&gt; 
+#&gt; #vuzjcdmfnb .gt_group_heading {
+#&gt;   padding: 8px;
+#&gt;   color: #333333;
+#&gt;   background-color: #FFFFFF;
+#&gt;   font-size: 100%;
+#&gt;   font-weight: initial;
+#&gt;   text-transform: inherit;
+#&gt;   border-top-style: none;
+#&gt;   border-top-width: 2px;
+#&gt;   border-top-color: #D3D3D3;
+#&gt;   border-bottom-style: none;
+#&gt;   border-bottom-width: 2px;
+#&gt;   border-bottom-color: #D3D3D3;
+#&gt;   border-left-style: none;
+#&gt;   border-left-width: 1px;
+#&gt;   border-left-color: #D3D3D3;
+#&gt;   border-right-style: none;
+#&gt;   border-right-width: 1px;
+#&gt;   border-right-color: #D3D3D3;
+#&gt;   vertical-align: middle;
+#&gt; }
+#&gt; 
+#&gt; #vuzjcdmfnb .gt_empty_group_heading {
+#&gt;   padding: 0.5px;
+#&gt;   color: #333333;
+#&gt;   background-color: #FFFFFF;
+#&gt;   font-size: 100%;
+#&gt;   font-weight: initial;
+#&gt;   border-top-style: none;
+#&gt;   border-top-width: 2px;
+#&gt;   border-top-color: #D3D3D3;
+#&gt;   border-bottom-style: none;
+#&gt;   border-bottom-width: 2px;
+#&gt;   border-bottom-color: #D3D3D3;
+#&gt;   vertical-align: middle;
+#&gt; }
+#&gt; 
+#&gt; #vuzjcdmfnb .gt_from_md &gt; :first-child {
+#&gt;   margin-top: 0;
+#&gt; }
+#&gt; 
+#&gt; #vuzjcdmfnb .gt_from_md &gt; :last-child {
+#&gt;   margin-bottom: 0;
+#&gt; }
+#&gt; 
+#&gt; #vuzjcdmfnb .gt_row {
+#&gt;   padding-top: 8px;
+#&gt;   padding-bottom: 8px;
+#&gt;   padding-left: 5px;
+#&gt;   padding-right: 5px;
+#&gt;   margin: 10px;
+#&gt;   border-top-style: none;
+#&gt;   border-top-width: 1px;
+#&gt;   border-top-color: white;
+#&gt;   border-left-style: none;
+#&gt;   border-left-width: 1px;
+#&gt;   border-left-color: #D3D3D3;
+#&gt;   border-right-style: none;
+#&gt;   border-right-width: 1px;
+#&gt;   border-right-color: #D3D3D3;
+#&gt;   vertical-align: middle;
+#&gt;   overflow-x: hidden;
+#&gt; }
+#&gt; 
+#&gt; #vuzjcdmfnb .gt_stub {
+#&gt;   color: #333333;
+#&gt;   background-color: #FFFFFF;
+#&gt;   font-size: 100%;
+#&gt;   font-weight: initial;
+#&gt;   text-transform: inherit;
+#&gt;   border-right-style: none;
+#&gt;   border-right-width: 2px;
+#&gt;   border-right-color: #D3D3D3;
+#&gt;   padding-left: 12px;
+#&gt; }
+#&gt; 
+#&gt; #vuzjcdmfnb .gt_summary_row {
+#&gt;   color: #333333;
+#&gt;   background-color: #FFFFFF;
+#&gt;   text-transform: inherit;
+#&gt;   padding-top: 8px;
+#&gt;   padding-bottom: 8px;
+#&gt;   padding-left: 5px;
+#&gt;   padding-right: 5px;
+#&gt; }
+#&gt; 
+#&gt; #vuzjcdmfnb .gt_first_summary_row {
+#&gt;   padding-top: 8px;
+#&gt;   padding-bottom: 8px;
+#&gt;   padding-left: 5px;
+#&gt;   padding-right: 5px;
+#&gt;   border-top-style: none;
+#&gt;   border-top-width: 2px;
+#&gt;   border-top-color: #D3D3D3;
+#&gt; }
+#&gt; 
+#&gt; #vuzjcdmfnb .gt_grand_summary_row {
+#&gt;   color: #333333;
+#&gt;   background-color: #FFFFFF;
+#&gt;   text-transform: inherit;
+#&gt;   padding-top: 8px;
+#&gt;   padding-bottom: 8px;
+#&gt;   padding-left: 5px;
+#&gt;   padding-right: 5px;
+#&gt; }
+#&gt; 
+#&gt; #vuzjcdmfnb .gt_first_grand_summary_row {
+#&gt;   padding-top: 8px;
+#&gt;   padding-bottom: 8px;
+#&gt;   padding-left: 5px;
+#&gt;   padding-right: 5px;
+#&gt;   border-top-style: none;
+#&gt;   border-top-width: 6px;
+#&gt;   border-top-color: #D3D3D3;
+#&gt; }
+#&gt; 
+#&gt; #vuzjcdmfnb .gt_striped {
+#&gt;   background-color: rgba(128, 128, 128, 0.05);
+#&gt; }
+#&gt; 
+#&gt; #vuzjcdmfnb .gt_table_body {
+#&gt;   border-top-style: solid;
+#&gt;   border-top-width: 1px;
+#&gt;   border-top-color: black;
+#&gt;   border-bottom-style: solid;
+#&gt;   border-bottom-width: 1px;
+#&gt;   border-bottom-color: black;
+#&gt; }
+#&gt; 
+#&gt; #vuzjcdmfnb .gt_footnotes {
+#&gt;   color: #333333;
+#&gt;   background-color: #FFFFFF;
+#&gt;   border-bottom-style: none;
+#&gt;   border-bottom-width: 2px;
+#&gt;   border-bottom-color: #D3D3D3;
+#&gt;   border-left-style: none;
+#&gt;   border-left-width: 2px;
+#&gt;   border-left-color: #D3D3D3;
+#&gt;   border-right-style: none;
+#&gt;   border-right-width: 2px;
+#&gt;   border-right-color: #D3D3D3;
+#&gt; }
+#&gt; 
+#&gt; #vuzjcdmfnb .gt_footnote {
+#&gt;   margin: 0px;
+#&gt;   font-size: 90%;
+#&gt;   padding: 4px;
+#&gt; }
+#&gt; 
+#&gt; #vuzjcdmfnb .gt_sourcenotes {
+#&gt;   color: #333333;
+#&gt;   background-color: #FFFFFF;
+#&gt;   border-bottom-style: none;
+#&gt;   border-bottom-width: 2px;
+#&gt;   border-bottom-color: #D3D3D3;
+#&gt;   border-left-style: none;
+#&gt;   border-left-width: 2px;
+#&gt;   border-left-color: #D3D3D3;
+#&gt;   border-right-style: none;
+#&gt;   border-right-width: 2px;
+#&gt;   border-right-color: #D3D3D3;
+#&gt; }
+#&gt; 
+#&gt; #vuzjcdmfnb .gt_sourcenote {
+#&gt;   font-size: 90%;
+#&gt;   padding: 4px;
+#&gt; }
+#&gt; 
+#&gt; #vuzjcdmfnb .gt_left {
+#&gt;   text-align: left;
+#&gt; }
+#&gt; 
+#&gt; #vuzjcdmfnb .gt_center {
+#&gt;   text-align: center;
+#&gt; }
+#&gt; 
+#&gt; #vuzjcdmfnb .gt_right {
+#&gt;   text-align: right;
+#&gt;   font-variant-numeric: tabular-nums;
+#&gt; }
+#&gt; 
+#&gt; #vuzjcdmfnb .gt_font_normal {
+#&gt;   font-weight: normal;
+#&gt; }
+#&gt; 
+#&gt; #vuzjcdmfnb .gt_font_bold {
+#&gt;   font-weight: bold;
+#&gt; }
+#&gt; 
+#&gt; #vuzjcdmfnb .gt_font_italic {
+#&gt;   font-style: italic;
+#&gt; }
+#&gt; 
+#&gt; #vuzjcdmfnb .gt_super {
+#&gt;   font-size: 65%;
+#&gt; }
+#&gt; 
+#&gt; #vuzjcdmfnb .gt_footnote_marks {
+#&gt;   font-style: italic;
+#&gt;   font-size: 65%;
+#&gt; }
+#&gt; &lt;/style&gt;
+#&gt; &lt;div id="vuzjcdmfnb" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"&gt;&lt;table class="gt_table"&gt;
+#&gt;   
+#&gt;   &lt;thead class="gt_col_headings"&gt;
+#&gt;     &lt;tr&gt;
+#&gt;       &lt;th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1"&gt;&lt;/th&gt;
+#&gt;       &lt;th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1"&gt;&lt;em&gt;&lt;center&gt;OR [95% CI]&lt;/center&gt;&lt;/em&gt;&lt;/th&gt;
+#&gt;       &lt;th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1"&gt;&lt;em&gt;&lt;center&gt;Stand. OR [95% CI]&lt;/center&gt;&lt;/em&gt;&lt;/th&gt;
+#&gt;     &lt;/tr&gt;
+#&gt;   &lt;/thead&gt;
+#&gt;   &lt;tbody class="gt_table_body"&gt;
+#&gt;     &lt;tr&gt;
+#&gt;       &lt;td class="gt_row gt_left"&gt;&lt;div class='gt_from_md'&gt;&lt;p&gt;religionyes&lt;/p&gt;
+#&gt; &lt;/div&gt;&lt;/td&gt;
+#&gt;       &lt;td class="gt_row gt_right"&gt;&lt;div class='gt_from_md'&gt;&lt;p&gt;0.95 &amp;nbsp;&amp;nbsp;&amp;nbsp; [0.82, 1.09]&lt;/p&gt;
+#&gt; &lt;/div&gt;&lt;/td&gt;
+#&gt;       &lt;td class="gt_row gt_right"&gt;&lt;div class='gt_from_md'&gt;&lt;p&gt;0.95 &amp;nbsp;&amp;nbsp;&amp;nbsp; [0.82, 1.09]&lt;/p&gt;
+#&gt; &lt;/div&gt;&lt;/td&gt;
+#&gt;     &lt;/tr&gt;
+#&gt;     &lt;tr&gt;
+#&gt;       &lt;td class="gt_row gt_left"&gt;&lt;div class='gt_from_md'&gt;&lt;p&gt;age&lt;/p&gt;
+#&gt; &lt;/div&gt;&lt;/td&gt;
+#&gt;       &lt;td class="gt_row gt_right"&gt;&lt;div class='gt_from_md'&gt;&lt;p&gt;1.01 *** [1.01, 1.02]&lt;/p&gt;
+#&gt; &lt;/div&gt;&lt;/td&gt;
+#&gt;       &lt;td class="gt_row gt_right"&gt;&lt;div class='gt_from_md'&gt;&lt;p&gt;1.25 *** [1.19, 1.32]&lt;/p&gt;
+#&gt; &lt;/div&gt;&lt;/td&gt;
+#&gt;     &lt;/tr&gt;
+#&gt;     &lt;tr&gt;
+#&gt;       &lt;td class="gt_row gt_left"&gt;&lt;div class='gt_from_md'&gt;&lt;p&gt;gendermale&lt;/p&gt;
+#&gt; &lt;/div&gt;&lt;/td&gt;
+#&gt;       &lt;td class="gt_row gt_right"&gt;&lt;div class='gt_from_md'&gt;&lt;p&gt;1.16 **&amp;nbsp; [1.05, 1.29]&lt;/p&gt;
+#&gt; &lt;/div&gt;&lt;/td&gt;
+#&gt;       &lt;td class="gt_row gt_right"&gt;&lt;div class='gt_from_md'&gt;&lt;p&gt;1.16 **&amp;nbsp; [1.05, 1.29]&lt;/p&gt;
+#&gt; &lt;/div&gt;&lt;/td&gt;
+#&gt;     &lt;/tr&gt;
+#&gt;    &lt;tr style="border-top-style: solid; border-top-width: 2px;"&gt;
+#&gt;     &lt;td class="gt_row gt_left" rowspan="1" colspan="1"&gt;  &lt;em&gt;N     &lt;/td&gt; &lt;td class="gt_row gt_center" rowspan="1" colspan="2"&gt; 5381   &lt;/td&gt; &lt;/tr&gt; &lt;tr&gt;
+#&gt;     &lt;td class="gt_row gt_left" rowspan="1" colspan="1"&gt;  &lt;em&gt;R&lt;sup&gt;2&lt;/sup&gt;     &lt;/td&gt; &lt;td class="gt_row gt_center" rowspan="1" colspan="2"&gt; .02   &lt;/td&gt; &lt;/tr&gt; &lt;/tbody&gt;
+#&gt;   &lt;tfoot class="gt_sourcenotes"&gt;
+#&gt;     &lt;tr&gt;
+#&gt;       &lt;td class="gt_sourcenote" colspan="3"&gt;&lt;/td&gt;
+#&gt;     &lt;/tr&gt;
+#&gt;     &lt;tr&gt;
+#&gt;       &lt;td class="gt_sourcenote" colspan="3"&gt;Given that dummy variables lose their interpretability when standardized, only continuous predictors are standardized.&lt;/td&gt;
+#&gt;     &lt;/tr&gt;
+#&gt;     &lt;tr&gt;
+#&gt;       &lt;td class="gt_sourcenote" colspan="3"&gt;&amp;dagger; &lt;em&gt;p&lt;/em&gt; &amp;lt; .1, * &lt;em&gt;p&lt;/em&gt; &amp;lt; .05, ** &lt;em&gt;p&lt;/em&gt; &amp;lt; .01, *** &lt;em&gt;p&lt;/em&gt; &amp;lt; .001&lt;/td&gt;
+#&gt;     &lt;/tr&gt;
+#&gt;   &lt;/tfoot&gt;
+#&gt;   
+#&gt; &lt;/table&gt;&lt;/div&gt;
+#&gt; &lt;/body&gt;
+#&gt; &lt;/html&gt;
+#&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

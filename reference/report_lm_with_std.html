@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create a summary table comparing standardised and non-standardised linear models — report_lm_with_std • timesaveR</title>
+<title>Create a summary table comparing standardized and non-standardized linear models — report_lm_with_std • timesaveR</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,9 +46,9 @@
 
 
 
-<meta property="og:title" content="Create a summary table comparing standardised and non-standardised linear models — report_lm_with_std" />
+<meta property="og:title" content="Create a summary table comparing standardized and non-standardized linear models — report_lm_with_std" />
 <meta property="og:description" content="This function creates a summary table for lm models (including mice::mira objects
-containing lm-models) that shows a standardised and non-standardised version of the model
+containing lm-models) that shows a standardized and non-standardized version of the model
 side-by-side. Several pairs of such models can be compared side-by-side." />
 
 
@@ -81,7 +81,7 @@ side-by-side. Several pairs of such models can be compared side-by-side." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9010</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9012</span>
       </span>
     </div>
 
@@ -135,14 +135,14 @@ side-by-side. Several pairs of such models can be compared side-by-side." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create a summary table comparing standardised and non-standardised linear models</h1>
-    <small class="dont-index">Source: <a href='https://github.com/LukasWallrich/timesaveR/blob/master/R/lm_tables.R'><code>R/lm_tables.R</code></a></small>
+    <h1>Create a summary table comparing standardized and non-standardized linear models</h1>
+    <small class="dont-index">Source: <a href='https://github.com/LukasWallrich/timesaveR/blob/master/R/mod_tables.R'><code>R/mod_tables.R</code></a></small>
     <div class="hidden name"><code>report_lm_with_std.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>This function creates a summary table for lm models (including mice::mira objects
-containing lm-models) that shows a standardised and non-standardised version of the model
+containing lm-models) that shows a standardized and non-standardized version of the model
 side-by-side. Several pairs of such models can be compared side-by-side.</p>
     </div>
 
@@ -168,11 +168,11 @@ side-by-side. Several pairs of such models can be compared side-by-side.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>mod</th>
-      <td><p>A lm-model/mira object of lm models, with variables not standardised (or a list of such models)</p></td>
+      <td><p>A lm-model/mira object of lm models, with variables not standardized (or a list of such models)</p></td>
     </tr>
     <tr>
       <th>mod_std</th>
-      <td><p>A lm-model/mira object of lm models, with standardised variables. Can be
+      <td><p>A lm-model/mira object of lm models, with standardized variables. Can be
 created with <code><a href='lm_std.html'>lm_std</a></code> (or a list of such models)</p></td>
     </tr>
     <tr>
@@ -214,7 +214,7 @@ for variables. If NULL, then the coefficients are not renamed.</p></td>
     </tr>
     <tr>
       <th>notes</th>
-      <td><p>List of notes to append to bottom of table. An explanation of significance stars is automatically added. If the std models were run with a helper function in this package, a note regarding the standardisation is also automatically added.</p></td>
+      <td><p>List of notes to append to bottom of table. An explanation of significance stars is automatically added. If the std models were run with a helper function in this package, a note regarding the standardization is also automatically added.</p></td>
     </tr>
     <tr>
       <th>apa_style</th>
@@ -222,7 +222,7 @@ for variables. If NULL, then the coefficients are not renamed.</p></td>
     </tr>
     <tr>
       <th>stars</th>
-      <td><p>Named vector of significance stars and their thresholds, check `rNuggets:::std_stars_pad` for default.</p></td>
+      <td><p>Named vector of significance stars and their thresholds, check `timesaveR:::std_stars_pad` for default.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -255,7 +255,7 @@ the Viewer).</p>
 <span class='co'># Standard lm model</span>
 <span class='va'>mod1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>mpg</span> <span class='op'>~</span> <span class='va'>hp</span> <span class='op'>+</span> <span class='va'>wt</span>, <span class='va'>mtcars</span><span class='op'>)</span>
 
-<span class='co'># Model with standardised coefficients</span>
+<span class='co'># Model with standardized coefficients</span>
 
 <span class='va'>mod2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='lm_std.html'>lm_std</a></span><span class='op'>(</span><span class='va'>mpg</span> <span class='op'>~</span> <span class='va'>hp</span> <span class='op'>+</span> <span class='va'>wt</span>, <span class='va'>mtcars</span><span class='op'>)</span>
 
@@ -273,7 +273,7 @@ the Viewer).</p>
 #&gt;   font-family: times, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 #&gt; }
 #&gt; 
-#&gt; #ulbfdpbcyv .gt_table {
+#&gt; #kjhvqltorl .gt_table {
 #&gt;   display: table;
 #&gt;   border-collapse: collapse;
 #&gt;   margin-left: auto;
@@ -298,7 +298,7 @@ the Viewer).</p>
 #&gt;   border-left-color: #D3D3D3;
 #&gt; }
 #&gt; 
-#&gt; #ulbfdpbcyv .gt_heading {
+#&gt; #kjhvqltorl .gt_heading {
 #&gt;   background-color: #FFFFFF;
 #&gt;   text-align: center;
 #&gt;   border-bottom-color: #FFFFFF;
@@ -310,7 +310,7 @@ the Viewer).</p>
 #&gt;   border-right-color: #D3D3D3;
 #&gt; }
 #&gt; 
-#&gt; #ulbfdpbcyv .gt_title {
+#&gt; #kjhvqltorl .gt_title {
 #&gt;   color: #333333;
 #&gt;   font-size: 12px;
 #&gt;   font-weight: initial;
@@ -320,7 +320,7 @@ the Viewer).</p>
 #&gt;   border-bottom-width: 0;
 #&gt; }
 #&gt; 
-#&gt; #ulbfdpbcyv .gt_subtitle {
+#&gt; #kjhvqltorl .gt_subtitle {
 #&gt;   color: #333333;
 #&gt;   font-size: 12px;
 #&gt;   font-weight: initial;
@@ -330,13 +330,13 @@ the Viewer).</p>
 #&gt;   border-top-width: 0;
 #&gt; }
 #&gt; 
-#&gt; #ulbfdpbcyv .gt_bottom_border {
+#&gt; #kjhvqltorl .gt_bottom_border {
 #&gt;   border-bottom-style: solid;
 #&gt;   border-bottom-width: 2px;
 #&gt;   border-bottom-color: black;
 #&gt; }
 #&gt; 
-#&gt; #ulbfdpbcyv .gt_col_headings {
+#&gt; #kjhvqltorl .gt_col_headings {
 #&gt;   border-top-style: none;
 #&gt;   border-top-width: 2px;
 #&gt;   border-top-color: #D3D3D3;
@@ -351,7 +351,7 @@ the Viewer).</p>
 #&gt;   border-right-color: #D3D3D3;
 #&gt; }
 #&gt; 
-#&gt; #ulbfdpbcyv .gt_col_heading {
+#&gt; #kjhvqltorl .gt_col_heading {
 #&gt;   color: #333333;
 #&gt;   background-color: #FFFFFF;
 #&gt;   font-size: 100%;
@@ -371,7 +371,7 @@ the Viewer).</p>
 #&gt;   overflow-x: hidden;
 #&gt; }
 #&gt; 
-#&gt; #ulbfdpbcyv .gt_column_spanner_outer {
+#&gt; #kjhvqltorl .gt_column_spanner_outer {
 #&gt;   color: #333333;
 #&gt;   background-color: #FFFFFF;
 #&gt;   font-size: 100%;
@@ -383,15 +383,15 @@ the Viewer).</p>
 #&gt;   padding-right: 4px;
 #&gt; }
 #&gt; 
-#&gt; #ulbfdpbcyv .gt_column_spanner_outer:first-child {
+#&gt; #kjhvqltorl .gt_column_spanner_outer:first-child {
 #&gt;   padding-left: 0;
 #&gt; }
 #&gt; 
-#&gt; #ulbfdpbcyv .gt_column_spanner_outer:last-child {
+#&gt; #kjhvqltorl .gt_column_spanner_outer:last-child {
 #&gt;   padding-right: 0;
 #&gt; }
 #&gt; 
-#&gt; #ulbfdpbcyv .gt_column_spanner {
+#&gt; #kjhvqltorl .gt_column_spanner {
 #&gt;   border-bottom-style: solid;
 #&gt;   border-bottom-width: 1px;
 #&gt;   border-bottom-color: black;
@@ -403,7 +403,7 @@ the Viewer).</p>
 #&gt;   width: 100%;
 #&gt; }
 #&gt; 
-#&gt; #ulbfdpbcyv .gt_group_heading {
+#&gt; #kjhvqltorl .gt_group_heading {
 #&gt;   padding: 8px;
 #&gt;   color: #333333;
 #&gt;   background-color: #FFFFFF;
@@ -425,7 +425,7 @@ the Viewer).</p>
 #&gt;   vertical-align: middle;
 #&gt; }
 #&gt; 
-#&gt; #ulbfdpbcyv .gt_empty_group_heading {
+#&gt; #kjhvqltorl .gt_empty_group_heading {
 #&gt;   padding: 0.5px;
 #&gt;   color: #333333;
 #&gt;   background-color: #FFFFFF;
@@ -440,15 +440,15 @@ the Viewer).</p>
 #&gt;   vertical-align: middle;
 #&gt; }
 #&gt; 
-#&gt; #ulbfdpbcyv .gt_from_md &gt; :first-child {
+#&gt; #kjhvqltorl .gt_from_md &gt; :first-child {
 #&gt;   margin-top: 0;
 #&gt; }
 #&gt; 
-#&gt; #ulbfdpbcyv .gt_from_md &gt; :last-child {
+#&gt; #kjhvqltorl .gt_from_md &gt; :last-child {
 #&gt;   margin-bottom: 0;
 #&gt; }
 #&gt; 
-#&gt; #ulbfdpbcyv .gt_row {
+#&gt; #kjhvqltorl .gt_row {
 #&gt;   padding-top: 8px;
 #&gt;   padding-bottom: 8px;
 #&gt;   padding-left: 5px;
@@ -467,7 +467,7 @@ the Viewer).</p>
 #&gt;   overflow-x: hidden;
 #&gt; }
 #&gt; 
-#&gt; #ulbfdpbcyv .gt_stub {
+#&gt; #kjhvqltorl .gt_stub {
 #&gt;   color: #333333;
 #&gt;   background-color: #FFFFFF;
 #&gt;   font-size: 100%;
@@ -479,7 +479,7 @@ the Viewer).</p>
 #&gt;   padding-left: 12px;
 #&gt; }
 #&gt; 
-#&gt; #ulbfdpbcyv .gt_summary_row {
+#&gt; #kjhvqltorl .gt_summary_row {
 #&gt;   color: #333333;
 #&gt;   background-color: #FFFFFF;
 #&gt;   text-transform: inherit;
@@ -489,7 +489,7 @@ the Viewer).</p>
 #&gt;   padding-right: 5px;
 #&gt; }
 #&gt; 
-#&gt; #ulbfdpbcyv .gt_first_summary_row {
+#&gt; #kjhvqltorl .gt_first_summary_row {
 #&gt;   padding-top: 8px;
 #&gt;   padding-bottom: 8px;
 #&gt;   padding-left: 5px;
@@ -499,7 +499,7 @@ the Viewer).</p>
 #&gt;   border-top-color: #D3D3D3;
 #&gt; }
 #&gt; 
-#&gt; #ulbfdpbcyv .gt_grand_summary_row {
+#&gt; #kjhvqltorl .gt_grand_summary_row {
 #&gt;   color: #333333;
 #&gt;   background-color: #FFFFFF;
 #&gt;   text-transform: inherit;
@@ -509,7 +509,7 @@ the Viewer).</p>
 #&gt;   padding-right: 5px;
 #&gt; }
 #&gt; 
-#&gt; #ulbfdpbcyv .gt_first_grand_summary_row {
+#&gt; #kjhvqltorl .gt_first_grand_summary_row {
 #&gt;   padding-top: 8px;
 #&gt;   padding-bottom: 8px;
 #&gt;   padding-left: 5px;
@@ -519,11 +519,11 @@ the Viewer).</p>
 #&gt;   border-top-color: #D3D3D3;
 #&gt; }
 #&gt; 
-#&gt; #ulbfdpbcyv .gt_striped {
+#&gt; #kjhvqltorl .gt_striped {
 #&gt;   background-color: rgba(128, 128, 128, 0.05);
 #&gt; }
 #&gt; 
-#&gt; #ulbfdpbcyv .gt_table_body {
+#&gt; #kjhvqltorl .gt_table_body {
 #&gt;   border-top-style: solid;
 #&gt;   border-top-width: 1px;
 #&gt;   border-top-color: black;
@@ -532,7 +532,7 @@ the Viewer).</p>
 #&gt;   border-bottom-color: black;
 #&gt; }
 #&gt; 
-#&gt; #ulbfdpbcyv .gt_footnotes {
+#&gt; #kjhvqltorl .gt_footnotes {
 #&gt;   color: #333333;
 #&gt;   background-color: #FFFFFF;
 #&gt;   border-bottom-style: none;
@@ -546,13 +546,13 @@ the Viewer).</p>
 #&gt;   border-right-color: #D3D3D3;
 #&gt; }
 #&gt; 
-#&gt; #ulbfdpbcyv .gt_footnote {
+#&gt; #kjhvqltorl .gt_footnote {
 #&gt;   margin: 0px;
 #&gt;   font-size: 90%;
 #&gt;   padding: 4px;
 #&gt; }
 #&gt; 
-#&gt; #ulbfdpbcyv .gt_sourcenotes {
+#&gt; #kjhvqltorl .gt_sourcenotes {
 #&gt;   color: #333333;
 #&gt;   background-color: #FFFFFF;
 #&gt;   border-bottom-style: none;
@@ -566,46 +566,46 @@ the Viewer).</p>
 #&gt;   border-right-color: #D3D3D3;
 #&gt; }
 #&gt; 
-#&gt; #ulbfdpbcyv .gt_sourcenote {
+#&gt; #kjhvqltorl .gt_sourcenote {
 #&gt;   font-size: 90%;
 #&gt;   padding: 4px;
 #&gt; }
 #&gt; 
-#&gt; #ulbfdpbcyv .gt_left {
+#&gt; #kjhvqltorl .gt_left {
 #&gt;   text-align: left;
 #&gt; }
 #&gt; 
-#&gt; #ulbfdpbcyv .gt_center {
+#&gt; #kjhvqltorl .gt_center {
 #&gt;   text-align: center;
 #&gt; }
 #&gt; 
-#&gt; #ulbfdpbcyv .gt_right {
+#&gt; #kjhvqltorl .gt_right {
 #&gt;   text-align: right;
 #&gt;   font-variant-numeric: tabular-nums;
 #&gt; }
 #&gt; 
-#&gt; #ulbfdpbcyv .gt_font_normal {
+#&gt; #kjhvqltorl .gt_font_normal {
 #&gt;   font-weight: normal;
 #&gt; }
 #&gt; 
-#&gt; #ulbfdpbcyv .gt_font_bold {
+#&gt; #kjhvqltorl .gt_font_bold {
 #&gt;   font-weight: bold;
 #&gt; }
 #&gt; 
-#&gt; #ulbfdpbcyv .gt_font_italic {
+#&gt; #kjhvqltorl .gt_font_italic {
 #&gt;   font-style: italic;
 #&gt; }
 #&gt; 
-#&gt; #ulbfdpbcyv .gt_super {
+#&gt; #kjhvqltorl .gt_super {
 #&gt;   font-size: 65%;
 #&gt; }
 #&gt; 
-#&gt; #ulbfdpbcyv .gt_footnote_marks {
+#&gt; #kjhvqltorl .gt_footnote_marks {
 #&gt;   font-style: italic;
 #&gt;   font-size: 65%;
 #&gt; }
 #&gt; &lt;/style&gt;
-#&gt; &lt;div id="ulbfdpbcyv" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"&gt;&lt;table class="gt_table"&gt;
+#&gt; &lt;div id="kjhvqltorl" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"&gt;&lt;table class="gt_table"&gt;
 #&gt;   
 #&gt;   &lt;thead class="gt_col_headings"&gt;
 #&gt;     &lt;tr&gt;
