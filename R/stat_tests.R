@@ -519,9 +519,9 @@ polr_std <- function(formula, data = NULL, weights = NULL, ...) {
   formula <- Reduce(paste, deparse(formula))
   
   if (!rlang::quo_is_null(weights)) {
-    mod <- eval(parse(text = glue::glue("polr({formula}, data = data, Hess = TRUE, weights = .weights, ...)")))
+    mod <- eval(parse(text = glue::glue("MASS::polr({formula}, data = data, Hess = TRUE, weights = .weights, ...)")))
   } else {
-    mod <- eval(parse(text = glue::glue("polr({formula}, data = data, Hess = TRUE, ...)")))
+    mod <- eval(parse(text = glue::glue("MASS::polr({formula}, data = data, Hess = TRUE, ...)")))
   }
   
   class(mod) <- c("tsR_std", class(mod))

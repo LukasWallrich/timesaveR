@@ -145,7 +145,7 @@ sigstars <- function(p, stars = NULL, pad_html = FALSE, ns = FALSE, return_NAs =
 #' @param ties.method Currently accepts only "random" - could be expanded in the
 #' future, though it is unclear what a better method would be
 #' @param fct_levels Character vector with names for levels. If it is NULL, the
-#' groups will be labelled with their number and the cut-points employed.
+#' groups will be labeled with their number and the cut-points employed.
 #' @param verbose Should boundaries of groups be reported as message?
 #' @return Factor variable with x cut into length(p) categories in given
 #' proportions

@@ -1,7 +1,9 @@
 #' Create overview over missing data in survey object
 #'
-#' This function recreates the \code{\link[naniar]{miss_var_summary}}
-#' output with survey weights for missing counts and proportions.
+#' This function creates a tibble that summarises missing data 
+#' with survey weights for missing counts and proportions. (Apart from
+#' that, it recreates the \code{naniar::miss_var_summary()}
+#' output.)
 #'
 #' @param svy_df A survey object created with the survey package
 #' @param ... Variables to consider. By default this looks at the whole dataset. 

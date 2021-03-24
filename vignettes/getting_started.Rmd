@@ -130,7 +130,7 @@ report_cat_vars(ess_health, health, gndr, cntry, var_names = var_renames,
 
 # Report regression models with standardized coefficients
 
-In psychology, it is often expected that regression models are reported with both unstandardised (B) and standardized (&beta;) coefficients. This can be fiddly and lead to redundant information. The `lm_std()` function easily runs linear regression models that return standardised coefficients and the `report_lm_with_std()` function creates side-by-side regression tables that minimise redundancy.
+In psychology, it is often expected that regression models are reported with both unstandardised (B) and standardized (&beta;) coefficients. This can be fiddly and lead to redundant information. The `lm_std()` function easily runs linear regression models that return standardised coefficients and the `report_lm_with_std()` function creates side-by-side regression tables that minimize redundancy.
 
 At the most basic, you just need to run two models and pass them to the reporting function:
 
