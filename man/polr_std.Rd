@@ -50,7 +50,7 @@ polr_std(formula, data = NULL, weights = NULL, ...)
   }}
 }
 \description{
-This runs \code{\link[MASS]{polr()}} after standardising all continuous predictors, while leaving
+This runs \code{\link[MASS]{polr}} after standardising all continuous predictors, while leaving
 factors intact. Note that the Hessian (the observed information matrix)
 is always returned, so that the `Hess` argument cannot be used.
 }
