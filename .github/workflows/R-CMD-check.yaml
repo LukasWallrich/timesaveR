@@ -29,7 +29,7 @@ jobs:
           git commit -m 'Documentation' || echo "No changes to commit"
           git push origin || echo "No changes to commit"
       - name: test
-        run: Rscript -e 'rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "warning", check_dir = "check")'
+        run: Rscript -e 'Sys.setlocale(locale="C"); rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "warning", check_dir = "check")'
       - name: Upload check results
         if: failure()
         uses: actions/upload-artifact@main

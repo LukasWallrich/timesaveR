@@ -455,7 +455,7 @@ pairwise_t_tests <- function(df, outcome, groups, p.adjust.method = p.adjust.met
 
 #' polr() with standardised continuous variables
 #'
-#' This runs \code{\link[MASS]{polr()}} after standardising all continuous predictors, while leaving
+#' This runs \code{\link[MASS]{polr}} after standardising all continuous predictors, while leaving
 #' factors intact. Note that the Hessian (the observed information matrix)
 #' is always returned, so that the `Hess` argument cannot be used.
 #'
