@@ -659,11 +659,10 @@ plot_distributions <- function(data, var_names = NULL, plot_type = c("auto", "hi
     })
 
 
-
   if (is.null(var_names)) var_names <- names(data)
   names(var_names) <- names(data)
   plots <- purrr::map2(names(var_names), plot_hist, function(var_name, plot_hist) {
-    out <- ggplot2::ggplot(data, ggplot2::aes_string(var_name))
+    out <- ggplot2::ggplot(data, ggplot2::aes(!!rlang::sym(var_name)))
     if (plot_hist) {
       out <- out + ggplot2::geom_histogram(na.rm = TRUE, bins = (data[[var_name]] %>% unique() %>% rm_na() %>% length()), col = "white", size = 3)
       breaks <- (data[[var_name]] %>% unique() %>% rm_na())
