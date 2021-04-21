@@ -12,7 +12,7 @@
 #' for variables. If NULL, then the coefficients are not renamed.
 #' @param filename the file name to create a HTML file on disk.
 #' @param model_names If several pairs of models are to be plotted side by side, indicate the label for each *pair* here
-#' @param show_nimp Logical. If mira objects are passed, this determines whether the number of imputations will be reported as a model statistic
+#' @param show_nimp Logical - DEFUNCT. If mira objects are passed, this determines whether the number of imputations will be reported as a model statistic
 #' @param R2_change Logical. Report R2 change and F-test to compare models. Only implemented for comparing two pairs of models.
 #' @param notes List of notes to append to bottom of table. An explanation of significance stars is automatically added. If the std models were run with a helper function in this package, a note regarding the standardization is also automatically added.
 #' @param apa_style Logical, should APA-style formatting be applied
@@ -75,32 +75,6 @@ if (!("lm" %in% class(mod_std[[1]]) | ("mira" %in% class(mod_std[[1]]) &
     notes %<>% c("Given that dummy variables lose their interpretability when standardized (Fox, 2015), &beta; for dummy variables are semi-standardized, indicating the impact of that dummy on the standardized outcome variable.")
   }
 
-  gof_map <- tibble::tribble(
-    ~raw, ~clean, ~fmt, ~omit,
-
-    "nobs", "*N*", "%.0f", FALSE,
-    "r.squared", "R<sup>2</sup>", "%.3f", FALSE,
-    "adj.r.squared", "Adj.R<sup>2</sup>", "%.3f", FALSE,
-    "AIC", "AIC", "%.1f", TRUE,
-    "BIC", "BIC", "%.1f", TRUE,
-    "logLik", "Log.Lik.", "%.3f", TRUE,
-    "deviance", "Deviance", "%.2f", TRUE,
-    "df.residual", "DF Resid", "%.0f", TRUE,
-    "df.null", "DF Null", "%.0f", TRUE,
-    "sigma", "Sigma", "%.3f", TRUE,
-    "statistic", "Statistics", "%.3f", TRUE,
-    "p.value", "p", "%.3f", TRUE,
-    "df", "DF", "%.0f", TRUE,
-    "null.deviance", "Deviance Null", "%.2f", TRUE,
-    "nimp", "No of Imputations", "%.0f", TRUE,
-  )
-
-  if (show_nimp) gof_map[nrow(gof_map), ncol(gof_map)] <- FALSE
-
-  extract_gof <- getFromNamespace("extract_gof", "modelsummary")
-
-  gof <- purrr::map(mod, extract_gof, fmt, gof_map)
-  gof_map$omit <- TRUE
 
   SEs <- list()
   CIs <- list()
@@ -185,8 +159,10 @@ if (!("lm" %in% class(mod_std[[1]]) | ("mira" %in% class(mod_std[[1]]) &
   row <- '<tr style="border-top-style: solid; border-top-width: 2px;">
     <td class="gt_row gt_left" rowspan="1" colspan="1">  <em>N     </td>'
 
-  sums <- paste(purrr::map(gof, function(x) {
-    glue::glue('<td class="gt_row gt_center" rowspan="1" colspan="2"> {x$value[x$term=="*N*"]}   </td>')
+  Ns <- purrr::map(mod, ~broom::glance(.x)["nobs"])
+  
+  sums <- paste(purrr::map(Ns, function(x) {
+    glue::glue('<td class="gt_row gt_center" rowspan="1" colspan="2"> {x$nobs}   </td>')
   }), collapse = " ")
 
   code %<>% paste(row, sums, "</tr>", collapse = "")
@@ -194,8 +170,10 @@ if (!("lm" %in% class(mod_std[[1]]) | ("mira" %in% class(mod_std[[1]]) &
   row <- '<tr>
     <td class="gt_row gt_left" rowspan="1" colspan="1">  <em>R<sup>2</sup>     </td>'
 
-  sums <- paste(purrr::map(gof, function(x) {
-    glue::glue('<td class="gt_row gt_center" rowspan="1" colspan="2"> {fmt_cor(as.numeric(x$value[x$term=="R<sup>2</sup>"]))}   </td>')
+  R2s <- purrr::map(mod, ~broom::glance(.x)["r.squared"])
+  
+  sums <- paste(purrr::map(R2s, function(x) {
+    glue::glue('<td class="gt_row gt_center" rowspan="1" colspan="2"> {fmt_cor(as.numeric(x$r.squared))}   </td>')
   }), collapse = " ")
 
   code %<>% paste(row, sums, "</tr>", collapse = "")
@@ -212,10 +190,9 @@ if (!("lm" %in% class(mod_std[[1]]) | ("mira" %in% class(mod_std[[1]]) &
   code %<>% paste(row, sums, "</tr>", collapse = "")
 
   if (R2_change == TRUE) {
-    delta_R2 <- purrr::map_chr(gof, function(x) {
+    delta_R2 <- purrr::map_chr(R2s, function(x) {
       x %>%
-        dplyr::filter(.data$term == "R<sup>2</sup>") %>%
-        dplyr::pull(.data$value)
+        dplyr::pull(.data$r.squared)
     }) %>%
       as.numeric() %>%
       diff() %>%
@@ -380,32 +357,6 @@ report_polr_with_std <- function(mod, mod_std, OR = TRUE, conf_level = .95, fmt 
     mod_std <- purrr::map(mod_std, add_class, "exp")
   }
 
-
-  gof_map <- tibble::tribble(
-    ~raw, ~clean, ~fmt, ~omit,
-
-    "nobs", "*N*", "%.0f", FALSE,
-    "r.squared", "R<sup>2</sup>", "%.3f", FALSE,
-    "adj.r.squared", "Adj.R<sup>2</sup>", "%.3f", FALSE,
-    "AIC", "AIC", "%.1f", TRUE,
-    "BIC", "BIC", "%.1f", TRUE,
-    "logLik", "Log.Lik.", "%.3f", TRUE,
-    "deviance", "Deviance", "%.2f", TRUE,
-    "df.residual", "DF Resid", "%.0f", TRUE,
-    "df.null", "DF Null", "%.0f", TRUE,
-    "sigma", "Sigma", "%.3f", TRUE,
-    "statistic", "Statistics", "%.3f", TRUE,
-    "p.value", "p", "%.3f", TRUE,
-    "df", "DF", "%.0f", TRUE,
-    "null.deviance", "Deviance Null", "%.2f", TRUE,
-    "nimp", "No of Imputations", "%.0f", TRUE,
-  )
-
-  if (show_nimp) gof_map[nrow(gof_map), ncol(gof_map)] <- FALSE
-  extract_gof <- getFromNamespace("extract_gof", "modelsummary")
-  gof <- purrr::map(mod, extract_gof, fmt, gof_map)
-  gof_map$omit <- TRUE
-
   CIs <- list()
   CIs_std <- list()
   mods <- list()
@@ -429,14 +380,18 @@ report_polr_with_std <- function(mod, mod_std, OR = TRUE, conf_level = .95, fmt 
   notes %<>% c(.make_stars_note())
 
   if (statistic_vertical) {
-    tab <- modelsummary::msummary(mods, output = "gt", estimate = "{estimate} {stars}", statistic = "[{conf.low}, {conf.high}]", fmt = fmt, gof_omit = ".*", stars = stars, ...) %>%
+    tab <- modelsummary::msummary(mods, output = "gt", estimate = "{estimate} {stars}", 
+                                  statistic = "[{conf.low}, {conf.high}]", fmt = fmt, 
+                                  gof_omit = ".*", stars = stars, ...) %>%
       gt::fmt_markdown(columns = dplyr::everything()) %>%
       gt::cols_label(.list = col_labels) %>%
       gt::cols_align("right", dplyr::everything()) %>%
       gt::cols_align("left", columns = 1) %>%
       gt:::dt_source_notes_set("") # Remove std star note
   } else {
-    tab <- modelsummary::msummary(mods, output = "gt", statistic = NULL, estimate = "{estimate} {stars} [{conf.low}, {conf.high}]", fmt = fmt, gof_omit = ".*", stars = stars, ...) %>%
+    tab <- modelsummary::msummary(mods, output = "gt", statistic = NULL, 
+                                  estimate = "{estimate} {stars} [{conf.low}, {conf.high}]", 
+                                  fmt = fmt, gof_omit = ".*", stars = stars, ...) %>%
       gt::fmt_markdown(columns = dplyr::everything()) %>%
       gt::cols_label(.list = col_labels) %>%
       gt::cols_align("right", dplyr::everything()) %>%
@@ -463,8 +418,10 @@ report_polr_with_std <- function(mod, mod_std, OR = TRUE, conf_level = .95, fmt 
   row <- '<tr style="border-top-style: solid; border-top-width: 2px;">
     <td class="gt_row gt_left" rowspan="1" colspan="1">  <em>N     </td>'
 
-  sums <- paste(purrr::map(gof, function(x) {
-    glue::glue('<td class="gt_row gt_center" rowspan="1" colspan="2"> {x$value[x$term=="*N*"]}   </td>')
+  Ns <- purrr::map(mod, ~broom::glance(.x)["nobs"])
+  
+  sums <- paste(purrr::map(Ns, function(x) {
+    glue::glue('<td class="gt_row gt_center" rowspan="1" colspan="2"> {x$nobs}   </td>')
   }), collapse = " ")
 
   code %<>% paste(row, sums, "</tr>", collapse = "")
