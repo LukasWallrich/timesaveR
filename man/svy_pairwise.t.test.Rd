@@ -4,10 +4,10 @@
 \alias{svy_pairwise.t.test}
 \title{Pairwise t.tests with effect sizes and survey weights}
 \usage{
-svy_pairwise.t.test(df, dv, iv, cats, ...)
+svy_pairwise.t.test(df, dv, iv, cats, p.adjust = "holm", ...)
 }
 \arguments{
-\item{df}{A dataframe}
+\item{df}{A survey object}
 
 \item{dv}{Character. Name of the dependent variable for the t.test (numeric)}
 
@@ -16,16 +16,19 @@ svy_pairwise.t.test(df, dv, iv, cats, ...)
 \item{cats}{Character vector of factor levels to be included in the
 pairwise tests. If set to NULL, all levels are used.}
 
+\item{p.adjust}{Method to adjust p-values for multiple comparisons. One of 
+"holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr" or "none".}
+
 \item{...}{
   Arguments passed on to \code{\link[=svy_cohen_d_pair]{svy_cohen_d_pair}}
   \describe{
-    \item{\code{ttest}}{Logical. Should t.test be run and displayed? Otherwise, only
+    \item{\code{ttest}}{Logical. Should t.test be run? Otherwise, only
 Cohen's d is calculated. Defaults to TRUE.}
+    \item{\code{print}}{Logical. Should results be printed.}
   }}
 }
 \value{
-Invisibly returns a names lists of lists including the t.test()
-  output and Cohen's D for each pair
+A tibble with t-test results and Cohen's d for each pair
 }
 \description{
 This function calculates a t.test() for any pair of levels in a

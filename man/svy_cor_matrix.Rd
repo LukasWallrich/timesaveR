@@ -4,7 +4,7 @@
 \alias{svy_cor_matrix}
 \title{Create a correlation matrix from survey data with summary statistics}
 \usage{
-svy_cor_matrix(svy_df, var_names)
+svy_cor_matrix(svy_df, var_names = NULL)
 }
 \arguments{
 \item{svy_df}{A survey object created with the survey or srvyr package. Only
