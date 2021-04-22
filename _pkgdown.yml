@@ -45,9 +45,10 @@ reference:
 - title: "Statistical tests"
   desc: >
     Some functions to facilitate running common tests
-    with uncommon requirements
+    with less common requirements
 - contents:
   - lm_std
+  - polr_std
   - t_test_mi
   - paired_t_test_d
   - pairwise_t_tests
@@ -60,6 +61,7 @@ reference:
 - title: "Demo datasets"
 - contents:
   - ess_health
+  - WVS
 - title: "Workflow functions"
   desc: >
     Miscellaneous functions that can improve your workflow,

@@ -471,11 +471,11 @@ report_polr_with_std <- function(mod, mod_std, OR = TRUE, conf_level = .95, fmt 
   return(out)
 }
 
-#' @importFrom generics glance
-#' @importFrom generics tidy
+#' @importFrom broom glance
+#' @importFrom broom tidy
 #' @export
-generics::glance
-generics::tidy
+broom::glance
+broom::tidy
 
 #' Tidy  multiple imputation models created with `mice`
 #'
