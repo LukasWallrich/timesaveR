@@ -32,9 +32,9 @@ report_polr_with_std(
 
 \item{fmt}{determines how to format numeric values
 \itemize{
-  \item integer: the number of digits to keep after the period `format(round(x, fmt), nsmall=fmt)`
-  \item character: passed to the `sprintf` function (e.g., '\%.3f' keeps 3 digits with trailing zero). See `?sprintf`
-  \item function: returns a formatted character string.
+\item integer: the number of digits to keep after the period \code{format(round(x, fmt), nsmall=fmt)}
+\item character: passed to the \code{sprintf} function (e.g., '\\%.3f' keeps 3 digits with trailing zero). See \code{?sprintf}
+\item function: returns a formatted character string.
 }}
 
 \item{statistic_vertical}{Should standard errors and CIs be shown below coefficients? Defaults to horizontal layout}
@@ -57,43 +57,63 @@ stating that dummy variables were not scaled in standardization. If you approach
   \describe{
     \item{\code{output}}{filename or object type (character string)
 \itemize{
-  \item Supported filename extensions: .html, .tex, .md, .txt, .png, .jpg.
-  \item Supported object types: "default", "html", "markdown", "latex", "latex_tabular", "data.frame", "gt", "kableExtra", "huxtable", "flextable".
-  \item Warning: the `output` argument \emph{cannot} be used when customizing tables with external packages. See the 'Details' section below.
+\item Supported filename extensions: .html, .tex, .md, .txt, .png, .jpg.
+\item Supported object types: "default", "html", "markdown", "latex", "latex_tabular", "data.frame", "modelsummary_list", "gt", "kableExtra", "huxtable", "flextable".
+\item To change the default output format, type \code{options(modelsummary_default = "latex")}, where \code{latex} can be any of the valid object types listed above.
+\item Warning: the \code{output} argument \emph{cannot} be used when customizing tables with external packages.
+\item See the 'Details' section below for more information.
 }}
-    \item{\code{estimate}}{string or `glue` string of the estimate to display (or a
+    \item{\code{estimate}}{string or \code{glue} string of the estimate to display (or a
 vector with one string per model). Valid entries include any column name of
-the data.frame produced by `get_estimates(model)`. Examples:
+the data.frame produced by \code{get_estimates(model)}. Examples:
 \itemize{
-  \item "estimate"
-  \item "{estimate} ({std.error}){stars}"
-  \item "{estimate} [{conf.low}, {conf.high}]"
+\item \code{"estimate"}
+\item \code{"{estimate} ({std.error}){stars}"}
+\item \code{"{estimate} [{conf.low}, {conf.high}]"}
 }}
-    \item{\code{vcov}}{robust standard errors and other manual statistics. The `vcov` argument accepts five types of input (see the 'Details' and 'Examples' sections below):
+    \item{\code{vcov}}{robust standard errors and other manual statistics. The \code{vcov}
+argument accepts five types of input (see the 'Details' and 'Examples'
+sections below):
 \itemize{
-  \item string, vector, or list of strings: "robust", "HC", "HC0", "HC1", "HC2", "HC3", "HC4", "HC4m", "HC5", "stata", or "classical" (alias "constant" or "iid").
-  \item formula or list of formulas with the cluster variable(s) on the right-hand side (e.g., ~clusterid).
-  \item function or list of functions which return variance-covariance matrices with row and column names equal to the names of your coefficient estimates (e.g., `stats::vcov`, `sandwich::vcovHC`).
-  \item list of `length(models)` variance-covariance matrices with row and column names equal to the names of your coefficient estimates.
-  \item a list of length(models) vectors with names equal to the names of your coefficient estimates. See 'Examples' section below. 
+\item string, vector, or list of strings: "robust", "HC", "HC0", "HC1", "HC2", "HC3", "HC4", "HC4m", "HC5", "stata", or "classical" (alias "constant" or "iid").
+\item formula or list of formulas with the cluster variable(s) on the right-hand side (e.g., ~clusterid).
+\item function or list of functions which return variance-covariance matrices with row and column names equal to the names of your coefficient estimates (e.g., \code{stats::vcov}, \code{sandwich::vcovHC}).
+\item list of \code{length(models)} variance-covariance matrices with row and column names equal to the names of your coefficient estimates.
+\item a list of length(models) vectors with names equal to the names of your coefficient estimates. See 'Examples' section below. Warning: since this list of vectors can include arbitrary strings or numbers, \code{modelsummary} cannot automatically calculate p values. The \code{stars} argument may thus use incorrect significance thresholds when \code{vcov} is a list of vectors.
 }}
-    \item{\code{coef_map}}{named character vector. Values refer to the variable names
-that will appear in the table. Names refer to the original term names stored
-in the model object, e.g. c("hp:mpg"="hp X mpg") for an interaction term.
-Coefficients that are omitted from this vector will be omitted from the
-table. The table will be ordered in the same order as this vector.}
+    \item{\code{coef_map}}{character vector. Subset, rename, and reorder coefficients.
+Coefficients omitted from this vector are omitted from the table. The order
+of the vector determines the order of the table.  \code{coef_map} can be a named
+or an unnamed character vector (see the Examples section below). If
+\code{coef_map} is a named vector, its values define the labels that must appear
+in the table, and its names identify the original term names stored in the
+model object: \code{c("hp:mpg"="HPxM/G")}.}
     \item{\code{coef_omit}}{string regular expression. Omits all matching coefficients
-from the table using `grepl(perl=TRUE)`.}
-    \item{\code{coef_rename}}{named character vector. Values refer to the variable names
-that will appear in the table. Names refer to the original term names stored
-in the model object, e.g. c("hp:mpg"="hp X mpg") for an interaction term.}
+from the table using \code{grepl(perl=TRUE)}.}
+    \item{\code{coef_rename}}{named character vector or function which returns a named
+vector. Values of the vector refer to the variable names that will appear
+in the table. Names refer to the original term names stored in the model
+object, e.g. c("hp:mpg"="hp X mpg") for an interaction term.}
     \item{\code{gof_map}}{\itemize{
-  \item NULL (default): the `modelsummary::gof_map` dictionary is used for formatting, and all unknown statistic are included.
-  \item data.frame with 3 columns named "raw", "clean", "fmt". Unknown statistics are omitted. See the 'Examples' section below.
-  \item list of lists, each of which includes 3 elements named "raw", "clean", "fmt". Unknown statistics are omitted. See the 'Examples section below'.
+\item NULL (default): the \code{modelsummary::gof_map} dictionary is used for formatting, and all unknown statistic are included.
+\item data.frame with 3 columns named "raw", "clean", "fmt". Unknown statistics are omitted. See the 'Examples' section below.
+\item list of lists, each of which includes 3 elements named "raw", "clean", "fmt". Unknown statistics are omitted. See the 'Examples section below'.
 }}
     \item{\code{gof_omit}}{string regular expression. Omits all matching gof statistics from
-the table (using `grepl(perl=TRUE)`).}
+the table (using \code{grepl(perl=TRUE)}).}
+    \item{\code{group}}{a two-sided formula with two or three components which describes
+how groups of parameters should be displayed. The formula must include both
+a "term" and a "model" component. In addition, a component can be used to
+identify groups of parameters (e.g., outcome levels of a multinomial logit
+model). This group identifier must be the name of a column in the
+data.frame produced by \code{get_estimates(model)}.
+\itemize{
+\item \code{term ~ model} displays coefficients as rows and models as columns
+\item \code{model ~ term} displays models as rows and coefficients as columns
+\item \code{response + term ~ model} displays response levels and coefficients as rows and models as columns.
+}}
+    \item{\code{group_map}}{named or unnamed character vector. Subset, rename, and
+reorder coefficient groups specified in the \code{group} argument. See \code{coef_map}.}
     \item{\code{add_rows}}{a data.frame (or tibble) with the same number of columns as
 your main table. By default, rows are appended to the bottom of the table.
 You can define a "position" attribute of integers to set the row positions.

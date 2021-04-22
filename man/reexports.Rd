@@ -12,6 +12,8 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{generics}{\code{\link[generics]{glance}}, \code{\link[generics]{tidy}}}
+  \item{broom}{\code{\link[broom:reexports]{glance}}}
+
+  \item{generics}{\code{\link[generics]{tidy}}}
 }}
 
