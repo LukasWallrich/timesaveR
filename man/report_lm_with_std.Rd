@@ -34,9 +34,9 @@ for variables. If NULL, then the coefficients are not renamed.}
 
 \item{fmt}{determines how to format numeric values
 \itemize{
-  \item integer: the number of digits to keep after the period `format(round(x, fmt), nsmall=fmt)`
-  \item character: passed to the `sprintf` function (e.g., '\%.3f' keeps 3 digits with trailing zero). See `?sprintf`
-  \item function: returns a formatted character string.
+\item integer: the number of digits to keep after the period \code{format(round(x, fmt), nsmall=fmt)}
+\item character: passed to the \code{sprintf} function (e.g., '\\%.3f' keeps 3 digits with trailing zero). See \code{?sprintf}
+\item function: returns a formatted character string.
 }}
 
 \item{statistic_vertical}{Should standard errors and CIs be shown below coefficients? Defaults to horizontal layout}
@@ -45,7 +45,7 @@ for variables. If NULL, then the coefficients are not renamed.}
 
 \item{model_names}{If several pairs of models are to be plotted side by side, indicate the label for each *pair* here}
 
-\item{show_nimp}{Logical. If mira objects are passed, this determines whether the number of imputations will be reported as a model statistic}
+\item{show_nimp}{Logical - DEFUNCT. If mira objects are passed, this determines whether the number of imputations will be reported as a model statistic}
 
 \item{R2_change}{Logical. Report R2 change and F-test to compare models. Only implemented for comparing two pairs of models.}
 
@@ -58,16 +58,19 @@ for variables. If NULL, then the coefficients are not renamed.}
 \item{...}{
   Arguments passed on to \code{\link[modelsummary:modelsummary]{modelsummary::modelsummary}}
   \describe{
-    \item{\code{coef_map}}{named character vector. Values refer to the variable names
-that will appear in the table. Names refer to the original term names stored
-in the model object, e.g. c("hp:mpg"="hp X mpg") for an interaction term.
-Coefficients that are omitted from this vector will be omitted from the
-table. The table will be ordered in the same order as this vector.}
+    \item{\code{coef_map}}{character vector. Subset, rename, and reorder coefficients.
+Coefficients omitted from this vector are omitted from the table. The order
+of the vector determines the order of the table.  \code{coef_map} can be a named
+or an unnamed character vector (see the Examples section below). If
+\code{coef_map} is a named vector, its values define the labels that must appear
+in the table, and its names identify the original term names stored in the
+model object: \code{c("hp:mpg"="HPxM/G")}.}
     \item{\code{coef_omit}}{string regular expression. Omits all matching coefficients
-from the table using `grepl(perl=TRUE)`.}
-    \item{\code{coef_rename}}{named character vector. Values refer to the variable names
-that will appear in the table. Names refer to the original term names stored
-in the model object, e.g. c("hp:mpg"="hp X mpg") for an interaction term.}
+from the table using \code{grepl(perl=TRUE)}.}
+    \item{\code{coef_rename}}{named character vector or function which returns a named
+vector. Values of the vector refer to the variable names that will appear
+in the table. Names refer to the original term names stored in the model
+object, e.g. c("hp:mpg"="hp X mpg") for an interaction term.}
   }}
 }
 \value{
