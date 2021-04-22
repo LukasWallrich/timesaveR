@@ -81,7 +81,7 @@ side-by-side. Several pairs of such models can be compared side-by-side." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9013</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9014</span>
       </span>
     </div>
 
@@ -187,8 +187,8 @@ for variables. If NULL, then the coefficients are not renamed.</p></td>
     <tr>
       <th>fmt</th>
       <td><p>determines how to format numeric values</p><ul>
-<li><p>integer: the number of digits to keep after the period `format(round(x, fmt), nsmall=fmt)`</p></li>
-<li><p>character: passed to the `sprintf` function (e.g., '%.3f' keeps 3 digits with trailing zero). See `?sprintf`</p></li>
+<li><p>integer: the number of digits to keep after the period <code><a href='https://rdrr.io/r/base/format.html'>format(round(x, fmt), nsmall=fmt)</a></code></p></li>
+<li><p>character: passed to the <code>sprintf</code> function (e.g., '\<!-- %.3f' keeps 3 digits with trailing zero). See \code{?sprintf} --></p></li>
 <li><p>function: returns a formatted character string.</p></li>
 </ul></td>
     </tr>
@@ -206,7 +206,7 @@ for variables. If NULL, then the coefficients are not renamed.</p></td>
     </tr>
     <tr>
       <th>show_nimp</th>
-      <td><p>Logical. If mira objects are passed, this determines whether the number of imputations will be reported as a model statistic</p></td>
+      <td><p>Logical - DEFUNCT. If mira objects are passed, this determines whether the number of imputations will be reported as a model statistic</p></td>
     </tr>
     <tr>
       <th>R2_change</th>
@@ -227,16 +227,19 @@ for variables. If NULL, then the coefficients are not renamed.</p></td>
     <tr>
       <th>...</th>
       <td><p>Arguments passed on to <code><a href='https://vincentarelbundock.github.io/modelsummary/reference/modelsummary.html'>modelsummary::modelsummary</a></code></p><dl>
-    <dt><code>coef_map</code></dt><dd><p>named character vector. Values refer to the variable names
-that will appear in the table. Names refer to the original term names stored
-in the model object, e.g. c("hp:mpg"="hp X mpg") for an interaction term.
-Coefficients that are omitted from this vector will be omitted from the
-table. The table will be ordered in the same order as this vector.</p></dd>
+    <dt><code>coef_map</code></dt><dd><p>character vector. Subset, rename, and reorder coefficients.
+Coefficients omitted from this vector are omitted from the table. The order
+of the vector determines the order of the table.  <code>coef_map</code> can be a named
+or an unnamed character vector (see the Examples section below). If
+<code>coef_map</code> is a named vector, its values define the labels that must appear
+in the table, and its names identify the original term names stored in the
+model object: <code><a href='https://rdrr.io/r/base/c.html'>c("hp:mpg"="HPxM/G")</a></code>.</p></dd>
     <dt><code>coef_omit</code></dt><dd><p>string regular expression. Omits all matching coefficients
-from the table using `grepl(perl=TRUE)`.</p></dd>
-    <dt><code>coef_rename</code></dt><dd><p>named character vector. Values refer to the variable names
-that will appear in the table. Names refer to the original term names stored
-in the model object, e.g. c("hp:mpg"="hp X mpg") for an interaction term.</p></dd>
+from the table using <code><a href='https://rdrr.io/r/base/grep.html'>grepl(perl=TRUE)</a></code>.</p></dd>
+    <dt><code>coef_rename</code></dt><dd><p>named character vector or function which returns a named
+vector. Values of the vector refer to the variable names that will appear
+in the table. Names refer to the original term names stored in the model
+object, e.g. c("hp:mpg"="hp X mpg") for an interaction term.</p></dd>
   
 </dl></td>
     </tr>

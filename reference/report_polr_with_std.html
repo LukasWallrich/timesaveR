@@ -83,7 +83,7 @@ side-by-side. Several pairs of such models can be compared side-by-side." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9013</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9014</span>
       </span>
     </div>
 
@@ -187,8 +187,8 @@ side-by-side. Several pairs of such models can be compared side-by-side.</p>
     <tr>
       <th>fmt</th>
       <td><p>determines how to format numeric values</p><ul>
-<li><p>integer: the number of digits to keep after the period `format(round(x, fmt), nsmall=fmt)`</p></li>
-<li><p>character: passed to the `sprintf` function (e.g., '%.3f' keeps 3 digits with trailing zero). See `?sprintf`</p></li>
+<li><p>integer: the number of digits to keep after the period <code><a href='https://rdrr.io/r/base/format.html'>format(round(x, fmt), nsmall=fmt)</a></code></p></li>
+<li><p>character: passed to the <code>sprintf</code> function (e.g., '\<!-- %.3f' keeps 3 digits with trailing zero). See \code{?sprintf} --></p></li>
 <li><p>function: returns a formatted character string.</p></li>
 </ul></td>
     </tr>
@@ -227,42 +227,62 @@ stating that dummy variables were not scaled in standardization. If you approach
     <dt><code>output</code></dt><dd><p>filename or object type (character string)
 <ul>
 <li><p>Supported filename extensions: .html, .tex, .md, .txt, .png, .jpg.</p></li>
-<li><p>Supported object types: "default", "html", "markdown", "latex", "latex_tabular", "data.frame", "gt", "kableExtra", "huxtable", "flextable".</p></li>
-<li><p>Warning: the `output` argument <em>cannot</em> be used when customizing tables with external packages. See the 'Details' section below.</p></li>
+<li><p>Supported object types: "default", "html", "markdown", "latex", "latex_tabular", "data.frame", "modelsummary_list", "gt", "kableExtra", "huxtable", "flextable".</p></li>
+<li><p>To change the default output format, type <code><a href='https://rdrr.io/r/base/options.html'>options(modelsummary_default = "latex")</a></code>, where <code>latex</code> can be any of the valid object types listed above.</p></li>
+<li><p>Warning: the <code>output</code> argument <em>cannot</em> be used when customizing tables with external packages.</p></li>
+<li><p>See the 'Details' section below for more information.</p></li>
 </ul></p></dd>
-    <dt><code>estimate</code></dt><dd><p>string or `glue` string of the estimate to display (or a
+    <dt><code>estimate</code></dt><dd><p>string or <code>glue</code> string of the estimate to display (or a
 vector with one string per model). Valid entries include any column name of
-the data.frame produced by `get_estimates(model)`. Examples:
+the data.frame produced by <code>get_estimates(model)</code>. Examples:
 <ul>
-<li><p>"estimate"</p></li>
-<li><p>"estimate (std.error)stars"</p></li>
-<li><p>"estimate [conf.low, conf.high]"</p></li>
+<li><p><code>"estimate"</code></p></li>
+<li><p><code>"{estimate} ({std.error}){stars}"</code></p></li>
+<li><p><code>"{estimate} [{conf.low}, {conf.high}]"</code></p></li>
 </ul></p></dd>
-    <dt><code>vcov</code></dt><dd><p>robust standard errors and other manual statistics. The `vcov` argument accepts five types of input (see the 'Details' and 'Examples' sections below):
+    <dt><code>vcov</code></dt><dd><p>robust standard errors and other manual statistics. The <code>vcov</code>
+argument accepts five types of input (see the 'Details' and 'Examples'
+sections below):
 <ul>
 <li><p>string, vector, or list of strings: "robust", "HC", "HC0", "HC1", "HC2", "HC3", "HC4", "HC4m", "HC5", "stata", or "classical" (alias "constant" or "iid").</p></li>
 <li><p>formula or list of formulas with the cluster variable(s) on the right-hand side (e.g., ~clusterid).</p></li>
-<li><p>function or list of functions which return variance-covariance matrices with row and column names equal to the names of your coefficient estimates (e.g., `stats::vcov`, `sandwich::vcovHC`).</p></li>
-<li><p>list of `length(models)` variance-covariance matrices with row and column names equal to the names of your coefficient estimates.</p></li>
-<li><p>a list of length(models) vectors with names equal to the names of your coefficient estimates. See 'Examples' section below.</p></li>
+<li><p>function or list of functions which return variance-covariance matrices with row and column names equal to the names of your coefficient estimates (e.g., <code><a href='https://rdrr.io/r/stats/vcov.html'>stats::vcov</a></code>, <code>sandwich::vcovHC</code>).</p></li>
+<li><p>list of <code><a href='https://rdrr.io/r/base/length.html'>length(models)</a></code> variance-covariance matrices with row and column names equal to the names of your coefficient estimates.</p></li>
+<li><p>a list of length(models) vectors with names equal to the names of your coefficient estimates. See 'Examples' section below. Warning: since this list of vectors can include arbitrary strings or numbers, <code>modelsummary</code> cannot automatically calculate p values. The <code>stars</code> argument may thus use incorrect significance thresholds when <code>vcov</code> is a list of vectors.</p></li>
 </ul></p></dd>
-    <dt><code>coef_map</code></dt><dd><p>named character vector. Values refer to the variable names
-that will appear in the table. Names refer to the original term names stored
-in the model object, e.g. c("hp:mpg"="hp X mpg") for an interaction term.
-Coefficients that are omitted from this vector will be omitted from the
-table. The table will be ordered in the same order as this vector.</p></dd>
+    <dt><code>coef_map</code></dt><dd><p>character vector. Subset, rename, and reorder coefficients.
+Coefficients omitted from this vector are omitted from the table. The order
+of the vector determines the order of the table.  <code>coef_map</code> can be a named
+or an unnamed character vector (see the Examples section below). If
+<code>coef_map</code> is a named vector, its values define the labels that must appear
+in the table, and its names identify the original term names stored in the
+model object: <code><a href='https://rdrr.io/r/base/c.html'>c("hp:mpg"="HPxM/G")</a></code>.</p></dd>
     <dt><code>coef_omit</code></dt><dd><p>string regular expression. Omits all matching coefficients
-from the table using `grepl(perl=TRUE)`.</p></dd>
-    <dt><code>coef_rename</code></dt><dd><p>named character vector. Values refer to the variable names
-that will appear in the table. Names refer to the original term names stored
-in the model object, e.g. c("hp:mpg"="hp X mpg") for an interaction term.</p></dd>
+from the table using <code><a href='https://rdrr.io/r/base/grep.html'>grepl(perl=TRUE)</a></code>.</p></dd>
+    <dt><code>coef_rename</code></dt><dd><p>named character vector or function which returns a named
+vector. Values of the vector refer to the variable names that will appear
+in the table. Names refer to the original term names stored in the model
+object, e.g. c("hp:mpg"="hp X mpg") for an interaction term.</p></dd>
     <dt><code>gof_map</code></dt><dd><p><ul>
-<li><p>NULL (default): the `modelsummary::gof_map` dictionary is used for formatting, and all unknown statistic are included.</p></li>
+<li><p>NULL (default): the <code><a href='https://vincentarelbundock.github.io/modelsummary/reference/gof_map.html'>modelsummary::gof_map</a></code> dictionary is used for formatting, and all unknown statistic are included.</p></li>
 <li><p>data.frame with 3 columns named "raw", "clean", "fmt". Unknown statistics are omitted. See the 'Examples' section below.</p></li>
 <li><p>list of lists, each of which includes 3 elements named "raw", "clean", "fmt". Unknown statistics are omitted. See the 'Examples section below'.</p></li>
 </ul></p></dd>
     <dt><code>gof_omit</code></dt><dd><p>string regular expression. Omits all matching gof statistics from
-the table (using `grepl(perl=TRUE)`).</p></dd>
+the table (using <code><a href='https://rdrr.io/r/base/grep.html'>grepl(perl=TRUE)</a></code>).</p></dd>
+    <dt><code>group</code></dt><dd><p>a two-sided formula with two or three components which describes
+how groups of parameters should be displayed. The formula must include both
+a "term" and a "model" component. In addition, a component can be used to
+identify groups of parameters (e.g., outcome levels of a multinomial logit
+model). This group identifier must be the name of a column in the
+data.frame produced by <code>get_estimates(model)</code>.
+<ul>
+<li><p><code>term ~ model</code> displays coefficients as rows and models as columns</p></li>
+<li><p><code>model ~ term</code> displays models as rows and coefficients as columns</p></li>
+<li><p><code>response + term ~ model</code> displays response levels and coefficients as rows and models as columns.</p></li>
+</ul></p></dd>
+    <dt><code>group_map</code></dt><dd><p>named or unnamed character vector. Subset, rename, and
+reorder coefficient groups specified in the <code>group</code> argument. See <code>coef_map</code>.</p></dd>
     <dt><code>add_rows</code></dt><dd><p>a data.frame (or tibble) with the same number of columns as
 your main table. By default, rows are appended to the bottom of the table.
 You can define a "position" attribute of integers to set the row positions.
