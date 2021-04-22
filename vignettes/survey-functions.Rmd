@@ -20,23 +20,102 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Early and very incomplete draft!
-
 # Using survey weights
 
 Large-scale social surveys often do not aim to recruit random samples, but rather oversample small groups that are of interest for sub-group analyses (e.g., ethnic minorities). In addition, they never quite succeed in recruiting representative samples. To ensure that the results of statistical models approximate population parameters, survey weights need to be used to give each participant a specific weight in analyses. You can find out more in this [brief YouTube video](https://youtu.be/brxx81U6N1o) or explore the more [extensive guide to weights in the European Social Survey](https://www.europeansocialsurvey.org/methodology/ess_methodology/data_processing_archiving/weighting.html) as an example. 
 
 # Survey weights in timesaveR
 
-Many functions in the `timesaveR` package have alternatives that accept survey objects instead of dataframes. These functions are designated by the `svy_` prefix. To use them, you will first need to use the `survey` package to create a survey object based on the dataframe.
+Many functions in the `timesaveR` package have alternatives that accept survey objects instead of dataframes. These functions are designated by the `svy_` prefix. To use them, you will first need to use the `srvyr` package to create a survey object based on the dataframe.
 
-```{r setup}
+Below, I show some analyses of the European Social Survey 2014 data using the correct survey weights.
+
+
+```{r setup, message=FALSE}
 library(timesaveR)
-library(survey)
+library(srvyr)
 
 #Create weights (consists of two variables in ESS)
 ess_health$svy_weight <- ess_health$pspwght * ess_health$pweight
 
-ess_survey <- svydesign(~1, data = ess_health, 
-                        weights = ess_health$svy_weight)
+ess_survey <- as_survey(ess_health,
+                        weights = svy_weight)
 ```
+
+# Create scales
+
+Let's create scales for health behaviours and depressive symptoms, each including some reverse coding. For that, we need to pass the survey items (as well as any to be reversed) to the `svy_make_scale()` function
+
+```{r}
+  depression_items = c("fltdpr", "flteeff", "slprl", "wrhpp", "fltlnl", 
+                 "enjlf", "fltsd", "cldgng")
+
+  healthy_eating_items = c("etfruit", "eatveg")
+  
+  depression_reversed = c("wrhpp", "enjlf")
+
+```
+
+Then, the `svy_make_scale()` command can be used to **calculate scale scores and display descriptives**. It returns the survey object with the new variable added, so that you can use a pipeline to create multiple scales.
+
+```{r}
+
+ess_survey <- svy_make_scale(ess_survey, depression_items, 
+                             "depression", reversed = depression_reversed) %>% 
+  svy_make_scale(healthy_eating_items, "healthy_eating", r_key = -1)
+
+```
+
+# Report correlations
+
+You can use `svy_cor_matrix()` to calculate weighted correlations, and then use `report_cor_table()` to present them nicely. To improve the calculation of confidence
+intervals, `n` should be specified as the weighted number of survey responses in that call.
+
+```{r}
+ess_survey %>%
+  select(agea, health, depression, healthy_eating) %>%
+  svy_cor_matrix() %>%
+  report_cor_table(n = survey_tally(ess_survey)[[1]])
+```
+
+It is often helpful to use different variable names for display. For this, functions in the package typically accept rename tibbles that contain an `old` and a `new` column. By using the `tibble::tribble` notation, they can be entered more cleanly that named character vectors, and the `get_rename_tribble()` helper function creates most of the code.
+
+```{r}
+#Use get_rename_tribbles to get most of this code
+var_renames <- tibble::tribble(
+  ~old,             ~new,             
+   "agea",           "Age",          
+   "health",         "Poor health",        
+   "depression",     "Depression",    
+   "healthy_eating",  "Healthy eating"
+)
+
+# If var_names are provided, only variables included in that argument 
+# are included in the correlation table
+ess_survey %>% svy_cor_matrix(var_names = var_renames) %>% 
+  report_cor_table(n = survey_tally(ess_survey)[[1]])
+```
+
+*For now, we cannot `add_distributions` to the correlation table while using survey weights.*
+
+# Testing significance of difference between two groups
+
+Running a t-test on survey data is easy with `survey::svyttest()`. However, getting
+Cohen's *d* as a measure of effect size, or subsetting to compare just two levels if
+there are more in the data is less trivial, and is where `svy_cohen_d_pair()` comes in.
+
+```{r}
+svy_cohen_d_pair(ess_survey, "health", "gndr")
+svy_cohen_d_pair(ess_survey, "health", "cntry", pair = c("DE", "GB"))
+```
+
+# Running pairwise t-tests
+
+`svy_pairwise.t.test()` allows to run pairwise t-tests, e.g., as post-hoc comparisons,
+between multiple groups in the survey. *p*-values are adjusted for multiple comparisons,
+by default using the Holm-Bonferroni method.
+
+```{r}
+svy_pairwise.t.test(ess_survey, "health", "cntry", cats = c("DE", "GB", "FR"))
+```
+

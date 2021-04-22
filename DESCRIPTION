@@ -1,7 +1,7 @@
 Package: timesaveR
 Title: Functions to Accelerate (Academic) Data Analysis and
     Reporting
-Version: 0.0.1.9013
+Version: 0.0.1.9014
 Authors@R: 
     person(given = "Lukas",
            family = "Wallrich",
@@ -60,6 +60,7 @@ Suggests:
     spelling,
     srvyr,
     survey,
+    weights,
     testthat (>= 3.0.0),
     xml2
 VignetteBuilder: 

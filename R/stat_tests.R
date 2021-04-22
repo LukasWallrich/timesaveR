@@ -26,18 +26,39 @@ paired_t_test_d <- function(df, x, y) {
 #' object. It is particularly helpful when the grouping variable has more than
 #' two levels and you just want to compare two of them.
 #'
-#' @param df A dataframe
+#' @param df A survey object
 #' @param dv Character. Name of the dependent variable for the t.test (numeric)
 #' @param iv Character. Name of the grouping variable for the t.test (factor)
 #' @param pair Character vector of length 2. Levels of iv to
-#'    be compared in t.test
-#' @param ttest Logical. Should t.test be run and displayed? Otherwise, only
+#'    be compared in t.test. Can be NULL if iv only has two distinct values.
+#' @param ttest Logical. Should t.test be run? Otherwise, only
 #'   Cohen's d is calculated. Defaults to TRUE.
-#' @return Invisibly returns a list including the t.test() output and
-#'   Cohen's d
+#' @param print Logical. Should results be printed.   
+#' @return Returns a one-row tibble with tidy results of t-test and Cohen's d. 
+#' If print is TRUE, results are returned invisibly. 
+#' @examples 
+#' library(srvyr)
+#'
+#' #Create weights (consists of two variables in ESS)
+#' ess_health$svy_weight <- ess_health$pspwght * ess_health$pweight
+#'
+#' ess_survey <- as_survey(ess_health,
+#'                        weights = svy_weight)   
+#'
+#' svy_cohen_d_pair(ess_survey, "health", "cntry", pair = c("DE", "GB"))
+#'   
 #' @export
 
-svy_cohen_d_pair <- function(df, dv, iv, pair, ttest = T) {
+svy_cohen_d_pair <- function(df, dv, iv, pair = NULL, ttest = TRUE, print = FALSE) {
+  assert_class(df, "survey.design")
+  if(is.null(pair)) {
+    l <- df$variables[[iv]] %>% unique()
+    if (length(l) == 2) {
+      pair <- l
+    } else {
+      stop("pair must not be NULL unless iv has exactly two distinct values.")
+    }
+  }
   df <- eval(parse(text = paste0(
     "update(df, filt = factor(df$variables$",
     iv, ", levels = c('", paste0(pair,
@@ -46,24 +67,44 @@ svy_cohen_d_pair <- function(df, dv, iv, pair, ttest = T) {
   )))
   t.test_result <- NULL
   if (ttest) {
-    print(paste0("T-Test for ", paste0(pair, collapse = " & "), ":"))
     t.test_result <- eval(parse(text = paste0(
       "survey::svyttest(", dv, " ~ ", iv,
       ", subset(df, !is.na(filt)))"
     )))
-    print(t.test_result)
   }
   # Calculate Cohen's d
-  means <- survey::svyby(~ get(dv), ~filt, df, survey::svymean)[1:2]
+  means <- survey::svyby(~ get(dv), ~filt, df, survey::svymean, na.rm = TRUE)[1:2]
   names(means) <- c(dv, "mean")
-  vars <- survey::svyby(~ get(dv), ~filt, df, survey::svyvar)[1:2]
+  vars <- survey::svyby(~ get(dv), ~filt, df, survey::svyvar, na.rm = TRUE)[1:2]
   names(vars) <- c(dv, "var")
   cohens_d <- (means[1, 2] - means[2, 2]) / sqrt((vars[1, 2] + vars[2, 2]) / 2)
+  
+  if(print) {
+    print(paste0("T-Test for ", paste0(pair, collapse = " & "), ":"))
+    print(t.test_result)
   print(paste0(
-    "Cohen's d for pair ", paste0(pair, collapse = " & "), " is:",
+    "Cohen's d for pair ", paste0(pair, collapse = " & "), " is: ",
     round_(cohens_d, 3)
   ))
-  invisible(list(t.test_result, cohens_d))
+  }
+  
+  d <- tibble::tibble(pair = paste0(pair, collapse = " & "), d = cohens_d)
+  
+  if(!ttest & print) invisible(d)
+  if(!ttest) return(d)
+  
+  
+  t <- broom::tidy(t.test_result) %>% 
+    dplyr::transmute(pair = paste0(pair, collapse = " & "), t = .data$estimate, 
+                     df = .data$parameter, .data$p.value, mean_diff = .data$estimate, 
+                     mean_diff_ci.low = .data$conf.low, mean_diff_ci.high = .data$conf.high)
+
+  if(sign(t$t) != sign(d$d)) t <- t %>% 
+    dplyr::mutate(dplyr::across(c(.data$t, .data$mean_diff, .data$mean_diff_ci.low, .data$mean_diff_ci.high), ~.x * -1))
+  
+  if(print) invisible(dplyr::left_join(t, d, by = "pair"))
+  
+  dplyr::left_join(d, t, by = "pair")
 }
 
 #' Pairwise t.tests with effect sizes and survey weights
@@ -74,33 +115,32 @@ svy_cohen_d_pair <- function(df, dv, iv, pair, ttest = T) {
 #'
 #' @param cats Character vector of factor levels to be included in the
 #' pairwise tests. If set to NULL, all levels are used.
+#' @param p.adjust Method to adjust p-values for multiple comparisons. One of 
+#' "holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr" or "none".
 #' @inheritDotParams svy_cohen_d_pair -pair
 #' @inheritParams svy_cohen_d_pair
-#' @return Invisibly returns a names lists of lists including the t.test()
-#'   output and Cohen's D for each pair
+#' @return A tibble with t-test results and Cohen's d for each pair
 #' @export
 
-## ToDos:
-### allow this to run without printing all results
-### improve return with broom
 
-svy_pairwise.t.test <- function(df, dv, iv, cats, ...) {
+svy_pairwise.t.test <- function(df, dv, iv, cats, p.adjust = "holm", ...) {
+  
+  assert_class(df, "survey.design")
+  assert_choice(p.adjust, p.adjust.methods)
+  
   if (is.null(cats)) {
     cats <- eval(parse(text = paste0("levelsdf$variables$", iv)))
   }
 
-  print(paste(
-    "Beware - NO correction for multiple comparisons is employed.\n",
-    factorial(length(cats)) / (factorial(length(cats) - 2) * 2),
-    "pairwise tests will be performed."
-  ))
   df2 <- purrr::cross_df(data.frame(cats, cats, stringsAsFactors = F),
     .filter =
       function(x, y) as.character(x) <= as.character(y)
   )
-  x <- purrr::map(purrr::pmap(df2, c), function(x) svy_cohen_d_pair(pair = x, ...))
+  x <- purrr::map_dfr(purrr::pmap(df2, c), function(x) 
+    svy_cohen_d_pair(df, iv = iv, dv = dv, pair = x, print = FALSE, ...))
 
-  names(x) <- tidyr::unite(df2, .data$new_col)[[1]]
+  if("p.value" %in% (names(x))) x$p.value <- p.adjust(x$p.value, method = p.adjust)
+  
   x
 }
 

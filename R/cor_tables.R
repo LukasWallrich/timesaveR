@@ -49,6 +49,11 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
   if (add_distributions & is.null(data)) {
     stop("If add_distributions = TRUE, data needs to be provided.", call. = FALSE)
   }
+  
+  if (add_distributions & "survey.design" %in% class(data)) {
+    stop("Presently, distributions cannot be shown for weighted survey data. ",
+         "Set add_distributions to FALSE", call. = FALSE)
+  }
 
   plot_args <- list(...)
   if ("plot_theme" %in% names(plot_args)) {
@@ -436,7 +441,7 @@ cor_matrix <- function(df,
 #' }
 #' }
 #'
-svy_cor_matrix <- function(svy_df, var_names) {
+svy_cor_matrix <- function(svy_df, var_names = NULL) {
   .check_req_packages(c("jtools", "survey", "srvyr", "weights"))
 
   assert_class(svy_df, "survey.design")
