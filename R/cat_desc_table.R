@@ -154,7 +154,7 @@ report_cat_vars <- function(df, dv, ..., var_names = NULL, level_names = NULL,
   
   tab <- descr_formatted %>%
     gt::gt(rowname_col = "level", groupname_col = "group_var") %>%
-    gt::fmt_markdown(columns = dplyr::everything()) %>%
+    gt::fmt_markdown(columns = gt::everything()) %>%
     gt::fmt_percent(columns = "Share", decimals = 1) %>%
     gt::cols_label(.list = f(.))
 

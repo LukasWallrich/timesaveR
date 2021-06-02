@@ -122,9 +122,9 @@ if (!("lm" %in% class(mod_std[[1]]) | ("mira" %in% class(mod_std[[1]]) &
     tab <- modelsummary::msummary(mods, output = "gt", vcov = stat_list, rep(c(
       "{estimate} {stars}", "{estimate}"
     ), length(mod)), fmt = fmt, gof_omit = ".*", stars = stars, coef_rename = coef_renames, ...) %>%
-      gt::fmt_markdown(columns = dplyr::everything()) %>%
+      gt::fmt_markdown(columns = gt::everything()) %>%
       gt::cols_label(.list = col_labels) %>%
-      gt::cols_align("right", dplyr::everything()) %>%
+      gt::cols_align("right", gt::everything()) %>%
       gt::cols_align("left", columns = 1) %>%
       gt:::dt_source_notes_set("") # Remove std star note
   } else {
@@ -132,9 +132,9 @@ if (!("lm" %in% class(mod_std[[1]]) | ("mira" %in% class(mod_std[[1]]) &
       "{estimate} ({std.error}){stars}",
       "{estimate} [{conf.low}, {conf.high}]"
     ), length(mod)), fmt = fmt, gof_omit = ".*", stars = stars, coef_rename = coef_renames, ...) %>%
-      gt::fmt_markdown(columns = dplyr::everything()) %>%
+      gt::fmt_markdown(columns = gt::everything()) %>%
       gt::cols_label(.list = col_labels) %>%
-      gt::cols_align("right", dplyr::everything()) %>%
+      gt::cols_align("right", gt::everything()) %>%
       gt::cols_align("left", columns = 1) %>%
       gt:::dt_source_notes_set("") # Remove std star note
   }
@@ -147,9 +147,10 @@ if (!("lm" %in% class(mod_std[[1]]) | ("mira" %in% class(mod_std[[1]]) &
 
 
   if (length(mod) > 1) {
-    if (is.null(model_names)) model_names <- paste0("Model", seq_len(length(mod)))
+    if (is.null(model_names)) model_names <- paste0("Model ", seq_len(length(mod)))
     for (i in seq_len(length(mod))) {
-      tab <- tab %>% gt::tab_spanner(gt::md(paste0("**", model_names[i], "**")), columns = (2 * i):(2 * i + 1))
+      current_cols <- c((2 * i):(2 * i + 1))
+      tab <- tab %>% gt::tab_spanner(gt::md(paste0("**", model_names[i], "**")), columns = current_cols)
     }
   }
 
@@ -383,18 +384,18 @@ report_polr_with_std <- function(mod, mod_std, OR = TRUE, conf_level = .95, fmt 
     tab <- modelsummary::msummary(mods, output = "gt", estimate = "{estimate} {stars}", 
                                   statistic = "[{conf.low}, {conf.high}]", fmt = fmt, 
                                   gof_omit = ".*", stars = stars, ...) %>%
-      gt::fmt_markdown(columns = dplyr::everything()) %>%
+      gt::fmt_markdown(columns = gt::everything()) %>%
       gt::cols_label(.list = col_labels) %>%
-      gt::cols_align("right", dplyr::everything()) %>%
+      gt::cols_align("right", gt::everything()) %>%
       gt::cols_align("left", columns = 1) %>%
       gt:::dt_source_notes_set("") # Remove std star note
   } else {
     tab <- modelsummary::msummary(mods, output = "gt", statistic = NULL, 
                                   estimate = "{estimate} {stars} [{conf.low}, {conf.high}]", 
                                   fmt = fmt, gof_omit = ".*", stars = stars, ...) %>%
-      gt::fmt_markdown(columns = dplyr::everything()) %>%
+      gt::fmt_markdown(columns = gt::everything()) %>%
       gt::cols_label(.list = col_labels) %>%
-      gt::cols_align("right", dplyr::everything()) %>%
+      gt::cols_align("right", gt::everything()) %>%
       gt::cols_align("left", columns = 1) %>%
       gt:::dt_source_notes_set("") # Remove std star note
   }
@@ -406,9 +407,10 @@ report_polr_with_std <- function(mod, mod_std, OR = TRUE, conf_level = .95, fmt 
 
 
   if (length(mod) > 1) {
-    if (is.null(model_names)) model_names <- paste0("Model", seq_len(length(mod)))
+    if (is.null(model_names)) model_names <- paste0("Model ", seq_len(length(mod)))
     for (i in seq_len(length(mod))) {
-      tab <- tab %>% gt::tab_spanner(gt::md(paste0("**", model_names[i], "**")), columns = (2 * i):(2 * i + 1))
+      current_cols <- c((2 * i):(2 * i + 1))
+      tab <- tab %>% gt::tab_spanner(gt::md(paste0("**", model_names[i], "**")), columns = current_cols)
     }
   }
 
