@@ -3,12 +3,12 @@
   packageStartupMessage("Note re timesaveR: Many functions in this package are alpha-versions - please treat results with care and report bugs and desired features.")
 }
 
-.onLoad <- function(...) {
-  registerMethods(list(
-    # c(package, genname, class)
-    c("knitr", "knit_print", "timesaveR_raw_html")
-  ))
-}
+# .onLoad <- function(...) {
+#   registerMethods(list(
+#     # c(package, genname, class)
+#     c("knitr", "knit_print", "timesaveR_raw_html")
+#   ))
+# }
 
 #' Functions to Accelerate (Academic) Data Analysis and Reporting
 #'
@@ -106,13 +106,11 @@ registerMethods <- function(methods) {
 #'
 #' @param x Either a character vector containing HTML code
 #' or a list with a html_code element
-#' @inheritDotParams print
-#' @export
+#' @param ... Additional arguments passed to print.
+#' @exportS3Method print timesaveR_raw_html
 
 print.timesaveR_raw_html <- function(x, ...) {
-  if (interactive() && length(as.environment("tools:rstudio")$.rs.S3Overrides) > 0L) {
-    knit_print.timesaveR_raw_html(x)
-  } else {
+
     if ("html_code" %in% names(x)) {
       res <- x$html_code
     } else {
@@ -124,18 +122,24 @@ print.timesaveR_raw_html <- function(x, ...) {
       dir.create(tempDir)
       htmlFile <- file.path(tempDir, "index.html")
       writeLines(res, htmlFile)
-      viewer <- getOption("viewer")
+      viewer <- getOption("viewer", utils::browseURL)
       viewer(htmlFile)
     } else {
       cat(res, "\n", sep = "")
       invisible(res)
     }
   }
-}
 
+#' Knitr S3 method to print tables
+#'
+#' These S3 methods are necessary to allow custom tables to print themselves in
+#' knitr/rmarkdown documents.
+#'
+#' @param x Object to knit_print
+#' @param ... Additional knit_print arguments
 #' @exportS3Method knitr::knit_print timesaveR_raw_html
+
 knit_print.timesaveR_raw_html <- function(x, ...) {
-  # if (is_html_output) {
   if ("html_code" %in% names(x)) {
     res <- x$html_code
   } else {
@@ -144,6 +148,6 @@ knit_print.timesaveR_raw_html <- function(x, ...) {
   res <- stringr::str_remove(res, "<!DOCTYPE html>")
   res <- stringr::str_remove(res, "<html>")
   res <- stringr::str_remove(res, "</html>")
-
-  knitr::asis_output(res)
+  
+  structure(res, class = "knit_asis")
 }
