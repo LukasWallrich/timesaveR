@@ -13,3 +13,4 @@
 ## Bug fixes
 
 * p values > .99 are now correctly reported as "> .99" rather than rounded to 1 by `fmt_p()`
+* `ggsave_show()` now correctly takes file type from file extension
