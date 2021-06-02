@@ -81,7 +81,7 @@ for multiple comparisons, and print rather than returns the results." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9014</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9015</span>
       </span>
     </div>
 
@@ -146,14 +146,14 @@ for multiple comparisons, and print rather than returns the results." />
 for multiple comparisons, and print rather than returns the results.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>svy_pairwise.t.test</span><span class='op'>(</span><span class='va'>df</span>, <span class='va'>dv</span>, <span class='va'>iv</span>, <span class='va'>cats</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>svy_pairwise.t.test</span><span class='op'>(</span><span class='va'>df</span>, <span class='va'>dv</span>, <span class='va'>iv</span>, <span class='va'>cats</span>, p.adjust <span class='op'>=</span> <span class='st'>"holm"</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>df</th>
-      <td><p>A dataframe</p></td>
+      <td><p>A survey object</p></td>
     </tr>
     <tr>
       <th>dv</th>
@@ -169,10 +169,16 @@ for multiple comparisons, and print rather than returns the results.</p>
 pairwise tests. If set to NULL, all levels are used.</p></td>
     </tr>
     <tr>
+      <th>p.adjust</th>
+      <td><p>Method to adjust p-values for multiple comparisons. One of 
+"holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr" or "none".</p></td>
+    </tr>
+    <tr>
       <th>...</th>
       <td><p>Arguments passed on to <code><a href='svy_cohen_d_pair.html'>svy_cohen_d_pair</a></code></p><dl>
-    <dt><code>ttest</code></dt><dd><p>Logical. Should t.test be run and displayed? Otherwise, only
+    <dt><code>ttest</code></dt><dd><p>Logical. Should t.test be run? Otherwise, only
 Cohen's d is calculated. Defaults to TRUE.</p></dd>
+    <dt><code>print</code></dt><dd><p>Logical. Should results be printed.</p></dd>
   
 </dl></td>
     </tr>
@@ -180,8 +186,7 @@ Cohen's d is calculated. Defaults to TRUE.</p></dd>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Invisibly returns a names lists of lists including the t.test()
-  output and Cohen's D for each pair</p>
+    <p>A tibble with t-test results and Cohen's d for each pair</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -81,7 +81,7 @@ two levels and you just want to compare two of them." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9014</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9015</span>
       </span>
     </div>
 
@@ -146,14 +146,14 @@ object. It is particularly helpful when the grouping variable has more than
 two levels and you just want to compare two of them.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>svy_cohen_d_pair</span><span class='op'>(</span><span class='va'>df</span>, <span class='va'>dv</span>, <span class='va'>iv</span>, <span class='va'>pair</span>, ttest <span class='op'>=</span> <span class='cn'>T</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>svy_cohen_d_pair</span><span class='op'>(</span><span class='va'>df</span>, <span class='va'>dv</span>, <span class='va'>iv</span>, pair <span class='op'>=</span> <span class='cn'>NULL</span>, ttest <span class='op'>=</span> <span class='cn'>TRUE</span>, print <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>df</th>
-      <td><p>A dataframe</p></td>
+      <td><p>A survey object</p></td>
     </tr>
     <tr>
       <th>dv</th>
@@ -166,20 +166,44 @@ two levels and you just want to compare two of them.</p>
     <tr>
       <th>pair</th>
       <td><p>Character vector of length 2. Levels of iv to
-be compared in t.test</p></td>
+be compared in t.test. Can be NULL if iv only has two distinct values.</p></td>
     </tr>
     <tr>
       <th>ttest</th>
-      <td><p>Logical. Should t.test be run and displayed? Otherwise, only
+      <td><p>Logical. Should t.test be run? Otherwise, only
 Cohen's d is calculated. Defaults to TRUE.</p></td>
+    </tr>
+    <tr>
+      <th>print</th>
+      <td><p>Logical. Should results be printed.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Invisibly returns a list including the t.test() output and
-  Cohen's d</p>
+    <p>Returns a one-row tibble with tidy results of t-test and Cohen's d. 
+If print is TRUE, results are returned invisibly.</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://gdfe.co/srvyr/'>srvyr</a></span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: ‘srvyr’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:MASS’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    select</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:stats’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    filter</span></div><div class='input'>
+<span class='co'>#Create weights (consists of two variables in ESS)</span>
+<span class='va'>ess_health</span><span class='op'>$</span><span class='va'>svy_weight</span> <span class='op'>&lt;-</span> <span class='va'>ess_health</span><span class='op'>$</span><span class='va'>pspwght</span> <span class='op'>*</span> <span class='va'>ess_health</span><span class='op'>$</span><span class='va'>pweight</span>
+
+<span class='va'>ess_survey</span> <span class='op'>&lt;-</span> <span class='fu'><a href='http://gdfe.co/srvyr/reference/as_survey.html'>as_survey</a></span><span class='op'>(</span><span class='va'>ess_health</span>,
+                       weights <span class='op'>=</span> <span class='va'>svy_weight</span><span class='op'>)</span>   
+
+<span class='fu'>svy_cohen_d_pair</span><span class='op'>(</span><span class='va'>ess_survey</span>, <span class='st'>"health"</span>, <span class='st'>"cntry"</span>, pair <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"DE"</span>, <span class='st'>"GB"</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 1 x 8</span>
+#&gt;   pair        d     t    df  p.value mean_diff mean_diff_ci.low mean_diff_ci.hi…
+#&gt;   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>            <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>            <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
+#&gt; <span style='color: #BCBCBC;'>1</span> DE &amp; GB 0.324 0.295  <span style='text-decoration: underline;'>5</span>301 7.94<span style='color: #949494;'>e</span><span style='color: #BB0000;'>-25</span>     0.295            0.351            0.239</div><div class='input'>  
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
