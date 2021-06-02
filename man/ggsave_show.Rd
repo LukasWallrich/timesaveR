@@ -7,12 +7,7 @@
 https://stackoverflow.com/a/12135823/10581449
 }
 \usage{
-ggsave_show(
-  filename = tempfile("0_plot", fileext = ".png"),
-  ...,
-  device = "png",
-  units = "cm"
-)
+ggsave_show(filename = NULL, ..., device = NULL, units = "cm")
 }
 \arguments{
 \item{filename}{File name with path. If not provided, only a temporary file is saved}
@@ -49,6 +44,7 @@ It also changes the default units from in to cm, and defaults to saving temporar
 }
 \examples{
 \dontrun{
+ggplot(mtcars, aes(mpg)) + geom_histogram()
 ggsave_show(here::here("mtcars.pdf"))
 }
 }

@@ -33,7 +33,7 @@ report_polr_with_std(
 \item{fmt}{determines how to format numeric values
 \itemize{
 \item integer: the number of digits to keep after the period \code{format(round(x, fmt), nsmall=fmt)}
-\item character: passed to the \code{sprintf} function (e.g., '\\%.3f' keeps 3 digits with trailing zero). See \code{?sprintf}
+\item character: passed to the \code{sprintf} function (e.g., '\%.3f' keeps 3 digits with trailing zero). See \code{?sprintf}
 \item function: returns a formatted character string.
 }}
 
@@ -60,7 +60,7 @@ stating that dummy variables were not scaled in standardization. If you approach
 \item Supported filename extensions: .html, .tex, .md, .txt, .png, .jpg.
 \item Supported object types: "default", "html", "markdown", "latex", "latex_tabular", "data.frame", "modelsummary_list", "gt", "kableExtra", "huxtable", "flextable".
 \item To change the default output format, type \code{options(modelsummary_default = "latex")}, where \code{latex} can be any of the valid object types listed above.
-\item Warning: the \code{output} argument \emph{cannot} be used when customizing tables with external packages.
+\item Warning: users should not supply a file name to the \code{output} argument if they intend to customize the table with external packages.
 \item See the 'Details' section below for more information.
 }}
     \item{\code{estimate}}{string or \code{glue} string of the estimate to display (or a
@@ -72,14 +72,15 @@ the data.frame produced by \code{get_estimates(model)}. Examples:
 \item \code{"{estimate} [{conf.low}, {conf.high}]"}
 }}
     \item{\code{vcov}}{robust standard errors and other manual statistics. The \code{vcov}
-argument accepts five types of input (see the 'Details' and 'Examples'
+argument accepts six types of input (see the 'Details' and 'Examples'
 sections below):
 \itemize{
-\item string, vector, or list of strings: "robust", "HC", "HC0", "HC1", "HC2", "HC3", "HC4", "HC4m", "HC5", "stata", or "classical" (alias "constant" or "iid").
-\item formula or list of formulas with the cluster variable(s) on the right-hand side (e.g., ~clusterid).
-\item function or list of functions which return variance-covariance matrices with row and column names equal to the names of your coefficient estimates (e.g., \code{stats::vcov}, \code{sandwich::vcovHC}).
-\item list of \code{length(models)} variance-covariance matrices with row and column names equal to the names of your coefficient estimates.
-\item a list of length(models) vectors with names equal to the names of your coefficient estimates. See 'Examples' section below. Warning: since this list of vectors can include arbitrary strings or numbers, \code{modelsummary} cannot automatically calculate p values. The \code{stars} argument may thus use incorrect significance thresholds when \code{vcov} is a list of vectors.
+\item NULL returns the default uncertainty estimates of the model object
+\item string, vector, or (named) list of strings. The strings "classical", "iid" and "constant" are aliases for \code{NULL}, and they return the model's default uncertainty estimates. The strings "robust", "HC", "HC0", "HC1", "HC2", "HC3", "HC4", "HC4m", "HC5", "stata", "HAC", "NeweyWest", "Andrews", "panel-corrected", "outer-product", "weave" use variance-covariance matrices computed using functions from the \code{sandwich} package. The behavior of those functions can (and sometimes \emph{must}) be altered by passing arguments to \code{sandwich} directly from \code{modelsummary} through the ellipsis (\code{...}), but it is safer to define your own custom functions as described in the next bullet.
+\item function or (named) list of functions which return variance-covariance matrices with row and column names equal to the names of your coefficient estimates (e.g., \code{stats::vcov}, \code{sandwich::vcovHC}, \code{function(x) vcovPC(x, cluster="country")}).
+\item formula or (named) list of formulas with the cluster variable(s) on the right-hand side (e.g., ~clusterid).
+\item (named) list of \code{length(models)} variance-covariance matrices with row and column names equal to the names of your coefficient estimates.
+\item a (named) list of length(models) vectors with names equal to the names of your coefficient estimates. See 'Examples' section below. Warning: since this list of vectors can include arbitrary strings or numbers, \code{modelsummary} cannot automatically calculate p values. The \code{stars} argument may thus use incorrect significance thresholds when \code{vcov} is a list of vectors.
 }}
     \item{\code{coef_map}}{character vector. Subset, rename, and reorder coefficients.
 Coefficients omitted from this vector are omitted from the table. The order
@@ -94,7 +95,9 @@ from the table using \code{grepl(perl=TRUE)}.}
 vector. Values of the vector refer to the variable names that will appear
 in the table. Names refer to the original term names stored in the model
 object, e.g. c("hp:mpg"="hp X mpg") for an interaction term.}
-    \item{\code{gof_map}}{\itemize{
+    \item{\code{gof_map}}{rename, reorder, and omit goodness-of-fit statistics and other
+model information. This argument accepts 3 types of values:
+\itemize{
 \item NULL (default): the \code{modelsummary::gof_map} dictionary is used for formatting, and all unknown statistic are included.
 \item data.frame with 3 columns named "raw", "clean", "fmt". Unknown statistics are omitted. See the 'Examples' section below.
 \item list of lists, each of which includes 3 elements named "raw", "clean", "fmt". Unknown statistics are omitted. See the 'Examples section below'.

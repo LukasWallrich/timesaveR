@@ -10,11 +10,7 @@
 \item{x}{Either a character vector containing HTML code
 or a list with a html_code element}
 
-\item{...}{
-  Arguments passed on to \code{\link[=print]{print}}
-  \describe{
-    \item{\code{}}{}
-  }}
+\item{...}{Additional arguments passed to print.}
 }
 \description{
 Various functions in this package return HTML code, mostly for tables. This
