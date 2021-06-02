@@ -29,7 +29,7 @@ library(dplyr)
 
 # Create scales
 
-Let's create scales for health behaviours and depressive symptoms, each including some reverse coding. For that, scale items need to be included into a named character vector; if any items are to be reversed, they should be added into another character vector.
+Let's create scales for health behaviours and depressive symptoms, each including some reverse coding. For that, scale items need to be included into a list of named character vectors; if any items are to be reversed, they should be added into another list of character vectors.
 
 ```{r}
 scales_items <- list(
@@ -191,7 +191,8 @@ coef_names <- tibble::tribble(
 )
 
 report_lm_with_std(mod = list(mod1, mod3), mod_std = list(mod2, mod4),
-                   coef_renames = coef_names, R2_change = TRUE)
+                   coef_renames = coef_names, R2_change = TRUE,
+                   model_names = c("Base model", "Extended model"))
 ```
 
 Happy exploring, and please do report bugs and unexpected behaviors by opening an [issue on GitHub](https://github.com/LukasWallrich/timesaveR/issues) or emailing me on [lukas.wallrich@gmail.com](mailto:lukas.wallrich@gmail.com)

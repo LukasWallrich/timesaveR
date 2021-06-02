@@ -2,7 +2,7 @@
 title: "Analysing survey data with timesaveR"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Analysing survey data}
+  %\VignetteIndexEntry{Analysing survey data with timesaveR}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
