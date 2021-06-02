@@ -17,3 +17,21 @@ test_that("lm_std works", {
   expect_equal(summary(mod3)$coefficients, summary(mod4)$coefficients)
   expect_equal(round(summary(mod3)$coefficients[2,1], 3), -0.666)
 })
+
+data("airquality")
+airquality$month <- factor(airquality$Month, labels = month.abb[5:9])
+x <- pairwise.t.test(airquality$Ozone, airquality$Month)
+
+pl <- get_pairwise_letters(x)
+out <- tibble::tribble(
+  ~level, ~letters, ~a,    ~b,    ~c,    
+  "5",    "a",      "a",   NA,  NA, 
+  "6",    "ac",     "a",   NA,  "c",  
+  "7",    "bc",     NA,  "b",   "c",  
+  "8",    "b",      NA,  "b",   NA, 
+  "9",    "a",      "a",   NA,  NA
+)
+
+test_that("pairwise letters work", {
+  expect_equal(pl, out)
+})

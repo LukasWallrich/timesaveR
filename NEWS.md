@@ -1,4 +1,4 @@
-# timesaveR 0.0.1.9006
+# timesaveR WIP (preparing 0.0.2)
 
 ## New capabilities
 
@@ -8,6 +8,7 @@
 ## Enhancements
 
 * Added a tidier for correlation matrices returned by `cor_matrix()`
+* Added time to temporary filenames used by `ggplot_save()`
 
 ## Bug fixes
 

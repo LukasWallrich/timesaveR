@@ -334,7 +334,12 @@ rproj_to_clip <- function() {
 #' }
 #' @source https://stackoverflow.com/a/12135823/10581449
 
-ggsave_show <- function(filename = tempfile("0_plot", fileext = ".png"), ..., device = "png", units = "cm") {
+ggsave_show <- function(filename = NULL, ..., device = "png", units = "cm") {
+  if(is.null(filename)) {
+    filename <- tempfile(Sys.time() %>% 
+                           {paste0("0-plot-", format(., "%H"), "-", format(., "%M"), "-")}, 
+                         fileext = ".png")
+  }
   ggplot2::ggsave(filename, units = units, device = device, ...)
   if (.Platform["OS.type"] == "windows") {
     shell.exec(dirname(filename))
