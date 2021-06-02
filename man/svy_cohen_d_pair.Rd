@@ -4,27 +4,41 @@
 \alias{svy_cohen_d_pair}
 \title{t.test for survey object with Cohen's d}
 \usage{
-svy_cohen_d_pair(df, dv, iv, pair, ttest = T)
+svy_cohen_d_pair(df, dv, iv, pair = NULL, ttest = TRUE, print = FALSE)
 }
 \arguments{
-\item{df}{A dataframe}
+\item{df}{A survey object}
 
 \item{dv}{Character. Name of the dependent variable for the t.test (numeric)}
 
 \item{iv}{Character. Name of the grouping variable for the t.test (factor)}
 
 \item{pair}{Character vector of length 2. Levels of iv to
-be compared in t.test}
+be compared in t.test. Can be NULL if iv only has two distinct values.}
 
-\item{ttest}{Logical. Should t.test be run and displayed? Otherwise, only
+\item{ttest}{Logical. Should t.test be run? Otherwise, only
 Cohen's d is calculated. Defaults to TRUE.}
+
+\item{print}{Logical. Should results be printed.}
 }
 \value{
-Invisibly returns a list including the t.test() output and
-  Cohen's d
+Returns a one-row tibble with tidy results of t-test and Cohen's d. 
+If print is TRUE, results are returned invisibly.
 }
 \description{
 This function calculates a t.test() for two groups in a \code{srvyr} survey
 object. It is particularly helpful when the grouping variable has more than
 two levels and you just want to compare two of them.
+}
+\examples{
+library(srvyr)
+
+#Create weights (consists of two variables in ESS)
+ess_health$svy_weight <- ess_health$pspwght * ess_health$pweight
+
+ess_survey <- as_survey(ess_health,
+                       weights = svy_weight)   
+
+svy_cohen_d_pair(ess_survey, "health", "cntry", pair = c("DE", "GB"))
+  
 }
