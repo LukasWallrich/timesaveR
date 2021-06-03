@@ -84,11 +84,7 @@ print.timesaveR_raw_html <- function(x, ...) {
   } else {
     res <- x
   }
-  if (interactive() && length(as.environment("tools:rstudio")$.rs.S3Overrides) > 0L) {
-  suppressMessages(print(htmltools::HTML(res))) 
-  } else {
-    suppressMessages(htmltools::html_print(htmltools::HTML(x$html_code)))
-  }
+  suppressMessages(print(htmltools::browsable(htmltools::HTML(res)))) 
 }
 
 #' Knitr S3 method to print tables
