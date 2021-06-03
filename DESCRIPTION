@@ -17,7 +17,7 @@ License: GPL (>= 3)
 URL: https://lukaswallrich.github.io/timesaveR/
 BugReports: https://github.com/LukasWallrich/timesaveR/issues
 Depends: 
-    R (>= 2.10)
+    R (>= 3.60)
 Imports: 
     broom,
     checkmate,

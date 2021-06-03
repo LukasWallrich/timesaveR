@@ -110,25 +110,17 @@ registerMethods <- function(methods) {
 #' @exportS3Method print timesaveR_raw_html
 
 print.timesaveR_raw_html <- function(x, ...) {
-
-    if ("html_code" %in% names(x)) {
-      res <- x$html_code
-    } else {
-      res <- x
-    }
-
-    if (interactive()) {
-      tempDir <- tempfile()
-      dir.create(tempDir)
-      htmlFile <- file.path(tempDir, "index.html")
-      writeLines(res, htmlFile)
-      viewer <- getOption("viewer", utils::browseURL)
-      viewer(htmlFile)
-    } else {
-      cat(res, "\n", sep = "")
-      invisible(res)
-    }
+  if ("html_code" %in% names(x)) {
+    res <- x$html_code
+  } else {
+    res <- x
   }
+  if (interactive() && length(as.environment("tools:rstudio")$.rs.S3Overrides) > 0L) {
+  suppressMessages(print(htmltools::HTML(res))) 
+  } else {
+    suppressMessages(htmltools::html_print(htmltools::HTML(x$html_code)))
+  }
+}
 
 #' Knitr S3 method to print tables
 #'
