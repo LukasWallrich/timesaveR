@@ -35,3 +35,11 @@ out <- tibble::tribble(
 test_that("pairwise letters work", {
   expect_equal(pl, out)
 })
+
+
+x <- paired_t_test_d(iris, "Sepal.Width", "Petal.Length")
+
+test_that("paired t-test with d works", {
+  expect_equal(x$d, -0.35185088)
+  expect_equal(unname(x$t_test$statistic), -4.3092756)
+})

@@ -5,6 +5,10 @@
 #' @param x An object returned from an anova() function
 #' 
 #' @return A character string reporting the anova in APA style
+#' @examples 
+#' mod1 <- lm(mpg ~ wt + am, mtcars)
+#' mod2 <- lm(mpg ~ wt * am, mtcars)
+#' report_anova(anova(mod1, mod2)
 #' @keywords internal
 
 report_anova <- function(x) {

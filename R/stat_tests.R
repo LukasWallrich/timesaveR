@@ -1,4 +1,4 @@
-#' Pairwise t.test with Cohen's d
+#' Paired t.test with Cohen's d
 #'
 #' This function takes two variables that are representing paired data and
 #' calculates a paired samples \code{t.test}. It then also calculates and prints
@@ -8,6 +8,8 @@
 #' @param df A dataframe
 #' @param x,y Character strings indicating the names of the two variables
 #' @return Invisibly returns a list including the t.test() output and Cohen's D
+#' @examples 
+#' paired_t_test_d(iris, "Sepal.Width", "Petal.Length")
 #' @export
 
 paired_t_test_d <- function(df, x, y) {
@@ -17,7 +19,7 @@ paired_t_test_d <- function(df, x, y) {
   cohens_d <- t.test_result$estimate /
     (sqrt(t.test_result$parameter + 1) * t.test_result$stderr)
   print(paste("Cohen's d:", round_(cohens_d, 3)))
-  invisible(list(t.test_result, cohens_d))
+  invisible(list(t_test = t.test_result, d = unname(cohens_d)))
 }
 
 #' t.test for survey object with Cohen's d
