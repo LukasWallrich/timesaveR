@@ -450,7 +450,7 @@ dump_to_clip <- function(objects) {
 #' weekend <- line_to_vector("Friday Saturday Sunday", return = "vector")
 #' @export
 
-line_to_vector <- function(x = readLines("clipboard"), strings = TRUE, separators = c("top-level", "all"), to_clip = interactive(), return = c("code", "vector")) {
+line_to_vector <- function(x = readLines("clipboard", warn = FALSE), strings = TRUE, separators = c("top-level", "all"), to_clip = interactive(), return = c("code", "vector")) {
   assert_character(x)
   assert_choice(separators[1], c("all", "top-level"))
   assert_choice(return[1], c("code", "vector"))
@@ -458,13 +458,14 @@ line_to_vector <- function(x = readLines("clipboard"), strings = TRUE, separator
   if (separators[1] == "all") {
     x <- strsplit(x, " |\\n|\\t") %>% unlist()
   } else {
+    if (!length(x) > 1) { #Otherwise, multiple lines have been read
     sep <- dplyr::case_when(
       stringr::str_detect(x, "\\n") ~ "\\n",
       stringr::str_detect(x, "\\t") ~ "\\t",
       TRUE ~ " "
     )
     x <- strsplit(x, sep) %>% unlist()
-  }
+  }}
   x <- x[!x == ""]
   if (strings) {
     x <- stringr::str_trim(x)
