@@ -382,15 +382,11 @@ get_pairwise_letters <- function(tests,
         if (dat_letters[dat_letters$dat_level == tests$x[i], j] &
           dat_letters[dat_letters$dat_level == tests$y[i], j]) {
           n <- n + 1
-          #     print(paste0("Working on ", str_sub(x[1], start=-10), " and ", str_sub(x[2], start=-10), ". Copy column ", j, " to ", n,"."))
           dat_letters[n] <- dat_letters[j]
           dat_letters[dat_letters$dat_level == tests$x[i], j] <- FALSE
           dat_letters[dat_letters$dat_level == tests$y[i], n] <- FALSE
-          # break
-          # browser()
         }
       }
-      # browser()
     }
 
     n <- 1
@@ -422,6 +418,11 @@ get_pairwise_letters <- function(tests,
 
     if (length(absorb > 0)) dat_letters <- dat_letters[-absorb]
   }
+  
+  #Sort letters
+  letter_order <- purrr::map_int(dat_letters[2:4], ~min(which(.x == TRUE))) %>% sort()
+  dat_letters <- cbind(dat_letters[1], dat_letters[names(letter_order)])
+  
   for (i in 2:ncol(dat_letters)) {
     dat_letters[letters[i - 1]] <- NA_character_
     dat_letters[letters[i - 1]][dat_letters[[i]], ] <-
