@@ -182,14 +182,12 @@ group/level</p>
 <span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/pairwise.t.test.html'>pairwise.t.test</a></span><span class='op'>(</span><span class='va'>airquality</span><span class='op'>$</span><span class='va'>Ozone</span>, <span class='va'>airquality</span><span class='op'>$</span><span class='va'>Month</span><span class='op'>)</span>
 
 <span class='fu'>get_pairwise_letters</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 5 x 5</span>
-#&gt;   level letters a     b     c    
-#&gt;   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>
-#&gt; <span style='color: #BCBCBC;'>1</span> 5     a       a     <span style='color: #BB0000;'>NA</span>    <span style='color: #BB0000;'>NA</span>   
-#&gt; <span style='color: #BCBCBC;'>2</span> 6     ac      a     <span style='color: #BB0000;'>NA</span>    c    
-#&gt; <span style='color: #BCBCBC;'>3</span> 7     bc      <span style='color: #BB0000;'>NA</span>    b     c    
-#&gt; <span style='color: #BCBCBC;'>4</span> 8     b       <span style='color: #BB0000;'>NA</span>    b     <span style='color: #BB0000;'>NA</span>   
-#&gt; <span style='color: #BCBCBC;'>5</span> 9     a       a     <span style='color: #BB0000;'>NA</span>    <span style='color: #BB0000;'>NA</span>   </div></pre>
+</div><div class='output co'>#&gt;   level letters    a    b    c
+#&gt; 1     5       a    a &lt;NA&gt; &lt;NA&gt;
+#&gt; 2     6      ab    a    b &lt;NA&gt;
+#&gt; 3     7      bc &lt;NA&gt;    b    c
+#&gt; 4     8       c &lt;NA&gt; &lt;NA&gt;    c
+#&gt; 5     9       a    a &lt;NA&gt; &lt;NA&gt;</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
