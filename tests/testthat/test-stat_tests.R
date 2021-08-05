@@ -26,9 +26,9 @@ pl <- get_pairwise_letters(x)
 out <- tibble::tribble(
   ~level, ~letters, ~a,    ~b,    ~c,    
   "5",    "a",      "a",   NA,  NA, 
-  "6",    "ac",     "a",   NA,  "c",  
+  "6",    "ab",     "a",   "b",   NA, 
   "7",    "bc",     NA,  "b",   "c",  
-  "8",    "b",      NA,  "b",   NA, 
+  "8",    "c",      NA,  NA,  "c",  
   "9",    "a",      "a",   NA,  NA
 )
 

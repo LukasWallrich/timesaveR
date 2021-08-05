@@ -437,7 +437,7 @@ get_pairwise_letters <- function(tests,
   }
   
   #Sort letters
-  letter_order <- purrr::map_int(dat_letters[2:4], ~min(which(.x == TRUE))) %>% sort()
+  letter_order <- purrr::map_int(dat_letters[-1], ~min(which(.x == TRUE))) %>% sort()
   dat_letters <- cbind(dat_letters[1], dat_letters[names(letter_order)])
   
   for (i in 2:ncol(dat_letters)) {

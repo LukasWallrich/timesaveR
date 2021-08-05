@@ -10,7 +10,7 @@ vignette: >
 
 ```{r, include = FALSE, eval = FALSE}
 #Only to be run locally to link to vignette from GitHub README
-rmarkdown::render("vignettes/getting_started.Rmd", output_file="doc/survey-functions.html")
+rmarkdown::render("vignettes/getting_started.Rmd", output_file="doc/getting_started.html")
 ```
 
 ```{r, include = FALSE}
