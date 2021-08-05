@@ -232,6 +232,15 @@ lm_std <- function(formula, data = NULL, weights = NULL, ...) {
 #' @param weights The variable containing survey weights, must be in mi_list
 #'
 #' @return A one-row tibble containing the result of the t-test
+#' 
+#' @examples 
+#' #Create list with imputed data
+#' library(mice)
+#' imp <- mice(nhanes2)
+#' imp_list <- complete(imp, action="long") %>%
+#'    dplyr::group_split(.imp)
+#'
+#' t_test_mi(imp_list, bmi, hyp)
 #'
 #' @export
 
@@ -274,15 +283,23 @@ t_test_mi <- function(mi_list, dv, groups, weights = NULL) {
 #' @param groups The grouping variable (each distinct value will be treated as a level)
 #' @param p.adjust.method The method to adjust p-values for multiple comparison (see \code{\link[stats]{p.adjust}})
 #' @return A tibble containing the results of the t-tests with one test per row
+#' 
+#' @examples
+#' #' #Create list with imputed data
+#' library(mice)
+#' imp <- mice(nhanes2)
+#' imp_list <- complete(imp, action="long") %>%
+#'    dplyr::group_split(.imp)
+#'
+#' t_test_mi(imp_list, bmi, age)
 #'
 #' @export
 
 pairwise_t_test_mi <- function(mi_list, dv, groups, weights = NULL, p.adjust.method = p.adjust.methods) {
-  if (!("quosure" %in% class(dv) | "name" %in% class(dv))) {
+  
     dv <- rlang::enquo(dv)
     groups <- rlang::enquo(groups)
     weights <- rlang::enquo(weights)
-  }
 
   pairs <- mi_list[[1]] %>%
     dplyr::select(!!groups) %>%
@@ -300,7 +317,7 @@ pairwise_t_test_mi <- function(mi_list, dv, groups, weights = NULL, p.adjust.met
 
   out$p_value %<>% stats::p.adjust(p.adjust.method)
 
-  out$group_var <- dplyr::as_label(groups)
+  out$group_var <- dplyr::as_label(groups) %>% stringr::str_remove_all('^"|"$')
 
   out
 }
