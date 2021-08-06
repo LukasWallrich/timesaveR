@@ -450,7 +450,7 @@ get_pairwise_letters <- function(tests,
     tidyr::unite("letters", -.data$dat_level, sep = "", remove = FALSE, na.rm = TRUE) %>%
     dplyr::rename(level = .data$dat_level)
 
-  return(dat_letters)
+  return(tibble::as_tibble(dat_letters))
 }
 
 #' Pairwise t-tests() returned in tidy dataframe
