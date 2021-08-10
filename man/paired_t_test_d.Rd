@@ -2,7 +2,7 @@
 % Please edit documentation in R/stat_tests.R
 \name{paired_t_test_d}
 \alias{paired_t_test_d}
-\title{Pairwise t.test with Cohen's d}
+\title{Paired t.test with Cohen's d}
 \usage{
 paired_t_test_d(df, x, y)
 }
@@ -19,4 +19,7 @@ This function takes two variables that are representing paired data and
 calculates a paired samples \code{t.test}. It then also calculates and prints
 Cohen's d as a measure of effect size and shows a clearer data label than
 the t.test function.
+}
+\examples{
+paired_t_test_d(iris, "Sepal.Width", "Petal.Length")
 }

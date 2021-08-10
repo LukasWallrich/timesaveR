@@ -22,3 +22,13 @@ A one-row tibble containing the result of the t-test
 This runs t-test (based on lm(), therefore assuming equal variances) on multiple imputations,
 with the ability to take into account survey weights.
 }
+\examples{
+#Create list with imputed data
+library(mice)
+imp <- mice(nhanes2)
+imp_list <- complete(imp, action="long") \%>\%
+   dplyr::group_split(.imp)
+
+t_test_mi(imp_list, bmi, hyp)
+
+}

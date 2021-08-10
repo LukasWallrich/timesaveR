@@ -15,4 +15,9 @@ A character string reporting the anova in APA style
 \description{
 This is under development and thus not yet exported.
 }
+\examples{
+mod1 <- lm(mpg ~ wt + am, mtcars)
+mod2 <- lm(mpg ~ wt * am, mtcars)
+report_anova(anova(mod1, mod2)
+}
 \keyword{internal}
