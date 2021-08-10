@@ -587,3 +587,90 @@ polr_std <- function(formula, data = NULL, weights = NULL, ...) {
   class(mod) <- c("tsR_std", class(mod))
   mod
 }
+
+#' Dummy-code variable
+#' 
+#' Turns a categorical variable into a tibble of n-1 dummy-coded values. If x is a factor, the first level is 
+#' omitted and thus treated as the reference level (to match the behavior of lm() and related functions). If x
+#' is not a factor, the first value in x is treated as the reference level. Variable names returned include a common 
+#' prefix and a cleaned up version of the factor levels (without special characters and in snake_case).
+#' 
+#' @param x The categorical variable to be dummy-coded
+#' @param prefix String to be pre-fixed to the new variable names (typically the name of the variable that is dummy-coded). 
+#' If NULL, variables are just named with the levels. If left as NA, the function will try to extract the name of the variable passed.
+#' @param drop_first Should first level be dropped? Defaults to TRUE
+#' @param verbose Should message with reference level be displayed?
+#' @examples 
+#' dummy_code(iris$Species)
+#' @export     
+
+dummy_code <- function(x, prefix = NA, drop_first = TRUE, verbose = interactive()) {
+  if (is.na(prefix)) {
+    prefix <- deparse(substitute(x)) %>% stringr::str_remove("^.*\\$")
+    if(prefix == ".") {
+      message("prefix cannot be automatically extracted when x is piped in. No prefix will be added.")
+      prefix <- NULL
+    }
+  }
+  N <- length(x)
+  x <- forcats::as_factor(x)
+  dummy_names <- .clean_names(levels(x))
+
+  if (!is.null(prefix)) dummy_names <- paste0(.clean_names(prefix), "_", dummy_names)
+  out <- purrr::map2_dfc(seq_along(levels(x)), levels(x), function(id, level) {
+    tibble::tibble(!!dummy_names[id] := x == level)
+  })
+
+  if (drop_first) {
+    if (verbose) {
+      if (!is.null(prefix)) {
+        message(prefix, " dummy-coded with the following reference level: ", levels(x)[1])
+      } else {
+        message("Dummy-coded with the following reference level: ", levels(x)[1])
+      }
+    }
+    out <- out[-1]
+  }
+  out
+}
+
+
+#Simplified from janitor - to avoid yet another dependency
+#https://github.com/sfirke/janitor/blob/e7540d6835b0ab7643ebdccf1b4d4cd6395b669d/R/make_clean_names.R
+
+.clean_names <- function(x) {
+  transliterated_names <- stringi::stri_trans_general(
+    x,
+    id = intersect(c("Any-Latin", "Greek-Latin", "Any-NFKD", "Any-NFC", "Latin-ASCII"), stringi::stri_trans_list()) %>%
+      paste(collapse = ";")
+  )
+  # Remove starting spaces and punctuation
+  good_start <-
+    stringr::str_replace(
+      string = transliterated_names,
+      # Description of this regexp:
+      # \A: beginning of the string (rather than beginning of the line as ^ would indicate)
+      # \h: any horizontal whitespace character (spaces, tabs, and anything else that is a Unicode whitespace)
+      # \s: non-unicode whitespace matching (it may overlap with \h)
+      # \p{}: indicates a unicode class of characters, so these will also match punctuation, symbols, separators, and "other" characters
+      # * means all of the above zero or more times (not + so that the capturing part of the regexp works)
+      # (.*)$: captures everything else in the string for the replacement
+      pattern = "\\A[\\h\\s\\p{Punctuation}\\p{Symbol}\\p{Separator}\\p{Other}]*(.*)$",
+      replacement = "\\1"
+    )
+  # Convert all interior spaces and punctuation to single underscores
+  cleaned_within <-
+    stringr::str_replace(
+      string = good_start,
+      pattern = "[\\h\\s\\p{Punctuation}\\p{Symbol}\\p{Separator}\\p{Other}]+",
+      replacement = "_"
+    )
+
+  # Simple snakecase conversion - credit to https://stackoverflow.com/a/22528880/10581449
+
+  out <- gsub("([a-z])([A-Z])", "\\1_\\L\\2", cleaned_within, perl = TRUE) %>%
+    gsub("([\\_])([A-Z])", "\\1\\L\\2", ., perl = TRUE) %>%
+    sub("^(.[a-z])", "\\L\\1", ., perl = TRUE)
+
+  out
+}

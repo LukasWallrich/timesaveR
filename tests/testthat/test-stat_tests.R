@@ -43,3 +43,27 @@ test_that("paired t-test with d works", {
   expect_equal(x$d, -0.35185088)
   expect_equal(unname(x$t_test$statistic), -4.3092756)
 })
+
+dummies <- dummy_code(iris[c(1:5, 51:55, 101:105),]$Species) 
+out <- tibble::tribble(
+  ~species_versicolor, ~species_virginica, 
+  FALSE,               FALSE,             
+  FALSE,               FALSE,             
+  FALSE,               FALSE,             
+  FALSE,               FALSE,             
+  FALSE,               FALSE,             
+  TRUE,                FALSE,             
+  TRUE,                FALSE,             
+  TRUE,                FALSE,             
+  TRUE,                FALSE,             
+  TRUE,                FALSE,             
+  FALSE,               TRUE,              
+  FALSE,               TRUE,              
+  FALSE,               TRUE,              
+  FALSE,               TRUE,              
+  FALSE,               TRUE
+)
+test_that("dummy_code works", {
+  expect_equal(dummies, out)
+})
+                

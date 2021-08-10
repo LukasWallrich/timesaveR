@@ -4,6 +4,7 @@
 
 * Added `svy_miss_var_summary()` to quickly check for missing data in survey objects
 * Added `polr_std()` function to run proportional-odds model with continuous predictors standardised (analogous to `lm_std()`)
+* Added `dummy_code()` for creating k-1 dummies with tidy names
 
 ## Enhancements
 
