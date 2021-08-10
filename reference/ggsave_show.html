@@ -163,22 +163,24 @@ It also changes the default units from in to cm, and defaults to saving temporar
 are combined to create the fully qualified file name. Defaults to the
 working directory.</p></dd>
     <dt><code>scale</code></dt><dd><p>Multiplicative scaling factor.</p></dd>
-    <dt><code>width</code></dt><dd><p>Plot size in <code>units</code> ("in", "cm", or "mm").
+    <dt><code>width</code></dt><dd><p>Plot size in <code>units</code> ("in", "cm", "mm", or "px").
 If not supplied, uses the size of current graphics device.</p></dd>
-    <dt><code>height</code></dt><dd><p>Plot size in <code>units</code> ("in", "cm", or "mm").
+    <dt><code>height</code></dt><dd><p>Plot size in <code>units</code> ("in", "cm", "mm", or "px").
 If not supplied, uses the size of current graphics device.</p></dd>
     <dt><code>dpi</code></dt><dd><p>Plot resolution. Also accepts a string input: "retina" (320),
 "print" (300), or "screen" (72). Applies only to raster output types.</p></dd>
-    <dt><code>limitsize</code></dt><dd><p>When <code>TRUE</code> (the default), <code>ggsave</code> will not
+    <dt><code>limitsize</code></dt><dd><p>When <code>TRUE</code> (the default), <code>ggsave()</code> will not
 save images larger than 50x50 inches, to prevent the common error of
 specifying dimensions in pixels.</p></dd>
+    <dt><code>bg</code></dt><dd><p>Background colour. If <code>NULL</code>, uses the <code>plot.background</code> fill value
+from the plot theme.</p></dd>
   
 </dl></td>
     </tr>
     <tr>
       <th>device</th>
       <td><p>Device to use. Can either be a device function
-(e.g. <code><a href='https://rdrr.io/r/grDevices/png.html'>png()</a></code>), or one of "eps", "ps", "tex" (pictex),
+(e.g. <a href='https://rdrr.io/r/grDevices/png.html'>png</a>), or one of "eps", "ps", "tex" (pictex),
 "pdf", "jpeg", "tiff", "png", "bmp", "svg" or "wmf" (windows only).</p></td>
     </tr>
     <tr>

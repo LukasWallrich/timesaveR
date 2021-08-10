@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Pairwise t.test with Cohen's d — paired_t_test_d • timesaveR</title>
+<title>Paired t.test with Cohen's d — paired_t_test_d • timesaveR</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,7 +46,7 @@
 
 
 
-<meta property="og:title" content="Pairwise t.test with Cohen's d — paired_t_test_d" />
+<meta property="og:title" content="Paired t.test with Cohen's d — paired_t_test_d" />
 <meta property="og:description" content="This function takes two variables that are representing paired data and
 calculates a paired samples t.test. It then also calculates and prints
 Cohen's d as a measure of effect size and shows a clearer data label than
@@ -136,7 +136,7 @@ the t.test function." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Pairwise t.test with Cohen's d</h1>
+    <h1>Paired t.test with Cohen's d</h1>
     <small class="dont-index">Source: <a href='https://github.com/LukasWallrich/timesaveR/blob/master/R/stat_tests.R'><code>R/stat_tests.R</code></a></small>
     <div class="hidden name"><code>paired_t_test_d.Rd</code></div>
     </div>
@@ -167,6 +167,21 @@ the t.test function.</p>
 
     <p>Invisibly returns a list including the t.test() output and Cohen's D</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>paired_t_test_d</span><span class='op'>(</span><span class='va'>iris</span>, <span class='st'>"Sepal.Width"</span>, <span class='st'>"Petal.Length"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; 
+#&gt; 	Paired t-test
+#&gt; 
+#&gt; data:  Sepal.Width vs. Petal.Length
+#&gt; t = -4.3093, df = 149, p-value = 2.961e-05
+#&gt; alternative hypothesis: true difference in means is not equal to 0
+#&gt; 95 percent confidence interval:
+#&gt;  -1.0219565 -0.3793768
+#&gt; sample estimates:
+#&gt; mean of the differences 
+#&gt;              -0.7006667 
+#&gt; 
+#&gt; [1] "Cohen's d: -0.352"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
