@@ -660,7 +660,7 @@ dummy_code <- function(x, prefix = NA, drop_first = TRUE, verbose = interactive(
     )
   # Convert all interior spaces and punctuation to single underscores
   cleaned_within <-
-    stringr::str_replace(
+    stringr::str_replace_all(
       string = good_start,
       pattern = "[\\h\\s\\p{Punctuation}\\p{Symbol}\\p{Separator}\\p{Other}]+",
       replacement = "_"
@@ -668,8 +668,9 @@ dummy_code <- function(x, prefix = NA, drop_first = TRUE, verbose = interactive(
 
   # Simple snakecase conversion - credit to https://stackoverflow.com/a/22528880/10581449
 
-  out <- gsub("([a-z])([A-Z])", "\\1_\\L\\2", cleaned_within, perl = TRUE) %>%
-    gsub("([\\_])([A-Z])", "\\1\\L\\2", ., perl = TRUE) %>%
+  out <- gsub("([a-z])([A-Z])([a-z])", "\\1_\\L\\2\\3", cleaned_within, perl = TRUE) %>%
+    gsub("([\\_])([A-Z])([a-z])", "\\1\\L\\2\\3", ., perl = TRUE) %>%
+    gsub("([a-z])([A-Z])([A-Z])", "\\1_\\2\\3", ., perl = TRUE) %>%
     sub("^(.[a-z])", "\\L\\1", ., perl = TRUE)
 
   out

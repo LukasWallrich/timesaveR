@@ -66,4 +66,12 @@ out <- tibble::tribble(
 test_that("dummy_code works", {
   expect_equal(dummies, out)
 })
+
+test_that(".clean_names works", {
+  expect_equal(
+    .clean_names(c("HelloWorld", "How are you", "'Never BEEN better")), 
+    c("hello_world", "how_are_you", "never_BEEN_better"))
+})
+
+
                 
