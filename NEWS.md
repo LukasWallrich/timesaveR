@@ -1,14 +1,15 @@
-# timesaveR WIP (preparing 0.0.2)
+# timesaveR 0.0.2
 
 ## New capabilities
 
 * Added `svy_miss_var_summary()` to quickly check for missing data in survey objects
 * Added `polr_std()` function to run proportional-odds model with continuous predictors standardised (analogous to `lm_std()`)
 * Added `dummy_code()` for creating k-1 dummies with tidy names
+* Added `report_anova()` to report F-tests for model comparisons (limited functionalities at present)
 
 ## Enhancements
 
-* Added a tidier for correlation matrices returned by `cor_matrix()`
+* Added a broom-like tidier for correlation matrices returned by `cor_matrix()`
 * Added time to temporary filenames used by `ggplot_save()`
 
 ## Bug fixes

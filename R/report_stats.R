@@ -1,15 +1,15 @@
 #' Report (model comparison) ANOVA tests
 #'
-#' This is under development and thus not yet exported.
+#' This is under development - contributions to support more types of ANOVAs are most welcome.
 #'
-#' @param x An object returned from an anova() function
+#' @param x An object returned from an anova() function (or car::linearHypothesis)
 #' 
 #' @return A character string reporting the anova in APA style
 #' @examples 
 #' mod1 <- lm(mpg ~ wt + am, mtcars)
 #' mod2 <- lm(mpg ~ wt * am, mtcars)
-#' report_anova(anova(mod1, mod2)
-#' @keywords internal
+#' report_anova(anova(mod1, mod2))
+#' @export
 
 report_anova <- function(x) {
 
@@ -20,6 +20,11 @@ report_anova <- function(x) {
 
   # Likely from anova() of two lm() models
   if (stringr::str_detect(attributes(x)$heading[1], "Analysis of Variance Table")) {
+    return(glue::glue("<em>F</em>({x$Df[2]}, {x$Res.Df[2]}) = {x$F[2] %>% round_(2)}, <em>p</em> {x$`Pr(>F)`[2] %>% fmt_p()}"))
+  }
+  
+  # Likely from car::linearHypothesis()
+  if (stringr::str_detect(attributes(x)$heading[1], "Linear hypothesis test")) {
     return(glue::glue("<em>F</em>({x$Df[2]}, {x$Res.Df[2]}) = {x$F[2] %>% round_(2)}, <em>p</em> {x$`Pr(>F)`[2] %>% fmt_p()}"))
   }
   
