@@ -285,14 +285,15 @@ t_test_mi <- function(mi_list, dv, groups, weights = NULL) {
 #' @return A tibble containing the results of the t-tests with one test per row
 #' 
 #' @examples
-#' #' #Create list with imputed data
+#' #Create list with imputed data
 #' library(mice)
 #' library(dplyr)
 #' imp <- mice(nhanes2)
 #' imp_list <- complete(imp, action="long") %>%
 #'    group_split(.imp)
 #'
-#' t_test_mi(imp_list, bmi, age)
+#' #Specify dependent variable and grouping factor
+#' pairwise_t_test_mi(imp_list, bmi, age)
 #'
 #' @export
 
@@ -311,7 +312,7 @@ pairwise_t_test_mi <- function(mi_list, dv, groups, weights = NULL, p.adjust.met
     split(col(.))
   mi_list_sel <- purrr::map(mi_list, dplyr::select, wt = !!weights, dv = !!dv, g = !!groups)
 
-  out <- purrr::map_df(pairs, function(x) {
+    out <- purrr::map_df(pairs, function(x) {
     dat <- purrr::map(mi_list_sel, dplyr::filter, .data$g %in% x)
     .run_t_test_mi(dat)
   })

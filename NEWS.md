@@ -1,3 +1,9 @@
+# timesaveR dev (towards 0.0.3)
+
+## New capabilities
+
+* Added `run_mediation()` to estimate and `plot_mediation()` to visualise parallel mediation models.
+
 # timesaveR 0.0.2
 
 ## New capabilities
