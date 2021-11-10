@@ -81,7 +81,7 @@ or width. This function cuts a continuous variable into given proportions." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9017</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2</span>
       </span>
     </div>
 
@@ -190,30 +190,32 @@ For large numbers of observations, the distribution will be very close to
 what is desired, for very small numbers of observations, it should be checked.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>cut_p</span><span class='op'>(</span><span class='va'>iris</span><span class='op'>$</span><span class='va'>Sepal.Length</span>, p <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>.25</span>, <span class='fl'>.50</span>, <span class='fl'>.25</span><span class='op'>)</span>, fct_levels <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"short"</span>, <span class='st'>"middling"</span>, <span class='st'>"long"</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Factor levels were assigned as follows:</span>
-#&gt; <span class='message'>Group 1 (4.3 to 5.1): short</span>
-#&gt; <span class='message'>Group 2 (5.1 to 6.4): middling</span>
-#&gt; <span class='message'>Group 3 (6.4 to 7.9): long</span></div><div class='output co'>#&gt;   [1] short    short    short    short    short    middling short    short   
-#&gt;   [9] short    short    middling short    short    short    middling middling
-#&gt;  [17] middling short    middling middling middling middling short    short   
-#&gt;  [25] short    short    short    middling middling short    short    middling
-#&gt;  [33] middling middling short    short    middling short    short    short   
-#&gt;  [41] short    short    short    short    short    short    middling short   
-#&gt;  [49] middling short    long     middling long     middling long     middling
-#&gt;  [57] middling short    long     middling short    middling middling middling
-#&gt;  [65] middling long     middling middling middling middling middling middling
-#&gt;  [73] middling middling middling long     long     long     middling middling
-#&gt;  [81] middling middling middling middling middling middling long     middling
-#&gt;  [89] middling middling middling middling middling short    middling middling
-#&gt;  [97] middling middling short    middling middling middling long     middling
-#&gt; [105] long     long     short    long     long     long     long     long    
-#&gt; [113] long     middling middling middling long     long     long     middling
-#&gt; [121] long     middling long     middling long     long     middling middling
-#&gt; [129] middling long     long     long     long     middling middling long    
-#&gt; [137] middling middling middling long     long     long     middling long    
-#&gt; [145] long     long     middling long     middling middling
-#&gt; Levels: short middling long</div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'>cut_p</span><span class='op'>(</span><span class='va'>iris</span><span class='op'>$</span><span class='va'>Sepal.Length</span>, p <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>.25</span>, <span class='fl'>.50</span>, <span class='fl'>.25</span><span class='op'>)</span>, fct_levels <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"short"</span>, <span class='st'>"middling"</span>, <span class='st'>"long"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Factor levels were assigned as follows:</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Group 1 (4.3 to 5.1): short</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Group 2 (5.1 to 6.4): middling</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Group 3 (6.4 to 7.9): long</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   [1] short    short    short    short    short    middling short    short   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   [9] short    short    middling short    short    short    middling middling</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [17] middling short    middling middling middling middling short    short   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [25] short    short    short    middling middling short    short    middling</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [33] middling middling short    short    middling short    short    short   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [41] short    short    short    short    short    short    middling short   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [49] middling short    long     middling long     middling long     middling</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [57] middling short    long     middling short    middling middling middling</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [65] middling long     middling middling middling middling middling middling</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [73] middling middling middling long     long     long     middling middling</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [81] middling middling middling middling middling middling long     middling</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [89] middling middling middling middling middling short    middling middling</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [97] middling middling short    middling middling middling long     middling</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [105] long     long     short    long     long     long     long     long    </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [113] long     middling middling middling long     long     long     middling</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [121] long     middling long     middling long     long     middling middling</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [129] middling long     long     long     long     middling middling long    </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [137] middling middling middling long     long     long     middling long    </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [145] long     long     middling long     middling middling</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Levels: short middling long</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

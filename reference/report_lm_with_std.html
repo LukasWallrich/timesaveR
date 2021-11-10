@@ -81,7 +81,7 @@ side-by-side. Several pairs of such models can be compared side-by-side." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9017</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2</span>
       </span>
     </div>
 
@@ -187,7 +187,7 @@ for variables. If NULL, then the coefficients are not renamed.</p></td>
     <tr>
       <th>fmt</th>
       <td><p>determines how to format numeric values</p><ul>
-<li><p>integer: the number of digits to keep after the period <code><a href='https://rdrr.io/r/base/format.html'>format(round(x, fmt), nsmall=fmt)</a></code></p></li>
+<li><p>integer: the number of digits to keep after the period <code>format(round(x, fmt), nsmall=fmt)</code></p></li>
 <li><p>character: passed to the <code>sprintf</code> function (e.g., '%.3f' keeps 3 digits with trailing zero). See <code><a href='https://rdrr.io/r/base/sprintf.html'>?sprintf</a></code></p></li>
 <li><p>function: returns a formatted character string.</p></li>
 </ul></td>
@@ -233,9 +233,9 @@ of the vector determines the order of the table.  <code>coef_map</code> can be a
 or an unnamed character vector (see the Examples section below). If
 <code>coef_map</code> is a named vector, its values define the labels that must appear
 in the table, and its names identify the original term names stored in the
-model object: <code><a href='https://rdrr.io/r/base/c.html'>c("hp:mpg"="HPxM/G")</a></code>.</p></dd>
+model object: <code>c("hp:mpg"="HPxM/G")</code>.</p></dd>
     <dt><code>coef_omit</code></dt><dd><p>string regular expression. Omits all matching coefficients
-from the table using <code><a href='https://rdrr.io/r/base/grep.html'>grepl(perl=TRUE)</a></code>.</p></dd>
+from the table using <code>grepl(perl=TRUE)</code>.</p></dd>
     <dt><code>coef_rename</code></dt><dd><p>named character vector or function which returns a named
 vector. Values of the vector refer to the variable names that will appear
 in the table. Names refer to the original term names stored in the model
@@ -254,16 +254,16 @@ the gt-package, but does not include the lower part with model statistics, e.g.,
 the Viewer).</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='co'># Standard lm model</span>
-<span class='va'>mod1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>mpg</span> <span class='op'>~</span> <span class='va'>hp</span> <span class='op'>+</span> <span class='va'>wt</span>, <span class='va'>mtcars</span><span class='op'>)</span>
-
-<span class='co'># Model with standardized coefficients</span>
-
-<span class='va'>mod2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='lm_std.html'>lm_std</a></span><span class='op'>(</span><span class='va'>mpg</span> <span class='op'>~</span> <span class='va'>hp</span> <span class='op'>+</span> <span class='va'>wt</span>, <span class='va'>mtcars</span><span class='op'>)</span>
-
-<span class='fu'>report_lm_with_std</span><span class='op'>(</span><span class='va'>mod1</span>, <span class='va'>mod2</span><span class='op'>)</span>
-</div></pre>
+    <pre class="examples"><span class='r-in'></span>
+<span class='r-in'><span class='co'># Standard lm model</span></span>
+<span class='r-in'><span class='va'>mod1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>mpg</span> <span class='op'>~</span> <span class='va'>hp</span> <span class='op'>+</span> <span class='va'>wt</span>, <span class='va'>mtcars</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Model with standardized coefficients</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>mod2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='lm_std.html'>lm_std</a></span><span class='op'>(</span><span class='va'>mpg</span> <span class='op'>~</span> <span class='va'>hp</span> <span class='op'>+</span> <span class='va'>wt</span>, <span class='va'>mtcars</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'>report_lm_with_std</span><span class='op'>(</span><span class='va'>mod1</span>, <span class='va'>mod2</span><span class='op'>)</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

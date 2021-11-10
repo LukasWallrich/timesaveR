@@ -82,7 +82,7 @@ more parsimonious output and some added functionality." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9017</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2</span>
       </span>
     </div>
 
@@ -205,27 +205,35 @@ the observed maximum</p></td>
     <p>The survey object with the scale added as an additional variable.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://r-survey.r-forge.r-project.org/survey/'>survey</a></span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Loading required package: grid</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: Matrix</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: survival</span></div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: ‘survey’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:graphics’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    dotchart</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>api</span><span class='op'>)</span>
-
-<span class='va'>svy_df</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/survey/man/svydesign.html'>svydesign</a></span><span class='op'>(</span>id <span class='op'>=</span> <span class='op'>~</span><span class='fl'>1</span>, strata <span class='op'>=</span> <span class='op'>~</span><span class='va'>stype</span>, weights <span class='op'>=</span> <span class='op'>~</span><span class='va'>pw</span>, 
-                   data <span class='op'>=</span> <span class='va'>apistrat</span>, fpc <span class='op'>=</span> <span class='op'>~</span><span class='va'>fpc</span><span class='op'>)</span>
-<span class='va'>scale_items</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ell"</span>, <span class='st'>"meals"</span>, <span class='st'>"mobility"</span>, <span class='st'>"col.grad"</span>, <span class='st'>"full"</span><span class='op'>)</span>
-<span class='va'>scale_reversed</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"col.grad"</span>, <span class='st'>"full"</span><span class='op'>)</span>                    
-<span class='fu'>svy_make_scale</span><span class='op'>(</span><span class='va'>svy_df</span>, <span class='va'>scale_items</span>, <span class='st'>"SES"</span>, reversed <span class='op'>=</span> <span class='va'>scale_reversed</span><span class='op'>)</span>    
-</div><div class='output co'>#&gt;     
-#&gt; Descriptives for SES scale:
-#&gt; Mean: 41.113  SD: 13.525
-#&gt; Cronbach's alpha: .74
-#&gt; 
-#&gt; The following items were reverse coded (with min and max values):                        
-#&gt; col.grad (0, 100)
-#&gt; full (24, 100)</div><div class='img'><img src='svy_make_scale-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; Stratified Independent Sampling design
-#&gt; update(df, SES = rowMeans(df[, scale_items_num]$variables, na.rm = T))</div></pre>
+    <pre class="examples"><span class='r-in'></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://r-survey.r-forge.r-project.org/survey/'>survey</a></span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Loading required package: grid</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Loading required package: Matrix</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Loading required package: survival</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Attaching package: ‘survey’</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> The following object is masked from ‘package:graphics’:</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     dotchart</span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>api</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>svy_df</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/survey/man/svydesign.html'>svydesign</a></span><span class='op'>(</span>id <span class='op'>=</span> <span class='op'>~</span><span class='fl'>1</span>, strata <span class='op'>=</span> <span class='op'>~</span><span class='va'>stype</span>, weights <span class='op'>=</span> <span class='op'>~</span><span class='va'>pw</span>, </span>
+<span class='r-in'>                   data <span class='op'>=</span> <span class='va'>apistrat</span>, fpc <span class='op'>=</span> <span class='op'>~</span><span class='va'>fpc</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>scale_items</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ell"</span>, <span class='st'>"meals"</span>, <span class='st'>"mobility"</span>, <span class='st'>"col.grad"</span>, <span class='st'>"full"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>scale_reversed</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"col.grad"</span>, <span class='st'>"full"</span><span class='op'>)</span>                    </span>
+<span class='r-in'><span class='fu'>svy_make_scale</span><span class='op'>(</span><span class='va'>svy_df</span>, <span class='va'>scale_items</span>, <span class='st'>"SES"</span>, reversed <span class='op'>=</span> <span class='va'>scale_reversed</span><span class='op'>)</span>    </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Descriptives for SES scale:</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Mean: 41.113  SD: 13.525</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Cronbach's alpha: .74</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> The following items were reverse coded (with min and max values):                        </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> col.grad (0, 100)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> full (24, 100)</span>
+<span class='r-plt img'><img src='svy_make_scale-1.png' alt='' width='700' height='433' /></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Stratified Independent Sampling design</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> update(df, SES = rowMeans(df[, scale_items_num]$variables, na.rm = T))</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -80,7 +80,7 @@ factors intact." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9017</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2</span>
       </span>
     </div>
 
@@ -161,7 +161,7 @@ factors intact.</p>
       <td><p>an optional data frame, list or environment (or object
     coercible by <code><a href='https://rdrr.io/r/base/as.data.frame.html'>as.data.frame</a></code> to a data frame) containing
     the variables in the model.  If not found in <code>data</code>, the
-    variables are taken from <code><a href='https://rdrr.io/r/base/environment.html'>environment(formula)</a></code>,
+    variables are taken from <code>environment(formula)</code>,
     typically the environment from which <code>lm</code> is called.</p></td>
     </tr>
     <tr>
@@ -169,7 +169,7 @@ factors intact.</p>
       <td><p>an optional vector of weights to be used in the fitting
     process.  Should be <code>NULL</code> or a numeric vector.
     If non-NULL, weighted least squares is used with weights
-    <code>weights</code> (that is, minimizing <code><a href='https://rdrr.io/r/base/sum.html'>sum(w*e^2)</a></code>); otherwise
+    <code>weights</code> (that is, minimizing <code>sum(w*e^2)</code>); otherwise
     ordinary least squares is used.  See also &#8216;Details&#8217;,</p></td>
     </tr>
     <tr>
@@ -224,15 +224,16 @@ be standardised. If you want to run a model with all variables standardised,
 one option is `QuantPsyc::lm.beta()`</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>lm_std</span><span class='op'>(</span><span class='va'>Sepal.Length</span> <span class='op'>~</span> <span class='va'>Sepal.Width</span> <span class='op'>+</span> <span class='va'>Species</span>, <span class='va'>iris</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; 
-#&gt; Call:
-#&gt; lm(formula = Sepal.Length ~ Sepal.Width + Species, data = data)
-#&gt; 
-#&gt; Coefficients:
-#&gt;       (Intercept)        Sepal.Width  Speciesversicolor   Speciesvirginica  
-#&gt;            -1.371              0.423              1.762              2.351  
-#&gt; </div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'>lm_std</span><span class='op'>(</span><span class='va'>Sepal.Length</span> <span class='op'>~</span> <span class='va'>Sepal.Width</span> <span class='op'>+</span> <span class='va'>Species</span>, <span class='va'>iris</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Call:</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> lm(formula = Sepal.Length ~ Sepal.Width + Species, data = data)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Coefficients:</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       (Intercept)        Sepal.Width  Speciesversicolor   Speciesvirginica  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>            -1.371              0.423              1.762              2.351  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

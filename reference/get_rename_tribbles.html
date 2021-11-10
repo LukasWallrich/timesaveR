@@ -81,7 +81,7 @@ to either rename_cat_variables or directly to report_cat_vars" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9017</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2</span>
       </span>
     </div>
 
@@ -192,26 +192,28 @@ requested. If a variable has more than 20 distinct values, it is dropped from th
 unless the max_levels argument is increased.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>get_rename_tribbles</span><span class='op'>(</span><span class='va'>iris</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; tibble::tribble(
-#&gt;   ~old,            ~new,            
-#&gt;    "Sepal.Length",  "Sepal.length", 
-#&gt;    "Sepal.Width",   "Sepal.width",  
-#&gt;    "Petal.Length",  "Petal.length", 
-#&gt;    "Petal.Width",   "Petal.width",  
-#&gt;    "Species",       "Species"
-#&gt; )
-#&gt; tibble::tribble(
-#&gt;   ~var,       ~level_old,    ~level_new,    
-#&gt;    "Species",  "setosa",      "Setosa",     
-#&gt;    "Species",  "versicolor",  "Versicolor", 
-#&gt;    "Species",  "virginica",   "Virginica"
-#&gt; )</div><div class='output co'>#&gt; $rename_vars
-#&gt; [1] "tibble::tribble(\n  ~old,            ~new,            \n   \"Sepal.Length\",  \"Sepal.length\", \n   \"Sepal.Width\",   \"Sepal.width\",  \n   \"Petal.Length\",  \"Petal.length\", \n   \"Petal.Width\",   \"Petal.width\",  \n   \"Species\",       \"Species\"\n)\n"
-#&gt; 
-#&gt; $rename_levels
-#&gt; [1] "tibble::tribble(\n  ~var,       ~level_old,    ~level_new,    \n   \"Species\",  \"setosa\",      \"Setosa\",     \n   \"Species\",  \"versicolor\",  \"Versicolor\", \n   \"Species\",  \"virginica\",   \"Virginica\"\n)\n"
-#&gt; </div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'>get_rename_tribbles</span><span class='op'>(</span><span class='va'>iris</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> tibble::tribble(</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   ~old,            ~new,            </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    "Sepal.Length",  "Sepal.length", </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    "Sepal.Width",   "Sepal.width",  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    "Petal.Length",  "Petal.length", </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    "Petal.Width",   "Petal.width",  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    "Species",       "Species"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> )</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> tibble::tribble(</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   ~var,       ~level_old,    ~level_new,    </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    "Species",  "setosa",      "Setosa",     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    "Species",  "versicolor",  "Versicolor", </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    "Species",  "virginica",   "Virginica"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> )</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $rename_vars</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "tibble::tribble(\n  ~old,            ~new,            \n   \"Sepal.Length\",  \"Sepal.length\", \n   \"Sepal.Width\",   \"Sepal.width\",  \n   \"Petal.Length\",  \"Petal.length\", \n   \"Petal.Width\",   \"Petal.width\",  \n   \"Species\",       \"Species\"\n)\n"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $rename_levels</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "tibble::tribble(\n  ~var,       ~level_old,    ~level_new,    \n   \"Species\",  \"setosa\",      \"Setosa\",     \n   \"Species\",  \"versicolor\",  \"Versicolor\", \n   \"Species\",  \"virginica\",   \"Virginica\"\n)\n"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

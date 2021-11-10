@@ -83,7 +83,7 @@ side-by-side. Several pairs of such models can be compared side-by-side." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9017</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2</span>
       </span>
     </div>
 
@@ -187,7 +187,7 @@ side-by-side. Several pairs of such models can be compared side-by-side.</p>
     <tr>
       <th>fmt</th>
       <td><p>determines how to format numeric values</p><ul>
-<li><p>integer: the number of digits to keep after the period <code><a href='https://rdrr.io/r/base/format.html'>format(round(x, fmt), nsmall=fmt)</a></code></p></li>
+<li><p>integer: the number of digits to keep after the period <code>format(round(x, fmt), nsmall=fmt)</code></p></li>
 <li><p>character: passed to the <code>sprintf</code> function (e.g., '%.3f' keeps 3 digits with trailing zero). See <code><a href='https://rdrr.io/r/base/sprintf.html'>?sprintf</a></code></p></li>
 <li><p>function: returns a formatted character string.</p></li>
 </ul></td>
@@ -228,7 +228,7 @@ stating that dummy variables were not scaled in standardization. If you approach
 <ul>
 <li><p>Supported filename extensions: .html, .tex, .md, .txt, .png, .jpg.</p></li>
 <li><p>Supported object types: "default", "html", "markdown", "latex", "latex_tabular", "data.frame", "modelsummary_list", "gt", "kableExtra", "huxtable", "flextable", "jupyter".</p></li>
-<li><p>To change the default output format, type <code><a href='https://rdrr.io/r/base/options.html'>options(modelsummary_default = "latex")</a></code>, where <code>latex</code> can be any of the valid object types listed above.</p></li>
+<li><p>To change the default output format, type <code>options(modelsummary_default = "latex")</code>, where <code>latex</code> can be any of the valid object types listed above.</p></li>
 <li><p>Warning: users should not supply a file name to the <code>output</code> argument if they intend to customize the table with external packages.</p></li>
 <li><p>See the 'Details' section below for more information.</p></li>
 </ul></p></dd>
@@ -248,7 +248,7 @@ sections below):
 <li><p>string, vector, or (named) list of strings. The strings "classical", "iid" and "constant" are aliases for <code>NULL</code>, and they return the model's default uncertainty estimates. The strings "robust", "HC", "HC0", "HC1", "HC2", "HC3", "HC4", "HC4m", "HC5", "stata", "HAC", "NeweyWest", "Andrews", "panel-corrected", "outer-product", "weave" use variance-covariance matrices computed using functions from the <code>sandwich</code> package. The behavior of those functions can (and sometimes <em>must</em>) be altered by passing arguments to <code>sandwich</code> directly from <code>modelsummary</code> through the ellipsis (<code>...</code>), but it is safer to define your own custom functions as described in the next bullet.</p></li>
 <li><p>function or (named) list of functions which return variance-covariance matrices with row and column names equal to the names of your coefficient estimates (e.g., <code><a href='https://rdrr.io/r/stats/vcov.html'>stats::vcov</a></code>, <code>sandwich::vcovHC</code>, <code>function(x) vcovPC(x, cluster="country")</code>).</p></li>
 <li><p>formula or (named) list of formulas with the cluster variable(s) on the right-hand side (e.g., ~clusterid).</p></li>
-<li><p>(named) list of <code><a href='https://rdrr.io/r/base/length.html'>length(models)</a></code> variance-covariance matrices with row and column names equal to the names of your coefficient estimates.</p></li>
+<li><p>(named) list of <code>length(models)</code> variance-covariance matrices with row and column names equal to the names of your coefficient estimates.</p></li>
 <li><p>a (named) list of length(models) vectors with names equal to the names of your coefficient estimates. See 'Examples' section below. Warning: since this list of vectors can include arbitrary strings or numbers, <code>modelsummary</code> cannot automatically calculate p values. The <code>stars</code> argument may thus use incorrect significance thresholds when <code>vcov</code> is a list of vectors.</p></li>
 </ul></p></dd>
     <dt><code>coef_map</code></dt><dd><p>character vector. Subset, rename, and reorder coefficients.
@@ -257,9 +257,9 @@ of the vector determines the order of the table.  <code>coef_map</code> can be a
 or an unnamed character vector (see the Examples section below). If
 <code>coef_map</code> is a named vector, its values define the labels that must appear
 in the table, and its names identify the original term names stored in the
-model object: <code><a href='https://rdrr.io/r/base/c.html'>c("hp:mpg"="HPxM/G")</a></code>.</p></dd>
+model object: <code>c("hp:mpg"="HPxM/G")</code>.</p></dd>
     <dt><code>coef_omit</code></dt><dd><p>string regular expression. Omits all matching coefficients
-from the table using <code><a href='https://rdrr.io/r/base/grep.html'>grepl(perl=TRUE)</a></code>.</p></dd>
+from the table using <code>grepl(perl=TRUE)</code>.</p></dd>
     <dt><code>coef_rename</code></dt><dd><p>named character vector or function which returns a named
 vector. Values of the vector refer to the variable names that will appear
 in the table. Names refer to the original term names stored in the model
@@ -272,7 +272,7 @@ model information. This argument accepts 3 types of values:
 <li><p>list of lists, each of which includes 3 elements named "raw", "clean", "fmt". Unknown statistics are omitted. See the 'Examples section below'.</p></li>
 </ul></p></dd>
     <dt><code>gof_omit</code></dt><dd><p>string regular expression. Omits all matching gof statistics from
-the table (using <code><a href='https://rdrr.io/r/base/grep.html'>grepl(perl=TRUE)</a></code>).</p></dd>
+the table (using <code>grepl(perl=TRUE)</code>).</p></dd>
     <dt><code>group</code></dt><dd><p>a two-sided formula with two or three components which describes
 how groups of parameters should be displayed. The formula must include both
 a "term" and a "model" component. In addition, a component can be used to
@@ -304,12 +304,14 @@ column center-aligned, and the 3rd column right-aligned.</p></dd>
     <p>The R2 shown is the maximum likelihood pseudo R2 returned by <a href='https://rdrr.io/pkg/pscl/man/pR2.html'>pR2</a>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://www.stats.ox.ac.uk/pub/MASS4/'>MASS</a></span><span class='op'>)</span>
-<span class='va'>pov_att</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/MASS/man/polr.html'>polr</a></span><span class='op'>(</span><span class='va'>poverty</span> <span class='op'>~</span> <span class='va'>religion</span> <span class='op'>+</span> <span class='va'>age</span> <span class='op'>+</span> <span class='va'>gender</span>, data <span class='op'>=</span> <span class='va'>WVS</span><span class='op'>)</span>
-<span class='va'>pov_att_std</span> <span class='op'>&lt;-</span> <span class='fu'><a href='polr_std.html'>polr_std</a></span><span class='op'>(</span><span class='va'>poverty</span> <span class='op'>~</span> <span class='va'>religion</span> <span class='op'>+</span> <span class='va'>age</span> <span class='op'>+</span> <span class='va'>gender</span>, data <span class='op'>=</span> <span class='va'>WVS</span><span class='op'>)</span>
-<span class='fu'>report_polr_with_std</span><span class='op'>(</span><span class='va'>pov_att</span>, <span class='va'>pov_att_std</span>, coef_omit <span class='op'>=</span> <span class='st'>"\\|"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Re-fitting to get Hessian</span></div><div class='output co'>#&gt; fitting null model for pseudo-r2</div></pre>
+    <pre class="examples"><span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://www.stats.ox.ac.uk/pub/MASS4/'>MASS</a></span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>pov_att</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/MASS/man/polr.html'>polr</a></span><span class='op'>(</span><span class='va'>poverty</span> <span class='op'>~</span> <span class='va'>religion</span> <span class='op'>+</span> <span class='va'>age</span> <span class='op'>+</span> <span class='va'>gender</span>, data <span class='op'>=</span> <span class='va'>WVS</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>pov_att_std</span> <span class='op'>&lt;-</span> <span class='fu'><a href='polr_std.html'>polr_std</a></span><span class='op'>(</span><span class='va'>poverty</span> <span class='op'>~</span> <span class='va'>religion</span> <span class='op'>+</span> <span class='va'>age</span> <span class='op'>+</span> <span class='va'>gender</span>, data <span class='op'>=</span> <span class='va'>WVS</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>report_polr_with_std</span><span class='op'>(</span><span class='va'>pov_att</span>, <span class='va'>pov_att_std</span>, coef_omit <span class='op'>=</span> <span class='st'>"\\|"</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Re-fitting to get Hessian</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> fitting null model for pseudo-r2</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

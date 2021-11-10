@@ -81,7 +81,7 @@ is always returned, so that the `Hess` argument cannot be used." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9017</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2</span>
       </span>
     </div>
 
@@ -174,7 +174,7 @@ is always returned, so that the `Hess` argument cannot be used.</p>
       <th>...</th>
       <td><p>Arguments passed on to <code><a href='https://rdrr.io/pkg/MASS/man/polr.html'>MASS::polr</a></code></p><dl>
     <dt><code>start</code></dt><dd><p>initial values for the parameters.  This is in the format
-    <code><a href='https://rdrr.io/r/base/c.html'>c(coefficients, zeta)</a></code>: see the Values section.</p></dd>
+    <code>c(coefficients, zeta)</code>: see the Values section.</p></dd>
     <dt><code>na.action</code></dt><dd><p>a function to filter missing data.</p></dd>
     <dt><code>contrasts</code></dt><dd><p>a list of contrasts to be used for some or all of
     the factors appearing as variables in the model formula.</p></dd>
@@ -198,21 +198,22 @@ Github).</p>
 be standardised.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>polr_std</span><span class='op'>(</span><span class='va'>poverty</span> <span class='op'>~</span> <span class='va'>religion</span> <span class='op'>+</span> <span class='va'>age</span> <span class='op'>+</span> <span class='va'>gender</span>, <span class='va'>WVS</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; Call:
-#&gt; MASS::polr(formula = poverty ~ religion + age + gender, data = data, 
-#&gt;     Hess = TRUE)
-#&gt; 
-#&gt; Coefficients:
-#&gt; religionyes         age  gendermale 
-#&gt;  -0.0557976   0.2255645   0.1507886 
-#&gt; 
-#&gt; Intercepts:
-#&gt; Too Little|About Right   About Right|Too Much 
-#&gt;             0.03750694             1.77373803 
-#&gt; 
-#&gt; Residual Deviance: 10655.85 
-#&gt; AIC: 10665.85 </div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'>polr_std</span><span class='op'>(</span><span class='va'>poverty</span> <span class='op'>~</span> <span class='va'>religion</span> <span class='op'>+</span> <span class='va'>age</span> <span class='op'>+</span> <span class='va'>gender</span>, <span class='va'>WVS</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Call:</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> MASS::polr(formula = poverty ~ religion + age + gender, data = data, </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     Hess = TRUE)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Coefficients:</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> religionyes         age  gendermale </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  -0.0557976   0.2255645   0.1507886 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Intercepts:</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Too Little|About Right   About Right|Too Much </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>             0.03750694             1.77373803 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Residual Deviance: 10655.85 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> AIC: 10665.85 </span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

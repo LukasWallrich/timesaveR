@@ -82,7 +82,7 @@ and passed, for instance, to the report_lm_with_std function." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9017</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2</span>
       </span>
     </div>
 
@@ -170,13 +170,14 @@ and passed, for instance, to the <code><a href='report_lm_with_std.html'>report_
 transformed, but are primarily intended to be placeholders.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>mod</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>mpg</span> <span class='op'>~</span> <span class='va'>wt</span>, <span class='va'>mtcars</span><span class='op'>)</span>
-<span class='fu'>get_coef_rename_tribble</span><span class='op'>(</span><span class='va'>mod</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; tibble::tribble(
-#&gt;   ~old,           ~new,           
-#&gt;    "(Intercept)",  "(Intercept)", 
-#&gt;    "wt",           "Wt"
-#&gt; )</div></pre>
+    <pre class="examples"><span class='r-in'><span class='va'>mod</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>mpg</span> <span class='op'>~</span> <span class='va'>wt</span>, <span class='va'>mtcars</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>get_coef_rename_tribble</span><span class='op'>(</span><span class='va'>mod</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> tibble::tribble(</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   ~old,           ~new,           </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    "(Intercept)",  "(Intercept)", </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    "wt",           "Wt"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> )</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

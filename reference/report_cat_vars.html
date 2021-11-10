@@ -84,7 +84,7 @@ each level and the significance of pairwise comparisons between these means." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9017</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2</span>
       </span>
     </div>
 
@@ -246,30 +246,30 @@ the tag should be added to.</p></td>
 `gt`-table (`tab`) and the HTML code (`html_code`) with `css_tags` added</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='fu'>report_cat_vars</span><span class='op'>(</span><span class='va'>iris</span>, <span class='va'>Sepal.Length</span>, <span class='va'>Species</span><span class='op'>)</span>
-
-<span class='co'># You can rename variables and levels reasonably easily</span>
-<span class='co'># Use get_rename_tribbles() to get the basis of these tibbles</span>
-
-<span class='va'>var_renames</span> <span class='op'>&lt;-</span> <span class='fu'>tibble</span><span class='fu'>::</span><span class='fu'><a href='https://tibble.tidyverse.org/reference/tribble.html'>tribble</a></span><span class='op'>(</span>
- <span class='op'>~</span><span class='va'>old</span>,     <span class='op'>~</span><span class='va'>new</span>,     
- <span class='st'>"gndr"</span>,   <span class='st'>"Gender"</span>,  
- <span class='st'>"cntry"</span>,  <span class='st'>"Country"</span>
- <span class='op'>)</span>
-
-<span class='va'>level_renames</span> <span class='op'>&lt;-</span> <span class='fu'>tibble</span><span class='fu'>::</span><span class='fu'><a href='https://tibble.tidyverse.org/reference/tribble.html'>tribble</a></span><span class='op'>(</span>
- <span class='op'>~</span><span class='va'>var</span>,     <span class='op'>~</span><span class='va'>level_old</span>, <span class='op'>~</span><span class='va'>level_new</span>, 
- <span class='st'>"gndr"</span>,   <span class='st'>"1"</span>,        <span class='st'>"male"</span>,       
- <span class='st'>"gndr"</span>,   <span class='st'>"2"</span>,        <span class='st'>"female"</span>,       
- <span class='st'>"cntry"</span>,  <span class='st'>"DE"</span>,       <span class='st'>"Germany"</span>,      
- <span class='st'>"cntry"</span>,  <span class='st'>"FR"</span>,       <span class='st'>"France"</span>,      
- <span class='st'>"cntry"</span>,  <span class='st'>"GB"</span>,       <span class='st'>"UK"</span>
- <span class='op'>)</span>
- 
-<span class='fu'>report_cat_vars</span><span class='op'>(</span><span class='va'>ess_health</span>, <span class='va'>health</span>, <span class='va'>gndr</span>, <span class='va'>cntry</span>, var_names <span class='op'>=</span> <span class='va'>var_renames</span>, 
-             level_names <span class='op'>=</span> <span class='va'>level_renames</span><span class='op'>)</span>
-</div></pre>
+    <pre class="examples"><span class='r-in'></span>
+<span class='r-in'><span class='fu'>report_cat_vars</span><span class='op'>(</span><span class='va'>iris</span>, <span class='va'>Sepal.Length</span>, <span class='va'>Species</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># You can rename variables and levels reasonably easily</span></span>
+<span class='r-in'><span class='co'># Use get_rename_tribbles() to get the basis of these tibbles</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>var_renames</span> <span class='op'>&lt;-</span> <span class='fu'>tibble</span><span class='fu'>::</span><span class='fu'><a href='https://tibble.tidyverse.org/reference/tribble.html'>tribble</a></span><span class='op'>(</span></span>
+<span class='r-in'> <span class='op'>~</span><span class='va'>old</span>,     <span class='op'>~</span><span class='va'>new</span>,     </span>
+<span class='r-in'> <span class='st'>"gndr"</span>,   <span class='st'>"Gender"</span>,  </span>
+<span class='r-in'> <span class='st'>"cntry"</span>,  <span class='st'>"Country"</span></span>
+<span class='r-in'> <span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>level_renames</span> <span class='op'>&lt;-</span> <span class='fu'>tibble</span><span class='fu'>::</span><span class='fu'><a href='https://tibble.tidyverse.org/reference/tribble.html'>tribble</a></span><span class='op'>(</span></span>
+<span class='r-in'> <span class='op'>~</span><span class='va'>var</span>,     <span class='op'>~</span><span class='va'>level_old</span>, <span class='op'>~</span><span class='va'>level_new</span>, </span>
+<span class='r-in'> <span class='st'>"gndr"</span>,   <span class='st'>"1"</span>,        <span class='st'>"male"</span>,       </span>
+<span class='r-in'> <span class='st'>"gndr"</span>,   <span class='st'>"2"</span>,        <span class='st'>"female"</span>,       </span>
+<span class='r-in'> <span class='st'>"cntry"</span>,  <span class='st'>"DE"</span>,       <span class='st'>"Germany"</span>,      </span>
+<span class='r-in'> <span class='st'>"cntry"</span>,  <span class='st'>"FR"</span>,       <span class='st'>"France"</span>,      </span>
+<span class='r-in'> <span class='st'>"cntry"</span>,  <span class='st'>"GB"</span>,       <span class='st'>"UK"</span></span>
+<span class='r-in'> <span class='op'>)</span></span>
+<span class='r-in'> </span>
+<span class='r-in'><span class='fu'>report_cat_vars</span><span class='op'>(</span><span class='va'>ess_health</span>, <span class='va'>health</span>, <span class='va'>gndr</span>, <span class='va'>cntry</span>, var_names <span class='op'>=</span> <span class='va'>var_renames</span>, </span>
+<span class='r-in'>             level_names <span class='op'>=</span> <span class='va'>level_renames</span><span class='op'>)</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
