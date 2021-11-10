@@ -31,7 +31,7 @@ the estimation of means and standard deviations.}
 
 \item{conf_level}{Confidence level to use for confidence intervals, defaults to .95}
 
-\item{method}{method="pearson" is the default value.  The alternatives to be passed to cor are "spearman" and "kendall"}
+\item{method}{method="pearson" is the default value.  The alternatives to be passed to cor are "spearman" and "kendall".  These last two are much slower, particularly for big data sets. }
 
 \item{adjust}{What adjustment for multiple tests should be used? ("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"). See \code{\link{p.adjust}} for details about why to use "holm" rather than "bonferroni"). }
 
