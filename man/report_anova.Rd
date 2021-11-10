@@ -7,17 +7,16 @@
 report_anova(x)
 }
 \arguments{
-\item{x}{An object returned from an anova() function}
+\item{x}{An object returned from an anova() function (or car::linearHypothesis)}
 }
 \value{
 A character string reporting the anova in APA style
 }
 \description{
-This is under development and thus not yet exported.
+This is under development - contributions to support more types of ANOVAs are most welcome.
 }
 \examples{
 mod1 <- lm(mpg ~ wt + am, mtcars)
 mod2 <- lm(mpg ~ wt * am, mtcars)
-report_anova(anova(mod1, mod2)
+report_anova(anova(mod1, mod2))
 }
-\keyword{internal}
