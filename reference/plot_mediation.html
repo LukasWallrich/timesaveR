@@ -48,8 +48,8 @@
 
 <meta property="og:title" content="Plot mediation model with one or more mediators — plot_mediation" />
 <meta property="og:description" content="Returns graphViz code and graph for (multiple) mediation model.
-Coefficients and significance  values for paths need to be provided -
-see example for the format." />
+Coefficients and significance values for paths need to be provided, 
+based on the format returned by `run_moderation()`" />
 
 
 
@@ -142,8 +142,8 @@ see example for the format." />
 
     <div class="ref-description">
     <p>Returns graphViz code and graph for (multiple) mediation model.
-Coefficients and significance  values for paths need to be provided -
-see example for the format.</p>
+Coefficients and significance values for paths need to be provided, 
+based on the format returned by `run_moderation()`</p>
     </div>
 
     <pre class="usage"><span class='fu'>plot_mediation</span><span class='op'>(</span>
@@ -186,7 +186,7 @@ see example for the format.</p>
 provided, function will align mediators automatically, which is unlikely to
 provide a well-aligned path (except for cases when offset has been implemented
 for that number of mediators, currently 1 and 3). However, returned code can still
-be edited. See rNuggets:::.coef_offset_3 for an example of an offset tibble.</p></td>
+be edited. See timesaveR:::.coef_offset_3 for an example of an offset tibble.</p></td>
     </tr>
     <tr>
       <th>filename</th>
@@ -206,20 +206,14 @@ intervals that do not include zero are bolded</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span>
-<span class='r-in'><span class='co'># Values for model</span></span>
-<span class='r-in'><span class='va'>med_model</span> <span class='op'>&lt;-</span> <span class='fu'>tibble</span><span class='fu'>::</span><span class='fu'><a href='https://tibble.tidyverse.org/reference/tribble.html'>tribble</a></span><span class='op'>(</span></span>
-<span class='r-in'>  <span class='op'>~</span><span class='va'>type</span>, <span class='op'>~</span><span class='va'>mediator</span>, <span class='op'>~</span><span class='va'>est</span>, <span class='op'>~</span><span class='va'>pvalue</span>, <span class='op'>~</span><span class='va'>ci.lower</span>, <span class='op'>~</span><span class='va'>ci.upper</span>,</span>
-<span class='r-in'>  <span class='st'>"a"</span>, <span class='st'>"Empathy"</span>, <span class='fl'>0.29</span>, <span class='fl'>0</span>, <span class='fl'>0.29</span>, <span class='fl'>0.29</span>,</span>
-<span class='r-in'>  <span class='st'>"b"</span>, <span class='st'>"Empathy"</span>, <span class='fl'>0.18</span>, <span class='fl'>0</span>, <span class='fl'>0.18</span>, <span class='fl'>0.18</span>,</span>
-<span class='r-in'>  <span class='st'>"direct"</span>, <span class='cn'>NA</span>, <span class='op'>-</span><span class='fl'>0.08</span>, <span class='fl'>0</span>, <span class='op'>-</span><span class='fl'>0.08</span>, <span class='op'>-</span><span class='fl'>0.08</span>,</span>
-<span class='r-in'>  <span class='st'>"indirect"</span>, <span class='st'>"Empathy"</span>, <span class='fl'>0.05</span>, <span class='fl'>0</span>, <span class='fl'>0.05</span>, <span class='fl'>0.05</span>,</span>
-<span class='r-in'>  <span class='st'>"total"</span>, <span class='cn'>NA</span>, <span class='fl'>0.41</span>, <span class='fl'>0</span>, <span class='fl'>0.41</span>, <span class='fl'>0.41</span></span>
-<span class='r-in'><span class='op'>)</span></span>
+<span class='r-in'><span class='co'># Estimate mediation model</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>res</span> <span class='op'>&lt;-</span> <span class='fu'>run_mediation</span><span class='op'>(</span><span class='va'>ess_health</span>, <span class='va'>fltdpr</span>, <span class='va'>health</span>, <span class='va'>dosprt</span>, <span class='va'>agea</span>, bootstraps <span class='op'>=</span> <span class='fl'>100</span><span class='op'>)</span></span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Run plot command</span></span>
-<span class='r-in'><span class='fu'>rNuggets</span><span class='fu'>:::</span><span class='fu'>plot_mediation</span><span class='op'>(</span></span>
-<span class='r-in'>  IV <span class='op'>=</span> <span class='st'>"Positive &lt;br /&gt; contact"</span>,</span>
-<span class='r-in'>  DV <span class='op'>=</span> <span class='st'>"Diversity &lt;br /&gt; policies"</span>, Ms <span class='op'>=</span> <span class='st'>"Empathy"</span>, df <span class='op'>=</span> <span class='va'>med_model</span></span>
+<span class='r-in'><span class='fu'>plot_mediation</span><span class='op'>(</span></span>
+<span class='r-in'>  IV <span class='op'>=</span> <span class='st'>"Frequency of  &lt;br /&gt; feeling depressed"</span>,</span>
+<span class='r-in'>  DV <span class='op'>=</span> <span class='st'>"Self-reported &lt;br /&gt; poor health"</span>, Ms <span class='op'>=</span> <span class='st'>"Frequency of &lt;br /&gt; physical activity"</span>, df <span class='op'>=</span> <span class='va'>res</span></span>
 <span class='r-in'><span class='op'>)</span></span>
 <span class='r-in'><span class='op'>}</span></span>
 </pre>
