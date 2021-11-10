@@ -31,7 +31,7 @@ plot_mediation(
 provided, function will align mediators automatically, which is unlikely to
 provide a well-aligned path (except for cases when offset has been implemented
 for that number of mediators, currently 1 and 3). However, returned code can still
-be edited. See rNuggets:::.coef_offset_3 for an example of an offset tibble.}
+be edited. See timesaveR:::.coef_offset_3 for an example of an offset tibble.}
 
 \item{filename}{If provided, graph will be saved as .svg file.}
 
@@ -44,25 +44,19 @@ A list of a the graph and the associated code.
 }
 \description{
 Returns graphViz code and graph for (multiple) mediation model.
-Coefficients and significance  values for paths need to be provided -
-see example for the format.
+Coefficients and significance values for paths need to be provided, 
+based on the format returned by `run_moderation()`
 }
 \examples{
 \dontrun{
-# Values for model
-med_model <- tibble::tribble(
-  ~type, ~mediator, ~est, ~pvalue, ~ci.lower, ~ci.upper,
-  "a", "Empathy", 0.29, 0, 0.29, 0.29,
-  "b", "Empathy", 0.18, 0, 0.18, 0.18,
-  "direct", NA, -0.08, 0, -0.08, -0.08,
-  "indirect", "Empathy", 0.05, 0, 0.05, 0.05,
-  "total", NA, 0.41, 0, 0.41, 0.41
-)
+# Estimate mediation model
+
+res <- run_mediation(ess_health, fltdpr, health, dosprt, agea, bootstraps = 100)
 
 # Run plot command
-rNuggets:::plot_mediation(
-  IV = "Positive <br /> contact",
-  DV = "Diversity <br /> policies", Ms = "Empathy", df = med_model
+plot_mediation(
+  IV = "Frequency of  <br /> feeling depressed",
+  DV = "Self-reported <br /> poor health", Ms = "Frequency of <br /> physical activity", df = res
 )
 }
 }
