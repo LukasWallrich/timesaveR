@@ -31,13 +31,14 @@ This runs pairwise t-tests (based on lm(), therefore assuming equal variances)
 on multiple imputations, with the ability to take into account survey weights.
 }
 \examples{
-#' #Create list with imputed data
+#Create list with imputed data
 library(mice)
 library(dplyr)
 imp <- mice(nhanes2)
 imp_list <- complete(imp, action="long") \%>\%
    group_split(.imp)
 
-t_test_mi(imp_list, bmi, age)
+#Specify dependent variable and grouping factor
+pairwise_t_test_mi(imp_list, bmi, age)
 
 }
