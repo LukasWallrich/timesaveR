@@ -83,7 +83,7 @@ side-by-side. Several pairs of such models can be compared side-by-side." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2.9001</span>
       </span>
     </div>
 
@@ -190,6 +190,7 @@ side-by-side. Several pairs of such models can be compared side-by-side.</p>
 <li><p>integer: the number of digits to keep after the period <code>format(round(x, fmt), nsmall=fmt)</code></p></li>
 <li><p>character: passed to the <code>sprintf</code> function (e.g., '%.3f' keeps 3 digits with trailing zero). See <code><a href='https://rdrr.io/r/base/sprintf.html'>?sprintf</a></code></p></li>
 <li><p>function: returns a formatted character string.</p></li>
+<li><p>Note on LaTeX formatting: To ensure proper typography, all numeric entries are enclosed in the <code>\num{}</code> command from the <code>siunitx</code> LaTeX package by default. This behavior can be altered with global options. See the 'Details' section.</p></li>
 </ul></td>
     </tr>
     <tr>
@@ -228,9 +229,9 @@ stating that dummy variables were not scaled in standardization. If you approach
 <ul>
 <li><p>Supported filename extensions: .html, .tex, .md, .txt, .png, .jpg.</p></li>
 <li><p>Supported object types: "default", "html", "markdown", "latex", "latex_tabular", "data.frame", "modelsummary_list", "gt", "kableExtra", "huxtable", "flextable", "jupyter".</p></li>
-<li><p>To change the default output format, type <code>options(modelsummary_default = "latex")</code>, where <code>latex</code> can be any of the valid object types listed above.</p></li>
-<li><p>Warning: users should not supply a file name to the <code>output</code> argument if they intend to customize the table with external packages.</p></li>
-<li><p>See the 'Details' section below for more information.</p></li>
+<li><p>Warning: Users should not supply a file name to the <code>output</code> argument if they intend to customize the table with external packages. See the 'Details' section.</p></li>
+<li><p>LaTeX compilation requires the <code>booktabs</code> and <code>siunitx</code> packages, but <code>siunitx</code> can be disabled or replaced with global options. See the 'Details' section.</p></li>
+<li><p>The default output formats and table-making packages can be modified with global options. See the 'Details' section.</p></li>
 </ul></p></dd>
     <dt><code>estimate</code></dt><dd><p>string or <code>glue</code> string of the estimate to display (or a
 vector with one string per model). Valid entries include any column name of
@@ -245,7 +246,7 @@ argument accepts six types of input (see the 'Details' and 'Examples'
 sections below):
 <ul>
 <li><p>NULL returns the default uncertainty estimates of the model object</p></li>
-<li><p>string, vector, or (named) list of strings. The strings "classical", "iid" and "constant" are aliases for <code>NULL</code>, and they return the model's default uncertainty estimates. The strings "robust", "HC", "HC0", "HC1", "HC2", "HC3", "HC4", "HC4m", "HC5", "stata", "HAC", "NeweyWest", "Andrews", "panel-corrected", "outer-product", "weave" use variance-covariance matrices computed using functions from the <code>sandwich</code> package. The behavior of those functions can (and sometimes <em>must</em>) be altered by passing arguments to <code>sandwich</code> directly from <code>modelsummary</code> through the ellipsis (<code>...</code>), but it is safer to define your own custom functions as described in the next bullet.</p></li>
+<li><p>string, vector, or (named) list of strings. Omitting or specifying <code>vcov = NULL</code> will return the model's default uncertainty estimates, e.g. IID errors for standard models. Alternatively, use the string "iid" (aliases: "classical" or "constant") to present IID errors explicitly. The strings "HC", "HC0", "HC1" (alias: "stata"), "HC2", "HC3" (alias: "robust"), "HC4", "HC4m", "HC5", "HAC", "NeweyWest", "Andrews", "panel-corrected", "outer-product", and "weave" use variance-covariance matrices computed using functions from the <code>sandwich</code> package, or equivalent method. The behavior of those functions can (and sometimes <em>must</em>) be altered by passing arguments to <code>sandwich</code> directly from <code>modelsummary</code> through the ellipsis (<code>...</code>), but it is safer to define your own custom functions as described in the next bullet.</p></li>
 <li><p>function or (named) list of functions which return variance-covariance matrices with row and column names equal to the names of your coefficient estimates (e.g., <code><a href='https://rdrr.io/r/stats/vcov.html'>stats::vcov</a></code>, <code>sandwich::vcovHC</code>, <code>function(x) vcovPC(x, cluster="country")</code>).</p></li>
 <li><p>formula or (named) list of formulas with the cluster variable(s) on the right-hand side (e.g., ~clusterid).</p></li>
 <li><p>(named) list of <code>length(models)</code> variance-covariance matrices with row and column names equal to the names of your coefficient estimates.</p></li>
@@ -259,7 +260,7 @@ or an unnamed character vector (see the Examples section below). If
 in the table, and its names identify the original term names stored in the
 model object: <code>c("hp:mpg"="HPxM/G")</code>.</p></dd>
     <dt><code>coef_omit</code></dt><dd><p>string regular expression. Omits all matching coefficients
-from the table using <code>grepl(perl=TRUE)</code>.</p></dd>
+from the table using <code>grepl(perl=TRUE)</code>. This argument uses perl-compatible regular expressions, which allows expressions such as <code>"Int|ABC" which omits coefficients matching either "Int" or "ABC", and </code>"^(?!.*Intercept)"` which omits every term except the intercept.</p></dd>
     <dt><code>coef_rename</code></dt><dd><p>named character vector or function which returns a named
 vector. Values of the vector refer to the variable names that will appear
 in the table. Names refer to the original term names stored in the model
@@ -272,7 +273,7 @@ model information. This argument accepts 3 types of values:
 <li><p>list of lists, each of which includes 3 elements named "raw", "clean", "fmt". Unknown statistics are omitted. See the 'Examples section below'.</p></li>
 </ul></p></dd>
     <dt><code>gof_omit</code></dt><dd><p>string regular expression. Omits all matching gof statistics from
-the table (using <code>grepl(perl=TRUE)</code>).</p></dd>
+the table. This argument uses perl-compatible regular expressions (<code>grepl(perl=TRUE)</code>), which allows expressions such as <code>".*"</code> which omits everything, and <code>"^(?!R2|Num)"</code> which omits every term except those that start with "R2" or "Num".</p></dd>
     <dt><code>group</code></dt><dd><p>a two-sided formula with two or three components which describes
 how groups of parameters should be displayed. The formula must include both
 a "term" and a "model" component. In addition, a component can be used to
@@ -290,10 +291,21 @@ reorder coefficient groups specified in the <code>group</code> argument. See <co
 your main table. By default, rows are appended to the bottom of the table.
 You can define a "position" attribute of integers to set the row positions.
 See Examples section below.</p></dd>
-    <dt><code>align</code></dt><dd><p>A character string of length equal to the number of columns in
-the table.  "lcr" means that the first column will be left-aligned, the 2nd
-column center-aligned, and the 3rd column right-aligned.</p></dd>
+    <dt><code>align</code></dt><dd><p>A string with a number of characters equal to the number of columns in
+the table (e.g., <code>align = "lcc"</code>).  Valid characters: l, c, r, S.
+<ul>
+<li><p>"l": left-aligned column</p></li>
+<li><p>"c": centered column</p></li>
+<li><p>"r": right-aligned column</p></li>
+<li><p>"d": dot-aligned column. Only supported for LaTeX/PDF tables produced by <code>kableExtra</code>. These commands must appear in the LaTeX preamble (they are added automatically when compiling Rmarkdown documents to PDF):</p><ul>
+<li><p><code>\usepackage{booktabs}</code></p></li>
+<li><p><code>\usepackage{siunitx}</code></p></li>
+<li><p><code>\newcolumntype{d}{S[input-symbols = ()]}</code></p></li>
+</ul></li>
+</ul></p></dd>
     <dt><code>title</code></dt><dd><p>string</p></dd>
+    <dt><code>escape</code></dt><dd><p>boolean TRUE escapes or substitutes LaTeX/HTML characters which could
+prevent the file from compiling/displaying. This setting does not affect captions or notes.</p></dd>
   
 </dl></td>
     </tr>
@@ -305,6 +317,11 @@ column center-aligned, and the 3rd column right-aligned.</p></dd>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://www.stats.ox.ac.uk/pub/MASS4/'>MASS</a></span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Attaching package: ‘MASS’</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> The following object is masked from ‘package:dplyr’:</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     select</span>
 <span class='r-in'><span class='va'>pov_att</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/MASS/man/polr.html'>polr</a></span><span class='op'>(</span><span class='va'>poverty</span> <span class='op'>~</span> <span class='va'>religion</span> <span class='op'>+</span> <span class='va'>age</span> <span class='op'>+</span> <span class='va'>gender</span>, data <span class='op'>=</span> <span class='va'>WVS</span><span class='op'>)</span></span>
 <span class='r-in'><span class='va'>pov_att_std</span> <span class='op'>&lt;-</span> <span class='fu'><a href='polr_std.html'>polr_std</a></span><span class='op'>(</span><span class='va'>poverty</span> <span class='op'>~</span> <span class='va'>religion</span> <span class='op'>+</span> <span class='va'>age</span> <span class='op'>+</span> <span class='va'>gender</span>, data <span class='op'>=</span> <span class='va'>WVS</span><span class='op'>)</span></span>
 <span class='r-in'><span class='fu'>report_polr_with_std</span><span class='op'>(</span><span class='va'>pov_att</span>, <span class='va'>pov_att_std</span>, coef_omit <span class='op'>=</span> <span class='st'>"\\|"</span><span class='op'>)</span></span>

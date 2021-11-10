@@ -81,7 +81,7 @@ side-by-side. Several pairs of such models can be compared side-by-side." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2.9001</span>
       </span>
     </div>
 
@@ -190,6 +190,7 @@ for variables. If NULL, then the coefficients are not renamed.</p></td>
 <li><p>integer: the number of digits to keep after the period <code>format(round(x, fmt), nsmall=fmt)</code></p></li>
 <li><p>character: passed to the <code>sprintf</code> function (e.g., '%.3f' keeps 3 digits with trailing zero). See <code><a href='https://rdrr.io/r/base/sprintf.html'>?sprintf</a></code></p></li>
 <li><p>function: returns a formatted character string.</p></li>
+<li><p>Note on LaTeX formatting: To ensure proper typography, all numeric entries are enclosed in the <code>\num{}</code> command from the <code>siunitx</code> LaTeX package by default. This behavior can be altered with global options. See the 'Details' section.</p></li>
 </ul></td>
     </tr>
     <tr>
@@ -235,7 +236,7 @@ or an unnamed character vector (see the Examples section below). If
 in the table, and its names identify the original term names stored in the
 model object: <code>c("hp:mpg"="HPxM/G")</code>.</p></dd>
     <dt><code>coef_omit</code></dt><dd><p>string regular expression. Omits all matching coefficients
-from the table using <code>grepl(perl=TRUE)</code>.</p></dd>
+from the table using <code>grepl(perl=TRUE)</code>. This argument uses perl-compatible regular expressions, which allows expressions such as <code>"Int|ABC" which omits coefficients matching either "Int" or "ABC", and </code>"^(?!.*Intercept)"` which omits every term except the intercept.</p></dd>
     <dt><code>coef_rename</code></dt><dd><p>named character vector or function which returns a named
 vector. Values of the vector refer to the variable names that will appear
 in the table. Names refer to the original term names stored in the model

@@ -80,7 +80,7 @@ on multiple imputations, with the ability to take into account survey weights." 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2.9001</span>
       </span>
     </div>
 
@@ -192,6 +192,15 @@ on multiple imputations, with the ability to take into account survey weights.</
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> The following objects are masked from ‘package:base’:</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span>     cbind, rbind</span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Attaching package: ‘dplyr’</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> The following objects are masked from ‘package:stats’:</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     filter, lag</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> The following objects are masked from ‘package:base’:</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     intersect, setdiff, setequal, union</span>
 <span class='r-in'><span class='va'>imp</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://amices.org/mice/reference/mice.html'>mice</a></span><span class='op'>(</span><span class='va'>nhanes2</span><span class='op'>)</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>  iter imp variable</span>
@@ -220,12 +229,11 @@ on multiple imputations, with the ability to take into account survey weights.</
 <span class='r-out co'><span class='r-pr'>#&gt;</span>   5   3  bmi  hyp  chl</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>   5   4  bmi  hyp  chl</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>   5   5  bmi  hyp  chl</span>
-<span class='r-in'><span class='va'>imp_list</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://amices.org/mice/reference/complete.mids.html'>complete</a></span><span class='op'>(</span><span class='va'>imp</span>, action<span class='op'>=</span><span class='st'>"long"</span><span class='op'>)</span> <span class='op'>%&gt;%</span></span>
-<span class='r-in'>   <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_split.html'>group_split</a></span><span class='op'>(</span><span class='va'>.imp</span><span class='op'>)</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in complete(imp, action = "long") %&gt;% dplyr::group_split(.imp):</span> could not find function "%&gt;%"</span>
+<span class='r-in'><span class='va'>imp_list</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://amices.org/mice/reference/complete.mids.html'>complete</a></span><span class='op'>(</span><span class='va'>imp</span>, action<span class='op'>=</span><span class='st'>"long"</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>   <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_split.html'>group_split</a></span><span class='op'>(</span><span class='va'>.imp</span><span class='op'>)</span></span>
 <span class='r-in'></span>
 <span class='r-in'><span class='fu'><a href='t_test_mi.html'>t_test_mi</a></span><span class='op'>(</span><span class='va'>imp_list</span>, <span class='va'>bmi</span>, <span class='va'>age</span><span class='op'>)</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in purrr::map(mi_list, dplyr::select, wt = !!weights, dv = !!dv,     g = !!groups):</span> object 'imp_list' not found</span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in .run_t_test_mi(mi_list):</span> Group should only have two levels - subset data or use pairwise_t_test_mi instead</span>
 <span class='r-in'></span>
 </pre>
   </div>
