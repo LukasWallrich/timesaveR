@@ -3,9 +3,10 @@ reference:
 - title: "Report correlations, regressions and summaries"
   desc: >
     Functions to create publication-ready tables for
-    common analysis tasks
+    common analysis tasks 
 - contents: 
   - matches("report_")
+  - -report_anova
 - title: "Calculate correlation matrices"
   desc: >
     It can be surprisingly difficult to calculate correlation
@@ -22,6 +23,7 @@ reference:
   - round_df
   - sigstars
   - get_pairwise_letters
+  - report_anova
   - rename_cat_variables
   - get_rename_tribbles
   - get_coef_rename_tribble
@@ -29,9 +31,13 @@ reference:
   - cut_p
   - gt_apa_style
   - gt_add_plots
-- title: "Plot distributions and mediation models"
-- contents:
   - plot_distributions
+- title: "Run and plot mediation models"
+  desc: >
+    Mediation models can be estimated with lavaan. These functions offer a 
+    simple interface and an integrated path from modeling to visualisation
+- contents:
+  - run_mediation
   - plot_mediation
 - title: "Make and assess scales"
   desc: >

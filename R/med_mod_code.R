@@ -12,13 +12,12 @@
 #' @encoding UTF-8
 #' @param df Dataframe 
 #' @param X Predictor variable (all variables can be passed as character or 'bare')
-#' @param Y Outcome variable - can be passed as character or 'bare'
+#' @param Y Outcome variable 
 #' @param Ms Mediator variable(s)
 #' @param CVs Covariates (in predicting mediators and outcomes) 
 #' @param standardized_all Should all coefficients (paths, direct and indirect effects) be standardised
 #' @param conf.level The confidence level to be used for confidence intervals. Must be between 0 and 1 
-#' (exclusive), defaults to .95, which corresponds to 95% confidence intervals.
-#' @param mc_pvalues Should p-values for indirect effects be returned?
+#' (exclusive), defaults to .95, which corresponds to 95"\%" confidence intervals.
 #' @param seed Random seed, set to get reproducible results. If you do not want to set a fixed seed,
 #' you can use seed = sample(1:1e6, 1)
 #' @param bootstraps Number of bootstraps, defaults to 5000.
@@ -28,8 +27,8 @@
 #' are returned as an attribute - see below.
 #' 
 #' @export
-#' @examples
 #' 
+#' @examples
 #' # Might link between depression and self-reported health be partly explained
 #' # by reductions in physical activity level, when holding age constant?
 #'  
@@ -42,10 +41,10 @@
 #' # NB: bootstraps = 100 only set to reduce running time - should be 1000+
 
 run_mediation <- function(df, X, Y, Ms, CVs = NULL, standardized_all = TRUE,
-                          conf.level = .95, mc_pvalues = TRUE, seed = 987654321,
+                          conf.level = .95, seed = 987654321,
                           bootstraps = 5000, ...) {
+  
   .check_req_packages(c("lavaan"))
-
 
   # Convert arguments to strings
   X <- as.character(rlang::ensym(X))
@@ -144,25 +143,25 @@ run_mediation <- function(df, X, Y, Ms, CVs = NULL, standardized_all = TRUE,
     bs <<- char_mutate(bs, x)
   })
 
-  bs <- char_mutate(bs, paste0("total = cdash + ", paste0("indirect_", M_letter, collapse = " + "))) %>% dplyr::rename(direct = cdash)
+  bs <- char_mutate(bs, paste0("total = cdash + ", paste0("indirect_", M_letter, collapse = " + "))) %>% dplyr::rename(direct = .data$cdash)
 
 
   res <- bs %>%
     t() %>%
     data.frame() %>%
     tibble::rownames_to_column("parameter") %>%
-    tidyr::gather(-parameter, key = "rep", value = "coef") %>%
-    dplyr::group_by(parameter) %>%
-    dplyr::summarise(est = mean(coef), se = sd(coef), pvalue = ifelse(est > 0, mean(coef < 0) * 2, mean(coef > 0)) * 2, ci.lower = quantile(coef, (1 - conf.level) / 2), ci.upper = quantile(coef, 1 - (1 - conf.level) / 2)) %>%
-    tidyr::separate(parameter, c("type", "mediator"), fill = "right") %>%
-    dplyr::mutate(mediator = stringr::str_replace_all(mediator, Ms %>% magrittr::set_names(M_letter)))
+    tidyr::gather(-.data$parameter, key = "rep", value = "coef") %>%
+    dplyr::group_by(.data$parameter) %>%
+    dplyr::summarise(est = mean(.data$coef), se = sd(.data$coef), pvalue = ifelse(.data$est > 0, mean(.data$coef < 0) * 2, mean(.data$coef > 0)) * 2, ci.lower = quantile(.data$coef, (1 - conf.level) / 2), ci.upper = quantile(.data$coef, 1 - (1 - conf.level) / 2)) %>%
+    tidyr::separate(.data$parameter, c("type", "mediator"), fill = "right") %>%
+    dplyr::mutate(mediator = stringr::str_replace_all(.data$mediator, Ms %>% magrittr::set_names(M_letter)))
 
   CV_res <- bs_CVs %>%
     tibble::rownames_to_column("parameter") %>%
-    tidyr::gather(-parameter, key = "rep", value = "coef") %>%
-    dplyr::group_by(parameter) %>%
-    dplyr::summarise(est = mean(coef), se = sd(coef), pvalue = ifelse(est > 0, mean(coef < 0) * 2, mean(coef > 0)) * 2, ci.lower = quantile(coef, (1 - conf.level) / 2), ci.upper = quantile(coef, 1 - (1 - conf.level) / 2)) %>%
-    tidyr::separate(parameter, c("DV", "CV"), fill = "right")
+    tidyr::gather(-.data$parameter, key = "rep", value = "coef") %>%
+    dplyr::group_by(.data$parameter) %>%
+    dplyr::summarise(est = mean(.data$coef), se = sd(.data$coef), pvalue = ifelse(.data$est > 0, mean(.data$coef < 0) * 2, mean(.data$coef > 0)) * 2, ci.lower = quantile(.data$coef, (1 - conf.level) / 2), ci.upper = quantile(.data$coef, 1 - (1 - conf.level) / 2)) %>%
+    tidyr::separate(.data$parameter, c("DV", "CV"), fill = "right")
 
   attr(res, "CV_coefficients") <- CV_res
 

@@ -236,6 +236,7 @@ lm_std <- function(formula, data = NULL, weights = NULL, ...) {
 #' @examples 
 #' #Create list with imputed data
 #' library(mice)
+#' library(dplyr)
 #' imp <- mice(nhanes2)
 #' imp_list <- complete(imp, action="long") %>%
 #'    dplyr::group_split(.imp)
