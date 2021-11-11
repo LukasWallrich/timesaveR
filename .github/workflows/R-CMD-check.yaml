@@ -22,7 +22,7 @@ jobs:
         run: sudo apt-get install libcurl4-openssl-dev libnode-dev
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
-          extra-packages: rcmdcheck, roxygen2        
+          extra-packages: rcmdcheck roxygen2        
     - name: Document
         run: Rscript -e 'roxygen2::roxygenise()'
       - name: commit
