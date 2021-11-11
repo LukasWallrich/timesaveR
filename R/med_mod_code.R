@@ -62,6 +62,10 @@ run_mediation <- function(df, X, Y, Ms, CVs = NULL, standardized_all = TRUE,
   } else {
     CVs <- paste("+", paste(CVs, collapse = " + "))
   }
+  
+  if(any(stringr::str_detect(c(X, Y, CVs, Ms), "__"))) 
+    stop("This function does not support variable names that contain two __ in a row. Please rename.")
+  
   # Run mediation model
 
   M_letter <- letters[1:length(Ms)]
@@ -131,19 +135,19 @@ run_mediation <- function(df, X, Y, Ms, CVs = NULL, standardized_all = TRUE,
 
   bs <- bs %>%
     dplyr::select(-dplyr::matches("\\."), -dplyr::matches("\\~")) %>%
-    dplyr::rename(M_letter %>% magrittr::set_names(paste0("a_", M_letter))) %>%
-    dplyr::rename(paste0(M_letter, M_letter) %>% magrittr::set_names(paste0("b_", M_letter)))
+    dplyr::rename(M_letter %>% magrittr::set_names(paste0("a__", M_letter))) %>%
+    dplyr::rename(paste0(M_letter, M_letter) %>% magrittr::set_names(paste0("b__", M_letter)))
 
   char_mutate <- function(df, s) {
     q <- quote(dplyr::mutate(df, z = s))
     eval(parse(text = sub("z = s", s, deparse(q))))
   }
 
-  purrr::map(M_letter, function(x) glue::glue("indirect_{x} = a_{x}*b_{x}")) %>% purrr::walk(function(x) {
+  purrr::map(M_letter, function(x) glue::glue("indirect__{x} = a__{x}*b__{x}")) %>% purrr::walk(function(x) {
     bs <<- char_mutate(bs, x)
   })
 
-  bs <- char_mutate(bs, paste0("total = cdash + ", paste0("indirect_", M_letter, collapse = " + "))) %>% dplyr::rename(direct = .data$cdash)
+  bs <- char_mutate(bs, paste0("total = cdash + ", paste0("indirect__", M_letter, collapse = " + "))) %>% dplyr::rename(direct = .data$cdash)
 
 
   res <- bs %>%
@@ -153,7 +157,7 @@ run_mediation <- function(df, X, Y, Ms, CVs = NULL, standardized_all = TRUE,
     tidyr::gather(-.data$parameter, key = "rep", value = "coef") %>%
     dplyr::group_by(.data$parameter) %>%
     dplyr::summarise(est = mean(.data$coef), se = sd(.data$coef), pvalue = ifelse(.data$est > 0, mean(.data$coef < 0) * 2, mean(.data$coef > 0)) * 2, ci.lower = quantile(.data$coef, (1 - conf.level) / 2), ci.upper = quantile(.data$coef, 1 - (1 - conf.level) / 2)) %>%
-    tidyr::separate(.data$parameter, c("type", "mediator"), fill = "right") %>%
+    tidyr::separate(.data$parameter, c("type", "mediator"), fill = "right", sep = "__") %>%
     dplyr::mutate(mediator = stringr::str_replace_all(.data$mediator, Ms %>% magrittr::set_names(M_letter)))
 
   CV_res <- bs_CVs %>%
@@ -161,7 +165,7 @@ run_mediation <- function(df, X, Y, Ms, CVs = NULL, standardized_all = TRUE,
     tidyr::gather(-.data$parameter, key = "rep", value = "coef") %>%
     dplyr::group_by(.data$parameter) %>%
     dplyr::summarise(est = mean(.data$coef), se = sd(.data$coef), pvalue = ifelse(.data$est > 0, mean(.data$coef < 0) * 2, mean(.data$coef > 0)) * 2, ci.lower = quantile(.data$coef, (1 - conf.level) / 2), ci.upper = quantile(.data$coef, 1 - (1 - conf.level) / 2)) %>%
-    tidyr::separate(.data$parameter, c("DV", "CV"), fill = "right")
+    tidyr::separate(.data$parameter, c("DV", "CV"), fill = "right", sep = "~")
 
   attr(res, "CV_coefficients") <- CV_res
 
