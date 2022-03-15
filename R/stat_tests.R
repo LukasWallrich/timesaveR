@@ -5,15 +5,15 @@
 #' Cohen's d as a measure of effect size and shows a clearer data label than
 #' the t.test function.
 #'
-#' @param df A dataframe
+#' @param data A dataframe
 #' @param x,y Character strings indicating the names of the two variables
 #' @return Invisibly returns a list including the t.test() output and Cohen's D
 #' @examples 
 #' paired_t_test_d(iris, "Sepal.Width", "Petal.Length")
 #' @export
 
-paired_t_test_d <- function(df, x, y) {
-  t.test_result <- t.test(x = df[[x]], y = df[[y]], paired = T)
+paired_t_test_d <- function(data, x, y) {
+  t.test_result <- t.test(x = data[[x]], y = data[[y]], paired = T)
   t.test_result$data.name <- paste(x, "vs.", y)
   print(t.test_result)
   cohens_d <- t.test_result$estimate /
@@ -28,7 +28,7 @@ paired_t_test_d <- function(df, x, y) {
 #' object. It is particularly helpful when the grouping variable has more than
 #' two levels and you just want to compare two of them.
 #'
-#' @param df A survey object
+#' @param data A survey object
 #' @param dv Character. Name of the dependent variable for the t.test (numeric)
 #' @param iv Character. Name of the grouping variable for the t.test (factor)
 #' @param pair Character vector of length 2. Levels of iv to
@@ -51,18 +51,18 @@ paired_t_test_d <- function(df, x, y) {
 #'   
 #' @export
 
-svy_cohen_d_pair <- function(df, dv, iv, pair = NULL, ttest = TRUE, print = FALSE) {
-  assert_class(df, "survey.design")
+svy_cohen_d_pair <- function(data, dv, iv, pair = NULL, ttest = TRUE, print = FALSE) {
+  assert_class(data, "survey.design")
   if(is.null(pair)) {
-    l <- df$variables[[iv]] %>% unique()
+    l <- data$variables[[iv]] %>% unique()
     if (length(l) == 2) {
       pair <- l
     } else {
       stop("pair must not be NULL unless iv has exactly two distinct values.")
     }
   }
-  df <- eval(parse(text = paste0(
-    "update(df, filt = factor(df$variables$",
+  data <- eval(parse(text = paste0(
+    "update(data, filt = factor(data$variables$",
     iv, ", levels = c('", paste0(pair,
       collapse = "', '"
     ), "')))"
@@ -71,13 +71,13 @@ svy_cohen_d_pair <- function(df, dv, iv, pair = NULL, ttest = TRUE, print = FALS
   if (ttest) {
     t.test_result <- eval(parse(text = paste0(
       "survey::svyttest(", dv, " ~ ", iv,
-      ", subset(df, !is.na(filt)))"
+      ", subset(data, !is.na(filt)))"
     )))
   }
   # Calculate Cohen's d
-  means <- survey::svyby(~ get(dv), ~filt, df, survey::svymean, na.rm = TRUE)[1:2]
+  means <- survey::svyby(~ get(dv), ~filt, data, survey::svymean, na.rm = TRUE)[1:2]
   names(means) <- c(dv, "mean")
-  vars <- survey::svyby(~ get(dv), ~filt, df, survey::svyvar, na.rm = TRUE)[1:2]
+  vars <- survey::svyby(~ get(dv), ~filt, data, survey::svyvar, na.rm = TRUE)[1:2]
   names(vars) <- c(dv, "var")
   cohens_d <- (means[1, 2] - means[2, 2]) / sqrt((vars[1, 2] + vars[2, 2]) / 2)
   
@@ -125,21 +125,21 @@ svy_cohen_d_pair <- function(df, dv, iv, pair = NULL, ttest = TRUE, print = FALS
 #' @export
 
 
-svy_pairwise.t.test <- function(df, dv, iv, cats, p.adjust = "holm", ...) {
+svy_pairwise_t_test <- function(data, dv, iv, cats, p.adjust = "holm", ...) {
   
-  assert_class(df, "survey.design")
+  assert_class(data, "survey.design")
   assert_choice(p.adjust, p.adjust.methods)
   
   if (is.null(cats)) {
     cats <- eval(parse(text = paste0("levelsdf$variables$", iv)))
   }
 
-  df2 <- purrr::cross_df(data.frame(cats, cats, stringsAsFactors = F),
+  data2 <- purrr::cross_df(data.frame(cats, cats, stringsAsFactors = F),
     .filter =
       function(x, y) as.character(x) <= as.character(y)
   )
-  x <- purrr::map_dfr(purrr::pmap(df2, c), function(x) 
-    svy_cohen_d_pair(df, iv = iv, dv = dv, pair = x, print = FALSE, ...))
+  x <- purrr::map_dfr(purrr::pmap(data2, c), function(x) 
+    svy_cohen_d_pair(data, iv = iv, dv = dv, pair = x, print = FALSE, ...))
 
   if("p.value" %in% (names(x))) x$p.value <- p.adjust(x$p.value, method = p.adjust)
   
@@ -461,8 +461,8 @@ get_pairwise_letters <- function(tests,
 #' This runs pairwise independent-samples t-tests (assuming unequal variance by default, but can be changed)
 #' and returns the results and effect sizes in a tidy dataframe. Beware: It will automatically omit missing values.
 #'
-#' @param df A dataframe containing the outcome and grouping variable
-#' @param outcome The outcome variable in dataframe
+#' @param data A dataframe containing the outcome and grouping variable
+#' @param outcome The outcome variable in dataframe, or a formula of the form `outcome ~ group`. If a formula is provided, the group needs to be empty.
 #' @param groups The grouping variable (each distinct value will be treated as a level)
 #' @param p.adjust.method The method to adjust p-values for multiple comparison (see \code{\link[stats]{p.adjust}})
 #' @param conf_level confidence level of the interval.
@@ -473,17 +473,26 @@ get_pairwise_letters <- function(tests,
 #' @examples
 #' \dontrun{
 #' pairwise_t_tests(mtcars, wt, cyl)
+#' pairwise_t_tests(mtcars, wt ~ cyl)
 #' }
 #' @export
 
-pairwise_t_tests <- function(df, outcome, groups, p.adjust.method = p.adjust.methods, conf_level = .95, var_equal = FALSE) {
+pairwise_t_tests <- function(data, outcome, groups = NULL, p.adjust.method = p.adjust.methods, conf_level = .95, var_equal = FALSE) {
   if (is.character(rlang::enexpr(outcome))) {
-    warning("literal string input will eventually be deprecated across the package, please use raw variable names")
-    outcome <- rlang::enexpr(outcome)
-    groups <- rlang::enexpr(groups)
+    warning("Outcome and groups should be provided as raw variable names, not a string, as shown in the examples.")
+    outcome <- rlang::sym(outcome)
+    groups <- rlang::sym(groups)
   }
+  
+  if (missing(groups)) {
+    if(!class(outcome)=="formula") stop("If groups are not specified separately, the outcome argument must be a formula of the form `outcome ~ group`")
+    groups = as.character(outcome[[3]])
+    if(length(groups) > 1) stop("If formula notation is used, only one grouping variable should be provided on the RHS")
+    groups <- rlang::sym(groups)
+    outcome <- rlang::sym(as.character(outcome[[2]]))
+    }
 
-  pairs <- df %>%
+  pairs <- data %>%
     dplyr::select({{ groups }}) %>%
     dplyr::pull() %>%
     unique() %>%
@@ -494,7 +503,7 @@ pairwise_t_tests <- function(df, outcome, groups, p.adjust.method = p.adjust.met
   fmla <- as.formula(paste(dplyr::as_label(rlang::enexpr(outcome)), "~", dplyr::as_label(rlang::enexpr(groups))))
 
   out <- purrr::map_df(pairs, function(x) {
-    dat <- dplyr::filter(df, {{ groups }} %in% x)
+    dat <- dplyr::filter(data, {{ groups }} %in% x)
     out <- stats::t.test(fmla, dat,
                   var.equal = var_equal, conf.level = conf_level,  na.action = "na.omit") %>% broom::tidy()
     desc <- dat %>%
@@ -513,7 +522,7 @@ pairwise_t_tests <- function(df, outcome, groups, p.adjust.method = p.adjust.met
 
   out$apa <- paste0("t(", round(out$df), ") = ", round_(out$t_value, 2), ", p ", fmt_p(out$p_value), ", d = ", round_(out$cohens_d, 2))
 
-  out
+  tibble::tibble(out)
 }
 
 #' polr() with standardised continuous variables

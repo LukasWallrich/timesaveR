@@ -22,7 +22,7 @@
 #' @param IV Character. Name of predictor
 #' @param DV Character. Name of dependent variable
 #' @param Ms Character vector. Names of mediator variables
-#' @param df Dataframe with coefficients and significance values. See details.
+#' @param data Dataframe with coefficients and significance values. See details.
 #' @param coef_offset Tibble with values to position mediators. If not
 #' provided, function will align mediators automatically, which is unlikely to
 #' provide a well-aligned path (except for cases when offset has been implemented
@@ -31,7 +31,7 @@
 #' @param digits Number of digits for rounding
 #' @param filename If provided, graph will be saved as .svg file.
 #' @param ind_p_values Should significance stars be shown for indirect effects,
-#' based on pvalues passed in DF? If FALSE, indirect effects with confidence
+#' based on pvalues passed in data? If FALSE, indirect effects with confidence
 #' intervals that do not include zero are bolded
 #' @return A list of a the graph and the associated code.
 #' @export
@@ -44,15 +44,15 @@
 #' # Run plot command
 #' plot_mediation(
 #'   IV = "Frequency of  <br /> feeling depressed",
-#'   DV = "Self-reported <br /> poor health", Ms = "Frequency of <br /> physical activity", df = res
+#'   DV = "Self-reported <br /> poor health", Ms = "Frequency of <br /> physical activity", data = res
 #' )
 #' }
-plot_mediation <- function(IV, DV, Ms, df, digits = 2, coef_offset = length(Ms), filename = NULL, ind_p_values = FALSE) {
+plot_mediation <- function(IV, DV, Ms, data, digits = 2, coef_offset = length(Ms), filename = NULL, ind_p_values = FALSE) {
   .check_req_packages(c("glue", "DiagrammeR"))
 
-  checkmate::assert_numeric(df$est, any.missing = FALSE)
+  checkmate::assert_numeric(data$est, any.missing = FALSE)
 
-  stylec <- ifelse(df$pvalue[df$type == "direct"] < .05, "solid", "dashed")
+  stylec <- ifelse(data$pvalue[data$type == "direct"] < .05, "solid", "dashed")
 
   determine_positions <- function(num_Ms) {
     pos <- tibble::tribble(
@@ -78,16 +78,16 @@ plot_mediation <- function(IV, DV, Ms, df, digits = 2, coef_offset = length(Ms),
 
 
 
-  df$type[!is.na(df$mediator) & !df$type == "indirect"] <- paste0("M", 1:length(Ms), "_", df$type[!is.na(df$mediator) & !df$type == "indirect"])
-  df$type[df$type == "indirect"] <- paste0("M", 1:length(Ms))
+  data$type[!is.na(data$mediator) & !data$type == "indirect"] <- paste0("M", 1:length(Ms), "_", data$type[!is.na(data$mediator) & !data$type == "indirect"])
+  data$type[data$type == "indirect"] <- paste0("M", 1:length(Ms))
 
   if (ind_p_values == TRUE) {
-    pos <- df %>%
+    pos <- data %>%
       dplyr::mutate(ci = fmt_ci(.data$ci.lower, .data$ci.upper, digits), est = paste0(sprintf(paste0("%.", digits, "f"), .data$est), sigstars(.data$pvalue))) %>%
       dplyr::select(obj = .data$type, .data$est, .data$ci) %>%
       dplyr::full_join(pos, by = "obj")
   } else {
-    pos <- df %>%
+    pos <- data %>%
       dplyr::mutate(
         ci = fmt_ci(.data$ci.lower, .data$ci.upper, digits),
         est = ifelse(stringr::str_detect(.data$type, "^M[0-9]$"),

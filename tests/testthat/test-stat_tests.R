@@ -73,5 +73,11 @@ test_that(".clean_names works", {
     c("hello_world", "how_are_you", "never_BEEN_better"))
 })
 
+t1 <- pairwise_t_tests(mtcars, wt, cyl)
+t2 <- pairwise_t_tests(mtcars, wt ~ cyl)
 
+test_that("pairwise t-test works", {
+  expect_equal(t1, t2)
+  expect_equal(t1$t_value, c(-3.80952793, -3.62123044, -6.44497389))
+})
                 

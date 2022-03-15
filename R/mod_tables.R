@@ -13,7 +13,7 @@
 #' @param filename the file name to create a HTML file on disk.
 #' @param model_names If several pairs of models are to be plotted side by side, indicate the label for each *pair* here
 #' @param show_nimp Logical - DEFUNCT. If mira objects are passed, this determines whether the number of imputations will be reported as a model statistic
-#' @param R2_change Logical. Report R2 change and F-test to compare models. Only implemented for comparing two pairs of models.
+#' @param R2_change Logical. Report R2 change and F-test to compare models. 
 #' @param notes List of notes to append to bottom of table. An explanation of significance stars is automatically added. If the std models were run with a helper function in this package, a note regarding the standardization is also automatically added.
 #' @param apa_style Logical, should APA-style formatting be applied
 #' @param statistic_vertical Should standard errors and CIs be shown below coefficients? Defaults to horizontal layout
@@ -52,11 +52,6 @@ report_lm_with_std <- function(mod, mod_std, conf_level = .95, coef_renames = NU
   if (!is.null(model_names) & !length(model_names) == length(mod)) {
     stop("Length of model names needs to be the same as length of model")
   }
-
-  if (R2_change == TRUE & !length(mod) == 2) {
-    stop("R2 change can only be included in tables with exactly two pairs of models")
-  }
-
 
   if (!("list" %in% class(mod))) mod <- list(mod)
   if (!("list" %in% class(mod_std))) mod_std <- list(mod_std)
@@ -191,6 +186,7 @@ if (!("lm" %in% class(mod_std[[1]]) | ("mira" %in% class(mod_std[[1]]) &
   code %<>% paste(row, sums, "</tr>", collapse = "")
 
   if (R2_change == TRUE) {
+    #browser()
     delta_R2 <- purrr::map_chr(R2s, function(x) {
       x %>%
         dplyr::pull(.data$r.squared)
@@ -198,17 +194,32 @@ if (!("lm" %in% class(mod_std[[1]]) | ("mira" %in% class(mod_std[[1]]) &
       as.numeric() %>%
       diff() %>%
       fmt_cor()
+    
+    rows = ""
 
-    x <- stats::anova(mod[[1]], mod[[2]])
-    F_test <- glue::glue("<em>F</em>({x$Df[2]}, {x$Res.Df[2]}) = {x$F[2] %>% round_(2)}, <em>p</em> {x$`Pr(>F)`[2] %>% fmt_p()}")
+    for (i in 1:length(delta_R2)) {
+      
+      x <- stats::anova(mod[[i]], mod[[i+1]])
+      F_test <- glue::glue("<em>F</em>({x$Df[2]}, {x$Res.Df[2]}) = {x$F[2] %>% round_(2)}, <em>p</em> {x$`Pr(>F)`[2] %>% fmt_p()}")
+  
+      if (i == 1) {
+        row <- glue::glue('<tr>
+        <td class="gt_row gt_left" rowspan="1" colspan="1"><em>Change</em></td>
+        <td class="gt_row gt_center" rowspan="1" colspan="4">&Delta;<em>R</em><sup>2</sup> =
+                         {delta_R2[i]}, {F_test} </td></tr>')
+      } else {
+        row <- glue::glue('<tr>
+        <td class="gt_row gt_left" rowspan="1" colspan="{1+(i-1)*2}">&nbsp;</td>
+        <td class="gt_row gt_center" rowspan="1" colspan="4">&Delta;<em>R</em><sup>2</sup> =
+                         {delta_R2[i]}, {F_test} </td></tr>')
+        
+      }
 
-    row <- glue::glue('<tr>
-    <td class="gt_row gt_left" rowspan="1" colspan="1"><em>Change</em></td>
-    <td class="gt_row gt_center" rowspan="1" colspan="4">&Delta;<em>R</em><sup>2</sup> =
-                     {delta_R2}, {F_test} </td></tr>')
-
-    code %<>% paste(row, collapse = "")
-  }
+    rows %<>% paste(row, collapse = "")
+    }
+    
+    code %<>% paste(rows, collapse = "")
+    }
 
   temp_file <- tempfile()
   tab %>%

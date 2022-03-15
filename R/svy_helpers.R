@@ -5,7 +5,7 @@
 #' that, it recreates the \code{naniar::miss_var_summary()}
 #' output.)
 #'
-#' @param svy_df A survey object created with the survey package
+#' @param svy_data A survey object created with the survey package
 #' @param ... Variables to consider. By default this looks at the whole dataset. 
 #' Otherwise, this should be one or more unquoted expressions separated by commas, or
 #' a tidyselect helper function (e.g., `starts_with()` or `where(is.numeric)`). 
@@ -24,12 +24,12 @@
 
 #' @export
 
-svy_miss_var_summary <- function(svy_df, ..., .any_missing = TRUE, .include_complete = FALSE) {
+svy_miss_var_summary <- function(svy_data, ..., .any_missing = TRUE, .include_complete = FALSE) {
   .check_req_packages(c("survey"))
 
-  assert_class(svy_df, "survey.design")
+  assert_class(svy_data, "survey.design")
   
-  svy_df <- srvyr::as_survey(svy_df)
+  svy_df <- srvyr::as_survey(svy_data)
 
   # Complications to enable use of tidyselect functions
   if (missing(...)) vars <- rlang::expr(dplyr::everything())

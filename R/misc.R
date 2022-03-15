@@ -296,9 +296,9 @@ to_tribble <- function(x, show = FALSE, digits = 5) {
 #' unless the max_levels argument is increased.
 #'
 #'
-#' @param df A dataframe that contains the variables - only used to extract their possible levels.
+#' @param data A dataframe that contains the variables - only used to extract their possible levels.
 #' @param ... The variables to be included in the rename tribbles. If none are
-#' specified, all are included, unless there are more than `max_level` variables in the df
+#' specified, all are included, unless there are more than `max_level` variables in the data
 #' @param show Logical - should the output be printed to the console. In any case, it is returned invisibly
 #' @param which Should tribble code be generated for variables (\code{"vars"}), levels (\code{"levels"}) or both (\code{"both"}) (default)
 #' @param max_levels The maximum number of levels before a variable is dropped from the levels_tribble. Defaults to 20
@@ -311,15 +311,15 @@ to_tribble <- function(x, show = FALSE, digits = 5) {
 #' get_rename_tribbles(iris)
 #' @export
 
-get_rename_tribbles <- function(df, ..., show = TRUE, which = c("both", "vars", "levels"), max_levels = 20) {
-  assert_data_frame(df)
+get_rename_tribbles <- function(data, ..., show = TRUE, which = c("both", "vars", "levels"), max_levels = 20) {
+  assert_data_frame(data)
   assert_choice(which[1], c("both", "vars", "levels"))
   assert_count(max_levels)
   assert_logical(show)
 
   vars <- rlang::enquos(...)
   if (length(vars) == 0) {
-    vars_chr <- names(df)
+    vars_chr <- names(data)
     if(length(vars_chr)>max_levels) stop("No variables were specified for renaming.",
                                          " Would usually include all, but when there are more than",
                                          " specified in max_levels, that seems excessive. Please ",
@@ -334,12 +334,12 @@ get_rename_tribbles <- function(df, ..., show = TRUE, which = c("both", "vars", 
     out <- c(out, rename_vars = vars_tribble)
   }
   if (which[1] %in% c("both", "levels")) {
-    get_levels <- function(x, df) {
-      df[[x]] %>%
+    get_levels <- function(x, data) {
+      data[[x]] %>%
         factor() %>%
         levels()
     }
-    levels_list <- purrr::map(vars_chr, get_levels, df)
+    levels_list <- purrr::map(vars_chr, get_levels, data)
     names(levels_list) <- vars_chr
     levels_list <- Filter(function(x) length(x) <= max_levels, levels_list)
     if (length(levels_list) >= 1) {
@@ -354,7 +354,11 @@ get_rename_tribbles <- function(df, ..., show = TRUE, which = c("both", "vars", 
     }
   }
 
-  out
+  if (show) {
+  invisible(out)
+  } else {
+    out
+  }
 }
 
 
@@ -392,15 +396,15 @@ get_coef_rename_tribble <- function(mod, show = TRUE) {
 #' This function copies a dataframe into the clipboard, so that it can be
 #' pasted into excel.
 #'
-#' @param df Dataframe to be copied.
+#' @param data Dataframe to be copied.
 #' @param row_names Logical. Should row names be copied?
 #' @param col_names Logical. Should column names be copied?
 #' @param ... Further arguments passed to `write.table`
 #' @source https://www.r-bloggers.com/copying-data-from-excel-to-r-and-back/
 #' @export
 
-clip_excel <- function(df, row_names = FALSE, col_names = TRUE, ...) {
-  utils::write.table(df, "clipboard", sep = "\t", row.names = row_names, col.names = col_names, ...)
+clip_excel <- function(data, row_names = FALSE, col_names = TRUE, ...) {
+  utils::write.table(data, "clipboard", sep = "\t", row.names = row_names, col.names = col_names, ...)
 }
 
 
@@ -528,11 +532,11 @@ add_class <- function(x, class_to_add = "exp") {
 #' Tests whether a column in dataframe, specified by string, is numeric
 #'
 #' @param col Character indicating column name
-#' @param df Dataframe that contains `col`
+#' @param data Dataframe that contains `col`
 #' @keywords internal
 
-.is.numeric_col <- function(col, df) {
-  is.numeric(magrittr::extract2(df, col))
+.is.numeric_col <- function(col, data) {
+  is.numeric(magrittr::extract2(data, col))
 }
 
 #' Tidy function to exponentiate coefficients

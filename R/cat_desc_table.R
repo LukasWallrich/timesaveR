@@ -6,7 +6,7 @@
 #' the categorical variables, as well as the mean of the dependent variable for
 #' each level and the significance of pairwise comparisons between these means.
 #'
-#' @param df Dataframe containing the variables specified
+#' @param data Dataframe containing the variables specified
 #' @param dv The continuous dependent variable to be presented alongside the
 #' levels of categorical variables
 #' @param ... Categorical variables to be included
@@ -57,12 +57,12 @@
 
 # TK - implement dv = NULL to only show distribution
 
-report_cat_vars <- function(df, dv, ..., var_names = NULL, level_names = NULL,
+report_cat_vars <- function(data, dv, ..., var_names = NULL, level_names = NULL,
                           p_adjust = p.adjust.methods, alpha_level = .05,
                           filename = NULL, notes = list(), dv_name = NULL,
                           bold_vars = TRUE, apa_style = TRUE, css_tags = list(), 
                           na.rm = TRUE, exclude_na = FALSE) {
-  assert_data_frame(df)
+  assert_data_frame(data)
   if (!is.null(var_names)) {
     assert_data_frame(var_names)
     assert_names(names(var_names), must.include = c("old", "new"))
@@ -89,7 +89,7 @@ report_cat_vars <- function(df, dv, ..., var_names = NULL, level_names = NULL,
   vars <- rlang::enquos(...)
   dv <- rlang::enquo(dv)
 
-  df <- rename_cat_variables(df, ..., var_names = var_names, level_names = level_names)
+  data <- rename_cat_variables(data, ..., var_names = var_names, level_names = level_names)
 
   if (!is.null(var_names)) {
     var_names_chr <- var_names$new
@@ -104,7 +104,7 @@ report_cat_vars <- function(df, dv, ..., var_names = NULL, level_names = NULL,
   }
 
   descr <- purrr::map(vars, function(x) {
-    df %>%
+    data %>%
       dplyr::rename(level = !!x) %>%
       dplyr::filter(!exclude_na | !is.na(.data$level)) %>%
       dplyr::group_by(.data$level) %>%
@@ -121,8 +121,8 @@ report_cat_vars <- function(df, dv, ..., var_names = NULL, level_names = NULL,
   })
 
   tests <- purrr::map(vars, function(x) {
-    stats::pairwise.t.test(df %>% dplyr::select(!!dv) %>% dplyr::pull(),
-      df %>% dplyr::select(!!x) %>% dplyr::pull(),
+    stats::pairwise.t.test(data %>% dplyr::select(!!dv) %>% dplyr::pull(),
+      data %>% dplyr::select(!!x) %>% dplyr::pull(),
       p.adjust.method = p_adjust[1]
     ) %>%
       get_pairwise_letters(alpha_level = alpha_level) %>%

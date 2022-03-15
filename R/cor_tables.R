@@ -233,7 +233,7 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
 #' \code{\link[lavaan]{lavCor}} function - this function also uses \code{lavaan} for the estimation,
 #' but facilitates bootstrapping and returns the results in a more accessible format.
 #'
-#' @param df Dataframe. Only numeric variables are included into correlation matrix.
+#' @param data Dataframe. Only numeric variables are included into correlation matrix.
 #' @param var_names A named character vector with new variable names or a tibble as provided by \code{\link{get_rename_tribbles}}
 #' for variables. If NULL, then the variables are not renamed. If names are provided, only the variables included here are retained.
 #' This is most helpful when the results are passed to some print function, such as \code{\link{report_cor_table}}
@@ -253,14 +253,14 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
 #' @export
 
 
-cor_matrix <- function(df,
+cor_matrix <- function(data,
                        var_names = NULL,
                        missing = c("pairwise", "listwise", "fiml"),
                        conf_level = .95,
                        method = c("pearson", "spearman", "kendall"),
                        adjust = "none",
                        bootstrap = NULL) {
-  df %<>% dplyr::select_if(is.numeric)
+  data %<>% dplyr::select_if(is.numeric)
 
   missing <- dplyr::case_when(
     missing[1] == "pairwise" ~ "pairwise",
@@ -278,16 +278,16 @@ cor_matrix <- function(df,
   }
 
   if (!is.null(var_names)) {
-    df <- df %>% dplyr::select(dplyr::any_of(names(var_names)))
-    miss_vars <- setdiff(names(var_names), names(df))
-    if (length(miss_vars) > 0) warning("The following variables are included in var_names but cannot be included into the correlation matrix - either, they are missing from df or not of type numeric: ", paste(miss_vars, collapse = ", "), call. = FALSE)
-    var_names <- var_names[intersect(names(var_names), names(df))]
+    data <- data %>% dplyr::select(dplyr::any_of(names(var_names)))
+    miss_vars <- setdiff(names(var_names), names(data))
+    if (length(miss_vars) > 0) warning("The following variables are included in var_names but cannot be included into the correlation matrix - either, they are missing from data or not of type numeric: ", paste(miss_vars, collapse = ", "), call. = FALSE)
+    var_names <- var_names[intersect(names(var_names), names(data))]
   }
 
   if (!missing == "fiml") {
 
     # Compute correlation matrix
-    correlation_matrix <- psych::corr.test(df, method = method[1], adjust = adjust, alpha = 1 - conf_level, use = missing)
+    correlation_matrix <- psych::corr.test(data, method = method[1], adjust = adjust, alpha = 1 - conf_level, use = missing)
     cors <- correlation_matrix$r # Matrix of correlation coefficients
     p.values <- correlation_matrix$p # Matrix of p-value
     std.err <- correlation_matrix$se # Matrix of standard errors
@@ -313,7 +313,7 @@ cor_matrix <- function(df,
     ci_high[lower.tri(ci_high)] <- correlation_matrix$ci$upper
 
 
-    desc_stat <- df %>%
+    desc_stat <- data %>%
       psych::describe() %>%
       data.frame() %>%
       tibble::rownames_to_column("var") %>%
@@ -321,9 +321,9 @@ cor_matrix <- function(df,
   } else {
     .check_req_packages("lavaan", "FIML method for dealing with missing data uses the lavaan package. ")
     
-    mod <- lavaan::lavCor(df, missing = "fiml", estimator = "ML", output = "fit", se = "standard")
+    mod <- lavaan::lavCor(data, missing = "fiml", estimator = "ML", output = "fit", se = "standard")
     
-    vars_used <- names(df)
+    vars_used <- names(data)
 
     Ms <- lavaan::parameterestimates(mod) %>%
       dplyr::filter(.data$op == "~1") %>%
@@ -379,7 +379,7 @@ cor_matrix <- function(df,
     t.values <- m
     t.values[TRUE] <- NA
     n.matrix <- m
-    n.matrix[TRUE] <- nrow(df)
+    n.matrix[TRUE] <- nrow(data)
     ci_low <- fill_matrix("ci.lower")
     ci_high <- fill_matrix("ci.upper")
   }
@@ -414,7 +414,7 @@ cor_matrix <- function(df,
 #' runs bootstrapped significance-tests and calculates weighted summary
 #' statistics. Only numeric variables are included in the result.
 #'
-#' @param svy_df A survey object created with the survey or srvyr package. Only
+#' @param svy_data A survey object created with the survey or srvyr package. Only
 #' numeric variables will be included in the result.
 #' @param var_names A named character vector with new variable names or a tibble as provided by \code{\link{get_rename_tribbles}}
 #' for variables. If NULL, then the variables are not renamed. If names are provided, only the variables included here are retained.
@@ -441,14 +441,14 @@ cor_matrix <- function(df,
 #' }
 #' }
 #'
-svy_cor_matrix <- function(svy_df, var_names = NULL) {
+svy_cor_matrix <- function(svy_data, var_names = NULL) {
   .check_req_packages(c("jtools", "survey", "srvyr", "weights"))
 
-  assert_class(svy_df, "survey.design")
+  assert_class(svy_data, "survey.design")
 
-  if (!inherits(svy_df, "tbl_svy")) svy_df %<>% srvyr::as_survey(svy_df)
+  if (!inherits(svy_data, "tbl_svy")) svy_data %<>% srvyr::as_survey(svy_data)
 
-  svy_df %<>%
+  svy_data %<>%
     srvyr::select_if(is.numeric)
 
   if (is.data.frame(var_names)) {
@@ -457,12 +457,12 @@ svy_cor_matrix <- function(svy_df, var_names = NULL) {
   }
 
   if (!is.null(var_names)) {
-    svy_df %<>%
+    svy_data %<>%
       srvyr::select(dplyr::one_of(names(var_names)))
   }
 
-  cor_matrix <- jtools::svycor(~., svy_df, na.rm = TRUE, sig.stats = TRUE)
-  cor_matrix$desc <- svy_df %>%
+  cor_matrix <- jtools::svycor(~., svy_data, na.rm = TRUE, sig.stats = TRUE)
+  cor_matrix$desc <- svy_data %>%
     srvyr::select_if(is.numeric) %>%
     srvyr::summarise_all(.funs = list(`1M` = srvyr::survey_mean, `1SD` = srvyr::survey_var), na.rm = TRUE) %>%
     dplyr::select(!dplyr::matches("_se")) %>%
@@ -541,7 +541,7 @@ wtd_cor_matrix_mi <- function(mi_list, weights, var_names = NULL) {
   variables <- variables[-1]
   ct <- length(variables)
 
-  df <- NULL
+  data <- NULL
 
   for (i in seq_len(ct - 1)) {
     for (j in (i + 1):ct) {
@@ -552,15 +552,15 @@ wtd_cor_matrix_mi <- function(mi_list, weights, var_names = NULL) {
         mi_selected <- purrr::map(mi_selected, dplyr::rename, x = 1, y = 2)
         # browser()
         cor.ii.jj <- purrr::map(mi_selected, do.call, what = .wtd_cor_test_lm)
-        df <- rbind(df, data.frame(x = ii, y = jj, mice::pool(cor.ii.jj) %>% summary() %>% magrittr::extract(c("estimate", "p.value", "std.error", "statistic", "df")) %>% magrittr::extract(2, )))
+        data <- rbind(data, data.frame(x = ii, y = jj, mice::pool(cor.ii.jj) %>% summary() %>% magrittr::extract(c("estimate", "p.value", "std.error", "statistic", "df")) %>% magrittr::extract(2, )))
       }
     }
   }
 
 
-  to_matrix <- function(df, names, value) {
+  to_matrix <- function(data, names, value) {
     m <- matrix(0, length(names), length(names))
-    m[as.matrix(df %>% magrittr::extract(c("row", "column")))] <- df[[value]]
+    m[as.matrix(data %>% magrittr::extract(c("row", "column")))] <- data[[value]]
     rownames(m) <- names
     colnames(m) <- names
     diag(m) <- 1
@@ -569,12 +569,12 @@ wtd_cor_matrix_mi <- function(mi_list, weights, var_names = NULL) {
     m
   }
 
-  df %<>% dplyr::mutate(row = match(.data$x, variables), column = match(.data$y, variables))
-  cors <- to_matrix(df, variables, "estimate")
-  std.err <- to_matrix(df, variables, "std.error")
-  p.values <- to_matrix(df, variables, "p.value")
-  t.values <- to_matrix(df, variables, "statistic")
-  dfs <- to_matrix(df, variables, "df")
+  data %<>% dplyr::mutate(row = match(.data$x, variables), column = match(.data$y, variables))
+  cors <- to_matrix(data, variables, "estimate")
+  std.err <- to_matrix(data, variables, "std.error")
+  p.values <- to_matrix(data, variables, "p.value")
+  t.values <- to_matrix(data, variables, "statistic")
+  dfs <- to_matrix(data, variables, "df")
 
   imp_svy <- survey::svydesign(~1, weights = as.formula(paste0("~", dplyr::as_label(weights))), data = mitools::imputationList(mi_list))
 
@@ -586,7 +586,7 @@ wtd_cor_matrix_mi <- function(mi_list, weights, var_names = NULL) {
     desc <- rbind(desc, data.frame(var = variables[i], M = M, SD = SD))
   }
 
-  cor_matrix <- list(cors = cors, std.err = std.err, p.values = p.values, t.values = t.values, df = dfs, desc = desc, tests = df)
+  cor_matrix <- list(cors = cors, std.err = std.err, p.values = p.values, t.values = t.values, df = dfs, desc = desc, tests = data)
 
   if (!is.null(var_names)) {
     cor_matrix[1:5] <- purrr::map(cor_matrix[1:5], function(x) {

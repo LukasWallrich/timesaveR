@@ -5,8 +5,8 @@
 #' and spread. It is primarily based on the \code{psych::alpha} function, with
 #' more parsimonious output and some added functionality.
 #'
-#' @param df A dataframe
-#' @param scale_items Character vector with names of scale items (variables in df)
+#' @param data A dataframe
+#' @param scale_items Character vector with names of scale items (variables in data)
 #' @param scale_name Name of the scale
 #' @param reverse Should scale items be reverse coded? One of "auto" - items are
 #'   reversed if that contributes to scale consistency, "none" - no items reversed,
@@ -27,16 +27,16 @@
 #' @export
 #'
 
-make_scale <- function(df, scale_items, scale_name, reverse = c(
+make_scale <- function(data, scale_items, scale_name, reverse = c(
                          "auto",
                          "none", "spec"
                        ), reverse_items = NULL, two_items_reliability = c(
                          "spearman_brown", "cron_alpha",
                          "r"
                        ), r_key = NULL, print_hist = TRUE, print_desc = TRUE, return_list = FALSE) {
-  if (!all(scale_items %in% names(df))) stop("Not all scale_items can be found in the dataset. The following are missing: ", paste(setdiff(scale_items, names(df)), collapse = ", "), call. = FALSE)
+  if (!all(scale_items %in% names(data))) stop("Not all scale_items can be found in the dataset. The following are missing: ", paste(setdiff(scale_items, names(data)), collapse = ", "), call. = FALSE)
 
-  if (df %>% dplyr::select(dplyr::any_of(scale_items)) %>% {
+  if (data %>% dplyr::select(dplyr::any_of(scale_items)) %>% {
     all(vapply(., FUN = checkmate::allMissing, FUN.VALUE = logical(1)))
   }) {
     stop("All variables for scale ", scale_name, " only contain missing values.", call. = FALSE)
@@ -47,7 +47,7 @@ make_scale <- function(df, scale_items, scale_name, reverse = c(
   if (!is.null(reverse_items) & !reverse[1] == "spec") stop('reverse_items should only be specified together with reverse = "spec"')
 
   if (is.null(r_key)) r_key <- 0
-  scale_vals <- df %>%
+  scale_vals <- data %>%
     dplyr::select(dplyr::one_of(scale_items)) %>%
     dplyr::mutate_all(as.numeric)
   if ((reverse != "spec")[1]) {
@@ -65,11 +65,11 @@ make_scale <- function(df, scale_items, scale_name, reverse = c(
   reversed <- names(alpha_obj$keys[alpha_obj$keys == -1])
   if (length(scale_items) == 2) {
     if (two_items_reliability[1] == "spearman_brown") {
-      reliab <- spearman_brown(df, items = scale_items, SB_only = TRUE)
+      reliab <- spearman_brown(data, items = scale_items, SB_only = TRUE)
     } else if (two_items_reliability[1] == "cronbachs_alpha") {
       reliab <- alpha_obj$total$std.alpha
     } else if (two_items_reliability[1] == "r") {
-      reliab <- cor.test(df[, scale_items[1]], df[, scale_items[2]], na.rm = TRUE)$estimate
+      reliab <- cor.test(data[, scale_items[1]], data[, scale_items[2]], na.rm = TRUE)$estimate
     }
   } else {
     reliab <- alpha_obj$total$std.alpha
@@ -127,9 +127,9 @@ make_scale <- function(df, scale_items, scale_name, reverse = c(
 #' This function creates multiple scales, returns descriptives and supports
 #' reverse-coding of items.
 #'
-#' @param df A dataframe
+#' @param data A dataframe
 #' @param items A named list of characters vectors. Names are the scale names,
-#'   each vector contains the items for that scale (variables in df)
+#'   each vector contains the items for that scale (variables in data)
 #' @param reversed A named list of characters vectors. Names are the scale names,
 #'   each vector contains the items to be reverse-coded for that scale
 #' @inheritParams make_scale
@@ -138,11 +138,11 @@ make_scale <- function(df, scale_items, scale_name, reverse = c(
 #' descriptive statistics for each scale (`descriptives`)
 #' @export
 
-make_scales <- function(df, items, reversed = NULL, two_items_reliability = c(
+make_scales <- function(data, items, reversed = NULL, two_items_reliability = c(
                           "spearman_brown",
                           "cronbachs_alpha", "r"
                         ), ...) {
-  if (!all(unlist(items) %in% names(df))) stop("Not all items can be found in the dataset. The following are missing: ", paste(setdiff(unlist(items), names(df)), collapse = ", "), call. = FALSE)
+  if (!all(unlist(items) %in% names(data))) stop("Not all items can be found in the dataset. The following are missing: ", paste(setdiff(unlist(items), names(data)), collapse = ", "), call. = FALSE)
 
   assert_choice(two_items_reliability[1], c("spearman_brown", "cronbachs_alpha", "r"))
 
@@ -158,7 +158,7 @@ make_scales <- function(df, items, reversed = NULL, two_items_reliability = c(
         scale_items = items[scales_rev], scale_name = scales_rev,
         reverse_items = reversed[scales_rev]
       ), make_scale,
-      df = df, return_list = TRUE,
+      data = data, return_list = TRUE,
       reverse = "spec", two_items_reliability, ...
       ) %>% purrr::transpose()
     } else {
@@ -175,7 +175,7 @@ make_scales <- function(df, items, reversed = NULL, two_items_reliability = c(
     ))
 
     scales_n_rev_values <- purrr::map2(items[scales_n_rev], scales_n_rev, make_scale,
-      df = df,
+      data = data,
       return_list = TRUE, reverse = "none", two_items_reliability = two_items_reliability, ...
     ) %>% purrr::transpose()
   }
@@ -211,7 +211,7 @@ make_scales <- function(df, items, reversed = NULL, two_items_reliability = c(
 #' which is the recommended measure for two-item scales (rather than Cronbach's
 #' alpha, which is used for longer scales.)
 #'
-#' @param df A dataframe
+#' @param data A dataframe
 #' @param items Character vector of length 2, with names of the two items
 #' @param name Name of the scale, relevant only if data.frame is returned
 #' @param SB_only Logical, indicating whether to return only the reliability as
@@ -221,8 +221,8 @@ make_scales <- function(df, items, reversed = NULL, two_items_reliability = c(
 #' @export
 #' @source https://www.r-bloggers.com/five-ways-to-calculate-internal-consistency/
 #'
-spearman_brown <- function(df, items, name = "", SB_only = FALSE) {
-  cor_value <- cor.test(magrittr::extract2(df, items[1]), magrittr::extract2(df, items[2]), na.rm = TRUE)$estimate
+spearman_brown <- function(data, items, name = "", SB_only = FALSE) {
+  cor_value <- cor.test(magrittr::extract2(data, items[1]), magrittr::extract2(data, items[2]), na.rm = TRUE)$estimate
   SB_value <- (abs(cor_value) * 2) / (1 + abs(cor_value))
   if (SB_only) {
     return(SB_value)
@@ -238,9 +238,9 @@ spearman_brown <- function(df, items, name = "", SB_only = FALSE) {
 #' and spread. It is primarily based on the \code{psych::alpha} function, with
 #' more parsimonious output and some added functionality.
 #'
-#' @param df A srvyr survey object
+#' @param data A srvyr survey object
 #' @param scale_items A characters vector containing the items for that scale
-#'   (variables in df)
+#'   (variables in data)
 #' @param scale_name Character. The name of the variable the scale should be saved as
 #' @param print_desc Logical. Should descriptive statistics for the scale be printed.
 #' @param print_hist Logical. Should histograms of the scale and its items be printed.
@@ -256,11 +256,11 @@ spearman_brown <- function(df, items, name = "", SB_only = FALSE) {
 #' library(survey)
 #' data(api)
 #' 
-#' svy_df <- svydesign(id = ~1, strata = ~stype, weights = ~pw, 
+#' svy_data <- svydesign(id = ~1, strata = ~stype, weights = ~pw, 
 #'                    data = apistrat, fpc = ~fpc)
 #' scale_items <- c("ell", "meals", "mobility", "col.grad", "full")
 #' scale_reversed <- c("col.grad", "full")                    
-#' svy_make_scale(svy_df, scale_items, "SES", reversed = scale_reversed)    
+#' svy_make_scale(svy_data, scale_items, "SES", reversed = scale_reversed)    
 
 #' @export
 
@@ -268,7 +268,7 @@ spearman_brown <- function(df, items, name = "", SB_only = FALSE) {
 ### Merge/align with standard make_scale functions
 
 
-svy_make_scale <- function(df, scale_items, scale_name, print_hist = TRUE, print_desc = TRUE, 
+svy_make_scale <- function(data, scale_items, scale_name, print_hist = TRUE, print_desc = TRUE, 
                            scale_title = scale_name, reversed = NULL, r_key = NULL) {
  
   .check_req_packages("survey")
@@ -280,7 +280,7 @@ svy_make_scale <- function(df, scale_items, scale_name, print_hist = TRUE, print
   # Convert all scale items into numeric vars
   scale_items_num <- paste0(scale_items, "num")
   for (i in 1:length(scale_items)) {
-    df <- eval(parse(text = paste0("update(df,", scale_items_num[i], " = as.numeric(unlist(df[,scale_items[i]]$variables)))")))
+    data <- eval(parse(text = paste0("update(data,", scale_items_num[i], " = as.numeric(unlist(data[,scale_items[i]]$variables)))")))
   }
 
   # Reverse reverse-coded items
@@ -292,24 +292,24 @@ svy_make_scale <- function(df, scale_items, scale_name, print_hist = TRUE, print
     ))
     for (i in 1:length(reversed)) {
       
-      df <- eval(parse(text = paste0("update(df,", reversed_num[i], "r = psych::reverse.code(-1, df[,reversed_num[i]]$variables))")))
+      data <- eval(parse(text = paste0("update(data,", reversed_num[i], "r = psych::reverse.code(-1, data[,reversed_num[i]]$variables))")))
     }
   }
 
   # Create scale
-  df <- eval(parse(text = paste0("update(df,", scale_name, " = rowMeans(df[,scale_items_num]$variables, na.rm=T))")))
+  data <- eval(parse(text = paste0("update(data,", scale_name, " = rowMeans(data[,scale_items_num]$variables, na.rm=T))")))
 
   # Reverse full scale
   if (!is.null(r_key)) {
     if (r_key == -1) {
-      df <- eval(parse(text = paste0(
-        "update(df,", scale_name, " = psych::reverse.code(",
-        r_key, ", df$variables$", scale_name, "))"
+      data <- eval(parse(text = paste0(
+        "update(data,", scale_name, " = psych::reverse.code(",
+        r_key, ", data$variables$", scale_name, "))"
       )))
     } else if (r_key > 0) {
-      df <- eval(parse(text = paste0(
-        "update(df,", scale_name, " = psych::reverse.code(",
-        -1, ", df$variables$", scale_name, ", maxi = ", r_key, "))"
+      data <- eval(parse(text = paste0(
+        "update(data,", scale_name, " = psych::reverse.code(",
+        -1, ", data$variables$", scale_name, ", maxi = ", r_key, "))"
       )))
     }
   }
@@ -320,17 +320,17 @@ svy_make_scale <- function(df, scale_items, scale_name, print_hist = TRUE, print
       reversed_min <- numeric()
       reversed_max <- numeric()
       for (i in 1:length(reversed)) {
-    reversed_min[i] <- min(df[,reversed_num[i]]$variables, na.rm = TRUE)
-    reversed_max[i] <- max(df[,reversed_num[i]]$variables, na.rm = TRUE)
+    reversed_min[i] <- min(data[,reversed_num[i]]$variables, na.rm = TRUE)
+    reversed_max[i] <- max(data[,reversed_num[i]]$variables, na.rm = TRUE)
       }}
 
     print(glue::glue('
     
                      Descriptives for {scale_title} scale:
                      Mean: {round_(survey::svymean(as.formula(paste0("~", scale_name)), 
-                     df, na.rm = TRUE)[1], 3)}  SD: {round_(sqrt(survey::svyvar(as.formula(paste0("~", scale_name)), 
-                     df, na.rm = TRUE)[1]), 3)}
-                     Cronbach\'s alpha: {fmt_cor(survey::svycralpha(as.formula(.scale_formula(scale_items_num)), df, na.rm = TRUE))}'))
+                     data, na.rm = TRUE)[1], 3)}  SD: {round_(sqrt(survey::svyvar(as.formula(paste0("~", scale_name)), 
+                     data, na.rm = TRUE)[1]), 3)}
+                     Cronbach\'s alpha: {fmt_cor(survey::svycralpha(as.formula(.scale_formula(scale_items_num)), data, na.rm = TRUE))}'))
     
     if (length(reversed) > 0) {
       print(glue::glue('
@@ -343,21 +343,21 @@ The following items were reverse coded (with min and max values): \\
   # Print histograms of items and scale
   if (print_hist) {
     hist_vars <- c(scale_name, paste0(scale_items, "num"))
-    df2 <- NULL
+    data2 <- NULL
     for (i in 1:length(hist_vars)) {
       x <- as.data.frame(survey::svytable(
         as.formula(paste0("~round(", hist_vars[i], ")")),
-        df
+        data
       ))
       x$var <- stringr::str_split(names(x[1]), "\\.")[[1]][2]
       colnames(x)[1] <- "val"
-      df2 %<>% rbind(x)
+      data2 %<>% rbind(x)
     }
-    print(ggplot2::ggplot(df2, ggplot2::aes(.data$val, y = .data$Freq)) +
+    print(ggplot2::ggplot(data2, ggplot2::aes(.data$val, y = .data$Freq)) +
       ggplot2::geom_bar(stat = "identity", na.rm = TRUE) +
       ggplot2::facet_wrap(~var))
   }
-  return(df)
+  return(data)
 }
 
 # Helper function for calculating Cronbach's alpha

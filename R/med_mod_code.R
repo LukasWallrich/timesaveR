@@ -10,7 +10,7 @@
 #' 
 #'
 #' @encoding UTF-8
-#' @param df Dataframe 
+#' @param data Dataframe 
 #' @param X Predictor variable (all variables can be passed as character or 'bare')
 #' @param Y Outcome variable 
 #' @param Ms Mediator variable(s)
@@ -40,10 +40,10 @@
 #'  
 #' # NB: bootstraps = 100 only set to reduce running time - should be 1000+
 
-run_mediation <- function(df, X, Y, Ms, CVs = NULL, standardized_all = TRUE,
+run_mediation <- function(data, X, Y, Ms, CVs = NULL, standardized_all = TRUE,
                           conf.level = .95, seed = 987654321,
                           bootstraps = 5000, ...) {
-  
+
   .check_req_packages(c("lavaan"))
 
   # Convert arguments to strings
@@ -111,7 +111,7 @@ run_mediation <- function(df, X, Y, Ms, CVs = NULL, standardized_all = TRUE,
     estimator = "MLR",
     fixed.x = FALSE,
     missing = "direct",
-    data = df,
+    data = data,
     std.ov = standardized_all
   )
   # find elements in dots by names of def.vals. store those that are NULL
@@ -138,8 +138,8 @@ run_mediation <- function(df, X, Y, Ms, CVs = NULL, standardized_all = TRUE,
     dplyr::rename(M_letter %>% magrittr::set_names(paste0("a__", M_letter))) %>%
     dplyr::rename(paste0(M_letter, M_letter) %>% magrittr::set_names(paste0("b__", M_letter)))
 
-  char_mutate <- function(df, s) {
-    q <- quote(dplyr::mutate(df, z = s))
+  char_mutate <- function(data, s) {
+    q <- quote(dplyr::mutate(data, z = s))
     eval(parse(text = sub("z = s", s, deparse(q))))
   }
 

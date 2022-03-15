@@ -78,10 +78,13 @@ ess_survey %>%
   report_cor_table(n = survey_tally(ess_survey)[[1]])
 ```
 
-It is often helpful to use different variable names for display. For this, functions in the package typically accept rename tibbles that contain an `old` and a `new` column. By using the `tibble::tribble` notation, they can be entered more cleanly that named character vectors, and the `get_rename_tribble()` helper function creates most of the code.
+It is often helpful to use different variable names for display. For this, functions in the package typically accept rename tibbles that contain an `old` and a `new` column. By using the `tibble::tribble` notation, they can be entered more cleanly than named character vectors, and the `get_rename_tribble()` helper function creates most of the code.
 
 ```{r}
-#Use get_rename_tribbles to get most of this code
+#Call 
+# get_rename_tribbles(ess_health, agea, health, depression, healthy_eating, which = "vars") 
+# to get most of this code
+
 var_renames <- tibble::tribble(
   ~old,             ~new,             
    "agea",           "Age",          
@@ -111,11 +114,11 @@ svy_cohen_d_pair(ess_survey, "health", "cntry", pair = c("DE", "GB"))
 
 # Running pairwise t-tests
 
-`svy_pairwise.t.test()` allows to run pairwise t-tests, e.g., as post-hoc comparisons,
+`svy_pairwise_t_test()` allows to run pairwise t-tests, e.g., as post-hoc comparisons,
 between multiple groups in the survey. *p*-values are adjusted for multiple comparisons,
 by default using the Holm-Bonferroni method.
 
 ```{r}
-svy_pairwise.t.test(ess_survey, "health", "cntry", cats = c("DE", "GB", "FR"))
+svy_pairwise_t_test(ess_survey, "health", "cntry", cats = c("DE", "GB", "FR"))
 ```
 
