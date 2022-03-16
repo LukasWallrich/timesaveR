@@ -4,7 +4,7 @@
 \alias{tidy.exp}
 \title{Tidy function to exponentiate coefficients}
 \usage{
-\method{tidy}{exp}(x, ...)
+tidy.exp(x, ...)
 }
 \arguments{
 \item{x}{An object, usually containing a logistic regression model. Should

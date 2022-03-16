@@ -4,10 +4,10 @@
 \alias{svy_cohen_d_pair}
 \title{t.test for survey object with Cohen's d}
 \usage{
-svy_cohen_d_pair(df, dv, iv, pair = NULL, ttest = TRUE, print = FALSE)
+svy_cohen_d_pair(data, dv, iv, pair = NULL, ttest = TRUE, print = FALSE)
 }
 \arguments{
-\item{df}{A survey object}
+\item{data}{A survey object}
 
 \item{dv}{Character. Name of the dependent variable for the t.test (numeric)}
 

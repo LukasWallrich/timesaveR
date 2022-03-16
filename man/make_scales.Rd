@@ -5,7 +5,7 @@
 \title{Create multiple scales by calculating item means and returns descriptives}
 \usage{
 make_scales(
-  df,
+  data,
   items,
   reversed = NULL,
   two_items_reliability = c("spearman_brown", "cronbachs_alpha", "r"),
@@ -13,10 +13,10 @@ make_scales(
 )
 }
 \arguments{
-\item{df}{A dataframe}
+\item{data}{A dataframe}
 
 \item{items}{A named list of characters vectors. Names are the scale names,
-each vector contains the items for that scale (variables in df)}
+each vector contains the items for that scale (variables in data)}
 
 \item{reversed}{A named list of characters vectors. Names are the scale names,
 each vector contains the items to be reverse-coded for that scale}

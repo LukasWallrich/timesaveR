@@ -37,7 +37,7 @@ for variables. If NULL, then the coefficients are not renamed.}
 \item integer: the number of digits to keep after the period \code{format(round(x, fmt), nsmall=fmt)}
 \item character: passed to the \code{sprintf} function (e.g., '\%.3f' keeps 3 digits with trailing zero). See \code{?sprintf}
 \item function: returns a formatted character string.
-\item Note on LaTeX formatting: To ensure proper typography, all numeric entries are enclosed in the \verb{\\num{}} command from the \code{siunitx} LaTeX package by default. This behavior can be altered with global options. See the 'Details' section.
+\item LaTeX output: To ensure proper typography, all numeric entries are enclosed in the \verb{\\num{}} command, which requires the \code{siunitx} package to be loaded in the LaTeX preamble. This behavior can be altered with global options. See the 'Details' section.
 }}
 
 \item{statistic_vertical}{Should standard errors and CIs be shown below coefficients? Defaults to horizontal layout}
@@ -48,7 +48,7 @@ for variables. If NULL, then the coefficients are not renamed.}
 
 \item{show_nimp}{Logical - DEFUNCT. If mira objects are passed, this determines whether the number of imputations will be reported as a model statistic}
 
-\item{R2_change}{Logical. Report R2 change and F-test to compare models. Only implemented for comparing two pairs of models.}
+\item{R2_change}{Logical. Report R2 change and F-test to compare models.}
 
 \item{notes}{List of notes to append to bottom of table. An explanation of significance stars is automatically added. If the std models were run with a helper function in this package, a note regarding the standardization is also automatically added.}
 
@@ -71,7 +71,10 @@ from the table using \code{grepl(perl=TRUE)}. This argument uses perl-compatible
     \item{\code{coef_rename}}{named character vector or function which returns a named
 vector. Values of the vector refer to the variable names that will appear
 in the table. Names refer to the original term names stored in the model
-object, e.g. c("hp:mpg"="hp X mpg") for an interaction term.}
+object, e.g. c("hp:mpg"="hp X mpg") for an interaction term.
+If you provide a function to \code{coef_rename}, \code{modelsummary} will create a named
+vector for you by deriving the new variable names from the vector of original
+term names with your function.}
   }}
 }
 \value{

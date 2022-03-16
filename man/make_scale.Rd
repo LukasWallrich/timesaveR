@@ -5,7 +5,7 @@
 \title{Create a scale by calculating item mean and returns descriptives}
 \usage{
 make_scale(
-  df,
+  data,
   scale_items,
   scale_name,
   reverse = c("auto", "none", "spec"),
@@ -18,9 +18,9 @@ make_scale(
 )
 }
 \arguments{
-\item{df}{A dataframe}
+\item{data}{A dataframe}
 
-\item{scale_items}{Character vector with names of scale items (variables in df)}
+\item{scale_items}{Character vector with names of scale items (variables in data)}
 
 \item{scale_name}{Name of the scale}
 

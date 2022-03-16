@@ -20,7 +20,6 @@ jobs:
       - uses: r-lib/actions/setup-pandoc@v1
       - name: system dependencies
         run: sudo apt-get install libcurl4-openssl-dev libnode-dev
-        
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
           extra-packages: rcmdcheck roxygen2
@@ -34,4 +33,6 @@ jobs:
           git add -A
           git commit -m 'Documentation' || echo "No changes to commit"
           git push origin || echo "No changes to commit"
+    
+        
       - uses: r-lib/actions/check-r-package@v1

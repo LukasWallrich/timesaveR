@@ -7,10 +7,10 @@
 https://www.r-bloggers.com/copying-data-from-excel-to-r-and-back/
 }
 \usage{
-clip_excel(df, row_names = FALSE, col_names = TRUE, ...)
+clip_excel(data, row_names = FALSE, col_names = TRUE, ...)
 }
 \arguments{
-\item{df}{Dataframe to be copied.}
+\item{data}{Dataframe to be copied.}
 
 \item{row_names}{Logical. Should row names be copied?}
 

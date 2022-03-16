@@ -5,14 +5,14 @@
 \title{Create overview over missing data in survey object}
 \usage{
 svy_miss_var_summary(
-  svy_df,
+  svy_data,
   ...,
   .any_missing = TRUE,
   .include_complete = FALSE
 )
 }
 \arguments{
-\item{svy_df}{A survey object created with the survey package}
+\item{svy_data}{A survey object created with the survey package}
 
 \item{...}{Variables to consider. By default this looks at the whole dataset. 
 Otherwise, this should be one or more unquoted expressions separated by commas, or

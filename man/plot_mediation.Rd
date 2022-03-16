@@ -9,7 +9,7 @@ plot_mediation(
   IV,
   DV,
   Ms,
-  df,
+  data,
   digits = 2,
   coef_offset = length(Ms),
   filename = NULL,
@@ -23,7 +23,7 @@ plot_mediation(
 
 \item{Ms}{Character vector. Names of mediator variables}
 
-\item{df}{Dataframe with coefficients and significance values. See details.}
+\item{data}{Dataframe with coefficients and significance values. See details.}
 
 \item{digits}{Number of digits for rounding}
 
@@ -36,7 +36,7 @@ be edited. See timesaveR:::.coef_offset_3 for an example of an offset tibble.}
 \item{filename}{If provided, graph will be saved as .svg file.}
 
 \item{ind_p_values}{Should significance stars be shown for indirect effects,
-based on pvalues passed in DF? If FALSE, indirect effects with confidence
+based on pvalues passed in data? If FALSE, indirect effects with confidence
 intervals that do not include zero are bolded}
 }
 \value{
@@ -56,7 +56,7 @@ res <- run_mediation(ess_health, fltdpr, health, dosprt, agea, bootstraps = 100)
 # Run plot command
 plot_mediation(
   IV = "Frequency of  <br /> feeling depressed",
-  DV = "Self-reported <br /> poor health", Ms = "Frequency of <br /> physical activity", df = res
+  DV = "Self-reported <br /> poor health", Ms = "Frequency of <br /> physical activity", data = res
 )
 }
 }

@@ -5,7 +5,7 @@
 \title{Create scale by calculating item mean and returns descriptives for srvyr objects}
 \usage{
 svy_make_scale(
-  df,
+  data,
   scale_items,
   scale_name,
   print_hist = TRUE,
@@ -16,10 +16,10 @@ svy_make_scale(
 )
 }
 \arguments{
-\item{df}{A srvyr survey object}
+\item{data}{A srvyr survey object}
 
 \item{scale_items}{A characters vector containing the items for that scale
-(variables in df)}
+(variables in data)}
 
 \item{scale_name}{Character. The name of the variable the scale should be saved as}
 
@@ -50,9 +50,9 @@ more parsimonious output and some added functionality.
 library(survey)
 data(api)
 
-svy_df <- svydesign(id = ~1, strata = ~stype, weights = ~pw, 
+svy_data <- svydesign(id = ~1, strata = ~stype, weights = ~pw, 
                    data = apistrat, fpc = ~fpc)
 scale_items <- c("ell", "meals", "mobility", "col.grad", "full")
 scale_reversed <- c("col.grad", "full")                    
-svy_make_scale(svy_df, scale_items, "SES", reversed = scale_reversed)    
+svy_make_scale(svy_data, scale_items, "SES", reversed = scale_reversed)    
 }
