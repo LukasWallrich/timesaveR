@@ -52,7 +52,11 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
     dplyr::mutate_all(as.numeric)
   if ((reverse != "spec")[1]) {
     check.keys <- ifelse(reverse == "none", F, T)
-    alpha_obj <- suppressWarnings(scale_vals %>% psych::alpha(na.rm = TRUE, check.keys = check.keys))
+    msg <- capture.output(alpha_obj <- suppressWarnings(scale_vals %>% psych::alpha(na.rm = TRUE, check.keys = check.keys)))
+    if (length(msg)>0) {
+      stringr::str_replace(msg, "To do this, run the function again with the 'check.keys=TRUE' option", "If that makes sense, rerun the function and either specify these items to be reversed or allow automatic reverse coding") %>%
+        stringr::str_replace("with the total scale", paste("with the total", scale_name, "scale")) %>% cat()
+      }
   } else {
     alpha_obj <- suppressWarnings(scale_vals %>% psych::alpha(na.rm = TRUE, keys = reverse_items))
   }
@@ -130,22 +134,26 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
 #' @param data A dataframe
 #' @param items A named list of characters vectors. Names are the scale names,
 #'   each vector contains the items for that scale (variables in data)
-#' @param reversed A named list of characters vectors. Names are the scale names,
-#'   each vector contains the items to be reverse-coded for that scale
+#' @param reversed How should items be reverse-coded. Can be FALSE (no reverse-coding),
+#' TRUE (automatic reverse-coding of items negatively correlated with remainder), or a 
+#' named list of characters vectors. Names are the scale names, each vector contains 
+#' the items to be reverse-coded for that scale. If TRUE, the result must be checked carefully!
 #' @inheritParams make_scale
-#' @inheritDotParams make_scale print_desc print_hist
+#' @inheritDotParams make_scale print_hist
 #' @return A list of two dataframes: scale values (`scores`) and
 #' descriptive statistics for each scale (`descriptives`)
 #' @export
 
-make_scales <- function(data, items, reversed = NULL, two_items_reliability = c(
+make_scales <- function(data, items, reversed = FALSE, two_items_reliability = c(
                           "spearman_brown",
                           "cronbachs_alpha", "r"
-                        ), ...) {
+                        ), print_desc = FALSE,  ...) {
   if (!all(unlist(items) %in% names(data))) stop("Not all items can be found in the dataset. The following are missing: ", paste(setdiff(unlist(items), names(data)), collapse = ", "), call. = FALSE)
 
   assert_choice(two_items_reliability[1], c("spearman_brown", "cronbachs_alpha", "r"))
 
+  if(!is.logical(reversed)) {
+  
   if (!is.null(reversed)) {
     scales_rev <- intersect(names(items), names(reversed))
     if (length(scales_rev) > 0) {
@@ -165,20 +173,31 @@ make_scales <- function(data, items, reversed = NULL, two_items_reliability = c(
       stop("Reverse list and variable lists cannot be matched - check that they have same names")
     }
   }
-
-  scales_n_rev <- setdiff(names(items), names(reversed))
-
-  if (length(scales_n_rev) > 0) {
-    print(paste0(
-      "The following scales will be calculated without reverse coding: ",
-      paste0(scales_n_rev, collapse = ", ")
-    ))
-
+    scales_n_rev <- setdiff(names(items), names(reversed))
+    
+    if (length(scales_n_rev) > 0) {
+      print(paste0(
+        "The following scales will be calculated without reverse coding: ",
+        paste0(scales_n_rev, collapse = ", ")
+      ))
+      
     scales_n_rev_values <- purrr::map2(items[scales_n_rev], scales_n_rev, make_scale,
-      data = data,
-      return_list = TRUE, reverse = "none", two_items_reliability = two_items_reliability, ...
+                                         data = data,
+                                         return_list = TRUE, reverse = "none", two_items_reliability = two_items_reliability, ...
+      ) %>% purrr::transpose()
+    }
+  } else if (reversed) {
+    scales_rev_values <- purrr::map2(items, names(items), make_scale,
+                                       data = data,
+                                       return_list = TRUE, reverse = "auto", two_items_reliability = two_items_reliability, ...
+    ) %>% purrr::transpose()    
+  } else {
+    scales_n_rev_values <- purrr::map2(items, names(items), make_scale,
+                                       data = data,
+                                       return_list = TRUE, reverse = "none", two_items_reliability = two_items_reliability, ...
     ) %>% purrr::transpose()
   }
+  
 
   scores <- if (exists("scales_n_rev_values") & exists("scales_rev_values")) {
     cbind(data.frame(scales_n_rev_values$scores), data.frame(scales_rev_values$scores))
@@ -200,9 +219,10 @@ make_scales <- function(data, items, reversed = NULL, two_items_reliability = c(
     stop("No scales created - check inputs")
   }
 
-  descriptives <- do.call(rbind.data.frame, descript) %>% tibble::rownames_to_column(var = "Scale")
+  descriptives <- do.call(rbind.data.frame, descript) %>% 
+    tibble::rownames_to_column(var = "Scale")
 
-  list(scores = scores, descriptives = descriptives)
+  list(scores = tibble::tibble(scores), descriptives = tibble::tibble(descriptives))
 }
 
 #' Calculate Spearman-Brown reliability for two-item scale

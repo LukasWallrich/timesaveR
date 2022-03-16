@@ -8,6 +8,7 @@
 
 * Enabled `report_lm_with_std()` to show R2 change for more than one pair of models
 * Added option to use `t.test()`-style formula notion in `pairwise_t_tests()` 
+* Allow automatic reverse-coding in `make_scales()`
 
 ## Bug fixes
 * Restore `report_polr_with_std()` broken after `broom::tidy.polr()` function was updated
