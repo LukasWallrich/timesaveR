@@ -4,7 +4,7 @@
 \alias{glance.mira}
 \title{Glance a multiple imputation `mice` pooled object}
 \usage{
-\method{glance}{mira}(x, ...)
+glance.mira(x, ...)
 }
 \arguments{
 \item{x}{An object with multiply-imputed models from `mice` (class: `mira`)}

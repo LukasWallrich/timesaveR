@@ -4,12 +4,12 @@
 \alias{.is.numeric_col}
 \title{Tests whether a column in dataframe, specified by string, is numeric}
 \usage{
-.is.numeric_col(col, df)
+.is.numeric_col(col, data)
 }
 \arguments{
 \item{col}{Character indicating column name}
 
-\item{df}{Dataframe that contains `col`}
+\item{data}{Dataframe that contains `col`}
 }
 \description{
 Tests whether a column in dataframe, specified by string, is numeric

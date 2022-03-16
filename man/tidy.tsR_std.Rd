@@ -4,7 +4,7 @@
 \alias{tidy.tsR_std}
 \title{Helper function to enable tidiers to be used on standardized models}
 \usage{
-\method{tidy}{tsR_std}(x, ...)
+tidy.tsR_std(x, ...)
 }
 \arguments{
 \item{x}{An object with class tsR_std}

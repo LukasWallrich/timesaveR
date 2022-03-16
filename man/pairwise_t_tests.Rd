@@ -5,18 +5,18 @@
 \title{Pairwise t-tests() returned in tidy dataframe}
 \usage{
 pairwise_t_tests(
-  df,
+  data,
   outcome,
-  groups,
+  groups = NULL,
   p.adjust.method = p.adjust.methods,
   conf_level = 0.95,
   var_equal = FALSE
 )
 }
 \arguments{
-\item{df}{A dataframe containing the outcome and grouping variable}
+\item{data}{A dataframe containing the outcome and grouping variable}
 
-\item{outcome}{The outcome variable in dataframe}
+\item{outcome}{The outcome variable in dataframe, or a formula of the form `outcome ~ group`. If a formula is provided, the group needs to be empty.}
 
 \item{groups}{The grouping variable (each distinct value will be treated as a level)}
 
@@ -38,5 +38,6 @@ and returns the results and effect sizes in a tidy dataframe. Beware: It will au
 \examples{
 \dontrun{
 pairwise_t_tests(mtcars, wt, cyl)
+pairwise_t_tests(mtcars, wt ~ cyl)
 }
 }

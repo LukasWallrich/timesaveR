@@ -6,7 +6,7 @@
 relationship with a continuous outcome variable}
 \usage{
 report_cat_vars(
-  df,
+  data,
   dv,
   ...,
   var_names = NULL,
@@ -24,7 +24,7 @@ report_cat_vars(
 )
 }
 \arguments{
-\item{df}{Dataframe containing the variables specified}
+\item{data}{Dataframe containing the variables specified}
 
 \item{dv}{The continuous dependent variable to be presented alongside the
 levels of categorical variables}

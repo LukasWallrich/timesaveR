@@ -5,7 +5,7 @@
 \title{Get code to generate tibbles to rename categorical variables and their levels}
 \usage{
 get_rename_tribbles(
-  df,
+  data,
   ...,
   show = TRUE,
   which = c("both", "vars", "levels"),
@@ -13,10 +13,10 @@ get_rename_tribbles(
 )
 }
 \arguments{
-\item{df}{A dataframe that contains the variables - only used to extract their possible levels.}
+\item{data}{A dataframe that contains the variables - only used to extract their possible levels.}
 
 \item{...}{The variables to be included in the rename tribbles. If none are
-specified, all are included, unless there are more than `max_level` variables in the df}
+specified, all are included, unless there are more than `max_level` variables in the data}
 
 \item{show}{Logical - should the output be printed to the console. In any case, it is returned invisibly}
 

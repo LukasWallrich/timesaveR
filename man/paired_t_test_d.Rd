@@ -4,10 +4,10 @@
 \alias{paired_t_test_d}
 \title{Paired t.test with Cohen's d}
 \usage{
-paired_t_test_d(df, x, y)
+paired_t_test_d(data, x, y)
 }
 \arguments{
-\item{df}{A dataframe}
+\item{data}{A dataframe}
 
 \item{x, y}{Character strings indicating the names of the two variables}
 }

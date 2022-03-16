@@ -4,7 +4,7 @@
 \alias{tidy.mira}
 \title{Tidy  multiple imputation models created with `mice`}
 \usage{
-\method{tidy}{mira}(x, conf.int = TRUE, conf.level = 0.95, ...)
+tidy.mira(x, conf.int = TRUE, conf.level = 0.95, ...)
 }
 \arguments{
 \item{x}{A `mira` object containing multiple models based on `mice` imputations.}

@@ -4,10 +4,10 @@
 \alias{svy_cor_matrix}
 \title{Create a correlation matrix from survey data with summary statistics}
 \usage{
-svy_cor_matrix(svy_df, var_names = NULL)
+svy_cor_matrix(svy_data, var_names = NULL)
 }
 \arguments{
-\item{svy_df}{A survey object created with the survey or srvyr package. Only
+\item{svy_data}{A survey object created with the survey or srvyr package. Only
 numeric variables will be included in the result.}
 
 \item{var_names}{A named character vector with new variable names or a tibble as provided by \code{\link{get_rename_tribbles}}

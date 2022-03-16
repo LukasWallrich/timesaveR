@@ -9,7 +9,7 @@ Adapted from
 }
 \usage{
 cor_matrix(
-  df,
+  data,
   var_names = NULL,
   missing = c("pairwise", "listwise", "fiml"),
   conf_level = 0.95,
@@ -19,7 +19,7 @@ cor_matrix(
 )
 }
 \arguments{
-\item{df}{Dataframe. Only numeric variables are included into correlation matrix.}
+\item{data}{Dataframe. Only numeric variables are included into correlation matrix.}
 
 \item{var_names}{A named character vector with new variable names or a tibble as provided by \code{\link{get_rename_tribbles}}
 for variables. If NULL, then the variables are not renamed. If names are provided, only the variables included here are retained.

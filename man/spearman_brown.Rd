@@ -7,10 +7,10 @@
 https://www.r-bloggers.com/five-ways-to-calculate-internal-consistency/
 }
 \usage{
-spearman_brown(df, items, name = "", SB_only = FALSE)
+spearman_brown(data, items, name = "", SB_only = FALSE)
 }
 \arguments{
-\item{df}{A dataframe}
+\item{data}{A dataframe}
 
 \item{items}{Character vector of length 2, with names of the two items}
 

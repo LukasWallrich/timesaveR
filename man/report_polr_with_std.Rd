@@ -35,7 +35,7 @@ report_polr_with_std(
 \item integer: the number of digits to keep after the period \code{format(round(x, fmt), nsmall=fmt)}
 \item character: passed to the \code{sprintf} function (e.g., '\%.3f' keeps 3 digits with trailing zero). See \code{?sprintf}
 \item function: returns a formatted character string.
-\item Note on LaTeX formatting: To ensure proper typography, all numeric entries are enclosed in the \verb{\\num{}} command from the \code{siunitx} LaTeX package by default. This behavior can be altered with global options. See the 'Details' section.
+\item LaTeX output: To ensure proper typography, all numeric entries are enclosed in the \verb{\\num{}} command, which requires the \code{siunitx} package to be loaded in the LaTeX preamble. This behavior can be altered with global options. See the 'Details' section.
 }}
 
 \item{statistic_vertical}{Should standard errors and CIs be shown below coefficients? Defaults to horizontal layout}
@@ -58,8 +58,8 @@ stating that dummy variables were not scaled in standardization. If you approach
   \describe{
     \item{\code{output}}{filename or object type (character string)
 \itemize{
-\item Supported filename extensions: .html, .tex, .md, .txt, .png, .jpg.
-\item Supported object types: "default", "html", "markdown", "latex", "latex_tabular", "data.frame", "modelsummary_list", "gt", "kableExtra", "huxtable", "flextable", "jupyter".
+\item Supported filename extensions: .docx, .html, .tex, .md, .txt, .png, .jpg.
+\item Supported object types: "default", "html", "markdown", "latex", "latex_tabular", "data.frame", "gt", "kableExtra", "huxtable", "flextable", "jupyter". The "modelsummary_list" value produces a lightweight object which can be saved and fed back to the \code{modelsummary} function.
 \item Warning: Users should not supply a file name to the \code{output} argument if they intend to customize the table with external packages. See the 'Details' section.
 \item LaTeX compilation requires the \code{booktabs} and \code{siunitx} packages, but \code{siunitx} can be disabled or replaced with global options. See the 'Details' section.
 \item The default output formats and table-making packages can be modified with global options. See the 'Details' section.
@@ -77,11 +77,11 @@ argument accepts six types of input (see the 'Details' and 'Examples'
 sections below):
 \itemize{
 \item NULL returns the default uncertainty estimates of the model object
-\item string, vector, or (named) list of strings. Omitting or specifying \code{vcov = NULL} will return the model's default uncertainty estimates, e.g. IID errors for standard models. Alternatively, use the string "iid" (aliases: "classical" or "constant") to present IID errors explicitly. The strings "HC", "HC0", "HC1" (alias: "stata"), "HC2", "HC3" (alias: "robust"), "HC4", "HC4m", "HC5", "HAC", "NeweyWest", "Andrews", "panel-corrected", "outer-product", and "weave" use variance-covariance matrices computed using functions from the \code{sandwich} package, or equivalent method. The behavior of those functions can (and sometimes \emph{must}) be altered by passing arguments to \code{sandwich} directly from \code{modelsummary} through the ellipsis (\code{...}), but it is safer to define your own custom functions as described in the next bullet.
+\item string, vector, or (named) list of strings. "iid", "classical", and "constant" are aliases for \code{NULL}, which returns the model's default uncertainty estimates. The strings "HC", "HC0", "HC1" (alias: "stata"), "HC2", "HC3" (alias: "robust"), "HC4", "HC4m", "HC5", "HAC", "NeweyWest", "Andrews", "panel-corrected", "outer-product", and "weave" use variance-covariance matrices computed using functions from the \code{sandwich} package, or equivalent method. The behavior of those functions can (and sometimes \emph{must}) be altered by passing arguments to \code{sandwich} directly from \code{modelsummary} through the ellipsis (\code{...}), but it is safer to define your own custom functions as described in the next bullet.
 \item function or (named) list of functions which return variance-covariance matrices with row and column names equal to the names of your coefficient estimates (e.g., \code{stats::vcov}, \code{sandwich::vcovHC}, \code{function(x) vcovPC(x, cluster="country")}).
 \item formula or (named) list of formulas with the cluster variable(s) on the right-hand side (e.g., ~clusterid).
-\item (named) list of \code{length(models)} variance-covariance matrices with row and column names equal to the names of your coefficient estimates.
-\item a (named) list of length(models) vectors with names equal to the names of your coefficient estimates. See 'Examples' section below. Warning: since this list of vectors can include arbitrary strings or numbers, \code{modelsummary} cannot automatically calculate p values. The \code{stars} argument may thus use incorrect significance thresholds when \code{vcov} is a list of vectors.
+\item named list of \code{length(models)} variance-covariance matrices with row and column names equal to the names of your coefficient estimates.
+\item a named list of length(models) vectors with names equal to the names of your coefficient estimates. See 'Examples' section below. Warning: since this list of vectors can include arbitrary strings or numbers, \code{modelsummary} cannot automatically calculate p values. The \code{stars} argument may thus use incorrect significance thresholds when \code{vcov} is a list of vectors.
 }}
     \item{\code{coef_map}}{character vector. Subset, rename, and reorder coefficients.
 Coefficients omitted from this vector are omitted from the table. The order
@@ -95,7 +95,10 @@ from the table using \code{grepl(perl=TRUE)}. This argument uses perl-compatible
     \item{\code{coef_rename}}{named character vector or function which returns a named
 vector. Values of the vector refer to the variable names that will appear
 in the table. Names refer to the original term names stored in the model
-object, e.g. c("hp:mpg"="hp X mpg") for an interaction term.}
+object, e.g. c("hp:mpg"="hp X mpg") for an interaction term.
+If you provide a function to \code{coef_rename}, \code{modelsummary} will create a named
+vector for you by deriving the new variable names from the vector of original
+term names with your function.}
     \item{\code{gof_map}}{rename, reorder, and omit goodness-of-fit statistics and other
 model information. This argument accepts 3 types of values:
 \itemize{
@@ -105,16 +108,19 @@ model information. This argument accepts 3 types of values:
 }}
     \item{\code{gof_omit}}{string regular expression. Omits all matching gof statistics from
 the table. This argument uses perl-compatible regular expressions (\code{grepl(perl=TRUE)}), which allows expressions such as \code{".*"} which omits everything, and \code{"^(?!R2|Num)"} which omits every term except those that start with "R2" or "Num".}
-    \item{\code{group}}{a two-sided formula with two or three components which describes
-how groups of parameters should be displayed. The formula must include both
-a "term" and a "model" component. In addition, a component can be used to
-identify groups of parameters (e.g., outcome levels of a multinomial logit
-model). This group identifier must be the name of a column in the
-data.frame produced by \code{get_estimates(model)}.
+    \item{\code{group}}{transpose or group models and estimates (formula). The left
+side of the formula represents rows and the right side columns.
 \itemize{
-\item \code{term ~ model} displays coefficients as rows and models as columns
-\item \code{model ~ term} displays models as rows and coefficients as columns
-\item \code{response + term ~ model} displays response levels and coefficients as rows and models as columns.
+\item Formula with two components called \code{term} and \code{model}.
+\itemize{
+\item \code{term ~ model}
+\item \code{model ~ term}
+}
+\item Formula with three components, including one of the column names in the data frame produced by \code{get_estimates(model)}. Examples:
+\itemize{
+\item \code{response + term ~ model}
+\item \code{term ~ model + y.level}
+}
 }}
     \item{\code{group_map}}{named or unnamed character vector. Subset, rename, and
 reorder coefficient groups specified in the \code{group} argument. See \code{coef_map}.}
