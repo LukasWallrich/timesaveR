@@ -84,7 +84,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="survey-functions_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Analysing survey data with timesaveR</h1>
@@ -109,6 +109,42 @@
 <p>Below, I show some analyses of the European Social Survey 2014 data using the correct survey weights.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://lukaswallrich.github.io/timesaveR/">timesaveR</a></span><span class="op">)</span>
+<span class="co">#&gt; Warning: replacing previous import 'dplyr::explain' by 'generics::explain' when</span>
+<span class="co">#&gt; loading 'timesaveR'</span>
+<span class="co">#&gt; Warning: replacing previous import 'ggplot2::alpha' by 'psych::alpha' when</span>
+<span class="co">#&gt; loading 'timesaveR'</span>
+<span class="co">#&gt; Warning: replacing previous import 'ggplot2::%+%' by 'psych::%+%' when loading</span>
+<span class="co">#&gt; 'timesaveR'</span>
+<span class="co">#&gt; Warning: replacing previous import 'magrittr::set_names' by 'purrr::set_names'</span>
+<span class="co">#&gt; when loading 'timesaveR'</span>
+<span class="co">#&gt; Warning: replacing previous import 'purrr::invoke' by 'rlang::invoke' when</span>
+<span class="co">#&gt; loading 'timesaveR'</span>
+<span class="co">#&gt; Warning: replacing previous import 'purrr::flatten_raw' by 'rlang::flatten_raw'</span>
+<span class="co">#&gt; when loading 'timesaveR'</span>
+<span class="co">#&gt; Warning: replacing previous import 'purrr::as_function' by 'rlang::as_function'</span>
+<span class="co">#&gt; when loading 'timesaveR'</span>
+<span class="co">#&gt; Warning: replacing previous import 'purrr::flatten_dbl' by 'rlang::flatten_dbl'</span>
+<span class="co">#&gt; when loading 'timesaveR'</span>
+<span class="co">#&gt; Warning: replacing previous import 'purrr::flatten_lgl' by 'rlang::flatten_lgl'</span>
+<span class="co">#&gt; when loading 'timesaveR'</span>
+<span class="co">#&gt; Warning: replacing previous import 'purrr::flatten_int' by 'rlang::flatten_int'</span>
+<span class="co">#&gt; when loading 'timesaveR'</span>
+<span class="co">#&gt; Warning: replacing previous import 'purrr::%@%' by 'rlang::%@%' when loading</span>
+<span class="co">#&gt; 'timesaveR'</span>
+<span class="co">#&gt; Warning: replacing previous import 'purrr::flatten_chr' by 'rlang::flatten_chr'</span>
+<span class="co">#&gt; when loading 'timesaveR'</span>
+<span class="co">#&gt; Warning: replacing previous import 'purrr::splice' by 'rlang::splice' when</span>
+<span class="co">#&gt; loading 'timesaveR'</span>
+<span class="co">#&gt; Warning: replacing previous import 'purrr::flatten' by 'rlang::flatten' when</span>
+<span class="co">#&gt; loading 'timesaveR'</span>
+<span class="co">#&gt; Warning: replacing previous import 'purrr::discard' by 'scales::discard' when</span>
+<span class="co">#&gt; loading 'timesaveR'</span>
+<span class="co">#&gt; Warning: replacing previous import 'psych::alpha' by 'scales::alpha' when</span>
+<span class="co">#&gt; loading 'timesaveR'</span>
+<span class="co">#&gt; Warning: replacing previous import 'psych::rescale' by 'scales::rescale' when</span>
+<span class="co">#&gt; loading 'timesaveR'</span>
+<span class="co">#&gt; Warning: replacing previous import 'magrittr::extract' by 'tidyr::extract' when</span>
+<span class="co">#&gt; loading 'timesaveR'</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://gdfe.co/srvyr/" class="external-link">srvyr</a></span><span class="op">)</span>
 
 <span class="co">#Create weights (consists of two variables in ESS)</span>
@@ -158,12 +194,12 @@
   <span class="fu"><a href="http://gdfe.co/srvyr/reference/dplyr_single.html" class="external-link">select</a></span><span class="op">(</span><span class="va">agea</span>, <span class="va">health</span>, <span class="va">depression</span>, <span class="va">healthy_eating</span><span class="op">)</span> <span class="op"><a href="http://gdfe.co/srvyr/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="../reference/svy_cor_matrix.html">svy_cor_matrix</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="http://gdfe.co/srvyr/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="../reference/report_cor_table.html">report_cor_table</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="http://gdfe.co/srvyr/reference/survey_tally.html" class="external-link">survey_tally</a></span><span class="op">(</span><span class="va">ess_survey</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<div id="dltqrahele" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="vnmksknugg" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: times, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#dltqrahele .gt_table {
+#vnmksknugg .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -188,7 +224,7 @@
   border-left-color: #D3D3D3;
 }
 
-#dltqrahele .gt_heading {
+#vnmksknugg .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -200,7 +236,7 @@
   border-right-color: #D3D3D3;
 }
 
-#dltqrahele .gt_title {
+#vnmksknugg .gt_title {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -212,7 +248,7 @@
   border-bottom-width: 0;
 }
 
-#dltqrahele .gt_subtitle {
+#vnmksknugg .gt_subtitle {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -224,13 +260,13 @@
   border-top-width: 0;
 }
 
-#dltqrahele .gt_bottom_border {
+#vnmksknugg .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #000000;
 }
 
-#dltqrahele .gt_col_headings {
+#vnmksknugg .gt_col_headings {
   border-top-style: none;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -245,7 +281,7 @@
   border-right-color: #D3D3D3;
 }
 
-#dltqrahele .gt_col_heading {
+#vnmksknugg .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -265,7 +301,7 @@
   overflow-x: hidden;
 }
 
-#dltqrahele .gt_column_spanner_outer {
+#vnmksknugg .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -277,15 +313,15 @@
   padding-right: 4px;
 }
 
-#dltqrahele .gt_column_spanner_outer:first-child {
+#vnmksknugg .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#dltqrahele .gt_column_spanner_outer:last-child {
+#vnmksknugg .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#dltqrahele .gt_column_spanner {
+#vnmksknugg .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 1px;
   border-bottom-color: #000000;
@@ -297,7 +333,7 @@
   width: 100%;
 }
 
-#dltqrahele .gt_group_heading {
+#vnmksknugg .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -322,7 +358,7 @@
   vertical-align: middle;
 }
 
-#dltqrahele .gt_empty_group_heading {
+#vnmksknugg .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -337,15 +373,15 @@
   vertical-align: middle;
 }
 
-#dltqrahele .gt_from_md > :first-child {
+#vnmksknugg .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#dltqrahele .gt_from_md > :last-child {
+#vnmksknugg .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#dltqrahele .gt_row {
+#vnmksknugg .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -364,7 +400,7 @@
   overflow-x: hidden;
 }
 
-#dltqrahele .gt_stub {
+#vnmksknugg .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -377,7 +413,7 @@
   padding-right: 5px;
 }
 
-#dltqrahele .gt_stub_row_group {
+#vnmksknugg .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -391,11 +427,11 @@
   vertical-align: top;
 }
 
-#dltqrahele .gt_row_group_first td {
+#vnmksknugg .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#dltqrahele .gt_summary_row {
+#vnmksknugg .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -405,16 +441,16 @@
   padding-right: 5px;
 }
 
-#dltqrahele .gt_first_summary_row {
+#vnmksknugg .gt_first_summary_row {
   border-top-style: none;
   border-top-color: #D3D3D3;
 }
 
-#dltqrahele .gt_first_summary_row.thick {
+#vnmksknugg .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#dltqrahele .gt_last_summary_row {
+#vnmksknugg .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -424,7 +460,7 @@
   border-bottom-color: #D3D3D3;
 }
 
-#dltqrahele .gt_grand_summary_row {
+#vnmksknugg .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -434,7 +470,7 @@
   padding-right: 5px;
 }
 
-#dltqrahele .gt_first_grand_summary_row {
+#vnmksknugg .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -444,11 +480,11 @@
   border-top-color: #D3D3D3;
 }
 
-#dltqrahele .gt_striped {
+#vnmksknugg .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#dltqrahele .gt_table_body {
+#vnmksknugg .gt_table_body {
   border-top-style: solid;
   border-top-width: 1px;
   border-top-color: #000000;
@@ -457,7 +493,7 @@
   border-bottom-color: #000000;
 }
 
-#dltqrahele .gt_footnotes {
+#vnmksknugg .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -471,7 +507,7 @@
   border-right-color: #D3D3D3;
 }
 
-#dltqrahele .gt_footnote {
+#vnmksknugg .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -480,7 +516,7 @@
   padding-right: 5px;
 }
 
-#dltqrahele .gt_sourcenotes {
+#vnmksknugg .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -494,7 +530,7 @@
   border-right-color: #D3D3D3;
 }
 
-#dltqrahele .gt_sourcenote {
+#vnmksknugg .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -502,60 +538,60 @@
   padding-right: 5px;
 }
 
-#dltqrahele .gt_left {
+#vnmksknugg .gt_left {
   text-align: left;
 }
 
-#dltqrahele .gt_center {
+#vnmksknugg .gt_center {
   text-align: center;
 }
 
-#dltqrahele .gt_right {
+#vnmksknugg .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#dltqrahele .gt_font_normal {
+#vnmksknugg .gt_font_normal {
   font-weight: normal;
 }
 
-#dltqrahele .gt_font_bold {
+#vnmksknugg .gt_font_bold {
   font-weight: bold;
 }
 
-#dltqrahele .gt_font_italic {
+#vnmksknugg .gt_font_italic {
   font-style: italic;
 }
 
-#dltqrahele .gt_super {
+#vnmksknugg .gt_super {
   font-size: 65%;
 }
 
-#dltqrahele .gt_footnote_marks {
+#vnmksknugg .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#dltqrahele .gt_asterisk {
+#vnmksknugg .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#dltqrahele .gt_slash_mark {
+#vnmksknugg .gt_slash_mark {
   font-size: 0.7em;
   line-height: 0.7em;
   vertical-align: 0.15em;
 }
 
-#dltqrahele .gt_fraction_numerator {
+#vnmksknugg .gt_fraction_numerator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: 0.45em;
 }
 
-#dltqrahele .gt_fraction_denominator {
+#vnmksknugg .gt_fraction_denominator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: -0.05em;
@@ -662,12 +698,12 @@
 <span class="co"># are included in the correlation table</span>
 <span class="va">ess_survey</span> <span class="op"><a href="http://gdfe.co/srvyr/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/svy_cor_matrix.html">svy_cor_matrix</a></span><span class="op">(</span>var_names <span class="op">=</span> <span class="va">var_renames</span><span class="op">)</span> <span class="op"><a href="http://gdfe.co/srvyr/reference/pipe.html" class="external-link">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/report_cor_table.html">report_cor_table</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="http://gdfe.co/srvyr/reference/survey_tally.html" class="external-link">survey_tally</a></span><span class="op">(</span><span class="va">ess_survey</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<div id="vyaemzodia" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="dxbyrirvpo" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: times, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#vyaemzodia .gt_table {
+#dxbyrirvpo .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -692,7 +728,7 @@
   border-left-color: #D3D3D3;
 }
 
-#vyaemzodia .gt_heading {
+#dxbyrirvpo .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -704,7 +740,7 @@
   border-right-color: #D3D3D3;
 }
 
-#vyaemzodia .gt_title {
+#dxbyrirvpo .gt_title {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -716,7 +752,7 @@
   border-bottom-width: 0;
 }
 
-#vyaemzodia .gt_subtitle {
+#dxbyrirvpo .gt_subtitle {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -728,13 +764,13 @@
   border-top-width: 0;
 }
 
-#vyaemzodia .gt_bottom_border {
+#dxbyrirvpo .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #000000;
 }
 
-#vyaemzodia .gt_col_headings {
+#dxbyrirvpo .gt_col_headings {
   border-top-style: none;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -749,7 +785,7 @@
   border-right-color: #D3D3D3;
 }
 
-#vyaemzodia .gt_col_heading {
+#dxbyrirvpo .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -769,7 +805,7 @@
   overflow-x: hidden;
 }
 
-#vyaemzodia .gt_column_spanner_outer {
+#dxbyrirvpo .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -781,15 +817,15 @@
   padding-right: 4px;
 }
 
-#vyaemzodia .gt_column_spanner_outer:first-child {
+#dxbyrirvpo .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#vyaemzodia .gt_column_spanner_outer:last-child {
+#dxbyrirvpo .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#vyaemzodia .gt_column_spanner {
+#dxbyrirvpo .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 1px;
   border-bottom-color: #000000;
@@ -801,7 +837,7 @@
   width: 100%;
 }
 
-#vyaemzodia .gt_group_heading {
+#dxbyrirvpo .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -826,7 +862,7 @@
   vertical-align: middle;
 }
 
-#vyaemzodia .gt_empty_group_heading {
+#dxbyrirvpo .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -841,15 +877,15 @@
   vertical-align: middle;
 }
 
-#vyaemzodia .gt_from_md > :first-child {
+#dxbyrirvpo .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#vyaemzodia .gt_from_md > :last-child {
+#dxbyrirvpo .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#vyaemzodia .gt_row {
+#dxbyrirvpo .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -868,7 +904,7 @@
   overflow-x: hidden;
 }
 
-#vyaemzodia .gt_stub {
+#dxbyrirvpo .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -881,7 +917,7 @@
   padding-right: 5px;
 }
 
-#vyaemzodia .gt_stub_row_group {
+#dxbyrirvpo .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -895,11 +931,11 @@
   vertical-align: top;
 }
 
-#vyaemzodia .gt_row_group_first td {
+#dxbyrirvpo .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#vyaemzodia .gt_summary_row {
+#dxbyrirvpo .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -909,16 +945,16 @@
   padding-right: 5px;
 }
 
-#vyaemzodia .gt_first_summary_row {
+#dxbyrirvpo .gt_first_summary_row {
   border-top-style: none;
   border-top-color: #D3D3D3;
 }
 
-#vyaemzodia .gt_first_summary_row.thick {
+#dxbyrirvpo .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#vyaemzodia .gt_last_summary_row {
+#dxbyrirvpo .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -928,7 +964,7 @@
   border-bottom-color: #D3D3D3;
 }
 
-#vyaemzodia .gt_grand_summary_row {
+#dxbyrirvpo .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -938,7 +974,7 @@
   padding-right: 5px;
 }
 
-#vyaemzodia .gt_first_grand_summary_row {
+#dxbyrirvpo .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -948,11 +984,11 @@
   border-top-color: #D3D3D3;
 }
 
-#vyaemzodia .gt_striped {
+#dxbyrirvpo .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#vyaemzodia .gt_table_body {
+#dxbyrirvpo .gt_table_body {
   border-top-style: solid;
   border-top-width: 1px;
   border-top-color: #000000;
@@ -961,7 +997,7 @@
   border-bottom-color: #000000;
 }
 
-#vyaemzodia .gt_footnotes {
+#dxbyrirvpo .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -975,7 +1011,7 @@
   border-right-color: #D3D3D3;
 }
 
-#vyaemzodia .gt_footnote {
+#dxbyrirvpo .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -984,7 +1020,7 @@
   padding-right: 5px;
 }
 
-#vyaemzodia .gt_sourcenotes {
+#dxbyrirvpo .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -998,7 +1034,7 @@
   border-right-color: #D3D3D3;
 }
 
-#vyaemzodia .gt_sourcenote {
+#dxbyrirvpo .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1006,60 +1042,60 @@
   padding-right: 5px;
 }
 
-#vyaemzodia .gt_left {
+#dxbyrirvpo .gt_left {
   text-align: left;
 }
 
-#vyaemzodia .gt_center {
+#dxbyrirvpo .gt_center {
   text-align: center;
 }
 
-#vyaemzodia .gt_right {
+#dxbyrirvpo .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#vyaemzodia .gt_font_normal {
+#dxbyrirvpo .gt_font_normal {
   font-weight: normal;
 }
 
-#vyaemzodia .gt_font_bold {
+#dxbyrirvpo .gt_font_bold {
   font-weight: bold;
 }
 
-#vyaemzodia .gt_font_italic {
+#dxbyrirvpo .gt_font_italic {
   font-style: italic;
 }
 
-#vyaemzodia .gt_super {
+#dxbyrirvpo .gt_super {
   font-size: 65%;
 }
 
-#vyaemzodia .gt_footnote_marks {
+#dxbyrirvpo .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#vyaemzodia .gt_asterisk {
+#dxbyrirvpo .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#vyaemzodia .gt_slash_mark {
+#dxbyrirvpo .gt_slash_mark {
   font-size: 0.7em;
   line-height: 0.7em;
   vertical-align: 0.15em;
 }
 
-#vyaemzodia .gt_fraction_numerator {
+#dxbyrirvpo .gt_fraction_numerator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: 0.45em;
 }
 
-#vyaemzodia .gt_fraction_denominator {
+#dxbyrirvpo .gt_fraction_denominator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: -0.05em;
@@ -1106,7 +1142,7 @@
 <p>1.66 (0.48)</p>
 </div></td>
 <td class="gt_row gt_left"><div class="gt_from_md">
-<p>.05 **<br><span style="font-size:80%">[0.03, 0.06]</span></p>
+<p>.05 ***<br><span style="font-size:80%">[0.03, 0.06]</span></p>
 </div></td>
 <td class="gt_row gt_left"><div class="gt_from_md">
 <p>.41 ***<br><span style="font-size:80%">[0.40, 0.43]</span></p>
@@ -1145,9 +1181,9 @@
 <div class="section level2">
 <h2 id="running-pairwise-t-tests">Running pairwise t-tests<a class="anchor" aria-label="anchor" href="#running-pairwise-t-tests"></a>
 </h2>
-<p><code>svy_pairwise_t_test()</code> allows to run pairwise t-tests, e.g., as post-hoc comparisons, between multiple groups in the survey. <em>p</em>-values are adjusted for multiple comparisons, by default using the Holm-Bonferroni method.</p>
+<p><code><a href="../reference/svy_pairwise_t_test.html">svy_pairwise_t_test()</a></code> allows to run pairwise t-tests, e.g., as post-hoc comparisons, between multiple groups in the survey. <em>p</em>-values are adjusted for multiple comparisons, by default using the Holm-Bonferroni method.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">svy_pairwise_t_test</span><span class="op">(</span><span class="va">ess_survey</span>, <span class="st">"health"</span>, <span class="st">"cntry"</span>, cats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DE"</span>, <span class="st">"GB"</span>, <span class="st">"FR"</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="../reference/svy_pairwise_t_test.html">svy_pairwise_t_test</a></span><span class="op">(</span><span class="va">ess_survey</span>, <span class="st">"health"</span>, <span class="st">"cntry"</span>, cats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DE"</span>, <span class="st">"GB"</span>, <span class="st">"FR"</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 8</span></span>
 <span class="co">#&gt;   pair          d       t    df  p.value mean_diff mean_diff_ci.low</span>
 <span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
