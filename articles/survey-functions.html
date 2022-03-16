@@ -25,6 +25,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -37,23 +39,17 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9001</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -73,7 +69,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/LukasWallrich/timesaveR/">
+  <a href="https://github.com/LukasWallrich/timesaveR/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -94,49 +90,85 @@
       <h1 data-toc-skip>Analysing survey data with timesaveR</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/LukasWallrich/timesaveR/blob/master/vignettes/survey-functions.Rmd"><code>vignettes/survey-functions.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/LukasWallrich/timesaveR/blob/HEAD/vignettes/survey-functions.Rmd" class="external-link"><code>vignettes/survey-functions.Rmd</code></a></small>
       <div class="hidden name"><code>survey-functions.Rmd</code></div>
 
     </div>
 
     
     
-<div id="using-survey-weights" class="section level1">
-<h1 class="hasAnchor">
-<a href="#using-survey-weights" class="anchor"></a>Using survey weights</h1>
-<p>Large-scale social surveys often do not aim to recruit random samples, but rather oversample small groups that are of interest for sub-group analyses (e.g., ethnic minorities). In addition, they never quite succeed in recruiting representative samples. To ensure that the results of statistical models approximate population parameters, survey weights need to be used to give each participant a specific weight in analyses. You can find out more in this <a href="https://youtu.be/brxx81U6N1o">brief YouTube video</a> or explore the more <a href="https://www.europeansocialsurvey.org/methodology/ess_methodology/data_processing_archiving/weighting.html">extensive guide to weights in the European Social Survey</a> as an example.</p>
+<div class="section level2">
+<h2 id="using-survey-weights">Using survey weights<a class="anchor" aria-label="anchor" href="#using-survey-weights"></a>
+</h2>
+<p>Large-scale social surveys often do not aim to recruit random samples, but rather oversample small groups that are of interest for sub-group analyses (e.g., ethnic minorities). In addition, they never quite succeed in recruiting representative samples. To ensure that the results of statistical models approximate population parameters, survey weights need to be used to give each participant a specific weight in analyses. You can find out more in this <a href="https://youtu.be/brxx81U6N1o" class="external-link">brief YouTube video</a> or explore the more <a href="https://www.europeansocialsurvey.org/methodology/ess_methodology/data_processing_archiving/weighting.html" class="external-link">extensive guide to weights in the European Social Survey</a> as an example.</p>
 </div>
-<div id="survey-weights-in-timesaver" class="section level1">
-<h1 class="hasAnchor">
-<a href="#survey-weights-in-timesaver" class="anchor"></a>Survey weights in timesaveR</h1>
+<div class="section level2">
+<h2 id="survey-weights-in-timesaver">Survey weights in timesaveR<a class="anchor" aria-label="anchor" href="#survey-weights-in-timesaver"></a>
+</h2>
 <p>Many functions in the <code>timesaveR</code> package have alternatives that accept survey objects instead of dataframes. These functions are designated by the <code>svy_</code> prefix. To use them, you will first need to use the <code>srvyr</code> package to create a survey object based on the dataframe.</p>
 <p>Below, I show some analyses of the European Social Survey 2014 data using the correct survey weights.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://lukaswallrich.github.io/timesaveR/">timesaveR</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://gdfe.co/srvyr/">srvyr</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://lukaswallrich.github.io/timesaveR/">timesaveR</a></span><span class="op">)</span>
+<span class="co">#&gt; Warning: replacing previous import 'dplyr::explain' by 'generics::explain' when</span>
+<span class="co">#&gt; loading 'timesaveR'</span>
+<span class="co">#&gt; Warning: replacing previous import 'ggplot2::alpha' by 'psych::alpha' when</span>
+<span class="co">#&gt; loading 'timesaveR'</span>
+<span class="co">#&gt; Warning: replacing previous import 'ggplot2::%+%' by 'psych::%+%' when loading</span>
+<span class="co">#&gt; 'timesaveR'</span>
+<span class="co">#&gt; Warning: replacing previous import 'magrittr::set_names' by 'purrr::set_names'</span>
+<span class="co">#&gt; when loading 'timesaveR'</span>
+<span class="co">#&gt; Warning: replacing previous import 'purrr::invoke' by 'rlang::invoke' when</span>
+<span class="co">#&gt; loading 'timesaveR'</span>
+<span class="co">#&gt; Warning: replacing previous import 'purrr::flatten_raw' by 'rlang::flatten_raw'</span>
+<span class="co">#&gt; when loading 'timesaveR'</span>
+<span class="co">#&gt; Warning: replacing previous import 'purrr::as_function' by 'rlang::as_function'</span>
+<span class="co">#&gt; when loading 'timesaveR'</span>
+<span class="co">#&gt; Warning: replacing previous import 'purrr::flatten_dbl' by 'rlang::flatten_dbl'</span>
+<span class="co">#&gt; when loading 'timesaveR'</span>
+<span class="co">#&gt; Warning: replacing previous import 'purrr::flatten_lgl' by 'rlang::flatten_lgl'</span>
+<span class="co">#&gt; when loading 'timesaveR'</span>
+<span class="co">#&gt; Warning: replacing previous import 'purrr::flatten_int' by 'rlang::flatten_int'</span>
+<span class="co">#&gt; when loading 'timesaveR'</span>
+<span class="co">#&gt; Warning: replacing previous import 'purrr::%@%' by 'rlang::%@%' when loading</span>
+<span class="co">#&gt; 'timesaveR'</span>
+<span class="co">#&gt; Warning: replacing previous import 'purrr::flatten_chr' by 'rlang::flatten_chr'</span>
+<span class="co">#&gt; when loading 'timesaveR'</span>
+<span class="co">#&gt; Warning: replacing previous import 'purrr::splice' by 'rlang::splice' when</span>
+<span class="co">#&gt; loading 'timesaveR'</span>
+<span class="co">#&gt; Warning: replacing previous import 'purrr::flatten' by 'rlang::flatten' when</span>
+<span class="co">#&gt; loading 'timesaveR'</span>
+<span class="co">#&gt; Warning: replacing previous import 'purrr::discard' by 'scales::discard' when</span>
+<span class="co">#&gt; loading 'timesaveR'</span>
+<span class="co">#&gt; Warning: replacing previous import 'psych::alpha' by 'scales::alpha' when</span>
+<span class="co">#&gt; loading 'timesaveR'</span>
+<span class="co">#&gt; Warning: replacing previous import 'psych::rescale' by 'scales::rescale' when</span>
+<span class="co">#&gt; loading 'timesaveR'</span>
+<span class="co">#&gt; Warning: replacing previous import 'magrittr::extract' by 'tidyr::extract' when</span>
+<span class="co">#&gt; loading 'timesaveR'</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://gdfe.co/srvyr/" class="external-link">srvyr</a></span><span class="op">)</span>
 
 <span class="co">#Create weights (consists of two variables in ESS)</span>
 <span class="va">ess_health</span><span class="op">$</span><span class="va">svy_weight</span> <span class="op">&lt;-</span> <span class="va">ess_health</span><span class="op">$</span><span class="va">pspwght</span> <span class="op">*</span> <span class="va">ess_health</span><span class="op">$</span><span class="va">pweight</span>
 
-<span class="va">ess_survey</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://gdfe.co/srvyr/reference/as_survey.html">as_survey</a></span><span class="op">(</span><span class="va">ess_health</span>,
+<span class="va">ess_survey</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://gdfe.co/srvyr/reference/as_survey.html" class="external-link">as_survey</a></span><span class="op">(</span><span class="va">ess_health</span>,
                         weights <span class="op">=</span> <span class="va">svy_weight</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="create-scales" class="section level1">
-<h1 class="hasAnchor">
-<a href="#create-scales" class="anchor"></a>Create scales</h1>
+<div class="section level2">
+<h2 id="create-scales">Create scales<a class="anchor" aria-label="anchor" href="#create-scales"></a>
+</h2>
 <p>Let’s create scales for health behaviours and depressive symptoms, each including some reverse coding. For that, we need to pass the survey items (as well as any to be reversed) to the <code><a href="../reference/svy_make_scale.html">svy_make_scale()</a></code> function</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R">  <span class="va">depression_items</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"fltdpr"</span>, <span class="st">"flteeff"</span>, <span class="st">"slprl"</span>, <span class="st">"wrhpp"</span>, <span class="st">"fltlnl"</span>, 
+<code class="sourceCode R">  <span class="va">depression_items</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fltdpr"</span>, <span class="st">"flteeff"</span>, <span class="st">"slprl"</span>, <span class="st">"wrhpp"</span>, <span class="st">"fltlnl"</span>, 
                  <span class="st">"enjlf"</span>, <span class="st">"fltsd"</span>, <span class="st">"cldgng"</span><span class="op">)</span>
 
-  <span class="va">healthy_eating_items</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"etfruit"</span>, <span class="st">"eatveg"</span><span class="op">)</span>
+  <span class="va">healthy_eating_items</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"etfruit"</span>, <span class="st">"eatveg"</span><span class="op">)</span>
   
-  <span class="va">depression_reversed</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"wrhpp"</span>, <span class="st">"enjlf"</span><span class="op">)</span></code></pre></div>
+  <span class="va">depression_reversed</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"wrhpp"</span>, <span class="st">"enjlf"</span><span class="op">)</span></code></pre></div>
 <p>Then, the <code><a href="../reference/svy_make_scale.html">svy_make_scale()</a></code> command can be used to <strong>calculate scale scores and display descriptives</strong>. It returns the survey object with the new variable added, so that you can use a pipeline to create multiple scales.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="va">ess_survey</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/svy_make_scale.html">svy_make_scale</a></span><span class="op">(</span><span class="va">ess_survey</span>, <span class="va">depression_items</span>, 
-                             <span class="st">"depression"</span>, reversed <span class="op">=</span> <span class="va">depression_reversed</span><span class="op">)</span> <span class="op"><a href="http://gdfe.co/srvyr/reference/pipe.html">%&gt;%</a></span> 
+                             <span class="st">"depression"</span>, reversed <span class="op">=</span> <span class="va">depression_reversed</span><span class="op">)</span> <span class="op"><a href="http://gdfe.co/srvyr/reference/pipe.html" class="external-link">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/svy_make_scale.html">svy_make_scale</a></span><span class="op">(</span><span class="va">healthy_eating_items</span>, <span class="st">"healthy_eating"</span>, r_key <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span>
 <span class="co">#&gt;     </span>
 <span class="co">#&gt; Descriptives for depression scale:</span>
@@ -147,27 +179,27 @@
 <span class="co">#&gt; wrhpp (1, 4)</span>
 <span class="co">#&gt; enjlf (1, 4)</span></code></pre></div>
 <p><img src="survey-functions_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
-<pre><code>#&gt;     
-#&gt; Descriptives for healthy_eating scale:
-#&gt; Mean: 4.931  SD: 1.131
-#&gt; Cronbach's alpha: .66</code></pre>
+<pre><code><span class="co">#&gt;     </span>
+<span class="co">#&gt; Descriptives for healthy_eating scale:</span>
+<span class="co">#&gt; Mean: 4.931  SD: 1.131</span>
+<span class="co">#&gt; Cronbach's alpha: .66</span></code></pre>
 <p><img src="survey-functions_files/figure-html/unnamed-chunk-4-2.png" width="700"></p>
 </div>
-<div id="report-correlations" class="section level1">
-<h1 class="hasAnchor">
-<a href="#report-correlations" class="anchor"></a>Report correlations</h1>
+<div class="section level2">
+<h2 id="report-correlations">Report correlations<a class="anchor" aria-label="anchor" href="#report-correlations"></a>
+</h2>
 <p>You can use <code><a href="../reference/svy_cor_matrix.html">svy_cor_matrix()</a></code> to calculate weighted correlations, and then use <code><a href="../reference/report_cor_table.html">report_cor_table()</a></code> to present them nicely. To improve the calculation of confidence intervals, <code>n</code> should be specified as the weighted number of survey responses in that call.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ess_survey</span> <span class="op"><a href="http://gdfe.co/srvyr/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="http://gdfe.co/srvyr/reference/dplyr_single.html">select</a></span><span class="op">(</span><span class="va">agea</span>, <span class="va">health</span>, <span class="va">depression</span>, <span class="va">healthy_eating</span><span class="op">)</span> <span class="op"><a href="http://gdfe.co/srvyr/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/svy_cor_matrix.html">svy_cor_matrix</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="http://gdfe.co/srvyr/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/report_cor_table.html">report_cor_table</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="http://gdfe.co/srvyr/reference/survey_tally.html">survey_tally</a></span><span class="op">(</span><span class="va">ess_survey</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<div id="tagtrrimpm" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<code class="sourceCode R"><span class="va">ess_survey</span> <span class="op"><a href="http://gdfe.co/srvyr/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="http://gdfe.co/srvyr/reference/dplyr_single.html" class="external-link">select</a></span><span class="op">(</span><span class="va">agea</span>, <span class="va">health</span>, <span class="va">depression</span>, <span class="va">healthy_eating</span><span class="op">)</span> <span class="op"><a href="http://gdfe.co/srvyr/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/svy_cor_matrix.html">svy_cor_matrix</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="http://gdfe.co/srvyr/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/report_cor_table.html">report_cor_table</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="http://gdfe.co/srvyr/reference/survey_tally.html" class="external-link">survey_tally</a></span><span class="op">(</span><span class="va">ess_survey</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<div id="sssybhqvro" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: times, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#tagtrrimpm .gt_table {
+#sssybhqvro .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -192,7 +224,7 @@
   border-left-color: #D3D3D3;
 }
 
-#tagtrrimpm .gt_heading {
+#sssybhqvro .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -204,33 +236,37 @@
   border-right-color: #D3D3D3;
 }
 
-#tagtrrimpm .gt_title {
+#sssybhqvro .gt_title {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
   padding-top: 4px;
   padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
   border-bottom-color: #FFFFFF;
   border-bottom-width: 0;
 }
 
-#tagtrrimpm .gt_subtitle {
+#sssybhqvro .gt_subtitle {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
   padding-top: 0;
   padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
   border-top-color: #FFFFFF;
   border-top-width: 0;
 }
 
-#tagtrrimpm .gt_bottom_border {
+#sssybhqvro .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #000000;
 }
 
-#tagtrrimpm .gt_col_headings {
+#sssybhqvro .gt_col_headings {
   border-top-style: none;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -245,7 +281,7 @@
   border-right-color: #D3D3D3;
 }
 
-#tagtrrimpm .gt_col_heading {
+#sssybhqvro .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -265,7 +301,7 @@
   overflow-x: hidden;
 }
 
-#tagtrrimpm .gt_column_spanner_outer {
+#sssybhqvro .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -277,15 +313,15 @@
   padding-right: 4px;
 }
 
-#tagtrrimpm .gt_column_spanner_outer:first-child {
+#sssybhqvro .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#tagtrrimpm .gt_column_spanner_outer:last-child {
+#sssybhqvro .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#tagtrrimpm .gt_column_spanner {
+#sssybhqvro .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 1px;
   border-bottom-color: #000000;
@@ -297,8 +333,11 @@
   width: 100%;
 }
 
-#tagtrrimpm .gt_group_heading {
-  padding: 8px;
+#sssybhqvro .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -319,7 +358,7 @@
   vertical-align: middle;
 }
 
-#tagtrrimpm .gt_empty_group_heading {
+#sssybhqvro .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -334,15 +373,15 @@
   vertical-align: middle;
 }
 
-#tagtrrimpm .gt_from_md > :first-child {
+#sssybhqvro .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#tagtrrimpm .gt_from_md > :last-child {
+#sssybhqvro .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#tagtrrimpm .gt_row {
+#sssybhqvro .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -361,7 +400,7 @@
   overflow-x: hidden;
 }
 
-#tagtrrimpm .gt_stub {
+#sssybhqvro .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -370,10 +409,29 @@
   border-right-style: none;
   border-right-width: 2px;
   border-right-color: #D3D3D3;
-  padding-left: 12px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
-#tagtrrimpm .gt_summary_row {
+#sssybhqvro .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#sssybhqvro .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#sssybhqvro .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -383,17 +441,26 @@
   padding-right: 5px;
 }
 
-#tagtrrimpm .gt_first_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
+#sssybhqvro .gt_first_summary_row {
   border-top-style: none;
-  border-top-width: 2px;
   border-top-color: #D3D3D3;
 }
 
-#tagtrrimpm .gt_grand_summary_row {
+#sssybhqvro .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#sssybhqvro .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#sssybhqvro .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -403,7 +470,7 @@
   padding-right: 5px;
 }
 
-#tagtrrimpm .gt_first_grand_summary_row {
+#sssybhqvro .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -413,11 +480,11 @@
   border-top-color: #D3D3D3;
 }
 
-#tagtrrimpm .gt_striped {
+#sssybhqvro .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#tagtrrimpm .gt_table_body {
+#sssybhqvro .gt_table_body {
   border-top-style: solid;
   border-top-width: 1px;
   border-top-color: #000000;
@@ -426,7 +493,7 @@
   border-bottom-color: #000000;
 }
 
-#tagtrrimpm .gt_footnotes {
+#sssybhqvro .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -440,13 +507,16 @@
   border-right-color: #D3D3D3;
 }
 
-#tagtrrimpm .gt_footnote {
+#sssybhqvro .gt_footnote {
   margin: 0px;
   font-size: 90%;
-  padding: 4px;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
-#tagtrrimpm .gt_sourcenotes {
+#sssybhqvro .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -460,44 +530,71 @@
   border-right-color: #D3D3D3;
 }
 
-#tagtrrimpm .gt_sourcenote {
+#sssybhqvro .gt_sourcenote {
   font-size: 90%;
-  padding: 4px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
-#tagtrrimpm .gt_left {
+#sssybhqvro .gt_left {
   text-align: left;
 }
 
-#tagtrrimpm .gt_center {
+#sssybhqvro .gt_center {
   text-align: center;
 }
 
-#tagtrrimpm .gt_right {
+#sssybhqvro .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#tagtrrimpm .gt_font_normal {
+#sssybhqvro .gt_font_normal {
   font-weight: normal;
 }
 
-#tagtrrimpm .gt_font_bold {
+#sssybhqvro .gt_font_bold {
   font-weight: bold;
 }
 
-#tagtrrimpm .gt_font_italic {
+#sssybhqvro .gt_font_italic {
   font-style: italic;
 }
 
-#tagtrrimpm .gt_super {
+#sssybhqvro .gt_super {
   font-size: 65%;
 }
 
-#tagtrrimpm .gt_footnote_marks {
+#sssybhqvro .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
-  font-size: 65%;
+  font-size: 75%;
+  vertical-align: 0.4em;
+}
+
+#sssybhqvro .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#sssybhqvro .gt_slash_mark {
+  font-size: 0.7em;
+  line-height: 0.7em;
+  vertical-align: 0.15em;
+}
+
+#sssybhqvro .gt_fraction_numerator {
+  font-size: 0.6em;
+  line-height: 0.6em;
+  vertical-align: 0.45em;
+}
+
+#sssybhqvro .gt_fraction_denominator {
+  font-size: 0.6em;
+  line-height: 0.6em;
+  vertical-align: -0.05em;
 }
 </style>
 <table class="table gt_table">
@@ -546,7 +643,7 @@
 <p>1.66 (0.48)</p>
 </div></td>
 <td class="gt_row gt_left"><div class="gt_from_md">
-<p>.05 **<br><span style="font-size:80%">[0.03, 0.06]</span></p>
+<p>.05 ***<br><span style="font-size:80%">[0.03, 0.06]</span></p>
 </div></td>
 <td class="gt_row gt_left"><div class="gt_from_md">
 <p>.41 ***<br><span style="font-size:80%">[0.40, 0.43]</span></p>
@@ -583,10 +680,13 @@
 </tfoot>
 </table>
 </div>
-<p>It is often helpful to use different variable names for display. For this, functions in the package typically accept rename tibbles that contain an <code>old</code> and a <code>new</code> column. By using the <code><a href="https://tibble.tidyverse.org/reference/tribble.html">tibble::tribble</a></code> notation, they can be entered more cleanly that named character vectors, and the <code>get_rename_tribble()</code> helper function creates most of the code.</p>
+<p>It is often helpful to use different variable names for display. For this, functions in the package typically accept rename tibbles that contain an <code>old</code> and a <code>new</code> column. By using the <code><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tibble::tribble</a></code> notation, they can be entered more cleanly than named character vectors, and the <code>get_rename_tribble()</code> helper function creates most of the code.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">#Use get_rename_tribbles to get most of this code</span>
-<span class="va">var_renames</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html">tribble</a></span><span class="op">(</span>
+<code class="sourceCode R"><span class="co">#Call </span>
+<span class="co"># get_rename_tribbles(ess_health, agea, health, depression, healthy_eating, which = "vars") </span>
+<span class="co"># to get most of this code</span>
+
+<span class="va">var_renames</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span>
   <span class="op">~</span><span class="va">old</span>,             <span class="op">~</span><span class="va">new</span>,             
    <span class="st">"agea"</span>,           <span class="st">"Age"</span>,          
    <span class="st">"health"</span>,         <span class="st">"Poor health"</span>,        
@@ -596,14 +696,14 @@
 
 <span class="co"># If var_names are provided, only variables included in that argument </span>
 <span class="co"># are included in the correlation table</span>
-<span class="va">ess_survey</span> <span class="op"><a href="http://gdfe.co/srvyr/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/svy_cor_matrix.html">svy_cor_matrix</a></span><span class="op">(</span>var_names <span class="op">=</span> <span class="va">var_renames</span><span class="op">)</span> <span class="op"><a href="http://gdfe.co/srvyr/reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/report_cor_table.html">report_cor_table</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="http://gdfe.co/srvyr/reference/survey_tally.html">survey_tally</a></span><span class="op">(</span><span class="va">ess_survey</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<div id="thppvxsfbx" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<span class="va">ess_survey</span> <span class="op"><a href="http://gdfe.co/srvyr/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/svy_cor_matrix.html">svy_cor_matrix</a></span><span class="op">(</span>var_names <span class="op">=</span> <span class="va">var_renames</span><span class="op">)</span> <span class="op"><a href="http://gdfe.co/srvyr/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/report_cor_table.html">report_cor_table</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="http://gdfe.co/srvyr/reference/survey_tally.html" class="external-link">survey_tally</a></span><span class="op">(</span><span class="va">ess_survey</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<div id="dinofzsfpf" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: times, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#thppvxsfbx .gt_table {
+#dinofzsfpf .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -628,7 +728,7 @@
   border-left-color: #D3D3D3;
 }
 
-#thppvxsfbx .gt_heading {
+#dinofzsfpf .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -640,33 +740,37 @@
   border-right-color: #D3D3D3;
 }
 
-#thppvxsfbx .gt_title {
+#dinofzsfpf .gt_title {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
   padding-top: 4px;
   padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
   border-bottom-color: #FFFFFF;
   border-bottom-width: 0;
 }
 
-#thppvxsfbx .gt_subtitle {
+#dinofzsfpf .gt_subtitle {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
   padding-top: 0;
   padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
   border-top-color: #FFFFFF;
   border-top-width: 0;
 }
 
-#thppvxsfbx .gt_bottom_border {
+#dinofzsfpf .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #000000;
 }
 
-#thppvxsfbx .gt_col_headings {
+#dinofzsfpf .gt_col_headings {
   border-top-style: none;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -681,7 +785,7 @@
   border-right-color: #D3D3D3;
 }
 
-#thppvxsfbx .gt_col_heading {
+#dinofzsfpf .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -701,7 +805,7 @@
   overflow-x: hidden;
 }
 
-#thppvxsfbx .gt_column_spanner_outer {
+#dinofzsfpf .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -713,15 +817,15 @@
   padding-right: 4px;
 }
 
-#thppvxsfbx .gt_column_spanner_outer:first-child {
+#dinofzsfpf .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#thppvxsfbx .gt_column_spanner_outer:last-child {
+#dinofzsfpf .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#thppvxsfbx .gt_column_spanner {
+#dinofzsfpf .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 1px;
   border-bottom-color: #000000;
@@ -733,8 +837,11 @@
   width: 100%;
 }
 
-#thppvxsfbx .gt_group_heading {
-  padding: 8px;
+#dinofzsfpf .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -755,7 +862,7 @@
   vertical-align: middle;
 }
 
-#thppvxsfbx .gt_empty_group_heading {
+#dinofzsfpf .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -770,15 +877,15 @@
   vertical-align: middle;
 }
 
-#thppvxsfbx .gt_from_md > :first-child {
+#dinofzsfpf .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#thppvxsfbx .gt_from_md > :last-child {
+#dinofzsfpf .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#thppvxsfbx .gt_row {
+#dinofzsfpf .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -797,7 +904,7 @@
   overflow-x: hidden;
 }
 
-#thppvxsfbx .gt_stub {
+#dinofzsfpf .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -806,10 +913,29 @@
   border-right-style: none;
   border-right-width: 2px;
   border-right-color: #D3D3D3;
-  padding-left: 12px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
-#thppvxsfbx .gt_summary_row {
+#dinofzsfpf .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#dinofzsfpf .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#dinofzsfpf .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -819,17 +945,26 @@
   padding-right: 5px;
 }
 
-#thppvxsfbx .gt_first_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
+#dinofzsfpf .gt_first_summary_row {
   border-top-style: none;
-  border-top-width: 2px;
   border-top-color: #D3D3D3;
 }
 
-#thppvxsfbx .gt_grand_summary_row {
+#dinofzsfpf .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#dinofzsfpf .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#dinofzsfpf .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -839,7 +974,7 @@
   padding-right: 5px;
 }
 
-#thppvxsfbx .gt_first_grand_summary_row {
+#dinofzsfpf .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -849,11 +984,11 @@
   border-top-color: #D3D3D3;
 }
 
-#thppvxsfbx .gt_striped {
+#dinofzsfpf .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#thppvxsfbx .gt_table_body {
+#dinofzsfpf .gt_table_body {
   border-top-style: solid;
   border-top-width: 1px;
   border-top-color: #000000;
@@ -862,7 +997,7 @@
   border-bottom-color: #000000;
 }
 
-#thppvxsfbx .gt_footnotes {
+#dinofzsfpf .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -876,13 +1011,16 @@
   border-right-color: #D3D3D3;
 }
 
-#thppvxsfbx .gt_footnote {
+#dinofzsfpf .gt_footnote {
   margin: 0px;
   font-size: 90%;
-  padding: 4px;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
-#thppvxsfbx .gt_sourcenotes {
+#dinofzsfpf .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -896,44 +1034,71 @@
   border-right-color: #D3D3D3;
 }
 
-#thppvxsfbx .gt_sourcenote {
+#dinofzsfpf .gt_sourcenote {
   font-size: 90%;
-  padding: 4px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
-#thppvxsfbx .gt_left {
+#dinofzsfpf .gt_left {
   text-align: left;
 }
 
-#thppvxsfbx .gt_center {
+#dinofzsfpf .gt_center {
   text-align: center;
 }
 
-#thppvxsfbx .gt_right {
+#dinofzsfpf .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#thppvxsfbx .gt_font_normal {
+#dinofzsfpf .gt_font_normal {
   font-weight: normal;
 }
 
-#thppvxsfbx .gt_font_bold {
+#dinofzsfpf .gt_font_bold {
   font-weight: bold;
 }
 
-#thppvxsfbx .gt_font_italic {
+#dinofzsfpf .gt_font_italic {
   font-style: italic;
 }
 
-#thppvxsfbx .gt_super {
+#dinofzsfpf .gt_super {
   font-size: 65%;
 }
 
-#thppvxsfbx .gt_footnote_marks {
+#dinofzsfpf .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
-  font-size: 65%;
+  font-size: 75%;
+  vertical-align: 0.4em;
+}
+
+#dinofzsfpf .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#dinofzsfpf .gt_slash_mark {
+  font-size: 0.7em;
+  line-height: 0.7em;
+  vertical-align: 0.15em;
+}
+
+#dinofzsfpf .gt_fraction_numerator {
+  font-size: 0.6em;
+  line-height: 0.6em;
+  vertical-align: 0.45em;
+}
+
+#dinofzsfpf .gt_fraction_denominator {
+  font-size: 0.6em;
+  line-height: 0.6em;
+  vertical-align: -0.05em;
 }
 </style>
 <table class="table gt_table">
@@ -997,35 +1162,35 @@
 </div>
 <p><em>For now, we cannot <code>add_distributions</code> to the correlation table while using survey weights.</em></p>
 </div>
-<div id="testing-significance-of-difference-between-two-groups" class="section level1">
-<h1 class="hasAnchor">
-<a href="#testing-significance-of-difference-between-two-groups" class="anchor"></a>Testing significance of difference between two groups</h1>
-<p>Running a t-test on survey data is easy with <code><a href="https://rdrr.io/pkg/survey/man/svyttest.html">survey::svyttest()</a></code>. However, getting Cohen’s <em>d</em> as a measure of effect size, or subsetting to compare just two levels if there are more in the data is less trivial, and is where <code><a href="../reference/svy_cohen_d_pair.html">svy_cohen_d_pair()</a></code> comes in.</p>
+<div class="section level2">
+<h2 id="testing-significance-of-difference-between-two-groups">Testing significance of difference between two groups<a class="anchor" aria-label="anchor" href="#testing-significance-of-difference-between-two-groups"></a>
+</h2>
+<p>Running a t-test on survey data is easy with <code><a href="https://rdrr.io/pkg/survey/man/svyttest.html" class="external-link">survey::svyttest()</a></code>. However, getting Cohen’s <em>d</em> as a measure of effect size, or subsetting to compare just two levels if there are more in the data is less trivial, and is where <code><a href="../reference/svy_cohen_d_pair.html">svy_cohen_d_pair()</a></code> comes in.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/svy_cohen_d_pair.html">svy_cohen_d_pair</a></span><span class="op">(</span><span class="va">ess_survey</span>, <span class="st">"health"</span>, <span class="st">"gndr"</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 1 × 8</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 8</span></span>
 <span class="co">#&gt;   pair       d      t    df  p.value mean_diff mean_diff_ci.low mean_diff_ci.hi…</span>
-<span class="co">#&gt;   &lt;chr&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 1 &amp; 2 -0.133 -0.120  7217  1.40e-6    -0.120          -0.0714           -0.169</span>
-<span class="fu"><a href="../reference/svy_cohen_d_pair.html">svy_cohen_d_pair</a></span><span class="op">(</span><span class="va">ess_survey</span>, <span class="st">"health"</span>, <span class="st">"cntry"</span>, pair <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"DE"</span>, <span class="st">"GB"</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 1 × 8</span>
+<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 1 &amp; 2 -<span style="color: #BB0000;">0.133</span> -<span style="color: #BB0000;">0.120</span>  <span style="text-decoration: underline;">7</span>217  1.40<span style="color: #949494;">e</span><span style="color: #BB0000;">-6</span>    -<span style="color: #BB0000;">0.120</span>          -<span style="color: #BB0000;">0.071</span><span style="color: #BB0000; text-decoration: underline;">4</span>           -<span style="color: #BB0000;">0.169</span></span>
+<span class="fu"><a href="../reference/svy_cohen_d_pair.html">svy_cohen_d_pair</a></span><span class="op">(</span><span class="va">ess_survey</span>, <span class="st">"health"</span>, <span class="st">"cntry"</span>, pair <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DE"</span>, <span class="st">"GB"</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 8</span></span>
 <span class="co">#&gt;   pair        d     t    df  p.value mean_diff mean_diff_ci.low mean_diff_ci.hi…</span>
-<span class="co">#&gt;   &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 DE &amp; GB 0.324 0.295  5301 7.94e-25     0.295            0.351            0.239</span></code></pre></div>
+<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> DE &amp; GB 0.324 0.295  <span style="text-decoration: underline;">5</span>301 7.94<span style="color: #949494;">e</span><span style="color: #BB0000;">-25</span>     0.295            0.351            0.239</span></code></pre></div>
 </div>
-<div id="running-pairwise-t-tests" class="section level1">
-<h1 class="hasAnchor">
-<a href="#running-pairwise-t-tests" class="anchor"></a>Running pairwise t-tests</h1>
-<p><code><a href="../reference/svy_pairwise.t.test.html">svy_pairwise.t.test()</a></code> allows to run pairwise t-tests, e.g., as post-hoc comparisons, between multiple groups in the survey. <em>p</em>-values are adjusted for multiple comparisons, by default using the Holm-Bonferroni method.</p>
+<div class="section level2">
+<h2 id="running-pairwise-t-tests">Running pairwise t-tests<a class="anchor" aria-label="anchor" href="#running-pairwise-t-tests"></a>
+</h2>
+<p><code><a href="../reference/svy_pairwise_t_test.html">svy_pairwise_t_test()</a></code> allows to run pairwise t-tests, e.g., as post-hoc comparisons, between multiple groups in the survey. <em>p</em>-values are adjusted for multiple comparisons, by default using the Holm-Bonferroni method.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/svy_pairwise.t.test.html">svy_pairwise.t.test</a></span><span class="op">(</span><span class="va">ess_survey</span>, <span class="st">"health"</span>, <span class="st">"cntry"</span>, cats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"DE"</span>, <span class="st">"GB"</span>, <span class="st">"FR"</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 3 × 8</span>
+<code class="sourceCode R"><span class="fu"><a href="../reference/svy_pairwise_t_test.html">svy_pairwise_t_test</a></span><span class="op">(</span><span class="va">ess_survey</span>, <span class="st">"health"</span>, <span class="st">"cntry"</span>, cats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DE"</span>, <span class="st">"GB"</span>, <span class="st">"FR"</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 8</span></span>
 <span class="co">#&gt;   pair          d       t    df  p.value mean_diff mean_diff_ci.low</span>
-<span class="co">#&gt;   &lt;chr&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;            &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 GB &amp; DE -0.324  -0.295   5301 2.38e-24   -0.295            -0.351</span>
-<span class="co">#&gt; 2 FR &amp; DE -0.0956 -0.0849  4954 5.88e- 3   -0.0849           -0.145</span>
-<span class="co">#&gt; 3 GB &amp; FR -0.233  -0.210   4177 3.16e-10   -0.210            -0.274</span>
-<span class="co">#&gt; # … with 1 more variable: mean_diff_ci.high &lt;dbl&gt;</span></code></pre></div>
+<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> GB &amp; DE -<span style="color: #BB0000;">0.324</span>  -<span style="color: #BB0000;">0.295</span>   <span style="text-decoration: underline;">5</span>301 2.38<span style="color: #949494;">e</span><span style="color: #BB0000;">-24</span>   -<span style="color: #BB0000;">0.295</span>            -<span style="color: #BB0000;">0.351</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> FR &amp; DE -<span style="color: #BB0000;">0.095</span><span style="color: #BB0000; text-decoration: underline;">6</span> -<span style="color: #BB0000;">0.084</span><span style="color: #BB0000; text-decoration: underline;">9</span>  <span style="text-decoration: underline;">4</span>954 5.88<span style="color: #949494;">e</span><span style="color: #BB0000;">- 3</span>   -<span style="color: #BB0000;">0.084</span><span style="color: #BB0000; text-decoration: underline;">9</span>           -<span style="color: #BB0000;">0.145</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">3</span> GB &amp; FR -<span style="color: #BB0000;">0.233</span>  -<span style="color: #BB0000;">0.210</span>   <span style="text-decoration: underline;">4</span>177 3.16<span style="color: #949494;">e</span><span style="color: #BB0000;">-10</span>   -<span style="color: #BB0000;">0.210</span>            -<span style="color: #BB0000;">0.274</span></span>
+<span class="co">#&gt; <span style="color: #949494;"># … with 1 more variable: mean_diff_ci.high &lt;dbl&gt;</span></span></code></pre></div>
 </div>
   </div>
 
@@ -1040,11 +1205,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Lukas Wallrich.</p>
+  <p></p>
+<p>Developed by Lukas Wallrich.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>
@@ -1052,6 +1219,8 @@
 
   
 
+
+  
 
   </body>
 </html>
