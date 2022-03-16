@@ -538,33 +538,3 @@ add_class <- function(x, class_to_add = "exp") {
 .is.numeric_col <- function(col, data) {
   is.numeric(magrittr::extract2(data, col))
 }
-
-#' Tidy function to exponentiate coefficients
-#'
-#' This function calls the tidy method based on the second class of the
-#' object (i.e. after removing the "exp" class that led to it being called),
-#' and then exponentiates the returned estimates and confidence intervals (if any)
-#' in the tibble. This is usually used to turn coefficients of logistic
-#' regression models into Odds Ratios.
-#'
-#'
-#' @param x An object, usually containing a logistic regression model. Should
-#' have the class "exp" as the first of its classes, and then a class that dispatches
-#' it to an appropriate `generics::tidy`` function
-#' @param ... Arguments passed on to the appropriate `tidy` function
-#' @export
-
-tidy.exp <- function(x, ...) {
-  class(x) <- class(x)[-1]
-  if ("polr" %in% class(x)) {
-  out <- generics::tidy(x, p.values = TRUE, ...)
-  } else {
-  out <- generics::tidy(x, ...)
-  }
-  out$estimate <- exp(out$estimate)
-  if ("conf.high" %in% names(out)) {
-    out$conf.high <- exp(out$conf.high)
-    out$conf.low <- exp(out$conf.low)
-  }
-  out
-}

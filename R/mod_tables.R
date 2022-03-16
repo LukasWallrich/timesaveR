@@ -355,20 +355,6 @@ report_polr_with_std <- function(mod, mod_std, OR = TRUE, conf_level = .95, fmt 
     notes %<>% c("Given that dummy variables lose their interpretability when standardized, only continuous predictors are standardized.")
   }
   
-  
-  mod <- purrr::map(mod, function(x) {
-    if (class(x)[1] == "polr") add_class(x, "polr_p") else x
-  })
-
-  mod_std <- purrr::map(mod_std, function(x) {
-    if (class(x)[1] == "polr") add_class(x, "polr_p") else x
-  })
-
-  if (OR) {
-    mod <- purrr::map(mod, add_class, "exp")
-    mod_std <- purrr::map(mod_std, add_class, "exp")
-  }
-
   CIs <- list()
   CIs_std <- list()
   mods <- list()
@@ -394,7 +380,7 @@ report_polr_with_std <- function(mod, mod_std, OR = TRUE, conf_level = .95, fmt 
   if (statistic_vertical) {
     tab <- modelsummary::msummary(mods, output = "gt", estimate = "{estimate} {stars}", 
                                   statistic = "[{conf.low}, {conf.high}]", fmt = fmt, 
-                                  gof_omit = ".*", stars = stars, ...) %>%
+                                  gof_omit = ".*", stars = stars, p.values = TRUE, exponentiate = OR, ...) %>%
       gt::fmt_markdown(columns = gt::everything()) %>%
       gt::cols_label(.list = col_labels) %>%
       gt::cols_align("right", gt::everything()) %>%
@@ -403,7 +389,7 @@ report_polr_with_std <- function(mod, mod_std, OR = TRUE, conf_level = .95, fmt 
   } else {
     tab <- modelsummary::msummary(mods, output = "gt", statistic = NULL, 
                                   estimate = "{estimate} {stars} [{conf.low}, {conf.high}]", 
-                                  fmt = fmt, gof_omit = ".*", stars = stars, ...) %>%
+                                  fmt = fmt, gof_omit = ".*", stars = stars, p.values = TRUE, exponentiate = OR, ...) %>%
       gt::fmt_markdown(columns = gt::everything()) %>%
       gt::cols_label(.list = col_labels) %>%
       gt::cols_align("right", gt::everything()) %>%
@@ -483,6 +469,8 @@ report_polr_with_std <- function(mod, mod_std, OR = TRUE, conf_level = .95, fmt 
   }
   return(out)
 }
+
+tidy_custom.polr <- function(x, ...) tidy(x, p.values = TRUE, ...)
 
 #' @importFrom broom glance
 #' @importFrom broom tidy
