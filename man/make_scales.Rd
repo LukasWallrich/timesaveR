@@ -7,8 +7,9 @@
 make_scales(
   data,
   items,
-  reversed = NULL,
+  reversed = FALSE,
   two_items_reliability = c("spearman_brown", "cronbachs_alpha", "r"),
+  print_desc = FALSE,
   ...
 )
 }
@@ -18,18 +19,21 @@ make_scales(
 \item{items}{A named list of characters vectors. Names are the scale names,
 each vector contains the items for that scale (variables in data)}
 
-\item{reversed}{A named list of characters vectors. Names are the scale names,
-each vector contains the items to be reverse-coded for that scale}
+\item{reversed}{How should items be reverse-coded. Can be FALSE (no reverse-coding),
+TRUE (automatic reverse-coding of items negatively correlated with remainder), or a 
+named list of characters vectors. Names are the scale names, each vector contains 
+the items to be reverse-coded for that scale. If TRUE, the result must be checked carefully!}
 
 \item{two_items_reliability}{How should the reliability of two-item scales be
 reported? "spearman_brown" is the recommended default, but "cronbachs_alpha"
 and Pearson's "r" are also supported.}
 
+\item{print_desc}{Logical. Should descriptives for scales be printed?}
+
 \item{...}{
   Arguments passed on to \code{\link[=make_scale]{make_scale}}
   \describe{
     \item{\code{print_hist}}{Logical. Should histograms for items and resulting scale be printed?}
-    \item{\code{print_desc}}{Logical. Should descriptives for scales be printed?}
   }}
 }
 \value{
