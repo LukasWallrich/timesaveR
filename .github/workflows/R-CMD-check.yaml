@@ -25,7 +25,8 @@ jobs:
           extra-packages: rcmdcheck roxygen2
           
       - name: Document
-        run: Rscript -e 'roxygen2::roxygenise()'
+        run: Rscript -e 'file.remove("NAMESPACE"); roxygen2::roxygenise()'
+        
       - name: commit
         run: |
           git config --local user.email "actions@github.com"
