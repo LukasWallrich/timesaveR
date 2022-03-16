@@ -9,6 +9,10 @@
 * Enabled `report_lm_with_std()` to show R2 change for more than one pair of models
 * Added option to use `t.test()`-style formula notion in `pairwise_t_tests()` 
 
+## Bug fixes
+* Restore `report_polr_with_std()` broken after `broom::tidy.polr()` function was updated
+* `fmt_p()`now supports greater numbers of significant digits properly
+
 # timesaveR 0.0.2
 
 ## New capabilities
@@ -25,6 +29,6 @@
 
 ## Bug fixes
 
-* *p*-values > .99 are now correctly reported as "> .99" rather than rounded to 1 by `fmt_p()`, and greater numbers of significant digits are properly supported
+* *p*-values > .99 are now correctly reported as "> .99" rather than rounded to 1 by `fmt_p()`
 * `ggsave_show()` now correctly takes file type from file extension
 * `report_lm_with_std()` and `report_polr_with_std()` broke when `gt` implemented tidyselect. Fixed again.
