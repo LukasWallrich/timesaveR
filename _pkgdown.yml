@@ -1,22 +1,17 @@
-url: https://lukaswallrich.github.io/timesaveR/
+url: https://lukaswallrich.github.io/timesaveR
 reference:
-- title: "Report correlations, regressions and summaries"
-  desc: >
-    Functions to create publication-ready tables for
-    common analysis tasks 
-- contents: 
+- title: Report correlations, regressions and summaries
+  desc: "Functions to create publication-ready tables for common analysis tasks \n"
+- contents:
   - matches("report_")
   - -report_anova
-- title: "Calculate correlation matrices"
-  desc: >
-    It can be surprisingly difficult to calculate correlation
-    matrices, particularly when data is weighted or incomplete
-- contents: 
-  - matches("cor_matrix")
-- title: "Formatters and reporting helpers"
-  desc: >
-    Functions to format numbers for statistical reporting and
-    other helpers for statistical reporting
+- title: Calculate correlation matrices
+  desc: |
+    It can be surprisingly difficult to calculate correlation matrices, particularly when data is weighted or incomplete
+- contents: matches("cor_matrix")
+- title: Formatters and reporting helpers
+  desc: |
+    Functions to format numbers for statistical reporting and other helpers for statistical reporting
 - contents:
   - starts_with("fmt")
   - round_
@@ -32,26 +27,22 @@ reference:
   - gt_apa_style
   - gt_add_plots
   - plot_distributions
-- title: "Run and plot mediation models"
-  desc: >
-    Mediation models can be estimated with lavaan. These functions offer a 
-    simple interface and an integrated path from modeling to visualisation
+- title: Run and plot mediation models
+  desc: |
+    Mediation models can be estimated with lavaan. These functions offer a  simple interface and an integrated path from modeling to visualisation
 - contents:
   - run_mediation
   - plot_mediation
-- title: "Make and assess scales"
-  desc: >
-    Psychologists often use multiple items to measure
-    a construct. These functions create scale scores
-    and assess reliability (internal consistency)
+- title: Make and assess scales
+  desc: |
+    Psychologists often use multiple items to measure a construct. These functions create scale scores and assess reliability (internal consistency)
 - contents:
   - make_scale
   - make_scales
   - spearman_brown
-- title: "Statistical tests"
-  desc: >
-    Some functions to facilitate running common tests
-    with less common requirements
+- title: Statistical tests
+  desc: |
+    Some functions to facilitate running common tests with less common requirements
 - contents:
   - lm_std
   - polr_std
@@ -60,20 +51,17 @@ reference:
   - pairwise_t_tests
   - svy_pairwise.t.test
   - pairwise_t_test_mi
-- title: "Survey functions"
-  desc: "Functions to work with survey data"
-- contents:
-  - starts_with("svy")
-- title: "Demo datasets"
+- title: Survey functions
+  desc: Functions to work with survey data
+- contents: starts_with("svy")
+- title: Demo datasets
 - contents:
   - ess_health
   - WVS
-- title: "Workflow functions"
-  desc: >
-    Miscellaneous functions that can improve your workflow,
-    from setting up structured analysis projects to using 
-    the clipboard
-- contents:  
+- title: Workflow functions
+  desc: |
+    Miscellaneous functions that can improve your workflow, from setting up structured analysis projects to using  the clipboard
+- contents:
   - setup_analysis_project
   - clip_excel
   - dump_to_clip
