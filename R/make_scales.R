@@ -167,7 +167,7 @@ make_scales <- function(data, items, reversed = FALSE, two_items_reliability = c
         reverse_items = reversed[scales_rev]
       ), make_scale,
       data = data, return_list = TRUE,
-      reverse = "spec", two_items_reliability, ...
+      reverse = "spec", two_items_reliability, print_desc = print_desc, ...
       ) %>% purrr::transpose()
     } else {
       stop("Reverse list and variable lists cannot be matched - check that they have same names")
@@ -183,18 +183,21 @@ make_scales <- function(data, items, reversed = FALSE, two_items_reliability = c
       
     scales_n_rev_values <- purrr::map2(items[scales_n_rev], scales_n_rev, make_scale,
                                          data = data,
-                                         return_list = TRUE, reverse = "none", two_items_reliability = two_items_reliability, ...
+                                         return_list = TRUE, reverse = "none", two_items_reliability = two_items_reliability,
+                                       print_desc = print_desc, ...
       ) %>% purrr::transpose()
     }
   } else if (reversed) {
     scales_rev_values <- purrr::map2(items, names(items), make_scale,
                                        data = data,
-                                       return_list = TRUE, reverse = "auto", two_items_reliability = two_items_reliability, ...
+                                       return_list = TRUE, reverse = "auto", two_items_reliability = two_items_reliability,
+                                     print_desc = print_desc, ...
     ) %>% purrr::transpose()    
   } else {
     scales_n_rev_values <- purrr::map2(items, names(items), make_scale,
                                        data = data,
-                                       return_list = TRUE, reverse = "none", two_items_reliability = two_items_reliability, ...
+                                       return_list = TRUE, reverse = "none", two_items_reliability = two_items_reliability,
+                                       print_desc = print_desc, ...
     ) %>% purrr::transpose()
   }
   

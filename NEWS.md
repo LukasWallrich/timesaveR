@@ -9,10 +9,12 @@
 * Enabled `report_lm_with_std()` to show R2 change for more than one pair of models
 * Added option to use `t.test()`-style formula notion in `pairwise_t_tests()` 
 * Allow automatic reverse-coding in `make_scales()`
+* `report_cor_table()` now ensures correct ordering of extra columns if `row_names` column is included
 
 ## Bug fixes
-* Restore `report_polr_with_std()` broken after `broom::tidy.polr()` function was updated
+* `report_polr_with_std()` works again after `broom::tidy.polr()` update broke it
 * `fmt_p()`now supports greater numbers of significant digits properly
+* `make_scales()` now correctly reacts to `print_desc` argument
 
 # timesaveR 0.0.2
 

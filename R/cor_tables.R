@@ -22,7 +22,8 @@
 #' @param add_title Should title be added to table? Set to TRUE for default
 #' title or to character for custom title
 #' @param extras Tibble of additional columns to be added after the descriptives column -
-#'  needs to be sorted in the same order as the `desc` element in the cor_matrix
+#'  needs to be sorted in the same order as the `desc` element in the cor_matrix unless 
+#'  there is a `row_names` column. If there is, this will be used to match it to the `desc` rows.
 #' @param apa_style Logical, should APA-style formatting be applied
 #' @source Based on the apaTables \code{apa.cor.table()} function, but adapted to
 #' accept weighted correlation matrices and work with the `gt` package instead. Code
@@ -62,6 +63,23 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
     plot_args$plot_theme <- ggplot2::theme(axis.text.x = ggplot2::element_text(size = 40))
   }
 
+  #Sort extras or warn
+  
+  if (!is.null(extras)) {
+    if (!"row_names" %in% names(extras)) {
+      warning("The ordering of the 'extras' argument cannot be checked unless a `row_names` column is included. Ensure that it matches 'desc' in the correlation matrix or include such a column.") 
+      
+    } else {
+      extras <- extras %>% 
+        dplyr::left_join(cor_matrix$desc %>% dplyr::select(var), ., by = c("var" = "row_names")) %>%
+        dplyr::select(-var)
+    }
+    
+    }
+  
+  if (!(add_distributions & ncol(extras) == 1)) 
+  
+  
   if (add_distributions) {
     if (!is.null(cor_matrix$var_renames)) {
       plots <- do.call(plot_distributions, c(list(data = data, var_names = cor_matrix$var_renames), plot_args))
@@ -170,7 +188,6 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
       output_descriptives, cor_cells
     )
   } else {
-    if (!(add_distributions & ncol(extras) == 1)) message("Note that the ordering of the 'extras' argument is not checked - ensure that it matches 'desc' in the correlation matrix.")
     cells <- cbind(
       matrix(output_variable_names, ncol = 1),
       output_descriptives, extras, cor_cells,
