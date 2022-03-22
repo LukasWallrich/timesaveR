@@ -52,7 +52,8 @@ best preserve formatting (see gt::gtsave for details)}
 title or to character for custom title}
 
 \item{extras}{Tibble of additional columns to be added after the descriptives column -
-needs to be sorted in the same order as the `desc` element in the cor_matrix}
+needs to be sorted in the same order as the `desc` element in the cor_matrix unless 
+there is a `row_names` column. If there is, this will be used to match it to the `desc` rows.}
 
 \item{apa_style}{Logical, should APA-style formatting be applied}
 
