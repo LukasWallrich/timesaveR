@@ -122,7 +122,8 @@ best preserve formatting (see gt::gtsave for details)</p></dd>
 title or to character for custom title</p></dd>
 <dt>extras</dt>
 <dd><p>Tibble of additional columns to be added after the descriptives column -
-needs to be sorted in the same order as the `desc` element in the cor_matrix</p></dd>
+needs to be sorted in the same order as the `desc` element in the cor_matrix unless 
+there is a `row_names` column. If there is, this will be used to match it to the `desc` rows.</p></dd>
 <dt>apa_style</dt>
 <dd><p>Logical, should APA-style formatting be applied</p></dd>
 <dt>...</dt>
@@ -159,7 +160,7 @@ usually be saved by passing a filename argument.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer></div>

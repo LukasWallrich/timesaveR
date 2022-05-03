@@ -71,8 +71,9 @@ reverse-coding of items.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">make_scales</span><span class="op">(</span>
   <span class="va">data</span>,
   <span class="va">items</span>,
-  reversed <span class="op">=</span> <span class="cn">NULL</span>,
+  reversed <span class="op">=</span> <span class="cn">FALSE</span>,
   two_items_reliability <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"spearman_brown"</span>, <span class="st">"cronbachs_alpha"</span>, <span class="st">"r"</span><span class="op">)</span>,
+  print_desc <span class="op">=</span> <span class="cn">FALSE</span>,
   <span class="va">...</span>
 <span class="op">)</span></code></pre></div>
     </div>
@@ -85,18 +86,19 @@ reverse-coding of items.</p>
 <dd><p>A named list of characters vectors. Names are the scale names,
 each vector contains the items for that scale (variables in data)</p></dd>
 <dt>reversed</dt>
-<dd><p>A named list of characters vectors. Names are the scale names,
-each vector contains the items to be reverse-coded for that scale</p></dd>
+<dd><p>How should items be reverse-coded. Can be FALSE (no reverse-coding),
+TRUE (automatic reverse-coding of items negatively correlated with remainder), or a 
+named list of characters vectors. Names are the scale names, each vector contains 
+the items to be reverse-coded for that scale. If TRUE, the result must be checked carefully!</p></dd>
 <dt>two_items_reliability</dt>
 <dd><p>How should the reliability of two-item scales be
 reported? "spearman_brown" is the recommended default, but "cronbachs_alpha"
 and Pearson's "r" are also supported.</p></dd>
+<dt>print_desc</dt>
+<dd><p>Logical. Should descriptives for scales be printed?</p></dd>
 <dt>...</dt>
 <dd><p>Arguments passed on to <code><a href="make_scale.html">make_scale</a></code></p><dl><dt><code>print_hist</code></dt>
 <dd><p>Logical. Should histograms for items and resulting scale be printed?</p></dd>
-
-    <dt><code>print_desc</code></dt>
-<dd><p>Logical. Should descriptives for scales be printed?</p></dd>
 
   
 </dl></dd>
@@ -119,7 +121,7 @@ descriptive statistics for each scale (`descriptives`)</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer></div>

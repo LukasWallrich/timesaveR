@@ -121,22 +121,9 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="va">scales</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_scales.html">make_scales</a></span><span class="op">(</span><span class="va">ess_health</span>, items <span class="op">=</span> <span class="va">scales_items</span>, reversed <span class="op">=</span> <span class="va">scales_reverse</span><span class="op">)</span>
-<span class="co">#&gt; [1] "The following scales will be calculated with specified reverse coding: depression, healthy_eating"</span>
-<span class="co">#&gt;     </span>
-<span class="co">#&gt; Descriptives for depression scale:</span>
-<span class="co">#&gt; Mean: 1.674  SD: 0.484</span>
-<span class="co">#&gt; Cronbach's alpha: 0.80</span>
-<span class="co">#&gt; [1] "The following items were reverse coded: , wrhpp, enjlf"</span>
-<span class="co">#&gt; [1] "Min and max used for reverse coding: 1 4"</span></code></pre></div>
-<p><img src="getting_started_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
-<pre><code><span class="co">#&gt;     </span>
-<span class="co">#&gt; Descriptives for healthy_eating scale:</span>
-<span class="co">#&gt; Mean: 4.967  SD: 1.107</span>
-<span class="co">#&gt; spearman_brown: 0.66</span>
-<span class="co">#&gt; [1] "The following items were reverse coded: , etfruit, eatveg"</span>
-<span class="co">#&gt; [1] "Min and max used for reverse coding: 1 7"</span></code></pre>
-<p><img src="getting_started_files/figure-html/unnamed-chunk-4-2.png" width="700"></p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<span class="co">#&gt; [1] "The following scales will be calculated with specified reverse coding: depression, healthy_eating"</span></code></pre></div>
+<p><img src="getting_started_files/figure-html/unnamed-chunk-4-1.png" width="700"><img src="getting_started_files/figure-html/unnamed-chunk-4-2.png" width="700"></p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="co">#Check descriptives, including reliability</span>
 <span class="va">scales</span><span class="op">$</span><span class="va">descriptives</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/round_df.html">round_df</a></span><span class="op">(</span><span class="op">)</span>
@@ -153,17 +140,17 @@
 <h2 id="report-correlations-and-descriptive-statistics">Report correlations and descriptive statistics<a class="anchor" aria-label="anchor" href="#report-correlations-and-descriptive-statistics"></a>
 </h2>
 <p>At the start of a data analysis project, we are often interested in descriptive statistics, variable distributions and correlations. As far as numerical variables are concerned, all of them can be reported in a pretty table with the <code><a href="../reference/report_cor_table.html">report_cor_table()</a></code> function. That function needs a correlation matrix as its first argument, which can usually be created with the <code><a href="../reference/cor_matrix.html">cor_matrix()</a></code> function.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ess_health</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">agea</span>, <span class="va">health</span>, <span class="va">depression</span>, <span class="va">healthy_eating</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="../reference/cor_matrix.html">cor_matrix</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="../reference/report_cor_table.html">report_cor_table</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<div id="zvtykxppta" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="bujdaeavhb" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: times, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#zvtykxppta .gt_table {
+#bujdaeavhb .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -188,7 +175,7 @@
   border-left-color: #D3D3D3;
 }
 
-#zvtykxppta .gt_heading {
+#bujdaeavhb .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -200,7 +187,7 @@
   border-right-color: #D3D3D3;
 }
 
-#zvtykxppta .gt_title {
+#bujdaeavhb .gt_title {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -212,7 +199,7 @@
   border-bottom-width: 0;
 }
 
-#zvtykxppta .gt_subtitle {
+#bujdaeavhb .gt_subtitle {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -224,13 +211,13 @@
   border-top-width: 0;
 }
 
-#zvtykxppta .gt_bottom_border {
+#bujdaeavhb .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #000000;
 }
 
-#zvtykxppta .gt_col_headings {
+#bujdaeavhb .gt_col_headings {
   border-top-style: none;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -245,7 +232,7 @@
   border-right-color: #D3D3D3;
 }
 
-#zvtykxppta .gt_col_heading {
+#bujdaeavhb .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -265,7 +252,7 @@
   overflow-x: hidden;
 }
 
-#zvtykxppta .gt_column_spanner_outer {
+#bujdaeavhb .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -277,15 +264,15 @@
   padding-right: 4px;
 }
 
-#zvtykxppta .gt_column_spanner_outer:first-child {
+#bujdaeavhb .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#zvtykxppta .gt_column_spanner_outer:last-child {
+#bujdaeavhb .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#zvtykxppta .gt_column_spanner {
+#bujdaeavhb .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 1px;
   border-bottom-color: #000000;
@@ -297,7 +284,7 @@
   width: 100%;
 }
 
-#zvtykxppta .gt_group_heading {
+#bujdaeavhb .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -322,7 +309,7 @@
   vertical-align: middle;
 }
 
-#zvtykxppta .gt_empty_group_heading {
+#bujdaeavhb .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -337,15 +324,15 @@
   vertical-align: middle;
 }
 
-#zvtykxppta .gt_from_md > :first-child {
+#bujdaeavhb .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#zvtykxppta .gt_from_md > :last-child {
+#bujdaeavhb .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#zvtykxppta .gt_row {
+#bujdaeavhb .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -364,7 +351,7 @@
   overflow-x: hidden;
 }
 
-#zvtykxppta .gt_stub {
+#bujdaeavhb .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -377,7 +364,7 @@
   padding-right: 5px;
 }
 
-#zvtykxppta .gt_stub_row_group {
+#bujdaeavhb .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -391,11 +378,11 @@
   vertical-align: top;
 }
 
-#zvtykxppta .gt_row_group_first td {
+#bujdaeavhb .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#zvtykxppta .gt_summary_row {
+#bujdaeavhb .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -405,16 +392,16 @@
   padding-right: 5px;
 }
 
-#zvtykxppta .gt_first_summary_row {
+#bujdaeavhb .gt_first_summary_row {
   border-top-style: none;
   border-top-color: #D3D3D3;
 }
 
-#zvtykxppta .gt_first_summary_row.thick {
+#bujdaeavhb .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#zvtykxppta .gt_last_summary_row {
+#bujdaeavhb .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -424,7 +411,7 @@
   border-bottom-color: #D3D3D3;
 }
 
-#zvtykxppta .gt_grand_summary_row {
+#bujdaeavhb .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -434,7 +421,7 @@
   padding-right: 5px;
 }
 
-#zvtykxppta .gt_first_grand_summary_row {
+#bujdaeavhb .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -444,11 +431,11 @@
   border-top-color: #D3D3D3;
 }
 
-#zvtykxppta .gt_striped {
+#bujdaeavhb .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#zvtykxppta .gt_table_body {
+#bujdaeavhb .gt_table_body {
   border-top-style: solid;
   border-top-width: 1px;
   border-top-color: #000000;
@@ -457,7 +444,7 @@
   border-bottom-color: #000000;
 }
 
-#zvtykxppta .gt_footnotes {
+#bujdaeavhb .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -471,7 +458,7 @@
   border-right-color: #D3D3D3;
 }
 
-#zvtykxppta .gt_footnote {
+#bujdaeavhb .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -480,7 +467,7 @@
   padding-right: 5px;
 }
 
-#zvtykxppta .gt_sourcenotes {
+#bujdaeavhb .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -494,7 +481,7 @@
   border-right-color: #D3D3D3;
 }
 
-#zvtykxppta .gt_sourcenote {
+#bujdaeavhb .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -502,60 +489,69 @@
   padding-right: 5px;
 }
 
-#zvtykxppta .gt_left {
+#bujdaeavhb .gt_left {
   text-align: left;
 }
 
-#zvtykxppta .gt_center {
+#bujdaeavhb .gt_center {
   text-align: center;
 }
 
-#zvtykxppta .gt_right {
+#bujdaeavhb .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#zvtykxppta .gt_font_normal {
+#bujdaeavhb .gt_font_normal {
   font-weight: normal;
 }
 
-#zvtykxppta .gt_font_bold {
+#bujdaeavhb .gt_font_bold {
   font-weight: bold;
 }
 
-#zvtykxppta .gt_font_italic {
+#bujdaeavhb .gt_font_italic {
   font-style: italic;
 }
 
-#zvtykxppta .gt_super {
+#bujdaeavhb .gt_super {
   font-size: 65%;
 }
 
-#zvtykxppta .gt_footnote_marks {
+#bujdaeavhb .gt_two_val_uncert {
+  display: inline-block;
+  line-height: 1em;
+  text-align: right;
+  font-size: 60%;
+  vertical-align: -0.25em;
+  margin-left: 0.1em;
+}
+
+#bujdaeavhb .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#zvtykxppta .gt_asterisk {
+#bujdaeavhb .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#zvtykxppta .gt_slash_mark {
+#bujdaeavhb .gt_slash_mark {
   font-size: 0.7em;
   line-height: 0.7em;
   vertical-align: 0.15em;
 }
 
-#zvtykxppta .gt_fraction_numerator {
+#bujdaeavhb .gt_fraction_numerator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: 0.45em;
 }
 
-#zvtykxppta .gt_fraction_denominator {
+#bujdaeavhb .gt_fraction_denominator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: -0.05em;
@@ -645,7 +641,7 @@
 </table>
 </div>
 <p>It is often helpful to use different variable names for display. For this, functions in the package typically accept rename tibbles that contain an <code>old</code> and a <code>new</code> column. By using the <code><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tibble::tribble</a></code> notation, they can be entered more cleanly that named character vectors, and the <code>get_rename_tribble()</code> helper function creates most of the code.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#Use get_rename_tribbles to get most of this code</span>
 <span class="va">var_renames</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span>
   <span class="op">~</span><span class="va">old</span>,             <span class="op">~</span><span class="va">new</span>,             
@@ -658,12 +654,12 @@
 <span class="co"># If var_names are provided, only variables included in that argument </span>
 <span class="co"># are included in the correlation table</span>
 <span class="va">ess_health</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/cor_matrix.html">cor_matrix</a></span><span class="op">(</span>var_names <span class="op">=</span> <span class="va">var_renames</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/report_cor_table.html">report_cor_table</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<div id="aetobjyyoo" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="uckecgkznz" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: times, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#aetobjyyoo .gt_table {
+#uckecgkznz .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -688,7 +684,7 @@
   border-left-color: #D3D3D3;
 }
 
-#aetobjyyoo .gt_heading {
+#uckecgkznz .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -700,7 +696,7 @@
   border-right-color: #D3D3D3;
 }
 
-#aetobjyyoo .gt_title {
+#uckecgkznz .gt_title {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -712,7 +708,7 @@
   border-bottom-width: 0;
 }
 
-#aetobjyyoo .gt_subtitle {
+#uckecgkznz .gt_subtitle {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -724,13 +720,13 @@
   border-top-width: 0;
 }
 
-#aetobjyyoo .gt_bottom_border {
+#uckecgkznz .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #000000;
 }
 
-#aetobjyyoo .gt_col_headings {
+#uckecgkznz .gt_col_headings {
   border-top-style: none;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -745,7 +741,7 @@
   border-right-color: #D3D3D3;
 }
 
-#aetobjyyoo .gt_col_heading {
+#uckecgkznz .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -765,7 +761,7 @@
   overflow-x: hidden;
 }
 
-#aetobjyyoo .gt_column_spanner_outer {
+#uckecgkznz .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -777,15 +773,15 @@
   padding-right: 4px;
 }
 
-#aetobjyyoo .gt_column_spanner_outer:first-child {
+#uckecgkznz .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#aetobjyyoo .gt_column_spanner_outer:last-child {
+#uckecgkznz .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#aetobjyyoo .gt_column_spanner {
+#uckecgkznz .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 1px;
   border-bottom-color: #000000;
@@ -797,7 +793,7 @@
   width: 100%;
 }
 
-#aetobjyyoo .gt_group_heading {
+#uckecgkznz .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -822,7 +818,7 @@
   vertical-align: middle;
 }
 
-#aetobjyyoo .gt_empty_group_heading {
+#uckecgkznz .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -837,15 +833,15 @@
   vertical-align: middle;
 }
 
-#aetobjyyoo .gt_from_md > :first-child {
+#uckecgkznz .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#aetobjyyoo .gt_from_md > :last-child {
+#uckecgkznz .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#aetobjyyoo .gt_row {
+#uckecgkznz .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -864,7 +860,7 @@
   overflow-x: hidden;
 }
 
-#aetobjyyoo .gt_stub {
+#uckecgkznz .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -877,7 +873,7 @@
   padding-right: 5px;
 }
 
-#aetobjyyoo .gt_stub_row_group {
+#uckecgkznz .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -891,11 +887,11 @@
   vertical-align: top;
 }
 
-#aetobjyyoo .gt_row_group_first td {
+#uckecgkznz .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#aetobjyyoo .gt_summary_row {
+#uckecgkznz .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -905,16 +901,16 @@
   padding-right: 5px;
 }
 
-#aetobjyyoo .gt_first_summary_row {
+#uckecgkznz .gt_first_summary_row {
   border-top-style: none;
   border-top-color: #D3D3D3;
 }
 
-#aetobjyyoo .gt_first_summary_row.thick {
+#uckecgkznz .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#aetobjyyoo .gt_last_summary_row {
+#uckecgkznz .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -924,7 +920,7 @@
   border-bottom-color: #D3D3D3;
 }
 
-#aetobjyyoo .gt_grand_summary_row {
+#uckecgkznz .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -934,7 +930,7 @@
   padding-right: 5px;
 }
 
-#aetobjyyoo .gt_first_grand_summary_row {
+#uckecgkznz .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -944,11 +940,11 @@
   border-top-color: #D3D3D3;
 }
 
-#aetobjyyoo .gt_striped {
+#uckecgkznz .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#aetobjyyoo .gt_table_body {
+#uckecgkznz .gt_table_body {
   border-top-style: solid;
   border-top-width: 1px;
   border-top-color: #000000;
@@ -957,7 +953,7 @@
   border-bottom-color: #000000;
 }
 
-#aetobjyyoo .gt_footnotes {
+#uckecgkznz .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -971,7 +967,7 @@
   border-right-color: #D3D3D3;
 }
 
-#aetobjyyoo .gt_footnote {
+#uckecgkznz .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -980,7 +976,7 @@
   padding-right: 5px;
 }
 
-#aetobjyyoo .gt_sourcenotes {
+#uckecgkznz .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -994,7 +990,7 @@
   border-right-color: #D3D3D3;
 }
 
-#aetobjyyoo .gt_sourcenote {
+#uckecgkznz .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1002,60 +998,69 @@
   padding-right: 5px;
 }
 
-#aetobjyyoo .gt_left {
+#uckecgkznz .gt_left {
   text-align: left;
 }
 
-#aetobjyyoo .gt_center {
+#uckecgkznz .gt_center {
   text-align: center;
 }
 
-#aetobjyyoo .gt_right {
+#uckecgkznz .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#aetobjyyoo .gt_font_normal {
+#uckecgkznz .gt_font_normal {
   font-weight: normal;
 }
 
-#aetobjyyoo .gt_font_bold {
+#uckecgkznz .gt_font_bold {
   font-weight: bold;
 }
 
-#aetobjyyoo .gt_font_italic {
+#uckecgkznz .gt_font_italic {
   font-style: italic;
 }
 
-#aetobjyyoo .gt_super {
+#uckecgkznz .gt_super {
   font-size: 65%;
 }
 
-#aetobjyyoo .gt_footnote_marks {
+#uckecgkznz .gt_two_val_uncert {
+  display: inline-block;
+  line-height: 1em;
+  text-align: right;
+  font-size: 60%;
+  vertical-align: -0.25em;
+  margin-left: 0.1em;
+}
+
+#uckecgkznz .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#aetobjyyoo .gt_asterisk {
+#uckecgkznz .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#aetobjyyoo .gt_slash_mark {
+#uckecgkznz .gt_slash_mark {
   font-size: 0.7em;
   line-height: 0.7em;
   vertical-align: 0.15em;
 }
 
-#aetobjyyoo .gt_fraction_numerator {
+#uckecgkznz .gt_fraction_numerator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: 0.45em;
 }
 
-#aetobjyyoo .gt_fraction_denominator {
+#uckecgkznz .gt_fraction_denominator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: -0.05em;
@@ -1145,15 +1150,15 @@
 </table>
 </div>
 <p>Often, it is interesting to also <strong>include variable distributions</strong> into this initial data summary table. This can also be done with the <code><a href="../reference/report_cor_table.html">report_cor_table()</a></code> function. By default, variables with 5 distinct values or fewer are shown with a histogram, while for those with more values, a density plot is provided - but this can be changed with the <code>plot_type</code> argument.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ess_health</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/cor_matrix.html">cor_matrix</a></span><span class="op">(</span>var_names <span class="op">=</span> <span class="va">var_renames</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="../reference/report_cor_table.html">report_cor_table</a></span><span class="op">(</span>add_distributions <span class="op">=</span> <span class="cn">TRUE</span>, data <span class="op">=</span> <span class="va">ess_health</span><span class="op">)</span></code></pre></div>
-<div id="owiipdyvbt" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="yybvekuffg" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: times, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#owiipdyvbt .gt_table {
+#yybvekuffg .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -1178,7 +1183,7 @@
   border-left-color: #D3D3D3;
 }
 
-#owiipdyvbt .gt_heading {
+#yybvekuffg .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1190,7 +1195,7 @@
   border-right-color: #D3D3D3;
 }
 
-#owiipdyvbt .gt_title {
+#yybvekuffg .gt_title {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -1202,7 +1207,7 @@
   border-bottom-width: 0;
 }
 
-#owiipdyvbt .gt_subtitle {
+#yybvekuffg .gt_subtitle {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -1214,13 +1219,13 @@
   border-top-width: 0;
 }
 
-#owiipdyvbt .gt_bottom_border {
+#yybvekuffg .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #000000;
 }
 
-#owiipdyvbt .gt_col_headings {
+#yybvekuffg .gt_col_headings {
   border-top-style: none;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1235,7 +1240,7 @@
   border-right-color: #D3D3D3;
 }
 
-#owiipdyvbt .gt_col_heading {
+#yybvekuffg .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1255,7 +1260,7 @@
   overflow-x: hidden;
 }
 
-#owiipdyvbt .gt_column_spanner_outer {
+#yybvekuffg .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1267,15 +1272,15 @@
   padding-right: 4px;
 }
 
-#owiipdyvbt .gt_column_spanner_outer:first-child {
+#yybvekuffg .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#owiipdyvbt .gt_column_spanner_outer:last-child {
+#yybvekuffg .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#owiipdyvbt .gt_column_spanner {
+#yybvekuffg .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 1px;
   border-bottom-color: #000000;
@@ -1287,7 +1292,7 @@
   width: 100%;
 }
 
-#owiipdyvbt .gt_group_heading {
+#yybvekuffg .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1312,7 +1317,7 @@
   vertical-align: middle;
 }
 
-#owiipdyvbt .gt_empty_group_heading {
+#yybvekuffg .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1327,15 +1332,15 @@
   vertical-align: middle;
 }
 
-#owiipdyvbt .gt_from_md > :first-child {
+#yybvekuffg .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#owiipdyvbt .gt_from_md > :last-child {
+#yybvekuffg .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#owiipdyvbt .gt_row {
+#yybvekuffg .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1354,7 +1359,7 @@
   overflow-x: hidden;
 }
 
-#owiipdyvbt .gt_stub {
+#yybvekuffg .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1367,7 +1372,7 @@
   padding-right: 5px;
 }
 
-#owiipdyvbt .gt_stub_row_group {
+#yybvekuffg .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1381,11 +1386,11 @@
   vertical-align: top;
 }
 
-#owiipdyvbt .gt_row_group_first td {
+#yybvekuffg .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#owiipdyvbt .gt_summary_row {
+#yybvekuffg .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1395,16 +1400,16 @@
   padding-right: 5px;
 }
 
-#owiipdyvbt .gt_first_summary_row {
+#yybvekuffg .gt_first_summary_row {
   border-top-style: none;
   border-top-color: #D3D3D3;
 }
 
-#owiipdyvbt .gt_first_summary_row.thick {
+#yybvekuffg .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#owiipdyvbt .gt_last_summary_row {
+#yybvekuffg .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1414,7 +1419,7 @@
   border-bottom-color: #D3D3D3;
 }
 
-#owiipdyvbt .gt_grand_summary_row {
+#yybvekuffg .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1424,7 +1429,7 @@
   padding-right: 5px;
 }
 
-#owiipdyvbt .gt_first_grand_summary_row {
+#yybvekuffg .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1434,11 +1439,11 @@
   border-top-color: #D3D3D3;
 }
 
-#owiipdyvbt .gt_striped {
+#yybvekuffg .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#owiipdyvbt .gt_table_body {
+#yybvekuffg .gt_table_body {
   border-top-style: solid;
   border-top-width: 1px;
   border-top-color: #000000;
@@ -1447,7 +1452,7 @@
   border-bottom-color: #000000;
 }
 
-#owiipdyvbt .gt_footnotes {
+#yybvekuffg .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1461,7 +1466,7 @@
   border-right-color: #D3D3D3;
 }
 
-#owiipdyvbt .gt_footnote {
+#yybvekuffg .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -1470,7 +1475,7 @@
   padding-right: 5px;
 }
 
-#owiipdyvbt .gt_sourcenotes {
+#yybvekuffg .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1484,7 +1489,7 @@
   border-right-color: #D3D3D3;
 }
 
-#owiipdyvbt .gt_sourcenote {
+#yybvekuffg .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1492,60 +1497,69 @@
   padding-right: 5px;
 }
 
-#owiipdyvbt .gt_left {
+#yybvekuffg .gt_left {
   text-align: left;
 }
 
-#owiipdyvbt .gt_center {
+#yybvekuffg .gt_center {
   text-align: center;
 }
 
-#owiipdyvbt .gt_right {
+#yybvekuffg .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#owiipdyvbt .gt_font_normal {
+#yybvekuffg .gt_font_normal {
   font-weight: normal;
 }
 
-#owiipdyvbt .gt_font_bold {
+#yybvekuffg .gt_font_bold {
   font-weight: bold;
 }
 
-#owiipdyvbt .gt_font_italic {
+#yybvekuffg .gt_font_italic {
   font-style: italic;
 }
 
-#owiipdyvbt .gt_super {
+#yybvekuffg .gt_super {
   font-size: 65%;
 }
 
-#owiipdyvbt .gt_footnote_marks {
+#yybvekuffg .gt_two_val_uncert {
+  display: inline-block;
+  line-height: 1em;
+  text-align: right;
+  font-size: 60%;
+  vertical-align: -0.25em;
+  margin-left: 0.1em;
+}
+
+#yybvekuffg .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#owiipdyvbt .gt_asterisk {
+#yybvekuffg .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#owiipdyvbt .gt_slash_mark {
+#yybvekuffg .gt_slash_mark {
   font-size: 0.7em;
   line-height: 0.7em;
   vertical-align: 0.15em;
 }
 
-#owiipdyvbt .gt_fraction_numerator {
+#yybvekuffg .gt_fraction_numerator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: 0.45em;
 }
 
-#owiipdyvbt .gt_fraction_denominator {
+#yybvekuffg .gt_fraction_denominator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: -0.05em;
@@ -1645,7 +1659,7 @@
 </h2>
 <p>Often, we are also interested in how the means of an outcome variable differ between different groups. It can be fiddly to get these tables and the pairwise significance tests done, but this function does it in a breeze.</p>
 <p>If you want to rename variable levels as well as names, the <code><a href="../reference/get_rename_tribbles.html">get_rename_tribbles()</a></code> function becomes a real timesaver.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Start with get_rename_tribbles(ess_health, gndr, cntry) in the console</span>
 
 <span class="va">var_renames</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span>
@@ -1663,19 +1677,19 @@
     <span class="st">"cntry"</span>,  <span class="st">"GB"</span>,       <span class="st">"UK"</span>
 <span class="op">)</span></code></pre></div>
 <p>Then run <code><a href="../reference/report_cat_vars.html">report_cat_vars()</a></code> to get a table with the distribution of the categories and their association with the outcome variable.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/report_cat_vars.html">report_cat_vars</a></span><span class="op">(</span><span class="va">ess_health</span>, <span class="va">health</span>, <span class="va">gndr</span>, <span class="va">cntry</span>, var_names <span class="op">=</span> <span class="va">var_renames</span>, 
               level_names <span class="op">=</span> <span class="va">level_renames</span><span class="op">)</span></code></pre></div>
 
 
 <meta charset="utf-8">
 <style>body{background-color:white;}</style>
-<div id="luqkuoeumx" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="uuhhybhpcc" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: times, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#luqkuoeumx .gt_table {
+#uuhhybhpcc .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -1700,7 +1714,7 @@
   border-left-color: #D3D3D3;
 }
 
-#luqkuoeumx .gt_heading {
+#uuhhybhpcc .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1712,7 +1726,7 @@
   border-right-color: #D3D3D3;
 }
 
-#luqkuoeumx .gt_title {
+#uuhhybhpcc .gt_title {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -1724,7 +1738,7 @@
   border-bottom-width: 0;
 }
 
-#luqkuoeumx .gt_subtitle {
+#uuhhybhpcc .gt_subtitle {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -1736,13 +1750,13 @@
   border-top-width: 0;
 }
 
-#luqkuoeumx .gt_bottom_border {
+#uuhhybhpcc .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #000000;
 }
 
-#luqkuoeumx .gt_col_headings {
+#uuhhybhpcc .gt_col_headings {
   border-top-style: none;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1757,7 +1771,7 @@
   border-right-color: #D3D3D3;
 }
 
-#luqkuoeumx .gt_col_heading {
+#uuhhybhpcc .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1777,7 +1791,7 @@
   overflow-x: hidden;
 }
 
-#luqkuoeumx .gt_column_spanner_outer {
+#uuhhybhpcc .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1789,15 +1803,15 @@
   padding-right: 4px;
 }
 
-#luqkuoeumx .gt_column_spanner_outer:first-child {
+#uuhhybhpcc .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#luqkuoeumx .gt_column_spanner_outer:last-child {
+#uuhhybhpcc .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#luqkuoeumx .gt_column_spanner {
+#uuhhybhpcc .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 1px;
   border-bottom-color: #000000;
@@ -1809,7 +1823,7 @@
   width: 100%;
 }
 
-#luqkuoeumx .gt_group_heading {
+#uuhhybhpcc .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1834,7 +1848,7 @@
   vertical-align: middle;
 }
 
-#luqkuoeumx .gt_empty_group_heading {
+#uuhhybhpcc .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1849,15 +1863,15 @@
   vertical-align: middle;
 }
 
-#luqkuoeumx .gt_from_md > :first-child {
+#uuhhybhpcc .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#luqkuoeumx .gt_from_md > :last-child {
+#uuhhybhpcc .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#luqkuoeumx .gt_row {
+#uuhhybhpcc .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1876,7 +1890,7 @@
   overflow-x: hidden;
 }
 
-#luqkuoeumx .gt_stub {
+#uuhhybhpcc .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1889,7 +1903,7 @@
   padding-right: 5px;
 }
 
-#luqkuoeumx .gt_stub_row_group {
+#uuhhybhpcc .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1903,11 +1917,11 @@
   vertical-align: top;
 }
 
-#luqkuoeumx .gt_row_group_first td {
+#uuhhybhpcc .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#luqkuoeumx .gt_summary_row {
+#uuhhybhpcc .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1917,16 +1931,16 @@
   padding-right: 5px;
 }
 
-#luqkuoeumx .gt_first_summary_row {
+#uuhhybhpcc .gt_first_summary_row {
   border-top-style: none;
   border-top-color: #D3D3D3;
 }
 
-#luqkuoeumx .gt_first_summary_row.thick {
+#uuhhybhpcc .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#luqkuoeumx .gt_last_summary_row {
+#uuhhybhpcc .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1936,7 +1950,7 @@
   border-bottom-color: #D3D3D3;
 }
 
-#luqkuoeumx .gt_grand_summary_row {
+#uuhhybhpcc .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1946,7 +1960,7 @@
   padding-right: 5px;
 }
 
-#luqkuoeumx .gt_first_grand_summary_row {
+#uuhhybhpcc .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1956,11 +1970,11 @@
   border-top-color: #D3D3D3;
 }
 
-#luqkuoeumx .gt_striped {
+#uuhhybhpcc .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#luqkuoeumx .gt_table_body {
+#uuhhybhpcc .gt_table_body {
   border-top-style: solid;
   border-top-width: 1px;
   border-top-color: #000000;
@@ -1969,7 +1983,7 @@
   border-bottom-color: #000000;
 }
 
-#luqkuoeumx .gt_footnotes {
+#uuhhybhpcc .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1983,7 +1997,7 @@
   border-right-color: #D3D3D3;
 }
 
-#luqkuoeumx .gt_footnote {
+#uuhhybhpcc .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -1992,7 +2006,7 @@
   padding-right: 5px;
 }
 
-#luqkuoeumx .gt_sourcenotes {
+#uuhhybhpcc .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2006,7 +2020,7 @@
   border-right-color: #D3D3D3;
 }
 
-#luqkuoeumx .gt_sourcenote {
+#uuhhybhpcc .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2014,60 +2028,69 @@
   padding-right: 5px;
 }
 
-#luqkuoeumx .gt_left {
+#uuhhybhpcc .gt_left {
   text-align: left;
 }
 
-#luqkuoeumx .gt_center {
+#uuhhybhpcc .gt_center {
   text-align: center;
 }
 
-#luqkuoeumx .gt_right {
+#uuhhybhpcc .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#luqkuoeumx .gt_font_normal {
+#uuhhybhpcc .gt_font_normal {
   font-weight: normal;
 }
 
-#luqkuoeumx .gt_font_bold {
+#uuhhybhpcc .gt_font_bold {
   font-weight: bold;
 }
 
-#luqkuoeumx .gt_font_italic {
+#uuhhybhpcc .gt_font_italic {
   font-style: italic;
 }
 
-#luqkuoeumx .gt_super {
+#uuhhybhpcc .gt_super {
   font-size: 65%;
 }
 
-#luqkuoeumx .gt_footnote_marks {
+#uuhhybhpcc .gt_two_val_uncert {
+  display: inline-block;
+  line-height: 1em;
+  text-align: right;
+  font-size: 60%;
+  vertical-align: -0.25em;
+  margin-left: 0.1em;
+}
+
+#uuhhybhpcc .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#luqkuoeumx .gt_asterisk {
+#uuhhybhpcc .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#luqkuoeumx .gt_slash_mark {
+#uuhhybhpcc .gt_slash_mark {
   font-size: 0.7em;
   line-height: 0.7em;
   vertical-align: 0.15em;
 }
 
-#luqkuoeumx .gt_fraction_numerator {
+#uuhhybhpcc .gt_fraction_numerator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: 0.45em;
 }
 
-#luqkuoeumx .gt_fraction_denominator {
+#uuhhybhpcc .gt_fraction_denominator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: -0.05em;
@@ -2225,7 +2248,7 @@ Within each variable, the means of groups with different superscripts differ wit
 </h2>
 <p>In psychology, it is often expected that regression models are reported with both unstandardised (B) and standardized (β) coefficients. This can be fiddly and lead to redundant information. The <code><a href="../reference/lm_std.html">lm_std()</a></code> function easily runs linear regression models that return standardised coefficients and the <code><a href="../reference/report_lm_with_std.html">report_lm_with_std()</a></code> function creates side-by-side regression tables that minimize redundancy.</p>
 <p>At the most basic, you just need to run two models and pass them to the reporting function:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ess_health</span><span class="op">$</span><span class="va">gndr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">ess_health</span><span class="op">$</span><span class="va">gndr</span><span class="op">)</span>
 
 <span class="co">#Standard lm model</span>
@@ -2239,12 +2262,12 @@ Within each variable, the means of groups with different superscripts differ wit
 
 <meta charset="utf-8">
 <style>body{background-color:white;}</style>
-<div id="wiiifnuscf" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="edehntduce" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: times, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#wiiifnuscf .gt_table {
+#edehntduce .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -2269,7 +2292,7 @@ Within each variable, the means of groups with different superscripts differ wit
   border-left-color: #D3D3D3;
 }
 
-#wiiifnuscf .gt_heading {
+#edehntduce .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2281,7 +2304,7 @@ Within each variable, the means of groups with different superscripts differ wit
   border-right-color: #D3D3D3;
 }
 
-#wiiifnuscf .gt_title {
+#edehntduce .gt_title {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -2293,7 +2316,7 @@ Within each variable, the means of groups with different superscripts differ wit
   border-bottom-width: 0;
 }
 
-#wiiifnuscf .gt_subtitle {
+#edehntduce .gt_subtitle {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -2305,13 +2328,13 @@ Within each variable, the means of groups with different superscripts differ wit
   border-top-width: 0;
 }
 
-#wiiifnuscf .gt_bottom_border {
+#edehntduce .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #000000;
 }
 
-#wiiifnuscf .gt_col_headings {
+#edehntduce .gt_col_headings {
   border-top-style: none;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2326,7 +2349,7 @@ Within each variable, the means of groups with different superscripts differ wit
   border-right-color: #D3D3D3;
 }
 
-#wiiifnuscf .gt_col_heading {
+#edehntduce .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2346,7 +2369,7 @@ Within each variable, the means of groups with different superscripts differ wit
   overflow-x: hidden;
 }
 
-#wiiifnuscf .gt_column_spanner_outer {
+#edehntduce .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2358,15 +2381,15 @@ Within each variable, the means of groups with different superscripts differ wit
   padding-right: 4px;
 }
 
-#wiiifnuscf .gt_column_spanner_outer:first-child {
+#edehntduce .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#wiiifnuscf .gt_column_spanner_outer:last-child {
+#edehntduce .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#wiiifnuscf .gt_column_spanner {
+#edehntduce .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 1px;
   border-bottom-color: #000000;
@@ -2378,7 +2401,7 @@ Within each variable, the means of groups with different superscripts differ wit
   width: 100%;
 }
 
-#wiiifnuscf .gt_group_heading {
+#edehntduce .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2403,7 +2426,7 @@ Within each variable, the means of groups with different superscripts differ wit
   vertical-align: middle;
 }
 
-#wiiifnuscf .gt_empty_group_heading {
+#edehntduce .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2418,15 +2441,15 @@ Within each variable, the means of groups with different superscripts differ wit
   vertical-align: middle;
 }
 
-#wiiifnuscf .gt_from_md > :first-child {
+#edehntduce .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#wiiifnuscf .gt_from_md > :last-child {
+#edehntduce .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#wiiifnuscf .gt_row {
+#edehntduce .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2445,7 +2468,7 @@ Within each variable, the means of groups with different superscripts differ wit
   overflow-x: hidden;
 }
 
-#wiiifnuscf .gt_stub {
+#edehntduce .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2458,7 +2481,7 @@ Within each variable, the means of groups with different superscripts differ wit
   padding-right: 5px;
 }
 
-#wiiifnuscf .gt_stub_row_group {
+#edehntduce .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2472,11 +2495,11 @@ Within each variable, the means of groups with different superscripts differ wit
   vertical-align: top;
 }
 
-#wiiifnuscf .gt_row_group_first td {
+#edehntduce .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#wiiifnuscf .gt_summary_row {
+#edehntduce .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2486,16 +2509,16 @@ Within each variable, the means of groups with different superscripts differ wit
   padding-right: 5px;
 }
 
-#wiiifnuscf .gt_first_summary_row {
+#edehntduce .gt_first_summary_row {
   border-top-style: none;
   border-top-color: #D3D3D3;
 }
 
-#wiiifnuscf .gt_first_summary_row.thick {
+#edehntduce .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#wiiifnuscf .gt_last_summary_row {
+#edehntduce .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2505,7 +2528,7 @@ Within each variable, the means of groups with different superscripts differ wit
   border-bottom-color: #D3D3D3;
 }
 
-#wiiifnuscf .gt_grand_summary_row {
+#edehntduce .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2515,7 +2538,7 @@ Within each variable, the means of groups with different superscripts differ wit
   padding-right: 5px;
 }
 
-#wiiifnuscf .gt_first_grand_summary_row {
+#edehntduce .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2525,11 +2548,11 @@ Within each variable, the means of groups with different superscripts differ wit
   border-top-color: #D3D3D3;
 }
 
-#wiiifnuscf .gt_striped {
+#edehntduce .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#wiiifnuscf .gt_table_body {
+#edehntduce .gt_table_body {
   border-top-style: solid;
   border-top-width: 1px;
   border-top-color: #000000;
@@ -2538,7 +2561,7 @@ Within each variable, the means of groups with different superscripts differ wit
   border-bottom-color: #000000;
 }
 
-#wiiifnuscf .gt_footnotes {
+#edehntduce .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2552,7 +2575,7 @@ Within each variable, the means of groups with different superscripts differ wit
   border-right-color: #D3D3D3;
 }
 
-#wiiifnuscf .gt_footnote {
+#edehntduce .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -2561,7 +2584,7 @@ Within each variable, the means of groups with different superscripts differ wit
   padding-right: 5px;
 }
 
-#wiiifnuscf .gt_sourcenotes {
+#edehntduce .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2575,7 +2598,7 @@ Within each variable, the means of groups with different superscripts differ wit
   border-right-color: #D3D3D3;
 }
 
-#wiiifnuscf .gt_sourcenote {
+#edehntduce .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2583,60 +2606,69 @@ Within each variable, the means of groups with different superscripts differ wit
   padding-right: 5px;
 }
 
-#wiiifnuscf .gt_left {
+#edehntduce .gt_left {
   text-align: left;
 }
 
-#wiiifnuscf .gt_center {
+#edehntduce .gt_center {
   text-align: center;
 }
 
-#wiiifnuscf .gt_right {
+#edehntduce .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#wiiifnuscf .gt_font_normal {
+#edehntduce .gt_font_normal {
   font-weight: normal;
 }
 
-#wiiifnuscf .gt_font_bold {
+#edehntduce .gt_font_bold {
   font-weight: bold;
 }
 
-#wiiifnuscf .gt_font_italic {
+#edehntduce .gt_font_italic {
   font-style: italic;
 }
 
-#wiiifnuscf .gt_super {
+#edehntduce .gt_super {
   font-size: 65%;
 }
 
-#wiiifnuscf .gt_footnote_marks {
+#edehntduce .gt_two_val_uncert {
+  display: inline-block;
+  line-height: 1em;
+  text-align: right;
+  font-size: 60%;
+  vertical-align: -0.25em;
+  margin-left: 0.1em;
+}
+
+#edehntduce .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#wiiifnuscf .gt_asterisk {
+#edehntduce .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#wiiifnuscf .gt_slash_mark {
+#edehntduce .gt_slash_mark {
   font-size: 0.7em;
   line-height: 0.7em;
   vertical-align: 0.15em;
 }
 
-#wiiifnuscf .gt_fraction_numerator {
+#edehntduce .gt_fraction_numerator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: 0.45em;
 }
 
-#wiiifnuscf .gt_fraction_denominator {
+#edehntduce .gt_fraction_denominator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: -0.05em;
@@ -2850,7 +2882,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
 </div>
 
 <p>Often, the coefficient names - particularly for dummy variables - are not particularly clear or pleasing. In such cases, they can be renamed easily - again, there is a helper function (<code><a href="../reference/get_coef_rename_tribble.html">get_coef_rename_tribble()</a></code>) that creates most of the necessary code. In the new names, you can use markdown formatting, for instance to add information on reference levels.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#get_coef_rename_tribble(mod1) is the starting point.</span>
 
 <span class="va">coef_names</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span>
@@ -2868,12 +2900,12 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
 
 <meta charset="utf-8">
 <style>body{background-color:white;}</style>
-<div id="mxvouoaufg" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="yzzkwxmakg" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: times, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#mxvouoaufg .gt_table {
+#yzzkwxmakg .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -2898,7 +2930,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-left-color: #D3D3D3;
 }
 
-#mxvouoaufg .gt_heading {
+#yzzkwxmakg .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2910,7 +2942,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-right-color: #D3D3D3;
 }
 
-#mxvouoaufg .gt_title {
+#yzzkwxmakg .gt_title {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -2922,7 +2954,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-bottom-width: 0;
 }
 
-#mxvouoaufg .gt_subtitle {
+#yzzkwxmakg .gt_subtitle {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -2934,13 +2966,13 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-top-width: 0;
 }
 
-#mxvouoaufg .gt_bottom_border {
+#yzzkwxmakg .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #000000;
 }
 
-#mxvouoaufg .gt_col_headings {
+#yzzkwxmakg .gt_col_headings {
   border-top-style: none;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2955,7 +2987,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-right-color: #D3D3D3;
 }
 
-#mxvouoaufg .gt_col_heading {
+#yzzkwxmakg .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2975,7 +3007,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   overflow-x: hidden;
 }
 
-#mxvouoaufg .gt_column_spanner_outer {
+#yzzkwxmakg .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2987,15 +3019,15 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 4px;
 }
 
-#mxvouoaufg .gt_column_spanner_outer:first-child {
+#yzzkwxmakg .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#mxvouoaufg .gt_column_spanner_outer:last-child {
+#yzzkwxmakg .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#mxvouoaufg .gt_column_spanner {
+#yzzkwxmakg .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 1px;
   border-bottom-color: #000000;
@@ -3007,7 +3039,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   width: 100%;
 }
 
-#mxvouoaufg .gt_group_heading {
+#yzzkwxmakg .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3032,7 +3064,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   vertical-align: middle;
 }
 
-#mxvouoaufg .gt_empty_group_heading {
+#yzzkwxmakg .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3047,15 +3079,15 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   vertical-align: middle;
 }
 
-#mxvouoaufg .gt_from_md > :first-child {
+#yzzkwxmakg .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#mxvouoaufg .gt_from_md > :last-child {
+#yzzkwxmakg .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#mxvouoaufg .gt_row {
+#yzzkwxmakg .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3074,7 +3106,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   overflow-x: hidden;
 }
 
-#mxvouoaufg .gt_stub {
+#yzzkwxmakg .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3087,7 +3119,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 5px;
 }
 
-#mxvouoaufg .gt_stub_row_group {
+#yzzkwxmakg .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3101,11 +3133,11 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   vertical-align: top;
 }
 
-#mxvouoaufg .gt_row_group_first td {
+#yzzkwxmakg .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#mxvouoaufg .gt_summary_row {
+#yzzkwxmakg .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3115,16 +3147,16 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 5px;
 }
 
-#mxvouoaufg .gt_first_summary_row {
+#yzzkwxmakg .gt_first_summary_row {
   border-top-style: none;
   border-top-color: #D3D3D3;
 }
 
-#mxvouoaufg .gt_first_summary_row.thick {
+#yzzkwxmakg .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#mxvouoaufg .gt_last_summary_row {
+#yzzkwxmakg .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3134,7 +3166,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-bottom-color: #D3D3D3;
 }
 
-#mxvouoaufg .gt_grand_summary_row {
+#yzzkwxmakg .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3144,7 +3176,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 5px;
 }
 
-#mxvouoaufg .gt_first_grand_summary_row {
+#yzzkwxmakg .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3154,11 +3186,11 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-top-color: #D3D3D3;
 }
 
-#mxvouoaufg .gt_striped {
+#yzzkwxmakg .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#mxvouoaufg .gt_table_body {
+#yzzkwxmakg .gt_table_body {
   border-top-style: solid;
   border-top-width: 1px;
   border-top-color: #000000;
@@ -3167,7 +3199,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-bottom-color: #000000;
 }
 
-#mxvouoaufg .gt_footnotes {
+#yzzkwxmakg .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3181,7 +3213,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-right-color: #D3D3D3;
 }
 
-#mxvouoaufg .gt_footnote {
+#yzzkwxmakg .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -3190,7 +3222,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 5px;
 }
 
-#mxvouoaufg .gt_sourcenotes {
+#yzzkwxmakg .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3204,7 +3236,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-right-color: #D3D3D3;
 }
 
-#mxvouoaufg .gt_sourcenote {
+#yzzkwxmakg .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -3212,60 +3244,69 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 5px;
 }
 
-#mxvouoaufg .gt_left {
+#yzzkwxmakg .gt_left {
   text-align: left;
 }
 
-#mxvouoaufg .gt_center {
+#yzzkwxmakg .gt_center {
   text-align: center;
 }
 
-#mxvouoaufg .gt_right {
+#yzzkwxmakg .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#mxvouoaufg .gt_font_normal {
+#yzzkwxmakg .gt_font_normal {
   font-weight: normal;
 }
 
-#mxvouoaufg .gt_font_bold {
+#yzzkwxmakg .gt_font_bold {
   font-weight: bold;
 }
 
-#mxvouoaufg .gt_font_italic {
+#yzzkwxmakg .gt_font_italic {
   font-style: italic;
 }
 
-#mxvouoaufg .gt_super {
+#yzzkwxmakg .gt_super {
   font-size: 65%;
 }
 
-#mxvouoaufg .gt_footnote_marks {
+#yzzkwxmakg .gt_two_val_uncert {
+  display: inline-block;
+  line-height: 1em;
+  text-align: right;
+  font-size: 60%;
+  vertical-align: -0.25em;
+  margin-left: 0.1em;
+}
+
+#yzzkwxmakg .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#mxvouoaufg .gt_asterisk {
+#yzzkwxmakg .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#mxvouoaufg .gt_slash_mark {
+#yzzkwxmakg .gt_slash_mark {
   font-size: 0.7em;
   line-height: 0.7em;
   vertical-align: 0.15em;
 }
 
-#mxvouoaufg .gt_fraction_numerator {
+#yzzkwxmakg .gt_fraction_numerator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: 0.45em;
 }
 
-#mxvouoaufg .gt_fraction_denominator {
+#yzzkwxmakg .gt_fraction_denominator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: -0.05em;
@@ -3479,7 +3520,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
 </div>
 
 <p>You can also <strong>display two nested models side-by-side and get the F-change significance test.</strong> (More models can be displayed, but not yet statistically tested against each other.) To enable model comparisons, all models need to be fitted on the same dataset, so that I will first omit missing data.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="va">ess_health</span> <span class="op">&lt;-</span> <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html" class="external-link">drop_na</a></span><span class="op">(</span><span class="va">ess_health</span><span class="op">)</span>
 
@@ -3509,12 +3550,12 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
 
 <meta charset="utf-8">
 <style>body{background-color:white;}</style>
-<div id="uvzwhhifzg" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="uznzslntay" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: times, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#uvzwhhifzg .gt_table {
+#uznzslntay .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -3539,7 +3580,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-left-color: #D3D3D3;
 }
 
-#uvzwhhifzg .gt_heading {
+#uznzslntay .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -3551,7 +3592,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-right-color: #D3D3D3;
 }
 
-#uvzwhhifzg .gt_title {
+#uznzslntay .gt_title {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -3563,7 +3604,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-bottom-width: 0;
 }
 
-#uvzwhhifzg .gt_subtitle {
+#uznzslntay .gt_subtitle {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -3575,13 +3616,13 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-top-width: 0;
 }
 
-#uvzwhhifzg .gt_bottom_border {
+#uznzslntay .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #000000;
 }
 
-#uvzwhhifzg .gt_col_headings {
+#uznzslntay .gt_col_headings {
   border-top-style: none;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3596,7 +3637,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-right-color: #D3D3D3;
 }
 
-#uvzwhhifzg .gt_col_heading {
+#uznzslntay .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3616,7 +3657,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   overflow-x: hidden;
 }
 
-#uvzwhhifzg .gt_column_spanner_outer {
+#uznzslntay .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3628,15 +3669,15 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 4px;
 }
 
-#uvzwhhifzg .gt_column_spanner_outer:first-child {
+#uznzslntay .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#uvzwhhifzg .gt_column_spanner_outer:last-child {
+#uznzslntay .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#uvzwhhifzg .gt_column_spanner {
+#uznzslntay .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 1px;
   border-bottom-color: #000000;
@@ -3648,7 +3689,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   width: 100%;
 }
 
-#uvzwhhifzg .gt_group_heading {
+#uznzslntay .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3673,7 +3714,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   vertical-align: middle;
 }
 
-#uvzwhhifzg .gt_empty_group_heading {
+#uznzslntay .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3688,15 +3729,15 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   vertical-align: middle;
 }
 
-#uvzwhhifzg .gt_from_md > :first-child {
+#uznzslntay .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#uvzwhhifzg .gt_from_md > :last-child {
+#uznzslntay .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#uvzwhhifzg .gt_row {
+#uznzslntay .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3715,7 +3756,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   overflow-x: hidden;
 }
 
-#uvzwhhifzg .gt_stub {
+#uznzslntay .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3728,7 +3769,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 5px;
 }
 
-#uvzwhhifzg .gt_stub_row_group {
+#uznzslntay .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3742,11 +3783,11 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   vertical-align: top;
 }
 
-#uvzwhhifzg .gt_row_group_first td {
+#uznzslntay .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#uvzwhhifzg .gt_summary_row {
+#uznzslntay .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3756,16 +3797,16 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 5px;
 }
 
-#uvzwhhifzg .gt_first_summary_row {
+#uznzslntay .gt_first_summary_row {
   border-top-style: none;
   border-top-color: #D3D3D3;
 }
 
-#uvzwhhifzg .gt_first_summary_row.thick {
+#uznzslntay .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#uvzwhhifzg .gt_last_summary_row {
+#uznzslntay .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3775,7 +3816,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-bottom-color: #D3D3D3;
 }
 
-#uvzwhhifzg .gt_grand_summary_row {
+#uznzslntay .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3785,7 +3826,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 5px;
 }
 
-#uvzwhhifzg .gt_first_grand_summary_row {
+#uznzslntay .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3795,11 +3836,11 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-top-color: #D3D3D3;
 }
 
-#uvzwhhifzg .gt_striped {
+#uznzslntay .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#uvzwhhifzg .gt_table_body {
+#uznzslntay .gt_table_body {
   border-top-style: solid;
   border-top-width: 1px;
   border-top-color: #000000;
@@ -3808,7 +3849,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-bottom-color: #000000;
 }
 
-#uvzwhhifzg .gt_footnotes {
+#uznzslntay .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3822,7 +3863,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-right-color: #D3D3D3;
 }
 
-#uvzwhhifzg .gt_footnote {
+#uznzslntay .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -3831,7 +3872,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 5px;
 }
 
-#uvzwhhifzg .gt_sourcenotes {
+#uznzslntay .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3845,7 +3886,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-right-color: #D3D3D3;
 }
 
-#uvzwhhifzg .gt_sourcenote {
+#uznzslntay .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -3853,60 +3894,69 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 5px;
 }
 
-#uvzwhhifzg .gt_left {
+#uznzslntay .gt_left {
   text-align: left;
 }
 
-#uvzwhhifzg .gt_center {
+#uznzslntay .gt_center {
   text-align: center;
 }
 
-#uvzwhhifzg .gt_right {
+#uznzslntay .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#uvzwhhifzg .gt_font_normal {
+#uznzslntay .gt_font_normal {
   font-weight: normal;
 }
 
-#uvzwhhifzg .gt_font_bold {
+#uznzslntay .gt_font_bold {
   font-weight: bold;
 }
 
-#uvzwhhifzg .gt_font_italic {
+#uznzslntay .gt_font_italic {
   font-style: italic;
 }
 
-#uvzwhhifzg .gt_super {
+#uznzslntay .gt_super {
   font-size: 65%;
 }
 
-#uvzwhhifzg .gt_footnote_marks {
+#uznzslntay .gt_two_val_uncert {
+  display: inline-block;
+  line-height: 1em;
+  text-align: right;
+  font-size: 60%;
+  vertical-align: -0.25em;
+  margin-left: 0.1em;
+}
+
+#uznzslntay .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#uvzwhhifzg .gt_asterisk {
+#uznzslntay .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#uvzwhhifzg .gt_slash_mark {
+#uznzslntay .gt_slash_mark {
   font-size: 0.7em;
   line-height: 0.7em;
   vertical-align: 0.15em;
 }
 
-#uvzwhhifzg .gt_fraction_numerator {
+#uznzslntay .gt_fraction_numerator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: 0.45em;
 }
 
-#uvzwhhifzg .gt_fraction_denominator {
+#uznzslntay .gt_fraction_denominator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: -0.05em;
@@ -4335,7 +4385,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer>

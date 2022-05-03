@@ -1,10 +1,10 @@
 pandoc: 2.14.2
-pkgdown: 2.0.2
+pkgdown: 2.0.3
 pkgdown_sha: ~
 articles:
   getting_started: getting_started.html
   survey-functions: survey-functions.html
-last_built: 2022-03-16T22:46Z
+last_built: 2022-05-03T00:14Z
 urls:
   reference: https://lukaswallrich.github.io/timesaveR/reference
   article: https://lukaswallrich.github.io/timesaveR/articles
