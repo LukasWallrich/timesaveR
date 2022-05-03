@@ -77,9 +77,7 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
     
     }
   
-  if (!(add_distributions & ncol(extras) == 1)) 
-  
-  
+
   if (add_distributions) {
     if (!is.null(cor_matrix$var_renames)) {
       plots <- do.call(plot_distributions, c(list(data = data, var_names = cor_matrix$var_renames), plot_args))
