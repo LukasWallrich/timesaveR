@@ -10,6 +10,7 @@
 * Added option to use `t.test()`-style formula notion in `pairwise_t_tests()` 
 * Allow automatic reverse-coding in `make_scales()`
 * `report_cor_table()` now ensures correct ordering of extra columns if `row_names` column is included
+* Added `tidy.svy_cor_matrix()` to tidy survey-weighted correlation matrices
 
 ## Bug fixes
 * `report_polr_with_std()` works again after `broom::tidy.polr()` update broke it

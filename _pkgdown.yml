@@ -49,7 +49,7 @@ reference:
   - t_test_mi
   - paired_t_test_d
   - pairwise_t_tests
-  - svy_pairwise.t.test
+  - svy_pairwise_t_test
   - pairwise_t_test_mi
 - title: Survey functions
   desc: Functions to work with survey data
