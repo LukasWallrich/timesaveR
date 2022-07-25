@@ -475,7 +475,9 @@ svy_cor_matrix <- function(svy_data, var_names = NULL) {
     svy_data %<>%
       srvyr::select(dplyr::one_of(names(var_names)))
   }
-
+  
+  names(svy_data$variables) <- stringr::str_replace_all(names(svy_data$variables), stringr::fixed("_1"), "_.1")
+  
   cor_matrix <- jtools::svycor(~., svy_data, na.rm = TRUE, sig.stats = TRUE)
   cor_matrix$desc <- svy_data %>%
     srvyr::select_if(is.numeric) %>%
@@ -510,7 +512,8 @@ svy_cor_matrix <- function(svy_data, var_names = NULL) {
     cor_matrix$var_renames <- tibble::tibble(old = names(var_names[match(used_vars, var_names)]), new = var_names[match(used_vars, var_names)])
   }
 
-  class(cor_matrix) <- "list"
+  cor_matrix %<>% add_class("svy_cor_matrix")
+  
   cor_matrix
 }
 
@@ -794,4 +797,52 @@ tidy.cor_matrix <- function(x, both_directions = TRUE, ...) {
   out
 }
 
+#' Tidy a survey-weighted correlation matrix
+#' 
+#' This function turns the correlation matrix returned by \code{\link{svy_cor_matrix}}. Note that by default, results for both the \code{cor(A, B)} 
+#' and \code{cor(B, A)} are returned, while entries for \code{A, A}, i.e. the values on the diagonal, 
+#' are never included.
+#' 
+#' @param x A \code{svy_cor_marix} object returned from
+#' \code{\link{svy_cor_matrix}}
+#' @param both_directions Should both  \code{cor(A, B)} 
+#' and \code{cor(B, A)} be returned. Defaults to \code{TRUE}.
+#' @param ... Additional arguments. Not used. Needed to match generic signature
+#' only. 
+#' @return A \code{\link[tibble:tibble]{tibble::tibble()}} with columns:
+#' \item{column1}{Name of the first variable}
+#' \item{column2}{Name of the second variable}
+#' \item{estimate}{The estimated value of the correlation}
+#' \item{statistic}{The t-statistic used for significance testing}
+#' \item{p.value}{The two-sided p-value of the correlation}
+#' @export
+
+tidy.svy_cor_matrix <- function(x, both_directions = TRUE, ...) {
+  extras <- list(...)
+  if ("conf_level" %in% names(extras)) {
+    stop("conf_level cannot be changed in this tidy function. Please recreate the cor_matrix with the desired confidence level")
+  }
+  
+  message("Presently, confidence intervals cannot be calculated for survey-weighted correlations.")
+  
+  out <- purrr::map2(x[c(1, 4:6)], names(x[c(1, 4:6)]), function(m, name) {
+    ind <- which(lower.tri(m, diag = FALSE), arr.ind = TRUE)
+    nn <- dimnames(m)
+    res <- tibble::tibble(
+      column1 = nn[[1]][ind[, 1]],
+      column2 = nn[[2]][ind[, 2]],
+      val = m[ind]
+    )
+    names(res)[3] <- name
+    res
+  }) %>% purrr::reduce(dplyr::left_join, by = c("column1", "column2")) %>%
+    dplyr::rename(estimate = .data$cors, statistic = .data$t.values, std.error = .data$std.err, p.value = .data$p.values)
+  
+  if (both_directions) {
+    out <- out %>%
+      dplyr::rename(column2 = .data$column1, column1 = .data$column2) %>%
+      dplyr::bind_rows(out)
+  }
+  out
+}
 
