@@ -83,6 +83,10 @@ sections below):
 \item named list of \code{length(models)} variance-covariance matrices with row and column names equal to the names of your coefficient estimates.
 \item a named list of length(models) vectors with names equal to the names of your coefficient estimates. See 'Examples' section below. Warning: since this list of vectors can include arbitrary strings or numbers, \code{modelsummary} cannot automatically calculate p values. The \code{stars} argument may thus use incorrect significance thresholds when \code{vcov} is a list of vectors.
 }}
+    \item{\code{exponentiate}}{TRUE, FALSE, or logical vector of length equal to the
+number of models. If TRUE, the \code{estimate}, \code{conf.low}, and \code{conf.high}
+statistics are exponentiated, and the \code{std.error} is transformed to
+\code{exp(estimate)*std.error}.}
     \item{\code{coef_map}}{character vector. Subset, rename, and reorder coefficients.
 Coefficients omitted from this vector are omitted from the table. The order
 of the vector determines the order of the table.  \code{coef_map} can be a named
@@ -100,9 +104,10 @@ If you provide a function to \code{coef_rename}, \code{modelsummary} will create
 vector for you by deriving the new variable names from the vector of original
 term names with your function.}
     \item{\code{gof_map}}{rename, reorder, and omit goodness-of-fit statistics and other
-model information. This argument accepts 3 types of values:
+model information. This argument accepts 4 types of values:
 \itemize{
 \item NULL (default): the \code{modelsummary::gof_map} dictionary is used for formatting, and all unknown statistic are included.
+\item character vector such as \code{c("rmse", "nobs", "r.squared")}. Elements correspond to colnames in the data.frame produced by \code{get_gof(model)}. The default dictionary is used to format and rename statistics.
 \item data.frame with 3 columns named "raw", "clean", "fmt". Unknown statistics are omitted. See the 'Examples' section below.
 \item list of lists, each of which includes 3 elements named "raw", "clean", "fmt". Unknown statistics are omitted. See the 'Examples section below'.
 }}
@@ -129,7 +134,7 @@ your main table. By default, rows are appended to the bottom of the table.
 You can define a "position" attribute of integers to set the row positions.
 See Examples section below.}
     \item{\code{align}}{A string with a number of characters equal to the number of columns in
-the table (e.g., \code{align = "lcc"}).  Valid characters: l, c, r, S.
+the table (e.g., \code{align = "lcc"}).  Valid characters: l, c, r, d.
 \itemize{
 \item "l": left-aligned column
 \item "c": centered column
