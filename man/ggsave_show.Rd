@@ -20,9 +20,7 @@ ggsave_show(filename = NULL, ..., device = NULL, units = "cm")
 are combined to create the fully qualified file name. Defaults to the
 working directory.}
     \item{\code{scale}}{Multiplicative scaling factor.}
-    \item{\code{width}}{Plot size in \code{units} ("in", "cm", "mm", or "px").
-If not supplied, uses the size of current graphics device.}
-    \item{\code{height}}{Plot size in \code{units} ("in", "cm", "mm", or "px").
+    \item{\code{width,height,units}}{Plot size in \code{units} ("in", "cm", "mm", or "px").
 If not supplied, uses the size of current graphics device.}
     \item{\code{dpi}}{Plot resolution. Also accepts a string input: "retina" (320),
 "print" (300), or "screen" (72). Applies only to raster output types.}
