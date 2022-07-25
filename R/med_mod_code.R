@@ -7,7 +7,6 @@
 #' coefficients for covariates are returned as an attribute to the main results,
 #' given that they are not always reported. To access them, use 
 #' `attr(res, "CV_coefficients")` if you have saved the return of this function in `res`
-#' 
 #'
 #' @encoding UTF-8
 #' @param data Dataframe 
@@ -25,9 +24,7 @@
 #' @return Tibble with direct, total and indirect effects, based on bootstrap resamples. In addition, 'a' coefficients for paths from 
 #' X to mediators and 'b' coefficients for paths from mediators to Y are returned. Coefficients for CVs
 #' are returned as an attribute - see below.
-#' 
 #' @export
-#' 
 #' @examples
 #' # Might link between depression and self-reported health be partly explained
 #' # by reductions in physical activity level, when holding age constant?
