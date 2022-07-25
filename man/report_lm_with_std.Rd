@@ -37,6 +37,8 @@ for variables. If NULL, then the coefficients are not renamed.}
 \item integer: the number of digits to keep after the period \code{format(round(x, fmt), nsmall=fmt)}
 \item character: passed to the \code{sprintf} function (e.g., '\%.3f' keeps 3 digits with trailing zero). See \code{?sprintf}
 \item function: returns a formatted character string.
+\item NULL: does not format numbers, which allows users to include function in the "glue" strings in the \code{estimate} and \code{statistic} arguments.
+\item A named list to format distinct elements of the table differently. Names correspond to column names produced by \code{get_estimates(model)} or \code{get_gof(model)}. Values are integers, characters, or functions, as described above. The \code{fmt} element is used as default for unspecified elements Ex: \code{fmt=list("estimate"=2, "std.error"=1, "r.squared"=4, "fmt"=3)}
 \item LaTeX output: To ensure proper typography, all numeric entries are enclosed in the \verb{\\num{}} command, which requires the \code{siunitx} package to be loaded in the LaTeX preamble. This behavior can be altered with global options. See the 'Details' section.
 }}
 
@@ -61,20 +63,26 @@ for variables. If NULL, then the coefficients are not renamed.}
   \describe{
     \item{\code{coef_map}}{character vector. Subset, rename, and reorder coefficients.
 Coefficients omitted from this vector are omitted from the table. The order
-of the vector determines the order of the table.  \code{coef_map} can be a named
-or an unnamed character vector (see the Examples section below). If
-\code{coef_map} is a named vector, its values define the labels that must appear
-in the table, and its names identify the original term names stored in the
-model object: \code{c("hp:mpg"="HPxM/G")}.}
-    \item{\code{coef_omit}}{string regular expression. Omits all matching coefficients
-from the table using \code{grepl(perl=TRUE)}. This argument uses perl-compatible regular expressions, which allows expressions such as \verb{"Int|ABC" which omits coefficients matching either "Int" or "ABC", and }"^(?!.*Intercept)"` which omits every term except the intercept.}
-    \item{\code{coef_rename}}{named character vector or function which returns a named
-vector. Values of the vector refer to the variable names that will appear
-in the table. Names refer to the original term names stored in the model
-object, e.g. c("hp:mpg"="hp X mpg") for an interaction term.
-If you provide a function to \code{coef_rename}, \code{modelsummary} will create a named
-vector for you by deriving the new variable names from the vector of original
-term names with your function.}
+of the vector determines the order of the table. \code{coef_map} can be a named
+or an unnamed character vector. If \code{coef_map} is a named vector, its values
+define the labels that must appear in the table, and its names identify the
+original term names stored in the model object: \code{c("hp:mpg"="HPxM/G")}. See
+Examples section below.}
+    \item{\code{coef_omit}}{string regular expression (perl-compatible) used to determine which coefficients to omit from the table. A "negative lookahead" can be used to specify which coefficients to \emph{keep} in the table. Examples:
+\itemize{
+\item \code{"ei"}: omit coefficients matching the "ei" substring.
+\item \code{"^Volume$"}: omit the "Volume" coefficient.
+\item \code{"ei|rc"}: omit coefficients matching either the "ei" or the "rc" substrings.
+\item \code{"^(?!Vol)"}: keep coefficients starting with "Vol" (inverse match using a negative lookahead).
+\item \code{"^(?!.*ei)"}: keep coefficients matching the "ei" substring.
+\item \code{"^(?!.*ei|.*pt)"}: keep coefficients matching either the "ei" or the "pt" substrings.
+\item See the Examples section below for complete code.
+}}
+    \item{\code{coef_rename}}{named character vector or function
+\itemize{
+\item Named character vector: Values refer to the variable names that will appear in the table. Names refer to the original term names stored in the model object. Ex: c("hp:mpg"="hp X mpg")
+\item Function: Accepts a character vector of the model's term names and returns a named vector like the one described above. The \code{modelsummary} package supplies a \code{coef_rename()} function which can do common cleaning tasks: \code{modelsummary(model, coef_rename = coef_rename)}
+}}
   }}
 }
 \value{

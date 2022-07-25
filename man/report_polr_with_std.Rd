@@ -35,6 +35,8 @@ report_polr_with_std(
 \item integer: the number of digits to keep after the period \code{format(round(x, fmt), nsmall=fmt)}
 \item character: passed to the \code{sprintf} function (e.g., '\%.3f' keeps 3 digits with trailing zero). See \code{?sprintf}
 \item function: returns a formatted character string.
+\item NULL: does not format numbers, which allows users to include function in the "glue" strings in the \code{estimate} and \code{statistic} arguments.
+\item A named list to format distinct elements of the table differently. Names correspond to column names produced by \code{get_estimates(model)} or \code{get_gof(model)}. Values are integers, characters, or functions, as described above. The \code{fmt} element is used as default for unspecified elements Ex: \code{fmt=list("estimate"=2, "std.error"=1, "r.squared"=4, "fmt"=3)}
 \item LaTeX output: To ensure proper typography, all numeric entries are enclosed in the \verb{\\num{}} command, which requires the \code{siunitx} package to be loaded in the LaTeX preamble. This behavior can be altered with global options. See the 'Details' section.
 }}
 
@@ -64,9 +66,9 @@ stating that dummy variables were not scaled in standardization. If you approach
 \item LaTeX compilation requires the \code{booktabs} and \code{siunitx} packages, but \code{siunitx} can be disabled or replaced with global options. See the 'Details' section.
 \item The default output formats and table-making packages can be modified with global options. See the 'Details' section.
 }}
-    \item{\code{estimate}}{string or \code{glue} string of the estimate to display (or a
-vector with one string per model). Valid entries include any column name of
-the data.frame produced by \code{get_estimates(model)}. Examples:
+    \item{\code{estimate}}{a single string or a character vector of length equal to the
+number of models. Valid entries include any column name of
+the data.frame produced by \code{get_estimates(model)}, and strings with curly braces compatible with the \code{glue} package format. Examples:
 \itemize{
 \item \code{"estimate"}
 \item \code{"{estimate} ({std.error}){stars}"}
@@ -87,48 +89,64 @@ sections below):
 number of models. If TRUE, the \code{estimate}, \code{conf.low}, and \code{conf.high}
 statistics are exponentiated, and the \code{std.error} is transformed to
 \code{exp(estimate)*std.error}.}
+    \item{\code{shape}}{formula which determines the shape of the table. The left side
+determines what appears on rows, and the right side determines what appears
+on columns. The formula can include a group identifier to display related terms
+together, which can be useful for models with multivariate outcomes or
+grouped coefficients (See examples section below). This identifier must be
+one of the column names produced by: \code{get_estimates(model)}. The group
+identifier can be combined with the term identifier in a single column by
+using the colon to represent an interaction. If an incomplete formula is
+supplied (e.g., \code{~statistic}), \code{modelsummary} tries to complete it
+automatically. Potential \code{shape} values include:
+\itemize{
+\item \code{term + statistic ~ model}: default
+\item \code{term ~ model + statistic}: statistics in separate columns
+\item \code{model + statistic ~ term}: models in rows and terms in columns
+\item \code{term + response + statistic ~ model}: term and group id in separate columns
+\item \code{term : response + statistic ~ model}: term and group id in a single column
+\item \code{term ~ response}
+}}
     \item{\code{coef_map}}{character vector. Subset, rename, and reorder coefficients.
 Coefficients omitted from this vector are omitted from the table. The order
-of the vector determines the order of the table.  \code{coef_map} can be a named
-or an unnamed character vector (see the Examples section below). If
-\code{coef_map} is a named vector, its values define the labels that must appear
-in the table, and its names identify the original term names stored in the
-model object: \code{c("hp:mpg"="HPxM/G")}.}
-    \item{\code{coef_omit}}{string regular expression. Omits all matching coefficients
-from the table using \code{grepl(perl=TRUE)}. This argument uses perl-compatible regular expressions, which allows expressions such as \verb{"Int|ABC" which omits coefficients matching either "Int" or "ABC", and }"^(?!.*Intercept)"` which omits every term except the intercept.}
-    \item{\code{coef_rename}}{named character vector or function which returns a named
-vector. Values of the vector refer to the variable names that will appear
-in the table. Names refer to the original term names stored in the model
-object, e.g. c("hp:mpg"="hp X mpg") for an interaction term.
-If you provide a function to \code{coef_rename}, \code{modelsummary} will create a named
-vector for you by deriving the new variable names from the vector of original
-term names with your function.}
+of the vector determines the order of the table. \code{coef_map} can be a named
+or an unnamed character vector. If \code{coef_map} is a named vector, its values
+define the labels that must appear in the table, and its names identify the
+original term names stored in the model object: \code{c("hp:mpg"="HPxM/G")}. See
+Examples section below.}
+    \item{\code{coef_omit}}{string regular expression (perl-compatible) used to determine which coefficients to omit from the table. A "negative lookahead" can be used to specify which coefficients to \emph{keep} in the table. Examples:
+\itemize{
+\item \code{"ei"}: omit coefficients matching the "ei" substring.
+\item \code{"^Volume$"}: omit the "Volume" coefficient.
+\item \code{"ei|rc"}: omit coefficients matching either the "ei" or the "rc" substrings.
+\item \code{"^(?!Vol)"}: keep coefficients starting with "Vol" (inverse match using a negative lookahead).
+\item \code{"^(?!.*ei)"}: keep coefficients matching the "ei" substring.
+\item \code{"^(?!.*ei|.*pt)"}: keep coefficients matching either the "ei" or the "pt" substrings.
+\item See the Examples section below for complete code.
+}}
+    \item{\code{coef_rename}}{named character vector or function
+\itemize{
+\item Named character vector: Values refer to the variable names that will appear in the table. Names refer to the original term names stored in the model object. Ex: c("hp:mpg"="hp X mpg")
+\item Function: Accepts a character vector of the model's term names and returns a named vector like the one described above. The \code{modelsummary} package supplies a \code{coef_rename()} function which can do common cleaning tasks: \code{modelsummary(model, coef_rename = coef_rename)}
+}}
     \item{\code{gof_map}}{rename, reorder, and omit goodness-of-fit statistics and other
 model information. This argument accepts 4 types of values:
 \itemize{
 \item NULL (default): the \code{modelsummary::gof_map} dictionary is used for formatting, and all unknown statistic are included.
-\item character vector such as \code{c("rmse", "nobs", "r.squared")}. Elements correspond to colnames in the data.frame produced by \code{get_gof(model)}. The default dictionary is used to format and rename statistics.
+\item character vector: "all", "none", or a vector of statistics such as \code{c("rmse", "nobs", "r.squared")}. Elements correspond to colnames in the data.frame produced by \code{get_gof(model)}. The \code{modelsummary::gof_map}default dictionary is used to format and rename statistics.
+\item NA: excludes all statistics from the bottom part of the table.
 \item data.frame with 3 columns named "raw", "clean", "fmt". Unknown statistics are omitted. See the 'Examples' section below.
 \item list of lists, each of which includes 3 elements named "raw", "clean", "fmt". Unknown statistics are omitted. See the 'Examples section below'.
 }}
-    \item{\code{gof_omit}}{string regular expression. Omits all matching gof statistics from
-the table. This argument uses perl-compatible regular expressions (\code{grepl(perl=TRUE)}), which allows expressions such as \code{".*"} which omits everything, and \code{"^(?!R2|Num)"} which omits every term except those that start with "R2" or "Num".}
-    \item{\code{group}}{transpose or group models and estimates (formula). The left
-side of the formula represents rows and the right side columns.
+    \item{\code{gof_omit}}{string regular expression (perl-compatible) used to determine which statistics to omit from the bottom section of the table. A "negative lookahead" can be used to specify which statistics to \emph{keep} in the table. Examples:
 \itemize{
-\item Formula with two components called \code{term} and \code{model}.
-\itemize{
-\item \code{term ~ model}
-\item \code{model ~ term}
-}
-\item Formula with three components, including one of the column names in the data frame produced by \code{get_estimates(model)}. Examples:
-\itemize{
-\item \code{response + term ~ model}
-\item \code{term ~ model + y.level}
-}
+\item \code{"IC"}: omit statistics matching the "IC" substring.
+\item \code{"BIC|AIC"}: omit statistics matching the "AIC" or "BIC" substrings.
+\item \code{"^(?!.*IC)"}: keep statistics matching the "IC" substring.
 }}
     \item{\code{group_map}}{named or unnamed character vector. Subset, rename, and
-reorder coefficient groups specified in the \code{group} argument. See \code{coef_map}.}
+reorder coefficient groups specified a grouping variable specified in the
+\code{shape} argument formula. This argument behaves like \code{coef_map}.}
     \item{\code{add_rows}}{a data.frame (or tibble) with the same number of columns as
 your main table. By default, rows are appended to the bottom of the table.
 You can define a "position" attribute of integers to set the row positions.

@@ -36,19 +36,7 @@ lm_std(formula, data = NULL, weights = NULL, ...)
     \item{\code{method}}{the method to be used; for fitting, currently only
     \code{method = "qr"} is supported; \code{method = "model.frame"} returns
     the model frame (the same as with \code{model = TRUE}, see below).}
-    \item{\code{model}}{logicals.  If \code{TRUE} the corresponding
-    components of the fit (the model frame, the model matrix, the
-    response, the QR decomposition) are returned.
-  }
-    \item{\code{x}}{logicals.  If \code{TRUE} the corresponding
-    components of the fit (the model frame, the model matrix, the
-    response, the QR decomposition) are returned.
-  }
-    \item{\code{y}}{logicals.  If \code{TRUE} the corresponding
-    components of the fit (the model frame, the model matrix, the
-    response, the QR decomposition) are returned.
-  }
-    \item{\code{qr}}{logicals.  If \code{TRUE} the corresponding
+    \item{\code{model,x,y,qr}}{logicals.  If \code{TRUE} the corresponding
     components of the fit (the model frame, the model matrix, the
     response, the QR decomposition) are returned.
   }
