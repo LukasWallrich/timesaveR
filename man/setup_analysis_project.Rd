@@ -23,7 +23,7 @@ setup_analysis_project(
 
 \item{pipeline_name}{Name of folder for outputs from each analysis step}
 
-\item{code_folder}{Logical. Should code files be placed in /code subfolder.
+\item{code_folder}{Logical. Should code files be placed in /code sub-folder?
 Otherwise, are placed in root folder}
 
 \item{standard_packages}{Character vector of packages to be loaded at start of each analysis file.}
@@ -41,7 +41,5 @@ the end of each script. Usage should follow the first example:
 `notes` in place, so the result should not be assigned.
 
 Then there is the `0_run_all.R` file, which runs all analysis scripts in order
-and documents when this last happened. It offers to clear the global environment
-between each file, which is helpful in ensuring that they are self-contained. 
-However, this obviously deletes data, so should be used with care.
+and documents when this last happened.
 }
