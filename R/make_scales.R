@@ -44,18 +44,19 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
 
   assert_choice(reverse[1], c("auto", "none", "spec"))
 
-  if (!is.null(reverse_items) & !reverse[1] == "spec") stop('reverse_items should only be specified together with reverse = "spec"')
+  if (!is.null(reverse_items) && !reverse[1] == "spec") stop('reverse_items should only be specified together with reverse = "spec"')
 
   if (is.null(r_key)) r_key <- 0
   scale_vals <- data %>%
     dplyr::select(dplyr::one_of(scale_items)) %>%
     dplyr::mutate_all(as.numeric)
   if ((reverse != "spec")[1]) {
-    check.keys <- ifelse(reverse == "none", F, T)
+    check.keys <- reverse[1] != "none"
     msg <- capture.output(alpha_obj <- suppressWarnings(scale_vals %>% psych::alpha(na.rm = TRUE, check.keys = check.keys)))
-    if (length(msg)>0) {
+    if (length(msg) > 0) {
       stringr::str_replace(msg, "To do this, run the function again with the 'check.keys=TRUE' option", "If that makes sense, rerun the function and either specify these items to be reversed or allow automatic reverse coding") %>%
-        stringr::str_replace("with the total scale", paste("with the total", scale_name, "scale")) %>% cat()
+        stringr::str_replace("with the total scale", paste("with the total", scale_name, "scale")) %>% 
+        cat()
       }
   } else {
     alpha_obj <- suppressWarnings(scale_vals %>% psych::alpha(na.rm = TRUE, keys = reverse_items))
@@ -92,7 +93,7 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
     description_text <- c(description_text, paste(c("The following items were reverse coded: ", reversed),
                 sep = ", ",
                 collapse = ", "
-    ),"\n",
+    ), "\n",
     paste(
       "Min and max used for reverse coding:", min(scale_vals, na.rm = TRUE),
       max(scale_vals, na.rm = TRUE)
@@ -109,7 +110,7 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
         factor_key = TRUE
       ) %>%
       ggplot2::ggplot(ggplot2::aes(x = .data$resp)) +
-      ggplot2::geom_histogram(binwidth = 0.5, na.rm=TRUE) +
+      ggplot2::geom_histogram(binwidth = 0.5, na.rm = TRUE) +
       ggplot2::facet_wrap(~ .data$category) +
       ggplot2::xlab("Response") + ggplot2::ylab("Count") +
       ggplot2::ggtitle(paste0("Histograms for ", scale_name, " scale and items"))) %>%
@@ -157,27 +158,27 @@ make_scales <- function(data, items, reversed = FALSE, two_items_reliability = c
 
   assert_choice(two_items_reliability[1], c("spearman_brown", "cronbachs_alpha", "r"))
 
-  if(!is.logical(reversed)) {
+  if (!is.logical(reversed)) {
   
-  if (!is.null(reversed)) {
-    scales_rev <- intersect(names(items), names(reversed))
-    if (length(scales_rev) > 0) {
-      print(paste0(
-        "The following scales will be calculated with specified reverse coding: ",
-        paste0(scales_rev, collapse = ", ")
-      ))
-
-      scales_rev_values <- purrr::pmap(list(
-        scale_items = items[scales_rev], scale_name = scales_rev,
-        reverse_items = reversed[scales_rev]
-      ), make_scale,
-      data = data, return_list = TRUE,
-      reverse = "spec", two_items_reliability, print_desc = print_desc, ...
-      ) %>% purrr::transpose()
-    } else {
-      stop("Reverse list and variable lists cannot be matched - check that they have same names")
+    if (!is.null(reversed)) {
+      scales_rev <- intersect(names(items), names(reversed))
+      if (length(scales_rev) > 0) {
+        print(paste0(
+          "The following scales will be calculated with specified reverse coding: ",
+          paste0(scales_rev, collapse = ", ")
+        ))
+  
+        scales_rev_values <- purrr::pmap(list(
+          scale_items = items[scales_rev], scale_name = scales_rev,
+          reverse_items = reversed[scales_rev]
+        ), make_scale,
+        data = data, return_list = TRUE,
+        reverse = "spec", two_items_reliability, print_desc = print_desc, ...
+        ) %>% purrr::transpose()
+      } else {
+        stop("Reverse list and variable lists cannot be matched - check that they have same names")
+      }
     }
-  }
     scales_n_rev <- setdiff(names(items), names(reversed))
     
     if (length(scales_n_rev) > 0) {
@@ -207,7 +208,7 @@ make_scales <- function(data, items, reversed = FALSE, two_items_reliability = c
   }
   
 
-  scores <- if (exists("scales_n_rev_values") & exists("scales_rev_values")) {
+  scores <- if (exists("scales_n_rev_values") && exists("scales_rev_values")) {
     cbind(data.frame(scales_n_rev_values$scores), data.frame(scales_rev_values$scores))
   } else if (exists("scales_rev_values")) {
     data.frame(scales_rev_values$scores)
@@ -217,7 +218,7 @@ make_scales <- function(data, items, reversed = FALSE, two_items_reliability = c
     stop("No scales created - check inputs")
   }
 
-  descript <- if (exists("scales_n_rev_values") & exists("scales_rev_values")) {
+  descript <- if (exists("scales_n_rev_values") && exists("scales_rev_values")) {
     c(scales_n_rev_values$descriptives, scales_rev_values$descriptives)
   } else if (exists("scales_rev_values")) {
     scales_rev_values$descriptives
@@ -307,7 +308,7 @@ svy_make_scale <- function(data, scale_items, scale_name, print_hist = TRUE, pri
 
   # Convert all scale items into numeric vars
   scale_items_num <- paste0(scale_items, "num")
-  for (i in 1:length(scale_items)) {
+  for (i in seq_along(scale_items)) {
     data <- eval(parse(text = paste0("update(data,", scale_items_num[i], " = as.numeric(unlist(data[,scale_items[i]]$variables)))")))
   }
 
@@ -318,8 +319,7 @@ svy_make_scale <- function(data, scale_items, scale_name, print_hist = TRUE, pri
       reversed_num,
       "r"
     ))
-    for (i in 1:length(reversed)) {
-      
+    for (i in seq_along(reversed)) {
       data <- eval(parse(text = paste0("update(data,", reversed_num[i], "r = psych::reverse.code(-1, data[,reversed_num[i]]$variables))")))
     }
   }
@@ -347,10 +347,11 @@ svy_make_scale <- function(data, scale_items, scale_name, print_hist = TRUE, pri
     if (!is.null(reversed)) {
       reversed_min <- numeric()
       reversed_max <- numeric()
-      for (i in 1:length(reversed)) {
-    reversed_min[i] <- min(data[,reversed_num[i]]$variables, na.rm = TRUE)
-    reversed_max[i] <- max(data[,reversed_num[i]]$variables, na.rm = TRUE)
-      }}
+      for (i in seq_along(reversed)) {
+        reversed_min[i] <- min(data[, reversed_num[i]]$variables, na.rm = TRUE)
+        reversed_max[i] <- max(data[, reversed_num[i]]$variables, na.rm = TRUE)
+      }
+    }
 
     print(glue::glue('
     
@@ -372,7 +373,7 @@ The following items were reverse coded (with min and max values): \\
   if (print_hist) {
     hist_vars <- c(scale_name, paste0(scale_items, "num"))
     data2 <- NULL
-    for (i in 1:length(hist_vars)) {
+    for (i in seq_along(hist_vars)) {
       x <- as.data.frame(survey::svytable(
         as.formula(paste0("~round(", hist_vars[i], ")")),
         data

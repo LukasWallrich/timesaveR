@@ -65,7 +65,7 @@ svy_miss_var_summary <- function(svy_data, ..., .any_missing = TRUE, .include_co
   res[is.na(res)] <- 0
   res %<>% dplyr::arrange(dplyr::desc(.data$n_miss))
 
-  if(!.include_complete) res %<>% dplyr::filter(.data$n_miss>0)
+  if (!.include_complete) res %<>% dplyr::filter(.data$n_miss > 0)
   
   if (.any_missing) {
     res <- dplyr::bind_rows(tibble::tibble(

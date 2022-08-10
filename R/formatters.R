@@ -30,13 +30,13 @@ fmt_p <- function(p_value, digits = 3) {
     paste0("= ", sprintf(fmt, x)) %>%
       stringr::str_replace(" 0.", " .")
   }
-  exact <- ifelse(p_value < 10^(-digits) | p_value > .99, FALSE, TRUE)
+  exact <- !(p_value < 10^(-digits) | p_value > .99)
   exact[is.na(exact)] <- TRUE
   out <- p_value
   out[exact] <- purrr::map_chr(out[exact], fmt_p)
   out[!exact] <- paste("<", sprintf(paste0("%.", digits, "f"), 10^(-digits)) %>%
                          stringr::str_replace("0.", "."))
-  large <- ifelse(p_value > .99, TRUE, FALSE)
+  large <- p_value > .99
   out[large] <- "> .99"
   out[p_value > 1] <- "> 1 (!!)"
   out[is.na(p_value)] <- NA

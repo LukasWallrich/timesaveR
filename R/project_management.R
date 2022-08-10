@@ -9,14 +9,12 @@
 #' `notes` in place, so the result should not be assigned.
 #' 
 #' Then there is the `0_run_all.R` file, which runs all analysis scripts in order
-#' and documents when this last happened. It offers to clear the global environment
-#' between each file, which is helpful in ensuring that they are self-contained. 
-#' However, this obviously deletes data, so should be used with care. 
+#' and documents when this last happened. 
 #'
 #' @param folder Root folder of the project to be set up. Defaults to here::here()
 #' @param analyses Character vector of analysis steps. R files will be set up in order.
 #' @param pipeline_name Name of folder for outputs from each analysis step
-#' @param code_folder Logical. Should code files be placed in /code subfolder.
+#' @param code_folder Logical. Should code files be placed in /code sub-folder?
 #' Otherwise, are placed in root folder
 #' @param standard_packages Character vector of packages to be loaded at start of each analysis file.
 #' @param github_packages Character vector of packages to be loaded and installed from Github if needed at start of each analysis file.
@@ -33,7 +31,7 @@ setup_analysis_project <- function(folder = here::here(), analyses = c("data_pre
     }
   })
 
-  files <- paste0(1:length(analyses), "_", analyses, ".R")
+  files <- paste0(seq_along(analyses), "_", analyses, ".R")
   if (code_folder) files <- paste0("2_code/", files)
 
   code_template <- glue::glue(code_template)
@@ -220,11 +218,11 @@ add_package_snippets <- function() {
     # the default snippets from the 'user file'
     #
     if (!file.exists(rstudioSnippetsFilePath)) {
-      stop(paste0(
+      stop(
         "'", rstudioSnippetsFilePath, "' does not exist yet\n.",
         "Use RStudio -> Tools -> Global Options -> Code -> Edit Snippets\n",
-        "To initalize user defined snippets file by adding dummy snippet\n"
-      ))
+        "to initalize the user defined snippets file by adding any (dummy) snippet\n"
+      )
     }
 
     # Extract 'names' of already existing snippets
@@ -298,7 +296,6 @@ add_package_snippets <- function() {
       # Append snippet block, print message
       #
       cat(paste0(snippetText, "\n"), file = rstudioSnippetsFilePath, append = TRUE)
-      #   cat(paste0("* Added '", s, "' to '", rstudioSnippetsFilePath, "'\n"))
       added <- TRUE
     }
   }

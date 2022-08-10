@@ -47,11 +47,11 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
 
   assert_data_frame(extras, null.ok = TRUE)
 
-  if (add_distributions & is.null(data)) {
+  if (add_distributions && is.null(data)) {
     stop("If add_distributions = TRUE, data needs to be provided.", call. = FALSE)
   }
   
-  if (add_distributions & "survey.design" %in% class(data)) {
+  if (add_distributions && "survey.design" %in% class(data)) {
     stop("Presently, distributions cannot be shown for weighted survey data. ",
          "Set add_distributions to FALSE", call. = FALSE)
   }
@@ -105,7 +105,7 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
     ". ", rownames(cor_matrix[[1]]),
     sep = ""
   )
-  if (!is.null(cor_matrix[["ci.low"]]) & ci[1] == "given") {
+  if (!is.null(cor_matrix[["ci.low"]]) && ci[1] == "given") {
     get_cor.ci.low <- function(cor_matrix, cor.r, cor.se, i, j, df) {
       if (!is.null(cor_matrix[["ci.low"]])) {
         return(cor_matrix[["ci.low"]][i, j])
@@ -117,7 +117,7 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
         return(cor_matrix[["ci.high"]][i, j])
       }
     }
-  } else if ("z_transform" %in% ci & !(is.null(cor_matrix[["df"]]) & is.null(n))) {
+  } else if ("z_transform" %in% ci && !(is.null(cor_matrix[["df"]]) && is.null(n))) {
     get_cor.ci.low <- function(cor_matrix, cor.r, cor.se, i, j, df) {
       z_prime <- .5 * log((1 + cor.r) / (1 - cor.r))
       n <- df + 1
@@ -139,7 +139,7 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
   } else {
     message("Confidence intervals are calculated based on correlation
             coefficient +/- 2 SE. This is generally not recommended!")
-    if ("z_transform" %in% ci & (is.null(cor_matrix[["df"]]) & is.null(n))) {
+    if ("z_transform" %in% ci && (is.null(cor_matrix[["df"]]) && is.null(n))) {
       message("This is because n is not provided and cor_matrix does not contain df. Change either to enable z-transformed confidence intervals.")
     }
 
@@ -226,8 +226,7 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
 
   if (!is.null(filename)) {
     gt::gtsave(tab, filename)
-  }
-  else {
+  } else {
     return(tab)
   }
 }
@@ -285,7 +284,7 @@ cor_matrix <- function(data,
   )
 
   if (is.na(missing)) assert_choice(missing, c("pairwise", "listwise", "fiml"))
-  if (!is.null(bootstrap) & missing != "fiml") stop('bootstrapping can only be used when missing = "fiml"')
+  if (!is.null(bootstrap) && missing != "fiml") stop('bootstrapping can only be used when missing = "fiml"')
 
   if (is.data.frame(var_names)) {
     assert_names(names(var_names), must.include = c("old", "new"))
@@ -356,7 +355,7 @@ cor_matrix <- function(data,
       extract_correlations <- function(mod) {
         res <- lavaan::standardizedsolution(mod) %>% 
           dplyr::filter(.data$op == "~~", .data$lhs != .data$rhs)
-        out <- res$est %>% magrittr::set_names(paste0(res$lhs, "~~", res$rhs))
+        res$est %>% magrittr::set_names(paste0(res$lhs, "~~", res$rhs))
       }
       
       
@@ -384,7 +383,8 @@ cor_matrix <- function(data,
       for (i in seq_len(ncol(m) - 1)) {
         for (j in seq(i + 1, nrow(m))) {
           m[j, i] <- res[[x]][(res$rhs == colnames(m)[i] & res$lhs == rownames(m)[j]) |
-                               (res$lhs == colnames(m)[i] & res$rhs == rownames(m)[j])]        }
+                               (res$lhs == colnames(m)[i] & res$rhs == rownames(m)[j])]        
+          }
       }
       m
     }
@@ -568,7 +568,6 @@ wtd_cor_matrix_mi <- function(mi_list, weights, var_names = NULL) {
         jj <- variables[j]
         mi_selected <- purrr::map(mi_list, magrittr::extract, c(jj, ii, dplyr::as_label(weights)))
         mi_selected <- purrr::map(mi_selected, dplyr::rename, x = 1, y = 2)
-        # browser()
         cor.ii.jj <- purrr::map(mi_selected, do.call, what = .wtd_cor_test_lm)
         data <- rbind(data, data.frame(x = ii, y = jj, mice::pool(cor.ii.jj) %>% summary() %>% magrittr::extract(c("estimate", "p.value", "std.error", "statistic", "df")) %>% magrittr::extract(2, )))
       }
@@ -663,7 +662,7 @@ plot_distributions <- function(data, var_names = NULL, plot_type = c("auto", "hi
 
   if (!is.null(var_names)) data <- data[names(var_names)]
 
-  if (!(plot_type[1] %in% c("auto", "histogram", "density") | test_integerish(plot_type, max.len = 1))) stop('plot_type must be one of "auto", "histogram", "density" or a single number', call. = FALSE)
+  if (!(plot_type[1] %in% c("auto", "histogram", "density") || test_integerish(plot_type, max.len = 1))) stop('plot_type must be one of "auto", "histogram", "density" or a single number', call. = FALSE)
 
   assert(
     plot_type[1] %in% c("auto", "histogram", "density"),
@@ -786,7 +785,8 @@ tidy.cor_matrix <- function(x, both_directions = TRUE, ...) {
     )
     names(res)[3] <- name
     res
-  }) %>% purrr::reduce(dplyr::left_join, by = c("column1", "column2")) %>%
+  }) %>% 
+    purrr::reduce(dplyr::left_join, by = c("column1", "column2")) %>%
     dplyr::rename(estimate = .data$cors, conf.high = .data$ci.high, conf.low = .data$ci.low, statistic = .data$t.values, std.error = .data$std.err, p.value = .data$p.values)
 
   if (both_directions) {
@@ -835,7 +835,8 @@ tidy.svy_cor_matrix <- function(x, both_directions = TRUE, ...) {
     )
     names(res)[3] <- name
     res
-  }) %>% purrr::reduce(dplyr::left_join, by = c("column1", "column2")) %>%
+  }) %>% 
+    purrr::reduce(dplyr::left_join, by = c("column1", "column2")) %>%
     dplyr::rename(estimate = .data$cors, statistic = .data$t.values, std.error = .data$std.err, p.value = .data$p.values)
   
   if (both_directions) {

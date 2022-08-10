@@ -45,23 +45,23 @@ report_lm_with_std <- function(mod, mod_std, conf_level = .95, coef_renames = NU
     coef_renames <- coef_renames$new %>% magrittr::set_names(coef_renames$old)
   }
 
-  if ((class(mod)[1] == "list" | class(mod_std)[1] == "list") & !(length(mod) == length(mod_std))) {
+  if ((class(mod)[1] == "list" || class(mod_std)[1] == "list") && !(length(mod) == length(mod_std))) {
     stop("Same number of models need to be included in mod and mod_std arguments")
   }
   
-  if (!is.null(model_names) & !length(model_names) == length(mod)) {
+  if (!is.null(model_names) && !length(model_names) == length(mod)) {
     stop("Length of model names needs to be the same as length of model")
   }
 
-  if (!("list" %in% class(mod))) mod <- list(mod)
-  if (!("list" %in% class(mod_std))) mod_std <- list(mod_std)
+  if (!(is.list(mod))) mod <- list(mod)
+  if (!(is.list(mod_std))) mod_std <- list(mod_std)
 
   #For simplicity, only class of first model is tested 
-if (!("lm" %in% class(mod[[1]]) | ("mira" %in% class(mod[[1]]) &
+if (!("lm" %in% class(mod[[1]]) || ("mira" %in% class(mod[[1]]) &&
   "lm" %in% class(mod[[1]]$analyses[[1]])))) {
   stop("Models need to be of class lm or mira objects with lm-analyses")
 }
-if (!("lm" %in% class(mod_std[[1]]) | ("mira" %in% class(mod_std[[1]]) &
+if (!("lm" %in% class(mod_std[[1]]) || ("mira" %in% class(mod_std[[1]]) &&
   "lm" %in% class(mod_std[[1]]$analyses[[1]])))) {
   stop("Models need to be of class lm or mira objects with lm-analyses")
 }
@@ -80,7 +80,7 @@ if (!("lm" %in% class(mod_std[[1]]) | ("mira" %in% class(mod_std[[1]]) &
   
   #Remove tidy.lm warning for mira objects
   for (i in seq_along(mod_std)) {
-    if("mira" %in% class(mod_std[[i]])) {
+    if ("mira" %in% class(mod_std[[i]])) {
       for (j in seq_along(mod_std[[i]][["analyses"]])) {
         class(mod_std[[i]][["analyses"]][[j]]) <- "lm"
       }
@@ -186,7 +186,6 @@ if (!("lm" %in% class(mod_std[[1]]) | ("mira" %in% class(mod_std[[1]]) &
   code %<>% paste(row, sums, "</tr>", collapse = "")
 
   if (R2_change == TRUE) {
-    #browser()
     delta_R2 <- purrr::map_chr(R2s, function(x) {
       x %>%
         dplyr::pull(.data$r.squared)
@@ -195,11 +194,11 @@ if (!("lm" %in% class(mod_std[[1]]) | ("mira" %in% class(mod_std[[1]]) &
       diff() %>%
       fmt_cor()
     
-    rows = ""
+    rows <- ""
 
-    for (i in 1:length(delta_R2)) {
+    for (i in seq_along(delta_R2)) {
       
-      x <- stats::anova(mod[[i]], mod[[i+1]])
+      x <- stats::anova(mod[[i]], mod[[i + 1]])
       F_test <- glue::glue("<em>F</em>({x$Df[2]}, {x$Res.Df[2]}) = {x$F[2] %>% round_(2)}, <em>p</em> {x$`Pr(>F)`[2] %>% fmt_p()}")
   
       if (i == 1) {
@@ -259,7 +258,6 @@ if (!("lm" %in% class(mod_std[[1]]) | ("mira" %in% class(mod_std[[1]]) &
   )
 
   fmt <- "%.2f"
-  fmt_0 <- "%.0f"
 
   paste0(
     "*F*(", DoF, ", ", DoF_residual, ") = ", sprintf(fmt, f.stat), ", *p* ",
@@ -299,7 +297,6 @@ mira.lm_F_test <- function(mod, return_list = FALSE) {
   }
 
   fmt <- "%.2f"
-  fmt_0 <- "%.0f"
 
   paste0(
     "*F*(", DoF, ", ", DoF_residual, ") = ", sprintf(fmt, f.stat), ", *p* ",
@@ -340,14 +337,14 @@ mira.lm_F_test <- function(mod, return_list = FALSE) {
 report_polr_with_std <- function(mod, mod_std, OR = TRUE, conf_level = .95, fmt = "%.2f", statistic_vertical = FALSE, filename = NULL, model_names = NULL, show_nimp = FALSE, notes = list(), apa_style = TRUE, stars = std_stars_pad, ...) {
   .check_req_packages(c("modelsummary", "gt", "htmltools", "readr", "pscl"))
 
-  if (("list" %in% class(mod) | "list" %in% class(mod_std)) & !(length(mod) == length(mod_std))) {
+  if (("list" %in% class(mod) || "list" %in% class(mod_std)) && !(length(mod) == length(mod_std))) {
     stop("Same number of models need to be included in mod and mod_std arguments")
   }
 
   if (!("list" %in% class(mod))) mod <- list(mod)
   if (!("list" %in% class(mod_std))) mod_std <- list(mod_std)
 
-  if (!is.null(model_names) & !length(model_names) == length(mod)) {
+  if (!is.null(model_names) && !length(model_names) == length(mod)) {
     stop("Length of model names needs to be the same as length of model")
   }
 
@@ -355,12 +352,8 @@ report_polr_with_std <- function(mod, mod_std, OR = TRUE, conf_level = .95, fmt 
     notes %<>% c("Given that dummy variables lose their interpretability when standardized, only continuous predictors are standardized.")
   }
   
-  CIs <- list()
-  CIs_std <- list()
+
   mods <- list()
-  mod_tidy <- list()
-  mod_std_tidy <- list()
-  stat_list <- list()
 
   for (i in seq_len(length(mod))) {
     mods[[i * 2 - 1]] <- mod[[i]]

@@ -13,7 +13,7 @@
 #' @export
 
 paired_t_test_d <- function(data, x, y) {
-  t.test_result <- t.test(x = data[[x]], y = data[[y]], paired = T)
+  t.test_result <- t.test(x = data[[x]], y = data[[y]], paired = TRUE)
   t.test_result$data.name <- paste(x, "vs.", y)
   print(t.test_result)
   cohens_d <- t.test_result$estimate /
@@ -53,7 +53,7 @@ paired_t_test_d <- function(data, x, y) {
 
 svy_cohen_d_pair <- function(data, dv, iv, pair = NULL, ttest = TRUE, print = FALSE) {
   assert_class(data, "survey.design")
-  if(is.null(pair)) {
+  if (is.null(pair)) {
     l <- data$variables[[iv]] %>% unique()
     if (length(l) == 2) {
       pair <- l
@@ -81,7 +81,7 @@ svy_cohen_d_pair <- function(data, dv, iv, pair = NULL, ttest = TRUE, print = FA
   names(vars) <- c(dv, "var")
   cohens_d <- (means[1, 2] - means[2, 2]) / sqrt((vars[1, 2] + vars[2, 2]) / 2)
   
-  if(print) {
+  if (print) {
     print(paste0("T-Test for ", paste0(pair, collapse = " & "), ":"))
     print(t.test_result)
   print(paste0(
@@ -92,19 +92,18 @@ svy_cohen_d_pair <- function(data, dv, iv, pair = NULL, ttest = TRUE, print = FA
   
   d <- tibble::tibble(pair = paste0(pair, collapse = " & "), d = cohens_d)
   
-  if(!ttest & print) invisible(d)
-  if(!ttest) return(d)
-  
+  if (!ttest && print) invisible(d)
+  if (!ttest) return(d)
   
   t <- broom::tidy(t.test_result) %>% 
     dplyr::transmute(pair = paste0(pair, collapse = " & "), t = .data$estimate, 
                      df = .data$parameter, .data$p.value, mean_diff = .data$estimate, 
                      mean_diff_ci.low = .data$conf.low, mean_diff_ci.high = .data$conf.high)
 
-  if(sign(t$t) != sign(d$d)) t <- t %>% 
+  if (sign(t$t) != sign(d$d)) t <- t %>% 
     dplyr::mutate(dplyr::across(c(.data$t, .data$mean_diff, .data$mean_diff_ci.low, .data$mean_diff_ci.high), ~.x * -1))
   
-  if(print) invisible(dplyr::left_join(t, d, by = "pair"))
+  if (print) invisible(dplyr::left_join(t, d, by = "pair"))
   
   dplyr::left_join(d, t, by = "pair")
 }
@@ -134,14 +133,15 @@ svy_pairwise_t_test <- function(data, dv, iv, cats, p.adjust = "holm", ...) {
     cats <- eval(parse(text = paste0("levelsdf$variables$", iv)))
   }
 
-  data2 <- purrr::cross_df(data.frame(cats, cats, stringsAsFactors = F),
+  data2 <- purrr::cross_df(data.frame(cats, cats, stringsAsFactors = FALSE),
     .filter =
       function(x, y) as.character(x) <= as.character(y)
   )
-  x <- purrr::map_dfr(purrr::pmap(data2, c), function(x) 
-    svy_cohen_d_pair(data, iv = iv, dv = dv, pair = x, print = FALSE, ...))
+  x <- purrr::map_dfr(purrr::pmap(data2, c), function(x) {
+    svy_cohen_d_pair(data, iv = iv, dv = dv, pair = x, print = FALSE, ...)
+  })
 
-  if("p.value" %in% (names(x))) x$p.value <- p.adjust(x$p.value, method = p.adjust)
+  if ("p.value" %in% (names(x))) x$p.value <- p.adjust(x$p.value, method = p.adjust)
   
   x
 }
@@ -172,9 +172,9 @@ lm_std <- function(formula, data = NULL, weights = NULL, ...) {
 
   extras <- list(...)
 
-    if("subset" %in% names(extras)) stop("Cannot subset in this function as that would happen after standardisation - please subset first.")
+    if ("subset" %in% names(extras)) stop("Cannot subset in this function as that would happen after standardisation - please subset first.")
   
-  if(is.null(data)) {
+  if (is.null(data)) {
     data <- NULL
     for (i in seq_along(vars)) {
       #Odd extraction to work with with() call environments
@@ -184,15 +184,16 @@ lm_std <- function(formula, data = NULL, weights = NULL, ...) {
     if (!is.null(weights)) data$.weights <- weights
   }
   
-  if(!is.null(data)) {
+  if (!is.null(data)) {
     weights <- rlang::enquo(weights)
     
-        if(!rlang::quo_is_null(weights)) {
-    if(rlang::as_label(weights) %in% names(data)) 
-    {data <- dplyr::rename(data, .weights = !!weights) } else {
-        data$.weights <- rlang::eval_tidy(weights)
-    }
-    data <- data[c(vars, ".weights")]
+    if (!rlang::quo_is_null(weights)) {
+      if (rlang::as_label(weights) %in% names(data)) {
+        data <- dplyr::rename(data, .weights = !!weights) 
+      } else {
+          data$.weights <- rlang::eval_tidy(weights)
+      }
+      data <- data[c(vars, ".weights")]
     } else {
       data <- data[vars]
     }
@@ -361,7 +362,6 @@ get_pairwise_letters <- function(tests,
   if ("pairwise.htest" %in% class(tests)) {
     tests <- tests$p.value
     dat_levels <- c(colnames(tests), rownames(tests)) %>% unique()
-    n1 <- nrow(tests)
     p <- cbind(rbind(NA, tests), NA)
     diag(p) <- 1
     p[upper.tri(p)] <- t(p)[upper.tri(p)]
@@ -396,11 +396,10 @@ get_pairwise_letters <- function(tests,
     dat_letters[2] <- TRUE
 
     n <- 2
-
-    for (i in 1:nrow(tests)) {
+    for (i in seq_len(nrow(tests))) {
       for (j in 2:n) {
-        if (dat_letters[dat_letters$dat_level == tests$x[i], j] &
-          dat_letters[dat_letters$dat_level == tests$y[i], j]) {
+        if (dat_letters[dat_letters$dat_level == tests$x[i], j][[1]] &&
+          dat_letters[dat_letters$dat_level == tests$y[i], j][[1]]) {
           n <- n + 1
           dat_letters[n] <- dat_letters[j]
           dat_letters[dat_letters$dat_level == tests$x[i], j] <- FALSE
@@ -485,9 +484,9 @@ pairwise_t_tests <- function(data, outcome, groups = NULL, p.adjust.method = p.a
   }
   
   if (missing(groups)) {
-    if(!class(outcome)=="formula") stop("If groups are not specified separately, the outcome argument must be a formula of the form `outcome ~ group`")
-    groups = as.character(outcome[[3]])
-    if(length(groups) > 1) stop("If formula notation is used, only one grouping variable should be provided on the RHS")
+    if (!class(outcome)=="formula") stop("If groups are not specified separately, the outcome argument must be a formula of the form `outcome ~ group`")
+    groups <- as.character(outcome[[3]])
+    if (length(groups) > 1) stop("If formula notation is used, only one grouping variable should be provided on the RHS")
     groups <- rlang::sym(groups)
     outcome <- rlang::sym(as.character(outcome[[2]]))
     }
@@ -552,11 +551,10 @@ polr_std <- function(formula, data = NULL, weights = NULL, ...) {
   
   extras <- list(...)
   
-  if("subset" %in% names(extras)) stop("Cannot subset in this function as that would happen after standardisation - please subset first.")
-  if("Hess" %in% names(extras)) stop("Cannot use Hess argument - Hess is always set to TRUE in this function.")
+  if ("subset" %in% names(extras)) stop("Cannot subset in this function as that would happen after standardisation - please subset first.")
+  if ("Hess" %in% names(extras)) stop("Cannot use Hess argument - Hess is always set to TRUE in this function.")
   
-  if(is.null(data)) {
-    data <- NULL
+  if (is.null(data)) {
     for (i in seq_along(vars)) {
       #Odd extraction to work with with() call environments
       x <- get(vars[i], pos = parent.frame())
@@ -565,12 +563,13 @@ polr_std <- function(formula, data = NULL, weights = NULL, ...) {
     if (!is.null(weights)) data$.weights <- weights
   }
   
-  if(!is.null(data)) {
+  if (!is.null(data)) {
     weights <- rlang::enquo(weights)
     
-    if(!rlang::quo_is_null(weights)) {
-      if(rlang::as_label(weights) %in% names(data)) 
-      {data <- dplyr::rename(data, .weights = !!weights) } else {
+    if (!rlang::quo_is_null(weights)) {
+      if (rlang::as_label(weights) %in% names(data)) {
+        data <- dplyr::rename(data, .weights = !!weights) 
+      } else {
         data$.weights <- rlang::eval_tidy(weights)
       }
       data <- data[c(vars, ".weights")]
@@ -619,12 +618,11 @@ polr_std <- function(formula, data = NULL, weights = NULL, ...) {
 dummy_code <- function(x, prefix = NA, drop_first = TRUE, verbose = interactive()) {
   if (is.na(prefix)) {
     prefix <- deparse(substitute(x)) %>% stringr::str_remove("^.*\\$")
-    if(prefix == ".") {
-      message("prefix cannot be automatically extracted when x is piped in. No prefix will be added.")
+    if (prefix == ".") {
+      message("prefix cannot be automatically extracted when x is piped in (and . is not a valid prefix). No prefix will be added.")
       prefix <- NULL
     }
   }
-  N <- length(x)
   x <- forcats::as_factor(x)
   dummy_names <- .clean_names(levels(x))
 

@@ -4,47 +4,48 @@
 #' function accepts tibbles containing the old and new names for arguments and levels, and returns a dataframe
 #' (or list of dataframes, if one is passed) with variables and levels renamed.
 #'
-#'
-#' @param dat A dataframe or list of dataframes (e.g., from multiple imputation) contains the variables. If a list is passed, it must have class "list"
-#' @param ... The variables to be renamed
+#' @param data A dataframe or list of dataframes (e.g., from multiple imputation) contains the variables. If a list is passed, it must have class "list"
 #' @param var_names A tibble containing `old` and `new` names for the variables. If NULL, only levels are renamed.
 #' @param level_names A tibble containing old `var` names and `level_old` and `level_new` names. If NULL, only variables are renamed.
 #'
-#' @return The dataframe or list of dataframes passed to dat, with variables and/or levels renamed
+#' @return The dataframe or list of dataframes passed to data, with variables and/or levels renamed
 #' @export
 
-rename_cat_variables <- function(dat, ..., var_names = NULL, level_names = NULL) {
-  if (!"list" %in% class(dat)) dat <- list(dat)
-  vars <- rlang::enquos(...)
+rename_cat_variables <- function(data, var_names = NULL, level_names = NULL) {
+  drop_list <- FALSE
+  if (!is.list(data)) {
+    data <- list(data)
+    drop_list <- TRUE
+  }  
 
   if (!is.null(level_names)) {
     level_names_lst <- split(level_names, level_names$var)
 
-    relevel <- function(dat, var, levels_old, levels_new) {
+    relevel <- function(data, var, levels_old, levels_new) {
       var <- var[1]
       names(levels_old) <- levels_new
-      dat <- dat %>% dplyr::mutate(!!var := forcats::fct_recode(as.factor(!!rlang::sym(var)), !!!levels_old))
-      dat
+      data <- data %>% dplyr::mutate(!!var := forcats::fct_recode(as.factor(!!rlang::sym(var)), !!!levels_old))
+      data
     }
 
     for (i in seq_along(level_names_lst)) {
-      dat <- purrr::map(dat, relevel, level_names_lst[[i]]$var, level_names_lst[[i]]$level_old, level_names_lst[[i]]$level_new)
+      data <- purrr::map(data, relevel, level_names_lst[[i]]$var, level_names_lst[[i]]$level_old, level_names_lst[[i]]$level_new)
     }
   }
 
   if (!is.null(var_names)) {
     var_names_chr <- var_names$old
     names(var_names_chr) <- var_names$new
-    dat <- purrr::map(dat, dplyr::rename, !!!var_names_chr)
+    data <- purrr::map(data, dplyr::rename, !!!var_names_chr)
   }
 
-  if (length(dat) == 1) dat <- dat[[1]] # To return dataframe if dataframe was passed
-  dat
+  if (drop_list) data <- data[[1]]
+  data
 }
 
 std_stars <- c(`&dagger;` = .1, `*` = 0.05, `**` = 0.01, `***` = 0.001)
 std_stars_pad <- c(`&nbsp;&nbsp;&nbsp;` = 1, `&dagger;&nbsp;&nbsp;` = .1, `*&nbsp;&nbsp;` = 0.05, `**&nbsp;` = 0.01, `***` = 0.001)
-# TK - change padding so that coefficients are aligned
+# TODO - change padding so that coefficients are aligned
 
 
 #' Significance stars for p-values
@@ -182,7 +183,7 @@ cut_p <- function(x, p, ties.method = "random", fct_levels = NULL, verbose = TRU
     if (!length(fct_levels) == length(p)) {
       stop("Arguments fct_levels and p need to have same length", call. = FALSE)
     }
-    if(verbose) {
+    if (verbose) {
       message("Factor levels were assigned as follows:\n", paste(levels(out), fct_levels, sep = ": ", collapse = "\n"))
     }
     levels(out) <- fct_levels
@@ -227,10 +228,6 @@ scale_blank <- function(x, center = TRUE, scale = TRUE) {
   as.numeric(scale(x))
 }
 
-
-
-
-
 #' Convert a tibble/dataframe to tribble code
 #'
 #' Tribbles are an easy way to legibly input data, and therefore helpful for teaching
@@ -272,7 +269,7 @@ to_tribble <- function(x, show = FALSE, digits = 5) {
     }
   }
 
-  code %<>% stringr::str_replace_all('"NA"', "NA")
+  code %<>% stringr::str_replace_all(stringr::fixed('"NA"'), "NA")
 
   code %<>% stringr::str_trim() %>%
     substr(1, nchar(.) - 1) %>%
@@ -320,17 +317,17 @@ get_rename_tribbles <- function(data, ..., show = TRUE, which = c("both", "vars"
   vars <- rlang::enquos(...)
   if (length(vars) == 0) {
     vars_chr <- names(data)
-    if(length(vars_chr)>max_levels) stop("No variables were specified for renaming.",
-                                         " Would usually include all, but when there are more than",
-                                         " specified in max_levels, that seems excessive. Please ",
-                                         "specify variables or increase that number.")
+    if (length(vars_chr) > max_levels) stop("No variables were specified for renaming.",
+                                            " Would usually include all, but when there are more than",
+                                            " specified in max_levels, that seems excessive. Please ",
+                                            "specify variables or increase that number.")
   } else {
     vars_chr <- purrr::map_chr(vars, dplyr::as_label)
   }
 
   out <- list()
   if (which[1] %in% c("both", "vars")) {
-    vars_tribble <- tibble::tibble(old = vars_chr, new = vars_chr %>% stringr::str_replace_all("_", " ") %>% stringr::str_to_title()) %>% to_tribble(show = show)
+    vars_tribble <- tibble::tibble(old = vars_chr, new = vars_chr %>% stringr::str_replace_all(stringr::fixed("_"), " ") %>% stringr::str_to_title()) %>% to_tribble(show = show)
     out <- c(out, rename_vars = vars_tribble)
   }
   if (which[1] %in% c("both", "levels")) {
@@ -383,11 +380,11 @@ get_rename_tribbles <- function(data, ..., show = TRUE, which = c("both", "vars"
 
 get_coef_rename_tribble <- function(mod, show = TRUE) {
   coefs <- try(stats::coef(mod), silent = TRUE)
-  if (class(coefs) == "try-error") stop("coef() could not extract coefficients from mod argument.")
+  if (inherits(coefs, "try-error")) stop("coef() could not extract coefficients from mod argument.")
   coefs <- names(coefs)
   assert_logical(show)
 
-  tibble::tibble(old = coefs, new = coefs %>% stringr::str_replace_all("_", " ") %>% stringr::str_to_title()) %>% to_tribble(show = show)
+  tibble::tibble(old = coefs, new = coefs %>% stringr::str_replace_all(stringr::fixed("_"), " ") %>% stringr::str_to_title()) %>% to_tribble(show = show)
 }
 
 
@@ -462,14 +459,15 @@ line_to_vector <- function(x = readLines("clipboard", warn = FALSE), strings = T
   if (separators[1] == "all") {
     x <- strsplit(x, " |\\n|\\t") %>% unlist()
   } else {
-    if (!length(x) > 1) { #Otherwise, multiple lines have been read
-    sep <- dplyr::case_when(
-      stringr::str_detect(x, "\\n") ~ "\\n",
-      stringr::str_detect(x, "\\t") ~ "\\t",
-      TRUE ~ " "
-    )
-    x <- strsplit(x, sep) %>% unlist()
-  }}
+      if (!length(x) > 1) { #Otherwise, multiple lines have been read
+      sep <- dplyr::case_when(
+        stringr::str_detect(x, "\\n") ~ "\\n",
+        stringr::str_detect(x, "\\t") ~ "\\t",
+        TRUE ~ " "
+      )
+      x <- strsplit(x, sep) %>% unlist()
+      }
+    }
   x <- x[!x == ""]
   if (strings) {
     x <- stringr::str_trim(x)

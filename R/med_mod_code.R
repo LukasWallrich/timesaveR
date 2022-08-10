@@ -60,13 +60,13 @@ run_mediation <- function(data, X, Y, Ms, CVs = NULL, standardized_all = TRUE,
     CVs <- paste("+", paste(CVs, collapse = " + "))
   }
   
-  if(any(stringr::str_detect(c(X, Y, CVs, Ms), "__"))) 
+  if (any(stringr::str_detect(c(X, Y, CVs, Ms), "__"))) 
     stop("This function does not support variable names that contain two __ in a row. Please rename.")
   
   # Run mediation model
 
-  M_letter <- letters[1:length(Ms)]
-  M_codes <- paste0("M", 1:length(Ms))
+  M_letter <- letters[seq_along(Ms)]
+  M_codes <- paste0("M", seq_along(Ms))
 
   mod <- c("    #Mediators", purrr::map2(Ms, M_letter, function(x, y) glue::glue("{x} ~ {y}*{X} {CVs}"))) %>%
     paste("    ", collapse = "\n") %>%

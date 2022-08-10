@@ -39,18 +39,17 @@ generics::glance
   res <- suppressWarnings(lapply(x, requireNamespace, quietly = TRUE)) %>% unlist()
   if (!all(res)) {
     if (!interactive()) {
-      stop(paste0(note, "Some required packages are not installed. Make sure you have
-               these packages: ", paste0(x[!res], collapse = ", ")),
+      stop(note, "Some required packages are not installed. Make sure you have
+               these packages: ", paste0(x[!res], collapse = ", "),
         call. = FALSE
       )
     }
     op <- options("warn")
     on.exit(options(op))
     options(warn = 1)
-    warning(paste0(note, "The following packages are required for this function but
-                   cannot be loaded: ", paste0(x[!res], collapse = ", ")),
-      call. = FALSE
-    )
+    warning(note, "The following packages are required for this function but
+                   cannot be loaded: ", paste0(x[!res], collapse = ", "),
+      call. = FALSE)
     choice <- readline(prompt = "Should I try to install these packages? (Y/N)")
     if (choice %in% c("Y", "y")) {
       utils::install.packages(x[!res])

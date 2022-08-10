@@ -72,14 +72,11 @@ plot_mediation <- function(IV, DV, Ms, data, digits = 2, coef_offset = length(Ms
     pos
   }
 
-
   pos <- determine_positions(length(Ms))
   pos %<>% dplyr::bind_rows(tibble::tibble(obj = "note", h = 0.5, v = -0.1))
 
-
-
-  data$type[!is.na(data$mediator) & !data$type == "indirect"] <- paste0("M", 1:length(Ms), "_", data$type[!is.na(data$mediator) & !data$type == "indirect"])
-  data$type[data$type == "indirect"] <- paste0("M", 1:length(Ms))
+  data$type[!is.na(data$mediator) & !data$type == "indirect"] <- paste0("M", seq_along(Ms), "_", data$type[!is.na(data$mediator) & !data$type == "indirect"])
+  data$type[data$type == "indirect"] <- paste0("M", seq_along(Ms))
 
   if (ind_p_values == TRUE) {
     pos <- data %>%
@@ -187,7 +184,7 @@ plot_mediation <- function(IV, DV, Ms, data, digits = 2, coef_offset = length(Ms
     graph <- code %>% DiagrammeR::grViz()
   }
   if (interactive()) print(graph)
-  out <- .named_list(code, graph)
+  .named_list(code, graph)
 }
 
 
@@ -202,8 +199,6 @@ plot_moderated_mediation <- function(X, M, W, Y, CV = NULL, mod_direct_path = TR
   all_text <- paste(X, M, W, Y, CV)
   escapes <- stringr::str_extract_all(all_text, "&.*?;")[[1]] %>% unique()
   targets <- .unescape_html(escapes)
-
-
 
   # Set parameters
 
@@ -273,7 +268,7 @@ plot_moderated_mediation <- function(X, M, W, Y, CV = NULL, mod_direct_path = TR
     graph <- code %>% DiagrammeR::grViz()
   }
 
-  out <- .named_list(code, graph)
+  .named_list(code, graph)
 }
 
 .grViz_and_save <- function(code, filename) {
