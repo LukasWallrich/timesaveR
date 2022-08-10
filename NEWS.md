@@ -2,7 +2,7 @@
 
 ## New capabilities
 
-* Added `run_mediation()` to estimate and `plot_mediation()` to visualise parallel mediation models.
+* Added `run_mediation()` to estimate and `plot_mediation()` to visualize parallel mediation models.
 
 ## Enhancements
 
@@ -11,6 +11,7 @@
 * Allow automatic reverse-coding in `make_scales()`
 * `report_cor_table()` now ensures correct ordering of extra columns if `row_names` column is included
 * Added `tidy.svy_cor_matrix()` to tidy survey-weighted correlation matrices
+* Add summary `text` to descriptives returned by `make_scale()` 
 
 ## Bug fixes
 * `report_polr_with_std()` works again after `broom::tidy.polr()` update broke it

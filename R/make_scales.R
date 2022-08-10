@@ -23,7 +23,7 @@
 #' @param print_desc Logical. Should descriptives for scales be printed?
 #' @param return_list Logical. Should only scale values be returned, or descriptives as well?
 #' @return Depends on \code{return_list} argument. Either just the scale values,
-#'   or a list of scale values and descriptives.
+#'   or a list of scale values and descriptives. If descriptives are returned, check the `text` element for a convenient summary.
 #' @export
 #'
 
@@ -68,6 +68,7 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
   }
   reversed <- names(alpha_obj$keys[alpha_obj$keys == -1])
   if (length(scale_items) == 2) {
+    reliab_method <- two_items_reliability[1]
     if (two_items_reliability[1] == "spearman_brown") {
       reliab <- spearman_brown(data, items = scale_items, SB_only = TRUE)
     } else if (two_items_reliability[1] == "cronbachs_alpha") {
@@ -76,35 +77,30 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
       reliab <- cor.test(data[, scale_items[1]], data[, scale_items[2]], na.rm = TRUE)$estimate
     }
   } else {
+    reliab_method <- "cronbachs_alpha"
     reliab <- alpha_obj$total$std.alpha
   }
-  if (return_list) {
-    descriptives <- list(NoItems = length(scale_items), Reliability = reliab, mean = mean(alpha_obj$scores,
-      na.rm = TRUE
-    ), SD = sd(alpha_obj$scores, na.rm = TRUE), Reversed = paste0(reversed,
-      collapse = " "
-    ), RevMin = ifelse(length(reversed) > 0, min(scale_vals, na.rm = TRUE),
-      NA
-    ), RevMax = ifelse(length(reversed) > 0, max(scale_vals, na.rm = TRUE), NA))
-  }
-  if (print_desc) {
-    print(glue::glue('
+
+  description_text <- glue::glue('
     
                      Descriptives for {scale_name} scale:
                      Mean: {round_(mean(alpha_obj$scores, na.rm = TRUE), 3)}  SD: {round_(sd(alpha_obj$scores, na.rm = TRUE), 3)}
                      {paste0(ifelse(length(scale_items) == 2, paste0(two_items_reliability, ": "),
-                                    "Cronbach\'s alpha: "), round_(reliab, 2))}'))
-
-    if (length(reversed) > 0) {
-      print(paste(c("The following items were reverse coded: ", reversed),
-        sep = ", ",
-        collapse = ", "
-      ))
-      print(paste(
-        "Min and max used for reverse coding:", min(scale_vals, na.rm = TRUE),
-        max(scale_vals, na.rm = TRUE)
-      ))
-    }
+                                    "Cronbach\'s alpha: "), round_(reliab, 2))}')
+  
+  if (length(reversed) > 0) {
+    description_text <- c(description_text, paste(c("The following items were reverse coded: ", reversed),
+                sep = ", ",
+                collapse = ", "
+    ),"\n",
+    paste(
+      "Min and max used for reverse coding:", min(scale_vals, na.rm = TRUE),
+      max(scale_vals, na.rm = TRUE)
+    ))
+  }
+  
+  if (print_desc) {
+    print(description_text)
   }
   if (print_hist) {
     (cbind(scale_vals, Scale = alpha_obj$scores) %>%
@@ -120,6 +116,15 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
       print(.) # %>% takes precedence over +!
   }
   if (return_list) {
+      descriptives <- list(n_items = length(scale_items), reliability = reliab, reliability_method = reliab_method,
+                           mean = mean(alpha_obj$scores, na.rm = TRUE), 
+                           SD = sd(alpha_obj$scores, na.rm = TRUE), 
+                           reversed = paste0(reversed, collapse = " "), 
+                           rev_min = ifelse(length(reversed) > 0, min(scale_vals, na.rm = TRUE), NA), 
+                           rev_max = ifelse(length(reversed) > 0, max(scale_vals, na.rm = TRUE), NA),
+                           text = description_text)
+    
+    
     return(list(scores = alpha_obj$scores, descriptives = descriptives))
   }
 
@@ -248,7 +253,7 @@ spearman_brown <- function(data, items, name = "", SB_only = FALSE) {
   cor_value <- cor.test(magrittr::extract2(data, items[1]), magrittr::extract2(data, items[2]), na.rm = TRUE)$estimate
   SB_value <- (abs(cor_value) * 2) / (1 + abs(cor_value))
   if (SB_only) {
-    return(SB_value)
+    return(as.numeric(SB_value))
   }
   result <- data.frame(correlation = cor_value, spearman_brown = SB_value, row.names = name)
   return(result)
