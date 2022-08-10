@@ -47,7 +47,7 @@ the observed maximum.}
 }
 \value{
 Depends on \code{return_list} argument. Either just the scale values,
-  or a list of scale values and descriptives.
+  or a list of scale values and descriptives. If descriptives are returned, check the `text` element for a convenient summary.
 }
 \description{
 This function creates a scale by calculating the mean of a set of items,
