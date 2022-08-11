@@ -167,7 +167,6 @@ make_scales <- function(data, items, reversed = FALSE, two_items_reliability = c
           "The following scales will be calculated with specified reverse coding: ",
           paste0(scales_rev, collapse = ", ")
         ))
-  
         scales_rev_values <- purrr::pmap(list(
           scale_items = items[scales_rev], scale_name = scales_rev,
           reverse_items = reversed[scales_rev]
@@ -227,10 +226,13 @@ make_scales <- function(data, items, reversed = FALSE, two_items_reliability = c
   } else {
     stop("No scales created - check inputs")
   }
-
-  descriptives <- do.call(rbind.data.frame, descript) %>% 
-    tibble::rownames_to_column(var = "Scale")
-
+  
+  descriptives <- purrr::map2_dfr(descript, names(descript), function(descr, scale) {
+    descr$text <- stringr::str_flatten(descr$text)
+    descr$Scale <- scale
+    data.frame(descr) %>% dplyr::select(.data$Scale, dplyr::everything())
+  })
+  
   list(scores = tibble::tibble(scores), descriptives = tibble::tibble(descriptives))
 }
 
