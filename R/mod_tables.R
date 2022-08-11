@@ -53,10 +53,10 @@ report_lm_with_std <- function(mod, mod_std, conf_level = .95, coef_renames = NU
     stop("Length of model names needs to be the same as length of model")
   }
 
-  if (!(is.list(mod))) mod <- list(mod)
-  if (!(is.list(mod_std))) mod_std <- list(mod_std)
+  if (!(inherits(mod, "list"))) mod <- list(mod)
+  if (!(inherits(mod_std, "list"))) mod_std <- list(mod_std)
 
-  #For simplicity, only class of first model is tested 
+    #For simplicity, only class of first model is tested 
 if (!("lm" %in% class(mod[[1]]) || ("mira" %in% class(mod[[1]]) &&
   "lm" %in% class(mod[[1]]$analyses[[1]])))) {
   stop("Models need to be of class lm or mira objects with lm-analyses")
@@ -105,9 +105,6 @@ if (!("lm" %in% class(mod_std[[1]]) || ("mira" %in% class(mod_std[[1]]) &&
   names(mods) <- paste0("Model", seq_len(length(mods)))
 
   col_labels <- rep(list(gt::md("*<center>B (SE)</center>*"), gt::md("*<center>&beta; [95% CI]</center>*")), times = length(mod)) %>% stats::setNames(names(mods))
-
-
-
 
   notes %<>% c(.make_stars_note())
 
@@ -460,7 +457,7 @@ report_polr_with_std <- function(mod, mod_std, OR = TRUE, conf_level = .95, fmt 
     readr::write_file(code, filename)
     return(invisible(out))
   }
-  return(out)
+  out
 }
 
 tidy_custom.polr <- function(x, ...) tidy(x, p.values = TRUE, ...)

@@ -12,8 +12,9 @@
 #' @export
 
 rename_cat_variables <- function(data, var_names = NULL, level_names = NULL) {
+
   drop_list <- FALSE
-  if (!is.list(data)) {
+  if (!inherits(data, "list")) {
     data <- list(data)
     drop_list <- TRUE
   }  
