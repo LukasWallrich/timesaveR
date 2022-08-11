@@ -27,6 +27,8 @@ reference:
   - gt_apa_style
   - gt_add_plots
   - plot_distributions
+  - starts_with("tidy")
+  - starts_with("glance")
 - title: Run and plot mediation models
   desc: |
     Mediation models can be estimated with lavaan. These functions offer a  simple interface and an integrated path from modeling to visualisation
@@ -51,6 +53,7 @@ reference:
   - pairwise_t_tests
   - svy_pairwise_t_test
   - pairwise_t_test_mi
+  - mira.lm_F_test
 - title: Survey functions
   desc: Functions to work with survey data
 - contents: starts_with("svy")
@@ -68,3 +71,9 @@ reference:
   - to_tribble
   - line_to_vector
   - ggsave_show
+  - dummy_code
+- title: Miscellaneous
+- contents:
+  - timesaveR
+  - knit_print.timesaveR_raw_html
+  - print.timesaveR_raw_html
