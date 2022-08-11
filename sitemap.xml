@@ -49,6 +49,9 @@
     <loc>https://lukaswallrich.github.io/timesaveR/reference/dot-is.numeric_col.html</loc>
   </url>
   <url>
+    <loc>https://lukaswallrich.github.io/timesaveR/reference/dummy_code.html</loc>
+  </url>
+  <url>
     <loc>https://lukaswallrich.github.io/timesaveR/reference/dump_to_clip.html</loc>
   </url>
   <url>
@@ -163,6 +166,9 @@
     <loc>https://lukaswallrich.github.io/timesaveR/reference/round_df.html</loc>
   </url>
   <url>
+    <loc>https://lukaswallrich.github.io/timesaveR/reference/run_mediation.html</loc>
+  </url>
+  <url>
     <loc>https://lukaswallrich.github.io/timesaveR/reference/scale_blank.html</loc>
   </url>
   <url>
@@ -187,6 +193,9 @@
     <loc>https://lukaswallrich.github.io/timesaveR/reference/svy_miss_var_summary.html</loc>
   </url>
   <url>
+    <loc>https://lukaswallrich.github.io/timesaveR/reference/svy_pairwise_t_test.html</loc>
+  </url>
+  <url>
     <loc>https://lukaswallrich.github.io/timesaveR/reference/t_test_mi.html</loc>
   </url>
   <url>
@@ -194,6 +203,9 @@
   </url>
   <url>
     <loc>https://lukaswallrich.github.io/timesaveR/reference/tidy.mira.html</loc>
+  </url>
+  <url>
+    <loc>https://lukaswallrich.github.io/timesaveR/reference/tidy.svy_cor_matrix.html</loc>
   </url>
   <url>
     <loc>https://lukaswallrich.github.io/timesaveR/reference/tidy.tsR_std.html</loc>

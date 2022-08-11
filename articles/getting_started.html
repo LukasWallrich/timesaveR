@@ -19,6 +19,7 @@
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Getting started with timesaveR">
 <meta property="og:description" content="timesaveR">
+<meta property="og:image" content="https://lukaswallrich.github.io/timesaveR/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -100,57 +101,59 @@
     
 <p>This vignette introduces some of the basic functions that quickly get you from a dataset to publication-ready outputs. It uses <code>tidyverse</code>/<code>dplyr</code>-functions alongside <code>timesaveR</code> as that is the recommended workflow.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://lukaswallrich.github.io/timesaveR/">timesaveR</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://lukaswallrich.github.io/timesaveR/">timesaveR</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="create-scales">Create scales<a class="anchor" aria-label="anchor" href="#create-scales"></a>
 </h2>
 <p>Let’s create scales for health behaviours and depressive symptoms, each including some reverse coding. For that, scale items need to be included into a list of named character vectors; if any items are to be reversed, they should be added into another list of character vectors.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">scales_items</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-  depression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fltdpr"</span>, <span class="st">"flteeff"</span>, <span class="st">"slprl"</span>, <span class="st">"wrhpp"</span>, <span class="st">"fltlnl"</span>, 
-                 <span class="st">"enjlf"</span>, <span class="st">"fltsd"</span>, <span class="st">"cldgng"</span><span class="op">)</span>,
-  healthy_eating <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"etfruit"</span>, <span class="st">"eatveg"</span><span class="op">)</span>
-  <span class="op">)</span>
-  
-<span class="va">scales_reverse</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-  depression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"wrhpp"</span>, <span class="st">"enjlf"</span><span class="op">)</span>,
-  healthy_eating <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"etfruit"</span>, <span class="st">"eatveg"</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">scales_items</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  depression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fltdpr"</span>, <span class="st">"flteeff"</span>, <span class="st">"slprl"</span>, <span class="st">"wrhpp"</span>, <span class="st">"fltlnl"</span>, </span>
+<span>                 <span class="st">"enjlf"</span>, <span class="st">"fltsd"</span>, <span class="st">"cldgng"</span><span class="op">)</span>,</span>
+<span>  healthy_eating <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"etfruit"</span>, <span class="st">"eatveg"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span>  </span>
+<span><span class="va">scales_reverse</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  depression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"wrhpp"</span>, <span class="st">"enjlf"</span><span class="op">)</span>,</span>
+<span>  healthy_eating <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"etfruit"</span>, <span class="st">"eatveg"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>Then, the <code><a href="../reference/make_scales.html">make_scales()</a></code> command can be used to <strong>calculate scale scores as well as descriptives</strong>. By default, it also returns histograms showing the distribution of each item and the resulting scale, which can help to spot problems. By default, it also returns both scale <code>scores</code> and <code>descriptives</code> that can be processed separately.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="va">scales</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_scales.html">make_scales</a></span><span class="op">(</span><span class="va">ess_health</span>, items <span class="op">=</span> <span class="va">scales_items</span>, reversed <span class="op">=</span> <span class="va">scales_reverse</span><span class="op">)</span>
-<span class="co">#&gt; [1] "The following scales will be calculated with specified reverse coding: depression, healthy_eating"</span></code></pre></div>
+<code class="sourceCode R"><span></span>
+<span><span class="va">scales</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_scales.html">make_scales</a></span><span class="op">(</span><span class="va">ess_health</span>, items <span class="op">=</span> <span class="va">scales_items</span>, reversed <span class="op">=</span> <span class="va">scales_reverse</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "The following scales will be calculated with specified reverse coding: depression, healthy_eating"</span></span></code></pre></div>
 <p><img src="getting_started_files/figure-html/unnamed-chunk-4-1.png" width="700"><img src="getting_started_files/figure-html/unnamed-chunk-4-2.png" width="700"></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="co">#Check descriptives, including reliability</span>
-<span class="va">scales</span><span class="op">$</span><span class="va">descriptives</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/round_df.html">round_df</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 8</span></span>
-<span class="co">#&gt;   Scale          NoItems Reliability  mean    SD Reversed       RevMin RevMax</span>
-<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> depression           8        0.8   1.67  0.48 wrhpp enjlf         1      4</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> healthy_eating       2        0.66  4.97  1.11 etfruit eatveg      1      7</span>
-
-<span class="co">#Add scale scores to dataset</span>
-<span class="va">ess_health</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://amices.org/mice/reference/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">ess_health</span>, <span class="va">scales</span><span class="op">$</span><span class="va">scores</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span></span>
+<span><span class="co">#Check descriptives, including reliability</span></span>
+<span><span class="va">scales</span><span class="op">$</span><span class="va">descriptives</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/round_df.html">round_df</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 10</span></span></span>
+<span><span class="co">#&gt;   Scale        n_items relia…¹ relia…²  mean    SD rever…³ rev_min rev_max text </span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> depression         8    0.8  cronba…  1.67  0.48 wrhpp …       1       4 <span style="color: #949494;">"</span>   …</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> healthy_eat…       2    0.66 spearm…  4.97  1.11 etfrui…       1       7 <span style="color: #949494;">"</span>   …</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># … with abbreviated variable names ¹​reliability, ²​reliability_method,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   ³​reversed</span></span></span>
+<span></span>
+<span><span class="co">#Add scale scores to dataset</span></span>
+<span><span class="va">ess_health</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://amices.org/mice/reference/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">ess_health</span>, <span class="va">scales</span><span class="op">$</span><span class="va">scores</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="report-correlations-and-descriptive-statistics">Report correlations and descriptive statistics<a class="anchor" aria-label="anchor" href="#report-correlations-and-descriptive-statistics"></a>
 </h2>
 <p>At the start of a data analysis project, we are often interested in descriptive statistics, variable distributions and correlations. As far as numerical variables are concerned, all of them can be reported in a pretty table with the <code><a href="../reference/report_cor_table.html">report_cor_table()</a></code> function. That function needs a correlation matrix as its first argument, which can usually be created with the <code><a href="../reference/cor_matrix.html">cor_matrix()</a></code> function.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ess_health</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">agea</span>, <span class="va">health</span>, <span class="va">depression</span>, <span class="va">healthy_eating</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/cor_matrix.html">cor_matrix</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/report_cor_table.html">report_cor_table</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<div id="bujdaeavhb" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<code class="sourceCode R"><span><span class="va">ess_health</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">agea</span>, <span class="va">health</span>, <span class="va">depression</span>, <span class="va">healthy_eating</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/cor_matrix.html">cor_matrix</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/report_cor_table.html">report_cor_table</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div id="aivzcykoen" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: times, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#bujdaeavhb .gt_table {
+#aivzcykoen .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -175,7 +178,7 @@
   border-left-color: #D3D3D3;
 }
 
-#bujdaeavhb .gt_heading {
+#aivzcykoen .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -187,7 +190,7 @@
   border-right-color: #D3D3D3;
 }
 
-#bujdaeavhb .gt_title {
+#aivzcykoen .gt_title {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -199,7 +202,7 @@
   border-bottom-width: 0;
 }
 
-#bujdaeavhb .gt_subtitle {
+#aivzcykoen .gt_subtitle {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -211,13 +214,13 @@
   border-top-width: 0;
 }
 
-#bujdaeavhb .gt_bottom_border {
+#aivzcykoen .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #000000;
 }
 
-#bujdaeavhb .gt_col_headings {
+#aivzcykoen .gt_col_headings {
   border-top-style: none;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -232,7 +235,7 @@
   border-right-color: #D3D3D3;
 }
 
-#bujdaeavhb .gt_col_heading {
+#aivzcykoen .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -252,7 +255,7 @@
   overflow-x: hidden;
 }
 
-#bujdaeavhb .gt_column_spanner_outer {
+#aivzcykoen .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -264,15 +267,15 @@
   padding-right: 4px;
 }
 
-#bujdaeavhb .gt_column_spanner_outer:first-child {
+#aivzcykoen .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#bujdaeavhb .gt_column_spanner_outer:last-child {
+#aivzcykoen .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#bujdaeavhb .gt_column_spanner {
+#aivzcykoen .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 1px;
   border-bottom-color: #000000;
@@ -284,7 +287,7 @@
   width: 100%;
 }
 
-#bujdaeavhb .gt_group_heading {
+#aivzcykoen .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -309,7 +312,7 @@
   vertical-align: middle;
 }
 
-#bujdaeavhb .gt_empty_group_heading {
+#aivzcykoen .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -324,15 +327,15 @@
   vertical-align: middle;
 }
 
-#bujdaeavhb .gt_from_md > :first-child {
+#aivzcykoen .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#bujdaeavhb .gt_from_md > :last-child {
+#aivzcykoen .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#bujdaeavhb .gt_row {
+#aivzcykoen .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -351,7 +354,7 @@
   overflow-x: hidden;
 }
 
-#bujdaeavhb .gt_stub {
+#aivzcykoen .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -364,7 +367,7 @@
   padding-right: 5px;
 }
 
-#bujdaeavhb .gt_stub_row_group {
+#aivzcykoen .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -378,11 +381,11 @@
   vertical-align: top;
 }
 
-#bujdaeavhb .gt_row_group_first td {
+#aivzcykoen .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#bujdaeavhb .gt_summary_row {
+#aivzcykoen .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -392,16 +395,16 @@
   padding-right: 5px;
 }
 
-#bujdaeavhb .gt_first_summary_row {
+#aivzcykoen .gt_first_summary_row {
   border-top-style: none;
   border-top-color: #D3D3D3;
 }
 
-#bujdaeavhb .gt_first_summary_row.thick {
+#aivzcykoen .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#bujdaeavhb .gt_last_summary_row {
+#aivzcykoen .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -411,7 +414,7 @@
   border-bottom-color: #D3D3D3;
 }
 
-#bujdaeavhb .gt_grand_summary_row {
+#aivzcykoen .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -421,7 +424,7 @@
   padding-right: 5px;
 }
 
-#bujdaeavhb .gt_first_grand_summary_row {
+#aivzcykoen .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -431,11 +434,11 @@
   border-top-color: #D3D3D3;
 }
 
-#bujdaeavhb .gt_striped {
+#aivzcykoen .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#bujdaeavhb .gt_table_body {
+#aivzcykoen .gt_table_body {
   border-top-style: solid;
   border-top-width: 1px;
   border-top-color: #000000;
@@ -444,7 +447,7 @@
   border-bottom-color: #000000;
 }
 
-#bujdaeavhb .gt_footnotes {
+#aivzcykoen .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -458,7 +461,7 @@
   border-right-color: #D3D3D3;
 }
 
-#bujdaeavhb .gt_footnote {
+#aivzcykoen .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -467,7 +470,7 @@
   padding-right: 5px;
 }
 
-#bujdaeavhb .gt_sourcenotes {
+#aivzcykoen .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -481,7 +484,7 @@
   border-right-color: #D3D3D3;
 }
 
-#bujdaeavhb .gt_sourcenote {
+#aivzcykoen .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -489,36 +492,36 @@
   padding-right: 5px;
 }
 
-#bujdaeavhb .gt_left {
+#aivzcykoen .gt_left {
   text-align: left;
 }
 
-#bujdaeavhb .gt_center {
+#aivzcykoen .gt_center {
   text-align: center;
 }
 
-#bujdaeavhb .gt_right {
+#aivzcykoen .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#bujdaeavhb .gt_font_normal {
+#aivzcykoen .gt_font_normal {
   font-weight: normal;
 }
 
-#bujdaeavhb .gt_font_bold {
+#aivzcykoen .gt_font_bold {
   font-weight: bold;
 }
 
-#bujdaeavhb .gt_font_italic {
+#aivzcykoen .gt_font_italic {
   font-style: italic;
 }
 
-#bujdaeavhb .gt_super {
+#aivzcykoen .gt_super {
   font-size: 65%;
 }
 
-#bujdaeavhb .gt_two_val_uncert {
+#aivzcykoen .gt_two_val_uncert {
   display: inline-block;
   line-height: 1em;
   text-align: right;
@@ -527,31 +530,31 @@
   margin-left: 0.1em;
 }
 
-#bujdaeavhb .gt_footnote_marks {
+#aivzcykoen .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#bujdaeavhb .gt_asterisk {
+#aivzcykoen .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#bujdaeavhb .gt_slash_mark {
+#aivzcykoen .gt_slash_mark {
   font-size: 0.7em;
   line-height: 0.7em;
   vertical-align: 0.15em;
 }
 
-#bujdaeavhb .gt_fraction_numerator {
+#aivzcykoen .gt_fraction_numerator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: 0.45em;
 }
 
-#bujdaeavhb .gt_fraction_denominator {
+#aivzcykoen .gt_fraction_denominator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: -0.05em;
@@ -642,24 +645,24 @@
 </div>
 <p>It is often helpful to use different variable names for display. For this, functions in the package typically accept rename tibbles that contain an <code>old</code> and a <code>new</code> column. By using the <code><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tibble::tribble</a></code> notation, they can be entered more cleanly that named character vectors, and the <code>get_rename_tribble()</code> helper function creates most of the code.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">#Use get_rename_tribbles to get most of this code</span>
-<span class="va">var_renames</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span>
-  <span class="op">~</span><span class="va">old</span>,             <span class="op">~</span><span class="va">new</span>,             
-   <span class="st">"agea"</span>,           <span class="st">"Age"</span>,          
-   <span class="st">"health"</span>,         <span class="st">"Poor health"</span>,        
-   <span class="st">"depression"</span>,     <span class="st">"Depression"</span>,    
-   <span class="st">"healthy_eating"</span>,  <span class="st">"Healthy eating"</span>
-<span class="op">)</span>
-
-<span class="co"># If var_names are provided, only variables included in that argument </span>
-<span class="co"># are included in the correlation table</span>
-<span class="va">ess_health</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/cor_matrix.html">cor_matrix</a></span><span class="op">(</span>var_names <span class="op">=</span> <span class="va">var_renames</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/report_cor_table.html">report_cor_table</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<div id="uckecgkznz" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<code class="sourceCode R"><span><span class="co">#Use get_rename_tribbles to get most of this code</span></span>
+<span><span class="va">var_renames</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span>
+<span>  <span class="op">~</span><span class="va">old</span>,             <span class="op">~</span><span class="va">new</span>,             </span>
+<span>   <span class="st">"agea"</span>,           <span class="st">"Age"</span>,          </span>
+<span>   <span class="st">"health"</span>,         <span class="st">"Poor health"</span>,        </span>
+<span>   <span class="st">"depression"</span>,     <span class="st">"Depression"</span>,    </span>
+<span>   <span class="st">"healthy_eating"</span>,  <span class="st">"Healthy eating"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># If var_names are provided, only variables included in that argument </span></span>
+<span><span class="co"># are included in the correlation table</span></span>
+<span><span class="va">ess_health</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/cor_matrix.html">cor_matrix</a></span><span class="op">(</span>var_names <span class="op">=</span> <span class="va">var_renames</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/report_cor_table.html">report_cor_table</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div id="ydwnoadhra" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: times, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#uckecgkznz .gt_table {
+#ydwnoadhra .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -684,7 +687,7 @@
   border-left-color: #D3D3D3;
 }
 
-#uckecgkznz .gt_heading {
+#ydwnoadhra .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -696,7 +699,7 @@
   border-right-color: #D3D3D3;
 }
 
-#uckecgkznz .gt_title {
+#ydwnoadhra .gt_title {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -708,7 +711,7 @@
   border-bottom-width: 0;
 }
 
-#uckecgkznz .gt_subtitle {
+#ydwnoadhra .gt_subtitle {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -720,13 +723,13 @@
   border-top-width: 0;
 }
 
-#uckecgkznz .gt_bottom_border {
+#ydwnoadhra .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #000000;
 }
 
-#uckecgkznz .gt_col_headings {
+#ydwnoadhra .gt_col_headings {
   border-top-style: none;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -741,7 +744,7 @@
   border-right-color: #D3D3D3;
 }
 
-#uckecgkznz .gt_col_heading {
+#ydwnoadhra .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -761,7 +764,7 @@
   overflow-x: hidden;
 }
 
-#uckecgkznz .gt_column_spanner_outer {
+#ydwnoadhra .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -773,15 +776,15 @@
   padding-right: 4px;
 }
 
-#uckecgkznz .gt_column_spanner_outer:first-child {
+#ydwnoadhra .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#uckecgkznz .gt_column_spanner_outer:last-child {
+#ydwnoadhra .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#uckecgkznz .gt_column_spanner {
+#ydwnoadhra .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 1px;
   border-bottom-color: #000000;
@@ -793,7 +796,7 @@
   width: 100%;
 }
 
-#uckecgkznz .gt_group_heading {
+#ydwnoadhra .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -818,7 +821,7 @@
   vertical-align: middle;
 }
 
-#uckecgkznz .gt_empty_group_heading {
+#ydwnoadhra .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -833,15 +836,15 @@
   vertical-align: middle;
 }
 
-#uckecgkznz .gt_from_md > :first-child {
+#ydwnoadhra .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#uckecgkznz .gt_from_md > :last-child {
+#ydwnoadhra .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#uckecgkznz .gt_row {
+#ydwnoadhra .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -860,7 +863,7 @@
   overflow-x: hidden;
 }
 
-#uckecgkznz .gt_stub {
+#ydwnoadhra .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -873,7 +876,7 @@
   padding-right: 5px;
 }
 
-#uckecgkznz .gt_stub_row_group {
+#ydwnoadhra .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -887,11 +890,11 @@
   vertical-align: top;
 }
 
-#uckecgkznz .gt_row_group_first td {
+#ydwnoadhra .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#uckecgkznz .gt_summary_row {
+#ydwnoadhra .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -901,16 +904,16 @@
   padding-right: 5px;
 }
 
-#uckecgkznz .gt_first_summary_row {
+#ydwnoadhra .gt_first_summary_row {
   border-top-style: none;
   border-top-color: #D3D3D3;
 }
 
-#uckecgkznz .gt_first_summary_row.thick {
+#ydwnoadhra .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#uckecgkznz .gt_last_summary_row {
+#ydwnoadhra .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -920,7 +923,7 @@
   border-bottom-color: #D3D3D3;
 }
 
-#uckecgkznz .gt_grand_summary_row {
+#ydwnoadhra .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -930,7 +933,7 @@
   padding-right: 5px;
 }
 
-#uckecgkznz .gt_first_grand_summary_row {
+#ydwnoadhra .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -940,11 +943,11 @@
   border-top-color: #D3D3D3;
 }
 
-#uckecgkznz .gt_striped {
+#ydwnoadhra .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#uckecgkznz .gt_table_body {
+#ydwnoadhra .gt_table_body {
   border-top-style: solid;
   border-top-width: 1px;
   border-top-color: #000000;
@@ -953,7 +956,7 @@
   border-bottom-color: #000000;
 }
 
-#uckecgkznz .gt_footnotes {
+#ydwnoadhra .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -967,7 +970,7 @@
   border-right-color: #D3D3D3;
 }
 
-#uckecgkznz .gt_footnote {
+#ydwnoadhra .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -976,7 +979,7 @@
   padding-right: 5px;
 }
 
-#uckecgkznz .gt_sourcenotes {
+#ydwnoadhra .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -990,7 +993,7 @@
   border-right-color: #D3D3D3;
 }
 
-#uckecgkznz .gt_sourcenote {
+#ydwnoadhra .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -998,36 +1001,36 @@
   padding-right: 5px;
 }
 
-#uckecgkznz .gt_left {
+#ydwnoadhra .gt_left {
   text-align: left;
 }
 
-#uckecgkznz .gt_center {
+#ydwnoadhra .gt_center {
   text-align: center;
 }
 
-#uckecgkznz .gt_right {
+#ydwnoadhra .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#uckecgkznz .gt_font_normal {
+#ydwnoadhra .gt_font_normal {
   font-weight: normal;
 }
 
-#uckecgkznz .gt_font_bold {
+#ydwnoadhra .gt_font_bold {
   font-weight: bold;
 }
 
-#uckecgkznz .gt_font_italic {
+#ydwnoadhra .gt_font_italic {
   font-style: italic;
 }
 
-#uckecgkznz .gt_super {
+#ydwnoadhra .gt_super {
   font-size: 65%;
 }
 
-#uckecgkznz .gt_two_val_uncert {
+#ydwnoadhra .gt_two_val_uncert {
   display: inline-block;
   line-height: 1em;
   text-align: right;
@@ -1036,31 +1039,31 @@
   margin-left: 0.1em;
 }
 
-#uckecgkznz .gt_footnote_marks {
+#ydwnoadhra .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#uckecgkznz .gt_asterisk {
+#ydwnoadhra .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#uckecgkznz .gt_slash_mark {
+#ydwnoadhra .gt_slash_mark {
   font-size: 0.7em;
   line-height: 0.7em;
   vertical-align: 0.15em;
 }
 
-#uckecgkznz .gt_fraction_numerator {
+#ydwnoadhra .gt_fraction_numerator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: 0.45em;
 }
 
-#uckecgkznz .gt_fraction_denominator {
+#ydwnoadhra .gt_fraction_denominator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: -0.05em;
@@ -1151,14 +1154,14 @@
 </div>
 <p>Often, it is interesting to also <strong>include variable distributions</strong> into this initial data summary table. This can also be done with the <code><a href="../reference/report_cor_table.html">report_cor_table()</a></code> function. By default, variables with 5 distinct values or fewer are shown with a histogram, while for those with more values, a density plot is provided - but this can be changed with the <code>plot_type</code> argument.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ess_health</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/cor_matrix.html">cor_matrix</a></span><span class="op">(</span>var_names <span class="op">=</span> <span class="va">var_renames</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/report_cor_table.html">report_cor_table</a></span><span class="op">(</span>add_distributions <span class="op">=</span> <span class="cn">TRUE</span>, data <span class="op">=</span> <span class="va">ess_health</span><span class="op">)</span></code></pre></div>
-<div id="yybvekuffg" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<code class="sourceCode R"><span><span class="va">ess_health</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/cor_matrix.html">cor_matrix</a></span><span class="op">(</span>var_names <span class="op">=</span> <span class="va">var_renames</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/report_cor_table.html">report_cor_table</a></span><span class="op">(</span>add_distributions <span class="op">=</span> <span class="cn">TRUE</span>, data <span class="op">=</span> <span class="va">ess_health</span><span class="op">)</span></span></code></pre></div>
+<div id="awootfkybn" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: times, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#yybvekuffg .gt_table {
+#awootfkybn .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -1183,7 +1186,7 @@
   border-left-color: #D3D3D3;
 }
 
-#yybvekuffg .gt_heading {
+#awootfkybn .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1195,7 +1198,7 @@
   border-right-color: #D3D3D3;
 }
 
-#yybvekuffg .gt_title {
+#awootfkybn .gt_title {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -1207,7 +1210,7 @@
   border-bottom-width: 0;
 }
 
-#yybvekuffg .gt_subtitle {
+#awootfkybn .gt_subtitle {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -1219,13 +1222,13 @@
   border-top-width: 0;
 }
 
-#yybvekuffg .gt_bottom_border {
+#awootfkybn .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #000000;
 }
 
-#yybvekuffg .gt_col_headings {
+#awootfkybn .gt_col_headings {
   border-top-style: none;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1240,7 +1243,7 @@
   border-right-color: #D3D3D3;
 }
 
-#yybvekuffg .gt_col_heading {
+#awootfkybn .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1260,7 +1263,7 @@
   overflow-x: hidden;
 }
 
-#yybvekuffg .gt_column_spanner_outer {
+#awootfkybn .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1272,15 +1275,15 @@
   padding-right: 4px;
 }
 
-#yybvekuffg .gt_column_spanner_outer:first-child {
+#awootfkybn .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#yybvekuffg .gt_column_spanner_outer:last-child {
+#awootfkybn .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#yybvekuffg .gt_column_spanner {
+#awootfkybn .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 1px;
   border-bottom-color: #000000;
@@ -1292,7 +1295,7 @@
   width: 100%;
 }
 
-#yybvekuffg .gt_group_heading {
+#awootfkybn .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1317,7 +1320,7 @@
   vertical-align: middle;
 }
 
-#yybvekuffg .gt_empty_group_heading {
+#awootfkybn .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1332,15 +1335,15 @@
   vertical-align: middle;
 }
 
-#yybvekuffg .gt_from_md > :first-child {
+#awootfkybn .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#yybvekuffg .gt_from_md > :last-child {
+#awootfkybn .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#yybvekuffg .gt_row {
+#awootfkybn .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1359,7 +1362,7 @@
   overflow-x: hidden;
 }
 
-#yybvekuffg .gt_stub {
+#awootfkybn .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1372,7 +1375,7 @@
   padding-right: 5px;
 }
 
-#yybvekuffg .gt_stub_row_group {
+#awootfkybn .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1386,11 +1389,11 @@
   vertical-align: top;
 }
 
-#yybvekuffg .gt_row_group_first td {
+#awootfkybn .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#yybvekuffg .gt_summary_row {
+#awootfkybn .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1400,16 +1403,16 @@
   padding-right: 5px;
 }
 
-#yybvekuffg .gt_first_summary_row {
+#awootfkybn .gt_first_summary_row {
   border-top-style: none;
   border-top-color: #D3D3D3;
 }
 
-#yybvekuffg .gt_first_summary_row.thick {
+#awootfkybn .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#yybvekuffg .gt_last_summary_row {
+#awootfkybn .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1419,7 +1422,7 @@
   border-bottom-color: #D3D3D3;
 }
 
-#yybvekuffg .gt_grand_summary_row {
+#awootfkybn .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1429,7 +1432,7 @@
   padding-right: 5px;
 }
 
-#yybvekuffg .gt_first_grand_summary_row {
+#awootfkybn .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1439,11 +1442,11 @@
   border-top-color: #D3D3D3;
 }
 
-#yybvekuffg .gt_striped {
+#awootfkybn .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#yybvekuffg .gt_table_body {
+#awootfkybn .gt_table_body {
   border-top-style: solid;
   border-top-width: 1px;
   border-top-color: #000000;
@@ -1452,7 +1455,7 @@
   border-bottom-color: #000000;
 }
 
-#yybvekuffg .gt_footnotes {
+#awootfkybn .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1466,7 +1469,7 @@
   border-right-color: #D3D3D3;
 }
 
-#yybvekuffg .gt_footnote {
+#awootfkybn .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -1475,7 +1478,7 @@
   padding-right: 5px;
 }
 
-#yybvekuffg .gt_sourcenotes {
+#awootfkybn .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1489,7 +1492,7 @@
   border-right-color: #D3D3D3;
 }
 
-#yybvekuffg .gt_sourcenote {
+#awootfkybn .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1497,36 +1500,36 @@
   padding-right: 5px;
 }
 
-#yybvekuffg .gt_left {
+#awootfkybn .gt_left {
   text-align: left;
 }
 
-#yybvekuffg .gt_center {
+#awootfkybn .gt_center {
   text-align: center;
 }
 
-#yybvekuffg .gt_right {
+#awootfkybn .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#yybvekuffg .gt_font_normal {
+#awootfkybn .gt_font_normal {
   font-weight: normal;
 }
 
-#yybvekuffg .gt_font_bold {
+#awootfkybn .gt_font_bold {
   font-weight: bold;
 }
 
-#yybvekuffg .gt_font_italic {
+#awootfkybn .gt_font_italic {
   font-style: italic;
 }
 
-#yybvekuffg .gt_super {
+#awootfkybn .gt_super {
   font-size: 65%;
 }
 
-#yybvekuffg .gt_two_val_uncert {
+#awootfkybn .gt_two_val_uncert {
   display: inline-block;
   line-height: 1em;
   text-align: right;
@@ -1535,31 +1538,31 @@
   margin-left: 0.1em;
 }
 
-#yybvekuffg .gt_footnote_marks {
+#awootfkybn .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#yybvekuffg .gt_asterisk {
+#awootfkybn .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#yybvekuffg .gt_slash_mark {
+#awootfkybn .gt_slash_mark {
   font-size: 0.7em;
   line-height: 0.7em;
   vertical-align: 0.15em;
 }
 
-#yybvekuffg .gt_fraction_numerator {
+#awootfkybn .gt_fraction_numerator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: 0.45em;
 }
 
-#yybvekuffg .gt_fraction_denominator {
+#awootfkybn .gt_fraction_denominator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: -0.05em;
@@ -1660,36 +1663,36 @@
 <p>Often, we are also interested in how the means of an outcome variable differ between different groups. It can be fiddly to get these tables and the pairwise significance tests done, but this function does it in a breeze.</p>
 <p>If you want to rename variable levels as well as names, the <code><a href="../reference/get_rename_tribbles.html">get_rename_tribbles()</a></code> function becomes a real timesaver.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Start with get_rename_tribbles(ess_health, gndr, cntry) in the console</span>
-
-<span class="va">var_renames</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span>
-    <span class="op">~</span><span class="va">old</span>,     <span class="op">~</span><span class="va">new</span>,     
-    <span class="st">"gndr"</span>,   <span class="st">"Gender"</span>,  
-    <span class="st">"cntry"</span>,  <span class="st">"Country"</span>
-<span class="op">)</span>
-
-<span class="va">level_renames</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span>
-    <span class="op">~</span><span class="va">var</span>,     <span class="op">~</span><span class="va">level_old</span>, <span class="op">~</span><span class="va">level_new</span>, 
-    <span class="st">"gndr"</span>,   <span class="st">"1"</span>,        <span class="st">"male"</span>,       
-    <span class="st">"gndr"</span>,   <span class="st">"2"</span>,        <span class="st">"female"</span>,       
-    <span class="st">"cntry"</span>,  <span class="st">"DE"</span>,       <span class="st">"Germany"</span>,      
-    <span class="st">"cntry"</span>,  <span class="st">"FR"</span>,       <span class="st">"France"</span>,      
-    <span class="st">"cntry"</span>,  <span class="st">"GB"</span>,       <span class="st">"UK"</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Start with get_rename_tribbles(ess_health, gndr, cntry) in the console</span></span>
+<span></span>
+<span><span class="va">var_renames</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span>
+<span>    <span class="op">~</span><span class="va">old</span>,     <span class="op">~</span><span class="va">new</span>,     </span>
+<span>    <span class="st">"gndr"</span>,   <span class="st">"Gender"</span>,  </span>
+<span>    <span class="st">"cntry"</span>,  <span class="st">"Country"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">level_renames</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span>
+<span>    <span class="op">~</span><span class="va">var</span>,     <span class="op">~</span><span class="va">level_old</span>, <span class="op">~</span><span class="va">level_new</span>, </span>
+<span>    <span class="st">"gndr"</span>,   <span class="st">"1"</span>,        <span class="st">"male"</span>,       </span>
+<span>    <span class="st">"gndr"</span>,   <span class="st">"2"</span>,        <span class="st">"female"</span>,       </span>
+<span>    <span class="st">"cntry"</span>,  <span class="st">"DE"</span>,       <span class="st">"Germany"</span>,      </span>
+<span>    <span class="st">"cntry"</span>,  <span class="st">"FR"</span>,       <span class="st">"France"</span>,      </span>
+<span>    <span class="st">"cntry"</span>,  <span class="st">"GB"</span>,       <span class="st">"UK"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>Then run <code><a href="../reference/report_cat_vars.html">report_cat_vars()</a></code> to get a table with the distribution of the categories and their association with the outcome variable.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/report_cat_vars.html">report_cat_vars</a></span><span class="op">(</span><span class="va">ess_health</span>, <span class="va">health</span>, <span class="va">gndr</span>, <span class="va">cntry</span>, var_names <span class="op">=</span> <span class="va">var_renames</span>, 
-              level_names <span class="op">=</span> <span class="va">level_renames</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/report_cat_vars.html">report_cat_vars</a></span><span class="op">(</span><span class="va">ess_health</span>, <span class="va">health</span>, <span class="va">gndr</span>, <span class="va">cntry</span>, var_names <span class="op">=</span> <span class="va">var_renames</span>, </span>
+<span>              level_names <span class="op">=</span> <span class="va">level_renames</span><span class="op">)</span></span></code></pre></div>
 
 
 <meta charset="utf-8">
 <style>body{background-color:white;}</style>
-<div id="uuhhybhpcc" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="flxvunrfrr" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: times, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#uuhhybhpcc .gt_table {
+#flxvunrfrr .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -1714,7 +1717,7 @@
   border-left-color: #D3D3D3;
 }
 
-#uuhhybhpcc .gt_heading {
+#flxvunrfrr .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1726,7 +1729,7 @@
   border-right-color: #D3D3D3;
 }
 
-#uuhhybhpcc .gt_title {
+#flxvunrfrr .gt_title {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -1738,7 +1741,7 @@
   border-bottom-width: 0;
 }
 
-#uuhhybhpcc .gt_subtitle {
+#flxvunrfrr .gt_subtitle {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -1750,13 +1753,13 @@
   border-top-width: 0;
 }
 
-#uuhhybhpcc .gt_bottom_border {
+#flxvunrfrr .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #000000;
 }
 
-#uuhhybhpcc .gt_col_headings {
+#flxvunrfrr .gt_col_headings {
   border-top-style: none;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1771,7 +1774,7 @@
   border-right-color: #D3D3D3;
 }
 
-#uuhhybhpcc .gt_col_heading {
+#flxvunrfrr .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1791,7 +1794,7 @@
   overflow-x: hidden;
 }
 
-#uuhhybhpcc .gt_column_spanner_outer {
+#flxvunrfrr .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1803,15 +1806,15 @@
   padding-right: 4px;
 }
 
-#uuhhybhpcc .gt_column_spanner_outer:first-child {
+#flxvunrfrr .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#uuhhybhpcc .gt_column_spanner_outer:last-child {
+#flxvunrfrr .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#uuhhybhpcc .gt_column_spanner {
+#flxvunrfrr .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 1px;
   border-bottom-color: #000000;
@@ -1823,7 +1826,7 @@
   width: 100%;
 }
 
-#uuhhybhpcc .gt_group_heading {
+#flxvunrfrr .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1848,7 +1851,7 @@
   vertical-align: middle;
 }
 
-#uuhhybhpcc .gt_empty_group_heading {
+#flxvunrfrr .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1863,15 +1866,15 @@
   vertical-align: middle;
 }
 
-#uuhhybhpcc .gt_from_md > :first-child {
+#flxvunrfrr .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#uuhhybhpcc .gt_from_md > :last-child {
+#flxvunrfrr .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#uuhhybhpcc .gt_row {
+#flxvunrfrr .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1890,7 +1893,7 @@
   overflow-x: hidden;
 }
 
-#uuhhybhpcc .gt_stub {
+#flxvunrfrr .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1903,7 +1906,7 @@
   padding-right: 5px;
 }
 
-#uuhhybhpcc .gt_stub_row_group {
+#flxvunrfrr .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1917,11 +1920,11 @@
   vertical-align: top;
 }
 
-#uuhhybhpcc .gt_row_group_first td {
+#flxvunrfrr .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#uuhhybhpcc .gt_summary_row {
+#flxvunrfrr .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1931,16 +1934,16 @@
   padding-right: 5px;
 }
 
-#uuhhybhpcc .gt_first_summary_row {
+#flxvunrfrr .gt_first_summary_row {
   border-top-style: none;
   border-top-color: #D3D3D3;
 }
 
-#uuhhybhpcc .gt_first_summary_row.thick {
+#flxvunrfrr .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#uuhhybhpcc .gt_last_summary_row {
+#flxvunrfrr .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1950,7 +1953,7 @@
   border-bottom-color: #D3D3D3;
 }
 
-#uuhhybhpcc .gt_grand_summary_row {
+#flxvunrfrr .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1960,7 +1963,7 @@
   padding-right: 5px;
 }
 
-#uuhhybhpcc .gt_first_grand_summary_row {
+#flxvunrfrr .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1970,11 +1973,11 @@
   border-top-color: #D3D3D3;
 }
 
-#uuhhybhpcc .gt_striped {
+#flxvunrfrr .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#uuhhybhpcc .gt_table_body {
+#flxvunrfrr .gt_table_body {
   border-top-style: solid;
   border-top-width: 1px;
   border-top-color: #000000;
@@ -1983,7 +1986,7 @@
   border-bottom-color: #000000;
 }
 
-#uuhhybhpcc .gt_footnotes {
+#flxvunrfrr .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1997,7 +2000,7 @@
   border-right-color: #D3D3D3;
 }
 
-#uuhhybhpcc .gt_footnote {
+#flxvunrfrr .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -2006,7 +2009,7 @@
   padding-right: 5px;
 }
 
-#uuhhybhpcc .gt_sourcenotes {
+#flxvunrfrr .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2020,7 +2023,7 @@
   border-right-color: #D3D3D3;
 }
 
-#uuhhybhpcc .gt_sourcenote {
+#flxvunrfrr .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2028,36 +2031,36 @@
   padding-right: 5px;
 }
 
-#uuhhybhpcc .gt_left {
+#flxvunrfrr .gt_left {
   text-align: left;
 }
 
-#uuhhybhpcc .gt_center {
+#flxvunrfrr .gt_center {
   text-align: center;
 }
 
-#uuhhybhpcc .gt_right {
+#flxvunrfrr .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#uuhhybhpcc .gt_font_normal {
+#flxvunrfrr .gt_font_normal {
   font-weight: normal;
 }
 
-#uuhhybhpcc .gt_font_bold {
+#flxvunrfrr .gt_font_bold {
   font-weight: bold;
 }
 
-#uuhhybhpcc .gt_font_italic {
+#flxvunrfrr .gt_font_italic {
   font-style: italic;
 }
 
-#uuhhybhpcc .gt_super {
+#flxvunrfrr .gt_super {
   font-size: 65%;
 }
 
-#uuhhybhpcc .gt_two_val_uncert {
+#flxvunrfrr .gt_two_val_uncert {
   display: inline-block;
   line-height: 1em;
   text-align: right;
@@ -2066,31 +2069,31 @@
   margin-left: 0.1em;
 }
 
-#uuhhybhpcc .gt_footnote_marks {
+#flxvunrfrr .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#uuhhybhpcc .gt_asterisk {
+#flxvunrfrr .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#uuhhybhpcc .gt_slash_mark {
+#flxvunrfrr .gt_slash_mark {
   font-size: 0.7em;
   line-height: 0.7em;
   vertical-align: 0.15em;
 }
 
-#uuhhybhpcc .gt_fraction_numerator {
+#flxvunrfrr .gt_fraction_numerator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: 0.45em;
 }
 
-#uuhhybhpcc .gt_fraction_denominator {
+#flxvunrfrr .gt_fraction_denominator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: -0.05em;
@@ -2128,7 +2131,11 @@ male
 </div>
 </td>
 <td class="gt_row gt_right">
-48.2%
+<div class="gt_from_md">
+<p>
+0.481871021311929
+</p>
+</div>
 </td>
 <td class="gt_row gt_left">
 <div class="gt_from_md">
@@ -2149,7 +2156,11 @@ female
 </div>
 </td>
 <td class="gt_row gt_right">
-51.8%
+<div class="gt_from_md">
+<p>
+0.518128978688071
+</p>
+</div>
 </td>
 <td class="gt_row gt_left">
 <div class="gt_from_md">
@@ -2175,7 +2186,11 @@ Germany
 </div>
 </td>
 <td class="gt_row gt_right">
-42.1%
+<div class="gt_from_md">
+<p>
+0.421394962634929
+</p>
+</div>
 </td>
 <td class="gt_row gt_left">
 <div class="gt_from_md">
@@ -2196,7 +2211,11 @@ France
 </div>
 </td>
 <td class="gt_row gt_right">
-26.5%
+<div class="gt_from_md">
+<p>
+0.265292001107113
+</p>
+</div>
 </td>
 <td class="gt_row gt_left">
 <div class="gt_from_md">
@@ -2217,7 +2236,11 @@ UK
 </div>
 </td>
 <td class="gt_row gt_right">
-31.3%
+<div class="gt_from_md">
+<p>
+0.313313036257957
+</p>
+</div>
 </td>
 <td class="gt_row gt_left">
 <div class="gt_from_md">
@@ -2249,25 +2272,25 @@ Within each variable, the means of groups with different superscripts differ wit
 <p>In psychology, it is often expected that regression models are reported with both unstandardised (B) and standardized (β) coefficients. This can be fiddly and lead to redundant information. The <code><a href="../reference/lm_std.html">lm_std()</a></code> function easily runs linear regression models that return standardised coefficients and the <code><a href="../reference/report_lm_with_std.html">report_lm_with_std()</a></code> function creates side-by-side regression tables that minimize redundancy.</p>
 <p>At the most basic, you just need to run two models and pass them to the reporting function:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ess_health</span><span class="op">$</span><span class="va">gndr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">ess_health</span><span class="op">$</span><span class="va">gndr</span><span class="op">)</span>
-
-<span class="co">#Standard lm model</span>
-<span class="va">mod1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">depression</span> <span class="op">~</span> <span class="va">agea</span> <span class="op">+</span> <span class="va">gndr</span> <span class="op">+</span> <span class="va">health</span> <span class="op">+</span> <span class="va">cntry</span>, <span class="va">ess_health</span><span class="op">)</span>
-
-<span class="co">#Model with standardised coefficients</span>
-<span class="va">mod2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lm_std.html">lm_std</a></span><span class="op">(</span><span class="va">depression</span> <span class="op">~</span> <span class="va">agea</span> <span class="op">+</span> <span class="va">gndr</span> <span class="op">+</span> <span class="va">health</span> <span class="op">+</span> <span class="va">cntry</span>, <span class="va">ess_health</span><span class="op">)</span>
-
-<span class="fu"><a href="../reference/report_lm_with_std.html">report_lm_with_std</a></span><span class="op">(</span><span class="va">mod1</span>, <span class="va">mod2</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ess_health</span><span class="op">$</span><span class="va">gndr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">ess_health</span><span class="op">$</span><span class="va">gndr</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#Standard lm model</span></span>
+<span><span class="va">mod1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">depression</span> <span class="op">~</span> <span class="va">agea</span> <span class="op">+</span> <span class="va">gndr</span> <span class="op">+</span> <span class="va">health</span> <span class="op">+</span> <span class="va">cntry</span>, <span class="va">ess_health</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#Model with standardised coefficients</span></span>
+<span><span class="va">mod2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lm_std.html">lm_std</a></span><span class="op">(</span><span class="va">depression</span> <span class="op">~</span> <span class="va">agea</span> <span class="op">+</span> <span class="va">gndr</span> <span class="op">+</span> <span class="va">health</span> <span class="op">+</span> <span class="va">cntry</span>, <span class="va">ess_health</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/report_lm_with_std.html">report_lm_with_std</a></span><span class="op">(</span><span class="va">mod1</span>, <span class="va">mod2</span><span class="op">)</span></span></code></pre></div>
 
 
 <meta charset="utf-8">
 <style>body{background-color:white;}</style>
-<div id="edehntduce" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="cccylhxiwk" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: times, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#edehntduce .gt_table {
+#cccylhxiwk .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -2292,7 +2315,7 @@ Within each variable, the means of groups with different superscripts differ wit
   border-left-color: #D3D3D3;
 }
 
-#edehntduce .gt_heading {
+#cccylhxiwk .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2304,7 +2327,7 @@ Within each variable, the means of groups with different superscripts differ wit
   border-right-color: #D3D3D3;
 }
 
-#edehntduce .gt_title {
+#cccylhxiwk .gt_title {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -2316,7 +2339,7 @@ Within each variable, the means of groups with different superscripts differ wit
   border-bottom-width: 0;
 }
 
-#edehntduce .gt_subtitle {
+#cccylhxiwk .gt_subtitle {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -2328,13 +2351,13 @@ Within each variable, the means of groups with different superscripts differ wit
   border-top-width: 0;
 }
 
-#edehntduce .gt_bottom_border {
+#cccylhxiwk .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #000000;
 }
 
-#edehntduce .gt_col_headings {
+#cccylhxiwk .gt_col_headings {
   border-top-style: none;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2349,7 +2372,7 @@ Within each variable, the means of groups with different superscripts differ wit
   border-right-color: #D3D3D3;
 }
 
-#edehntduce .gt_col_heading {
+#cccylhxiwk .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2369,7 +2392,7 @@ Within each variable, the means of groups with different superscripts differ wit
   overflow-x: hidden;
 }
 
-#edehntduce .gt_column_spanner_outer {
+#cccylhxiwk .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2381,15 +2404,15 @@ Within each variable, the means of groups with different superscripts differ wit
   padding-right: 4px;
 }
 
-#edehntduce .gt_column_spanner_outer:first-child {
+#cccylhxiwk .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#edehntduce .gt_column_spanner_outer:last-child {
+#cccylhxiwk .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#edehntduce .gt_column_spanner {
+#cccylhxiwk .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 1px;
   border-bottom-color: #000000;
@@ -2401,7 +2424,7 @@ Within each variable, the means of groups with different superscripts differ wit
   width: 100%;
 }
 
-#edehntduce .gt_group_heading {
+#cccylhxiwk .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2426,7 +2449,7 @@ Within each variable, the means of groups with different superscripts differ wit
   vertical-align: middle;
 }
 
-#edehntduce .gt_empty_group_heading {
+#cccylhxiwk .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2441,15 +2464,15 @@ Within each variable, the means of groups with different superscripts differ wit
   vertical-align: middle;
 }
 
-#edehntduce .gt_from_md > :first-child {
+#cccylhxiwk .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#edehntduce .gt_from_md > :last-child {
+#cccylhxiwk .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#edehntduce .gt_row {
+#cccylhxiwk .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2468,7 +2491,7 @@ Within each variable, the means of groups with different superscripts differ wit
   overflow-x: hidden;
 }
 
-#edehntduce .gt_stub {
+#cccylhxiwk .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2481,7 +2504,7 @@ Within each variable, the means of groups with different superscripts differ wit
   padding-right: 5px;
 }
 
-#edehntduce .gt_stub_row_group {
+#cccylhxiwk .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2495,11 +2518,11 @@ Within each variable, the means of groups with different superscripts differ wit
   vertical-align: top;
 }
 
-#edehntduce .gt_row_group_first td {
+#cccylhxiwk .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#edehntduce .gt_summary_row {
+#cccylhxiwk .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2509,16 +2532,16 @@ Within each variable, the means of groups with different superscripts differ wit
   padding-right: 5px;
 }
 
-#edehntduce .gt_first_summary_row {
+#cccylhxiwk .gt_first_summary_row {
   border-top-style: none;
   border-top-color: #D3D3D3;
 }
 
-#edehntduce .gt_first_summary_row.thick {
+#cccylhxiwk .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#edehntduce .gt_last_summary_row {
+#cccylhxiwk .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2528,7 +2551,7 @@ Within each variable, the means of groups with different superscripts differ wit
   border-bottom-color: #D3D3D3;
 }
 
-#edehntduce .gt_grand_summary_row {
+#cccylhxiwk .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2538,7 +2561,7 @@ Within each variable, the means of groups with different superscripts differ wit
   padding-right: 5px;
 }
 
-#edehntduce .gt_first_grand_summary_row {
+#cccylhxiwk .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2548,11 +2571,11 @@ Within each variable, the means of groups with different superscripts differ wit
   border-top-color: #D3D3D3;
 }
 
-#edehntduce .gt_striped {
+#cccylhxiwk .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#edehntduce .gt_table_body {
+#cccylhxiwk .gt_table_body {
   border-top-style: solid;
   border-top-width: 1px;
   border-top-color: #000000;
@@ -2561,7 +2584,7 @@ Within each variable, the means of groups with different superscripts differ wit
   border-bottom-color: #000000;
 }
 
-#edehntduce .gt_footnotes {
+#cccylhxiwk .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2575,7 +2598,7 @@ Within each variable, the means of groups with different superscripts differ wit
   border-right-color: #D3D3D3;
 }
 
-#edehntduce .gt_footnote {
+#cccylhxiwk .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -2584,7 +2607,7 @@ Within each variable, the means of groups with different superscripts differ wit
   padding-right: 5px;
 }
 
-#edehntduce .gt_sourcenotes {
+#cccylhxiwk .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2598,7 +2621,7 @@ Within each variable, the means of groups with different superscripts differ wit
   border-right-color: #D3D3D3;
 }
 
-#edehntduce .gt_sourcenote {
+#cccylhxiwk .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2606,36 +2629,36 @@ Within each variable, the means of groups with different superscripts differ wit
   padding-right: 5px;
 }
 
-#edehntduce .gt_left {
+#cccylhxiwk .gt_left {
   text-align: left;
 }
 
-#edehntduce .gt_center {
+#cccylhxiwk .gt_center {
   text-align: center;
 }
 
-#edehntduce .gt_right {
+#cccylhxiwk .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#edehntduce .gt_font_normal {
+#cccylhxiwk .gt_font_normal {
   font-weight: normal;
 }
 
-#edehntduce .gt_font_bold {
+#cccylhxiwk .gt_font_bold {
   font-weight: bold;
 }
 
-#edehntduce .gt_font_italic {
+#cccylhxiwk .gt_font_italic {
   font-style: italic;
 }
 
-#edehntduce .gt_super {
+#cccylhxiwk .gt_super {
   font-size: 65%;
 }
 
-#edehntduce .gt_two_val_uncert {
+#cccylhxiwk .gt_two_val_uncert {
   display: inline-block;
   line-height: 1em;
   text-align: right;
@@ -2644,31 +2667,31 @@ Within each variable, the means of groups with different superscripts differ wit
   margin-left: 0.1em;
 }
 
-#edehntduce .gt_footnote_marks {
+#cccylhxiwk .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#edehntduce .gt_asterisk {
+#cccylhxiwk .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#edehntduce .gt_slash_mark {
+#cccylhxiwk .gt_slash_mark {
   font-size: 0.7em;
   line-height: 0.7em;
   vertical-align: 0.15em;
 }
 
-#edehntduce .gt_fraction_numerator {
+#cccylhxiwk .gt_fraction_numerator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: 0.45em;
 }
 
-#edehntduce .gt_fraction_denominator {
+#cccylhxiwk .gt_fraction_denominator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: -0.05em;
@@ -2883,29 +2906,29 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
 
 <p>Often, the coefficient names - particularly for dummy variables - are not particularly clear or pleasing. In such cases, they can be renamed easily - again, there is a helper function (<code><a href="../reference/get_coef_rename_tribble.html">get_coef_rename_tribble()</a></code>) that creates most of the necessary code. In the new names, you can use markdown formatting, for instance to add information on reference levels.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">#get_coef_rename_tribble(mod1) is the starting point.</span>
-
-<span class="va">coef_names</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span>
-  <span class="op">~</span><span class="va">old</span>,           <span class="op">~</span><span class="va">new</span>,           
-   <span class="st">"(Intercept)"</span>,  <span class="st">"*(Intercept)*"</span>, 
-   <span class="st">"agea"</span>,         <span class="st">"Age"</span>,        
-   <span class="st">"gndr2"</span>,        <span class="st">"Gender *(female)*"</span>,       
-   <span class="st">"health"</span>,       <span class="st">"Poor health"</span>,      
-   <span class="st">"cntryFR"</span>,      <span class="st">"France *(vs DE)*"</span>,     
-   <span class="st">"cntryGB"</span>,      <span class="st">"UK *(vs DE)*"</span>
-<span class="op">)</span>
-
-<span class="fu"><a href="../reference/report_lm_with_std.html">report_lm_with_std</a></span><span class="op">(</span><span class="va">mod1</span>, <span class="va">mod2</span>, coef_renames <span class="op">=</span> <span class="va">coef_names</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co">#get_coef_rename_tribble(mod1) is the starting point.</span></span>
+<span></span>
+<span><span class="va">coef_names</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span>
+<span>  <span class="op">~</span><span class="va">old</span>,           <span class="op">~</span><span class="va">new</span>,           </span>
+<span>   <span class="st">"(Intercept)"</span>,  <span class="st">"*(Intercept)*"</span>, </span>
+<span>   <span class="st">"agea"</span>,         <span class="st">"Age"</span>,        </span>
+<span>   <span class="st">"gndr2"</span>,        <span class="st">"Gender *(female)*"</span>,       </span>
+<span>   <span class="st">"health"</span>,       <span class="st">"Poor health"</span>,      </span>
+<span>   <span class="st">"cntryFR"</span>,      <span class="st">"France *(vs DE)*"</span>,     </span>
+<span>   <span class="st">"cntryGB"</span>,      <span class="st">"UK *(vs DE)*"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/report_lm_with_std.html">report_lm_with_std</a></span><span class="op">(</span><span class="va">mod1</span>, <span class="va">mod2</span>, coef_renames <span class="op">=</span> <span class="va">coef_names</span><span class="op">)</span></span></code></pre></div>
 
 
 <meta charset="utf-8">
 <style>body{background-color:white;}</style>
-<div id="yzzkwxmakg" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="btcjxdtqvb" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: times, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#yzzkwxmakg .gt_table {
+#btcjxdtqvb .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -2930,7 +2953,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-left-color: #D3D3D3;
 }
 
-#yzzkwxmakg .gt_heading {
+#btcjxdtqvb .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2942,7 +2965,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-right-color: #D3D3D3;
 }
 
-#yzzkwxmakg .gt_title {
+#btcjxdtqvb .gt_title {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -2954,7 +2977,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-bottom-width: 0;
 }
 
-#yzzkwxmakg .gt_subtitle {
+#btcjxdtqvb .gt_subtitle {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -2966,13 +2989,13 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-top-width: 0;
 }
 
-#yzzkwxmakg .gt_bottom_border {
+#btcjxdtqvb .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #000000;
 }
 
-#yzzkwxmakg .gt_col_headings {
+#btcjxdtqvb .gt_col_headings {
   border-top-style: none;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2987,7 +3010,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-right-color: #D3D3D3;
 }
 
-#yzzkwxmakg .gt_col_heading {
+#btcjxdtqvb .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3007,7 +3030,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   overflow-x: hidden;
 }
 
-#yzzkwxmakg .gt_column_spanner_outer {
+#btcjxdtqvb .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3019,15 +3042,15 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 4px;
 }
 
-#yzzkwxmakg .gt_column_spanner_outer:first-child {
+#btcjxdtqvb .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#yzzkwxmakg .gt_column_spanner_outer:last-child {
+#btcjxdtqvb .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#yzzkwxmakg .gt_column_spanner {
+#btcjxdtqvb .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 1px;
   border-bottom-color: #000000;
@@ -3039,7 +3062,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   width: 100%;
 }
 
-#yzzkwxmakg .gt_group_heading {
+#btcjxdtqvb .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3064,7 +3087,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   vertical-align: middle;
 }
 
-#yzzkwxmakg .gt_empty_group_heading {
+#btcjxdtqvb .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3079,15 +3102,15 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   vertical-align: middle;
 }
 
-#yzzkwxmakg .gt_from_md > :first-child {
+#btcjxdtqvb .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#yzzkwxmakg .gt_from_md > :last-child {
+#btcjxdtqvb .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#yzzkwxmakg .gt_row {
+#btcjxdtqvb .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3106,7 +3129,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   overflow-x: hidden;
 }
 
-#yzzkwxmakg .gt_stub {
+#btcjxdtqvb .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3119,7 +3142,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 5px;
 }
 
-#yzzkwxmakg .gt_stub_row_group {
+#btcjxdtqvb .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3133,11 +3156,11 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   vertical-align: top;
 }
 
-#yzzkwxmakg .gt_row_group_first td {
+#btcjxdtqvb .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#yzzkwxmakg .gt_summary_row {
+#btcjxdtqvb .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3147,16 +3170,16 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 5px;
 }
 
-#yzzkwxmakg .gt_first_summary_row {
+#btcjxdtqvb .gt_first_summary_row {
   border-top-style: none;
   border-top-color: #D3D3D3;
 }
 
-#yzzkwxmakg .gt_first_summary_row.thick {
+#btcjxdtqvb .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#yzzkwxmakg .gt_last_summary_row {
+#btcjxdtqvb .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3166,7 +3189,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-bottom-color: #D3D3D3;
 }
 
-#yzzkwxmakg .gt_grand_summary_row {
+#btcjxdtqvb .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3176,7 +3199,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 5px;
 }
 
-#yzzkwxmakg .gt_first_grand_summary_row {
+#btcjxdtqvb .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3186,11 +3209,11 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-top-color: #D3D3D3;
 }
 
-#yzzkwxmakg .gt_striped {
+#btcjxdtqvb .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#yzzkwxmakg .gt_table_body {
+#btcjxdtqvb .gt_table_body {
   border-top-style: solid;
   border-top-width: 1px;
   border-top-color: #000000;
@@ -3199,7 +3222,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-bottom-color: #000000;
 }
 
-#yzzkwxmakg .gt_footnotes {
+#btcjxdtqvb .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3213,7 +3236,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-right-color: #D3D3D3;
 }
 
-#yzzkwxmakg .gt_footnote {
+#btcjxdtqvb .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -3222,7 +3245,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 5px;
 }
 
-#yzzkwxmakg .gt_sourcenotes {
+#btcjxdtqvb .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3236,7 +3259,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-right-color: #D3D3D3;
 }
 
-#yzzkwxmakg .gt_sourcenote {
+#btcjxdtqvb .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -3244,36 +3267,36 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 5px;
 }
 
-#yzzkwxmakg .gt_left {
+#btcjxdtqvb .gt_left {
   text-align: left;
 }
 
-#yzzkwxmakg .gt_center {
+#btcjxdtqvb .gt_center {
   text-align: center;
 }
 
-#yzzkwxmakg .gt_right {
+#btcjxdtqvb .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#yzzkwxmakg .gt_font_normal {
+#btcjxdtqvb .gt_font_normal {
   font-weight: normal;
 }
 
-#yzzkwxmakg .gt_font_bold {
+#btcjxdtqvb .gt_font_bold {
   font-weight: bold;
 }
 
-#yzzkwxmakg .gt_font_italic {
+#btcjxdtqvb .gt_font_italic {
   font-style: italic;
 }
 
-#yzzkwxmakg .gt_super {
+#btcjxdtqvb .gt_super {
   font-size: 65%;
 }
 
-#yzzkwxmakg .gt_two_val_uncert {
+#btcjxdtqvb .gt_two_val_uncert {
   display: inline-block;
   line-height: 1em;
   text-align: right;
@@ -3282,31 +3305,31 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   margin-left: 0.1em;
 }
 
-#yzzkwxmakg .gt_footnote_marks {
+#btcjxdtqvb .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#yzzkwxmakg .gt_asterisk {
+#btcjxdtqvb .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#yzzkwxmakg .gt_slash_mark {
+#btcjxdtqvb .gt_slash_mark {
   font-size: 0.7em;
   line-height: 0.7em;
   vertical-align: 0.15em;
 }
 
-#yzzkwxmakg .gt_fraction_numerator {
+#btcjxdtqvb .gt_fraction_numerator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: 0.45em;
 }
 
-#yzzkwxmakg .gt_fraction_denominator {
+#btcjxdtqvb .gt_fraction_denominator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: -0.05em;
@@ -3521,41 +3544,41 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
 
 <p>You can also <strong>display two nested models side-by-side and get the F-change significance test.</strong> (More models can be displayed, but not yet statistically tested against each other.) To enable model comparisons, all models need to be fitted on the same dataset, so that I will first omit missing data.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="va">ess_health</span> <span class="op">&lt;-</span> <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html" class="external-link">drop_na</a></span><span class="op">(</span><span class="va">ess_health</span><span class="op">)</span>
-
-<span class="va">mod1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">depression</span> <span class="op">~</span> <span class="va">agea</span> <span class="op">+</span> <span class="va">gndr</span> <span class="op">+</span> <span class="va">health</span> <span class="op">+</span> <span class="va">cntry</span>, <span class="va">ess_health</span><span class="op">)</span>
-<span class="va">mod2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lm_std.html">lm_std</a></span><span class="op">(</span><span class="va">depression</span> <span class="op">~</span> <span class="va">agea</span> <span class="op">+</span> <span class="va">gndr</span> <span class="op">+</span> <span class="va">health</span> <span class="op">+</span> <span class="va">cntry</span>, <span class="va">ess_health</span><span class="op">)</span>
-
-
-<span class="va">mod3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">depression</span> <span class="op">~</span> <span class="va">agea</span> <span class="op">*</span> <span class="va">gndr</span> <span class="op">+</span> <span class="va">eisced</span> <span class="op">+</span> <span class="va">health</span> <span class="op">+</span> <span class="va">cntry</span>, <span class="va">ess_health</span><span class="op">)</span>
-<span class="va">mod4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lm_std.html">lm_std</a></span><span class="op">(</span><span class="va">depression</span> <span class="op">~</span> <span class="va">agea</span> <span class="op">*</span> <span class="va">gndr</span> <span class="op">+</span> <span class="va">eisced</span> <span class="op">+</span> <span class="va">health</span> <span class="op">+</span> <span class="va">cntry</span>, <span class="va">ess_health</span><span class="op">)</span>
-
-<span class="va">coef_names</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span>
-  <span class="op">~</span><span class="va">old</span>,           <span class="op">~</span><span class="va">new</span>,           
-   <span class="st">"(Intercept)"</span>,  <span class="st">"*(Intercept)*"</span>, 
-   <span class="st">"agea"</span>,         <span class="st">"Age"</span>,        
-   <span class="st">"gndr2"</span>,        <span class="st">"Gender *(female)*"</span>,       
-   <span class="st">"health"</span>,       <span class="st">"Poor health"</span>,      
-   <span class="st">"cntryFR"</span>,      <span class="st">"France *(vs DE)*"</span>,     
-   <span class="st">"cntryGB"</span>,      <span class="st">"UK *(vs DE)*"</span>,
-   <span class="st">"eisced"</span>,       <span class="st">"Education"</span>,
-   <span class="st">"agea:gndr2"</span>,   <span class="st">"Age x Female"</span>,
-<span class="op">)</span>
-
-<span class="fu"><a href="../reference/report_lm_with_std.html">report_lm_with_std</a></span><span class="op">(</span>mod <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mod1</span>, <span class="va">mod3</span><span class="op">)</span>, mod_std <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mod2</span>, <span class="va">mod4</span><span class="op">)</span>,
-                   coef_renames <span class="op">=</span> <span class="va">coef_names</span>, R2_change <span class="op">=</span> <span class="cn">TRUE</span>,
-                   model_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Base model"</span>, <span class="st">"Extended model"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span></span>
+<span><span class="va">ess_health</span> <span class="op">&lt;-</span> <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html" class="external-link">drop_na</a></span><span class="op">(</span><span class="va">ess_health</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">mod1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">depression</span> <span class="op">~</span> <span class="va">agea</span> <span class="op">+</span> <span class="va">gndr</span> <span class="op">+</span> <span class="va">health</span> <span class="op">+</span> <span class="va">cntry</span>, <span class="va">ess_health</span><span class="op">)</span></span>
+<span><span class="va">mod2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lm_std.html">lm_std</a></span><span class="op">(</span><span class="va">depression</span> <span class="op">~</span> <span class="va">agea</span> <span class="op">+</span> <span class="va">gndr</span> <span class="op">+</span> <span class="va">health</span> <span class="op">+</span> <span class="va">cntry</span>, <span class="va">ess_health</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="va">mod3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">depression</span> <span class="op">~</span> <span class="va">agea</span> <span class="op">*</span> <span class="va">gndr</span> <span class="op">+</span> <span class="va">eisced</span> <span class="op">+</span> <span class="va">health</span> <span class="op">+</span> <span class="va">cntry</span>, <span class="va">ess_health</span><span class="op">)</span></span>
+<span><span class="va">mod4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lm_std.html">lm_std</a></span><span class="op">(</span><span class="va">depression</span> <span class="op">~</span> <span class="va">agea</span> <span class="op">*</span> <span class="va">gndr</span> <span class="op">+</span> <span class="va">eisced</span> <span class="op">+</span> <span class="va">health</span> <span class="op">+</span> <span class="va">cntry</span>, <span class="va">ess_health</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">coef_names</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span>
+<span>  <span class="op">~</span><span class="va">old</span>,           <span class="op">~</span><span class="va">new</span>,           </span>
+<span>   <span class="st">"(Intercept)"</span>,  <span class="st">"*(Intercept)*"</span>, </span>
+<span>   <span class="st">"agea"</span>,         <span class="st">"Age"</span>,        </span>
+<span>   <span class="st">"gndr2"</span>,        <span class="st">"Gender *(female)*"</span>,       </span>
+<span>   <span class="st">"health"</span>,       <span class="st">"Poor health"</span>,      </span>
+<span>   <span class="st">"cntryFR"</span>,      <span class="st">"France *(vs DE)*"</span>,     </span>
+<span>   <span class="st">"cntryGB"</span>,      <span class="st">"UK *(vs DE)*"</span>,</span>
+<span>   <span class="st">"eisced"</span>,       <span class="st">"Education"</span>,</span>
+<span>   <span class="st">"agea:gndr2"</span>,   <span class="st">"Age x Female"</span>,</span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/report_lm_with_std.html">report_lm_with_std</a></span><span class="op">(</span>mod <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mod1</span>, <span class="va">mod3</span><span class="op">)</span>, mod_std <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mod2</span>, <span class="va">mod4</span><span class="op">)</span>,</span>
+<span>                   coef_renames <span class="op">=</span> <span class="va">coef_names</span>, R2_change <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                   model_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Base model"</span>, <span class="st">"Extended model"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 
 
 <meta charset="utf-8">
 <style>body{background-color:white;}</style>
-<div id="uznzslntay" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="abvrihusdz" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: times, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#uznzslntay .gt_table {
+#abvrihusdz .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -3580,7 +3603,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-left-color: #D3D3D3;
 }
 
-#uznzslntay .gt_heading {
+#abvrihusdz .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -3592,7 +3615,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-right-color: #D3D3D3;
 }
 
-#uznzslntay .gt_title {
+#abvrihusdz .gt_title {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -3604,7 +3627,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-bottom-width: 0;
 }
 
-#uznzslntay .gt_subtitle {
+#abvrihusdz .gt_subtitle {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -3616,13 +3639,13 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-top-width: 0;
 }
 
-#uznzslntay .gt_bottom_border {
+#abvrihusdz .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #000000;
 }
 
-#uznzslntay .gt_col_headings {
+#abvrihusdz .gt_col_headings {
   border-top-style: none;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3637,7 +3660,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-right-color: #D3D3D3;
 }
 
-#uznzslntay .gt_col_heading {
+#abvrihusdz .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3657,7 +3680,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   overflow-x: hidden;
 }
 
-#uznzslntay .gt_column_spanner_outer {
+#abvrihusdz .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3669,15 +3692,15 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 4px;
 }
 
-#uznzslntay .gt_column_spanner_outer:first-child {
+#abvrihusdz .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#uznzslntay .gt_column_spanner_outer:last-child {
+#abvrihusdz .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#uznzslntay .gt_column_spanner {
+#abvrihusdz .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 1px;
   border-bottom-color: #000000;
@@ -3689,7 +3712,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   width: 100%;
 }
 
-#uznzslntay .gt_group_heading {
+#abvrihusdz .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3714,7 +3737,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   vertical-align: middle;
 }
 
-#uznzslntay .gt_empty_group_heading {
+#abvrihusdz .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3729,15 +3752,15 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   vertical-align: middle;
 }
 
-#uznzslntay .gt_from_md > :first-child {
+#abvrihusdz .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#uznzslntay .gt_from_md > :last-child {
+#abvrihusdz .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#uznzslntay .gt_row {
+#abvrihusdz .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3756,7 +3779,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   overflow-x: hidden;
 }
 
-#uznzslntay .gt_stub {
+#abvrihusdz .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3769,7 +3792,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 5px;
 }
 
-#uznzslntay .gt_stub_row_group {
+#abvrihusdz .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3783,11 +3806,11 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   vertical-align: top;
 }
 
-#uznzslntay .gt_row_group_first td {
+#abvrihusdz .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#uznzslntay .gt_summary_row {
+#abvrihusdz .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3797,16 +3820,16 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 5px;
 }
 
-#uznzslntay .gt_first_summary_row {
+#abvrihusdz .gt_first_summary_row {
   border-top-style: none;
   border-top-color: #D3D3D3;
 }
 
-#uznzslntay .gt_first_summary_row.thick {
+#abvrihusdz .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#uznzslntay .gt_last_summary_row {
+#abvrihusdz .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3816,7 +3839,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-bottom-color: #D3D3D3;
 }
 
-#uznzslntay .gt_grand_summary_row {
+#abvrihusdz .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3826,7 +3849,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 5px;
 }
 
-#uznzslntay .gt_first_grand_summary_row {
+#abvrihusdz .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3836,11 +3859,11 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-top-color: #D3D3D3;
 }
 
-#uznzslntay .gt_striped {
+#abvrihusdz .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#uznzslntay .gt_table_body {
+#abvrihusdz .gt_table_body {
   border-top-style: solid;
   border-top-width: 1px;
   border-top-color: #000000;
@@ -3849,7 +3872,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-bottom-color: #000000;
 }
 
-#uznzslntay .gt_footnotes {
+#abvrihusdz .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3863,7 +3886,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-right-color: #D3D3D3;
 }
 
-#uznzslntay .gt_footnote {
+#abvrihusdz .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -3872,7 +3895,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 5px;
 }
 
-#uznzslntay .gt_sourcenotes {
+#abvrihusdz .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3886,7 +3909,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-right-color: #D3D3D3;
 }
 
-#uznzslntay .gt_sourcenote {
+#abvrihusdz .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -3894,36 +3917,36 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 5px;
 }
 
-#uznzslntay .gt_left {
+#abvrihusdz .gt_left {
   text-align: left;
 }
 
-#uznzslntay .gt_center {
+#abvrihusdz .gt_center {
   text-align: center;
 }
 
-#uznzslntay .gt_right {
+#abvrihusdz .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#uznzslntay .gt_font_normal {
+#abvrihusdz .gt_font_normal {
   font-weight: normal;
 }
 
-#uznzslntay .gt_font_bold {
+#abvrihusdz .gt_font_bold {
   font-weight: bold;
 }
 
-#uznzslntay .gt_font_italic {
+#abvrihusdz .gt_font_italic {
   font-style: italic;
 }
 
-#uznzslntay .gt_super {
+#abvrihusdz .gt_super {
   font-size: 65%;
 }
 
-#uznzslntay .gt_two_val_uncert {
+#abvrihusdz .gt_two_val_uncert {
   display: inline-block;
   line-height: 1em;
   text-align: right;
@@ -3932,31 +3955,31 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   margin-left: 0.1em;
 }
 
-#uznzslntay .gt_footnote_marks {
+#abvrihusdz .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#uznzslntay .gt_asterisk {
+#abvrihusdz .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#uznzslntay .gt_slash_mark {
+#abvrihusdz .gt_slash_mark {
   font-size: 0.7em;
   line-height: 0.7em;
   vertical-align: 0.15em;
 }
 
-#uznzslntay .gt_fraction_numerator {
+#abvrihusdz .gt_fraction_numerator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: 0.45em;
 }
 
-#uznzslntay .gt_fraction_denominator {
+#abvrihusdz .gt_fraction_denominator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: -0.05em;
@@ -4385,7 +4408,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
