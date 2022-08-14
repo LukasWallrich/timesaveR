@@ -90,14 +90,9 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
                                     "Cronbach\'s alpha: "), round_(reliab, 2))}')
   
   if (length(reversed) > 0) {
-    description_text <- c(description_text, paste(c("The following items were reverse coded: ", reversed),
-                sep = ", ",
-                collapse = ", "
-    ), "\n",
-    paste(
-      "Min and max used for reverse coding:", min(scale_vals, na.rm = TRUE),
-      max(scale_vals, na.rm = TRUE)
-    ))
+    description_text <- glue::glue("{description_text}
+                                   The following items were reverse-coded: {paste(reversed, collapse = ', ')}
+                                   Min and max used for reverse coding: {min(scale_vals, na.rm = TRUE)} & {max(scale_vals, na.rm = TRUE)}")
   }
   
   if (print_desc) {
