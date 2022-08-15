@@ -2,15 +2,23 @@
 #'
 #' This function creates a scale by calculating the mean of a set of items,
 #' and prints and returns descriptives that allow to assess internal consistency
-#' and spread. It is primarily based on the \code{psych::alpha} function, with
-#' more parsimonious output and some added functionality.
+#' and spread. It is primarily based on the `psych::alpha` function, with
+#' more parsimonious output and some added functionality. It also allows to specify
+#' a threshold for proration so that missing data can be easily and explicitly
+#' dealt with.
+#' 
+#' Proration is the easiest way to deal with missing data at the item-level. Here,
+#' scale means are calculated for cases that have less than a given share of missing data. 
+#' According to [Wu et al. (2022)](https://link.springer.com/article/10.3758/s13428-021-01671-w).
+#' a 40% cut-off is defensible, so this is the default used. For more precise estimation,
+#' consider item-level multiple imputation, which can be done with `make_scale_mi()`.
 #'
 #' @param data A dataframe
 #' @param scale_items Character vector with names of scale items (variables in data)
 #' @param scale_name Name of the scale
 #' @param reverse Should scale items be reverse coded? One of "auto" - items are
 #'   reversed if that contributes to scale consistency, "none" - no items reversed,
-#'   or "spec" - items specific in \code{reverse_items} are reversed.
+#'   or "spec" - items specific in `reverse_items` are reversed.
 #' @param reverse_items Character vector with names of scale items to be reversed
 #'   (must be subset of scale_items)
 #' @param two_items_reliability How should the reliability of two-item scales be
@@ -19,10 +27,11 @@
 #' @param r_key (optional) Numeric. Set to the possible maximum value of the scale
 #' if the whole scale should be reversed, or to -1 to reverse the scale based on
 #' the observed maximum.
+#' @param proration_cutoff Scales scores are only calculated for cases with at most this share of missing data - see details.
 #' @param print_hist Logical. Should histograms for items and resulting scale be printed?
 #' @param print_desc Logical. Should descriptives for scales be printed?
 #' @param return_list Logical. Should only scale values be returned, or descriptives as well?
-#' @return Depends on \code{return_list} argument. Either just the scale values,
+#' @return Depends on `return_list` argument. Either just the scale values,
 #'   or a list of scale values and descriptives. If descriptives are returned, check the `text` element for a convenient summary.
 #' @export
 #'
@@ -33,7 +42,9 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
                        ), reverse_items = NULL, two_items_reliability = c(
                          "spearman_brown", "cron_alpha",
                          "r"
-                       ), r_key = NULL, print_hist = TRUE, print_desc = TRUE, return_list = FALSE) {
+                       ), r_key = NULL, 
+                       proration_cutoff = .4,
+                       print_hist = TRUE, print_desc = TRUE, return_list = FALSE) {
   if (!all(scale_items %in% names(data))) stop("Not all scale_items can be found in the dataset. The following are missing: ", paste(setdiff(scale_items, names(data)), collapse = ", "), call. = FALSE)
 
   if (data %>% dplyr::select(dplyr::any_of(scale_items)) %>% {
@@ -50,6 +61,10 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
   scale_vals <- data %>%
     dplyr::select(dplyr::one_of(scale_items)) %>%
     dplyr::mutate_all(as.numeric)
+  
+  proration_cutoff <- proration_cutoff * ncol(scale_vals)
+  scale_vals[rowSums(is.na(scale_vals))>proration_cutoff,] <- NA
+  
   if ((reverse != "spec")[1]) {
     check.keys <- reverse[1] != "none"
     msg <- capture.output(alpha_obj <- suppressWarnings(scale_vals %>% psych::alpha(na.rm = TRUE, check.keys = check.keys)))
@@ -111,6 +126,10 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
       ggplot2::ggtitle(paste0("Histograms for ", scale_name, " scale and items"))) %>%
       print(.) # %>% takes precedence over +!
   }
+  
+  scores <- alpha_obj$scores
+  scores[is.nan(scores)] <- NA
+  
   if (return_list) {
       descriptives <- list(n_items = length(scale_items), reliability = reliab, reliability_method = reliab_method,
                            mean = mean(alpha_obj$scores, na.rm = TRUE), 
@@ -121,10 +140,10 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
                            text = description_text)
     
     
-    return(list(scores = alpha_obj$scores, descriptives = descriptives))
+    return(list(scores = scores, descriptives = descriptives))
   }
 
-  alpha_obj$scores
+  scores
 }
 
 #' Create multiple scales by calculating item means and returns descriptives
@@ -261,7 +280,7 @@ spearman_brown <- function(data, items, name = "", SB_only = FALSE) {
 #'
 #' This function creates a scale by calculating the mean of a set of items,
 #' and prints and returns descriptives that allow to assess internal consistency
-#' and spread. It is primarily based on the \code{psych::alpha} function, with
+#' and spread. It is primarily based on the `psych::alpha` function, with
 #' more parsimonious output and some added functionality.
 #'
 #' @param data A srvyr survey object
@@ -390,4 +409,171 @@ The following items were reverse coded (with min and max values): \\
 .scale_formula <- function(items) {
   x <- paste0("~", paste(items, "+", collapse = ""))
   stringr::str_sub(x, 1, stringr::str_length(x) - 2)
+}
+
+
+#' Create a scale based on multiple imputation at item level
+#'
+#' This function creates a scale based on multiple imputation at item level and 
+#' returns pooled descriptive statistics (including Cronbach's alpha). Note that
+#' this function only supports Cronbach's alpha, including for two-item scales.
+#'
+#' @param data A dataframe containing multiple imputations, distinguished by a `.imp` 
+#' variable. Typically the output from `mice::complete(mids, "long")`.
+#' @inheritParams make_scale
+#' @inheritDotParams make_scale -proration_cutoff -print_hist -two_items_reliability 
+#' @param boot For pooling, the variance of Cronbach's alpha is bootstrapped. Set number of bootstrap resamples here.
+#' @param seed For pooling, the variance of Cronbach's alpha is bootstrapped. Set a seed to make this reproducible.
+#' @source The approach to pooling Cronbach's alpha is taken from Dion Groothof [on StackOverflow](https://stackoverflow.com/a/70817748/10581449). 
+#' The development of the function was motivated by [Gottschall, West & Enders (2012)](https://doi.org/10.1080/00273171.2012.640589) who showed 
+#' that multiple imputation at item level results in much higher statistical power than multiple imputation at scale level.
+#' @export
+#' @examples 
+#' library(dplyr)
+#' library(mice)
+#' 
+#' # Create Dataset with missing data
+#' ess_health <- ess_health %>% sample_n(500) %>% select(etfruit, eatveg , dosprt, health)
+#' N <- nrow(ess_health)
+#' ess_health$etfruit[!rbinom(N, 1, .9)] <- NA
+#' ess_health$eatveg[!rbinom(N, 1, .9)] <- NA
+#' 
+#' # Impute data
+#' ess_health_mi <- mice(ess_health, printFlag = FALSE) 
+#' ess_health_mi <- complete(ess_health_mi, "long")
+#' 
+#' scale <- make_scale_mi(ess_health_mi, c("etfruit", "eatveg"), "healthy")
+
+make_scale_mi <- function(data, scale_items, scale_name, seed = NULL, boot = 5000, ...) {
+
+  if (!".imp"  %in% names(data)) stop("data should contain multiple imputations, indicated by an `.imp` variable (see mice::complete() with action = 'long'")
+
+  extras <- list(...)
+  
+  if ("print_hist" %in% names(extras) && extras$print_hist == TRUE) {
+    warning("Cannot print histograms for multiply imputed data. Argument is ignored")
+    extras$print_hist <- NULL
+  }
+
+  if ("two_items_reliability" %in% names(extras) && extras$two_items_reliability  != "cron_alpha") {
+    warning("Cannot pool estimates for Spearman-Brown reliability or correlation yet - Cronbach's alpha is returned")
+    extras$two_items_reliability <- NULL
+  }
+
+  return_list <- TRUE
+  if ("return_list" %in% names(extras)) {
+    return_list <- extras$return_list
+    extras$return_list <- NULL
+  }
+
+  print_desc <- TRUE
+  
+  if ("print_desc" %in% names(extras)) {
+    print_desc <- extras$print_desc
+    extras$print_desc <- NULL
+  }
+  if (length(extras) > 0) {
+  full <- make_scale(data, scale_items = scale_items, scale_name = scale_name, print_desc = FALSE, print_hist = FALSE, return_list = TRUE, !!!extras)
+  } else {
+  full <- make_scale(data, scale_items = scale_items, scale_name = scale_name, print_desc = FALSE, print_hist = FALSE, return_list = TRUE)
+  }
+  if (full$descriptives$reversed != "") {
+   rev_code <- purrr::map_chr(stringr::str_split(full$descriptives$reversed, stringr::str_trim))
+   purrr::walk(rev_code, function(rev_code_now) {
+     data[rev_code_now] <<- psych::reverse.code(-1, data[rev_code_now])
+   })
+  }
+
+  if(is.null(seed)) seed <- floor(runif(1)*1000)
+  
+  m <- length(unique(data$.imp))
+  boot_alpha <- rep(list(NA), m)
+  for (i in seq_len(m)) {
+    set.seed(seed + i) # fix random number generator
+    sub <- data[data$.imp == i, ] %>% dplyr::select(dplyr::all_of(scale_items))
+    boot_alpha[[i]] <- .cronbach_boot(sub, boot = boot)
+  }
+  
+  # obtain Q and U (see ?mice::pool.scalar)
+  Q <- sapply(boot_alpha, function(x) x$alpha)
+  U <- sapply(boot_alpha, function(x) x$var)
+  
+  pooled_alpha <- pool_estimates(mice::pool.scalar(Q, U))
+
+  descr <- tibble(score = full$scores) %>% dplyr::bind_cols(data)  %>% dplyr::group_by(.data$.imp) %>%
+    dplyr::summarise(mean = mean(score), sd = sd(score), .groups = "drop") %>%
+    dplyr::summarise(mean = mean(mean), sd = mean(sd))
+  
+  description_text <- glue::glue('
+    
+                     Descriptives for {scale_name} scale:
+                     Mean: {round_(descr$mean, 3)}  SD: {round_(descr$sd, 3)}
+                     Cronbach\'s alpha: {round(pooled_alpha[[1]], 2)}')
+  
+  if (full$descriptives$reversed != "") {
+    reversed <- full$descriptives$reversed
+    rev_details <- data %>% dplyr::select(dplyr::all_of(reversed)) %>% tidyr::pivot_longer(dplyr::everything()) %>% 
+      dplyr::group_by(key) %>% dplyr::summarise(min = min(value), max = max(value))
+    description_text <- glue::glue("{description_text}
+                                   The following items were reverse-coded: {glue::glue_collapse(rev_details$name, sep = ', ', last = ' and ')}
+                                   ")
+    if(length(unique(rev_details$min)) == 1 && length(unique(rev_details$max)) == 1) {
+      description_text <- glue::glue("{description_text}
+                                     Min and max used for reverse coding: {unique(rev_details$min)} & {unique(rev_details$max)}")
+    } else {
+      description_text <- glue::glue("{description_text}
+                                     Min values used for reverse coding: {glue::glue_collapse(rev_details$min, sep = ', ', last = ' and ')}
+                                     Max values used for reverse coding: {glue::glue_collapse(rev_details$max, sep = ', ', last = ' and ')}
+                                     ")
+    }
+  }
+    if (print_desc) {
+      print(description_text)
+    }
+    
+    if (return_list) {
+      descriptives <- list(n_items = length(scale_items), reliability = pooled_alpha[[1]], reliability_method = "cron_alpha",
+                           mean = descr$mean, SD = descr$sd, 
+                           m_imputations = length(unique(data$`.imp`)),
+                           reversed = rev_details,
+                           text = description_text)
+      return(list(scores = full$scores, descriptives = descriptives))
+    }
+    
+    scores
+
+}
+
+# Helper functions based on https://stackoverflow.com/a/70817748/10581449
+
+.cronbach_boot <- function(list_compl_data, boot = 1e4, ci = FALSE) {
+  n <- nrow(list_compl_data); p <- ncol(list_compl_data)
+  total_variance <- var(rowSums(list_compl_data))
+  item_variance <- sum(apply(list_compl_data, 2, sd)^2)
+  alpha <- (p/(p - 1)) * (1 - (item_variance/total_variance))
+  out <- list(alpha = alpha)
+  boot_alpha <- numeric(boot)
+    for (i in seq_len(boot)) {
+      boot_dat <- list_compl_data[sample(seq_len(n), replace = TRUE), ]
+      total_variance <- var(rowSums(boot_dat))
+      item_variance <- sum(apply(boot_dat, 2, sd)^2)
+      boot_alpha[i] <- (p/(p - 1)) * (1 - (item_variance/total_variance))
+    }
+    out$var <- var(boot_alpha)
+  
+  if (ci){
+    out$ci <- quantile(boot_alpha, c(.025,.975))
+  }
+  return(out)
+}
+
+
+# pooled estimates
+pool_estimates <- function(x) {
+  out <- c(
+    alpha = x$qbar,
+    lwr = x$qbar - qt(0.975, x$df) * sqrt(x$t),
+    upr = x$qbar + qt(0.975, x$df) * sqrt(x$t)
+  )
+  return(out)
 }

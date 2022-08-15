@@ -3,9 +3,11 @@
 ## New capabilities
 
 * Added `run_mediation()` to estimate and `plot_mediation()` to visualize parallel mediation models.
+* Added `make_scale_mi()` to estimate scale scores and Cronbach's alpha after multiple-imputation at the item level. According to [Gottschall, West & Enders (2012)](https://doi.org/10.1080/00273171.2012.640589), this is one of the best ways to deal with item-level missing data.
 
 ## Enhancements
 
+* `make_scale()` now has a `proration_cutoff` argument to specify the maximum share of missing data ignored in each case. This offers a simple way to improve on casewise deletion for handling missing data, without getting scale scores based on an insufficient subset of items. [NB: This is a *breaking* change, earlier versions implicitly had a proration_cutoff of 1, returning scale scores if at least one item was present - which is indefensible when there is a lot of missing data.]
 * Enabled `report_lm_with_std()` to show R2 change for more than one pair of models
 * Added option to use `t.test()`-style formula notion in `pairwise_t_tests()` 
 * Allow automatic reverse-coding in `make_scales()`
