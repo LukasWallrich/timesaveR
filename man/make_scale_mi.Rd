@@ -9,7 +9,15 @@ The development of the function was motivated by \href{https://doi.org/10.1080/0
 that multiple imputation at item level results in much higher statistical power than multiple imputation at scale level.
 }
 \usage{
-make_scale_mi(data, scale_items, scale_name, seed = NULL, boot = 5000, ...)
+make_scale_mi(
+  data,
+  scale_items,
+  scale_name,
+  proration_cutoff = 0,
+  seed = NULL,
+  boot = 5000,
+  ...
+)
 }
 \arguments{
 \item{data}{A dataframe containing multiple imputations, distinguished by a \code{.imp}
@@ -18,6 +26,8 @@ variable. Typically the output from \code{mice::complete(mids, "long")}.}
 \item{scale_items}{Character vector with names of scale items (variables in data)}
 
 \item{scale_name}{Name of the scale}
+
+\item{proration_cutoff}{Applies only to raw data (.imp == 0) in data. Scales scores are only calculated for cases with at most this share of missing data.}
 
 \item{seed}{For pooling, the variance of Cronbach's alpha is bootstrapped. Set a seed to make this reproducible.}
 
@@ -43,15 +53,18 @@ This function creates a scale based on multiple imputation at item level and
 returns pooled descriptive statistics (including Cronbach's alpha). Note that
 this function only supports Cronbach's alpha, including for two-item scales.
 }
+\details{
+Scale scores are returned for the raw data as well (if it is included in \code{data}).
+Descriptive statistics and reliability estimates are only based on the imputed datasets.
+}
 \examples{
 library(dplyr)
 library(mice)
 
 # Create Dataset with missing data
 ess_health <- ess_health \%>\% sample_n(500) \%>\% select(etfruit, eatveg , dosprt, health)
-N <- nrow(ess_health)
-ess_health$etfruit[!rbinom(N, 1, .9)] <- NA
-ess_health$eatveg[!rbinom(N, 1, .9)] <- NA
+add_missing <- function(x) {x[!rbinom(length(x), 1, .9)] <- NA; x}
+ess_health <- ess_health \%>\% mutate(across(everything(), add_missing))
 
 # Impute data
 ess_health_mi <- mice(ess_health, printFlag = FALSE) 
