@@ -26,3 +26,21 @@ test_that("scales works", {
   expect_equal(scales_desc$reliability, c(.8, .66))
   expect_equal(scales$scores$depression[1], 1.25)
 })
+
+# Create Dataset with missing data
+library(mice)
+set.seed(300688)
+ess_health <- timesaveR::ess_health %>% sample_n(100) %>% select(cgtsmke, dosprt, health)
+add_missing <- function(x) {x[!rbinom(length(x), 1, .9)] <- NA; x}
+ess_health <- ess_health %>% mutate(across(everything(), add_missing))
+
+# Impute data
+ess_health_mi <- mice(ess_health, printFlag = FALSE) 
+ess_health_mi <- complete(ess_health_mi, "long", include = TRUE)
+
+scale <- make_scale_mi(ess_health_mi, c("cgtsmke", "dosprt", "health"), "healthy", boot = 100, print_desc = FALSE)
+
+test_that("make_scale_mi works", {
+  expect_equal(scale$descriptives$reliability, 0.068783606)
+  expect_equal(scale$descriptives$mean, 3.7546667)
+})

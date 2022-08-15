@@ -606,14 +606,14 @@ cor_matrix_mi <- function(data, weights = NULL, var_names = NULL) {
   if (!missing(weights)) {
     weights <- rlang::enquo(weights)
   } else {
-    mi_df$`.__wt` <- 1
-    weights <- rlang::enquo(!!rlang::sym(".__wt"))
+    data$`__wt__` <- 1
+    weights <- rlang::quo(!!rlang::sym("__wt__"))
   }
 
-  data <- data %>% dplyr::select(~is.numeric(.))
+  data <- data %>% dplyr::select(tidyselect::vars_select_helpers$where(is.numeric))
 
   mi_list <- data %>% split(.$.imp)
-  
+
   mi_list <- purrr::map(mi_list, dplyr::select, !!weights, dplyr::everything(), -dplyr::matches("^\\."))
 
   variables <- names(mi_list[[1]])
@@ -627,7 +627,7 @@ cor_matrix_mi <- function(data, weights = NULL, var_names = NULL) {
         ii <- variables[i]
         jj <- variables[j]
         mi_selected <- purrr::map(mi_list, magrittr::extract, c(jj, ii, dplyr::as_label(weights)))
-        mi_selected <- purrr::map(mi_selected, dplyr::rename, x = 1, y = 2)
+        mi_selected <- purrr::map(mi_selected, dplyr::rename, x = 1, y = 2, wt = !!weights)
         cor.ii.jj <- purrr::map(mi_selected, do.call, what = .wtd_cor_test_lm)
         data <- rbind(data, data.frame(x = ii, y = jj, mice::pool(cor.ii.jj) %>% summary() %>% magrittr::extract(c("estimate", "p.value", "std.error", "statistic", "df")) %>% magrittr::extract(2, )))
       }
@@ -653,7 +653,7 @@ cor_matrix_mi <- function(data, weights = NULL, var_names = NULL) {
   t.values <- to_matrix(data, variables, "statistic")
   dfs <- to_matrix(data, variables, "df")
 
-  imp_svy <- survey::svydesign(~1, weights = as.formula(paste0("~", dplyr::as_label(weights))), data = mitools::imputationList(mi_list))
+  imp_svy <- survey::svydesign(~1, weights = as.formula(paste0("~`", dplyr::as_label(weights), "`")), data = mitools::imputationList(mi_list))
 
 
   desc <- NULL

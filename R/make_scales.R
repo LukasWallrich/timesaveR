@@ -417,11 +417,15 @@ The following items were reverse coded (with min and max values): \\
 #' This function creates a scale based on multiple imputation at item level and 
 #' returns pooled descriptive statistics (including Cronbach's alpha). Note that
 #' this function only supports Cronbach's alpha, including for two-item scales.
+#' 
+#' Scale scores are returned for the raw data as well (if it is included in `data`).
+#' Descriptive statistics and reliability estimates are only based on the imputed datasets.
 #'
 #' @param data A dataframe containing multiple imputations, distinguished by a `.imp` 
 #' variable. Typically the output from `mice::complete(mids, "long")`.
 #' @inheritParams make_scale
-#' @inheritDotParams make_scale -proration_cutoff -print_hist -two_items_reliability 
+#' @param proration_cutoff Applies only to raw data (.imp == 0) in data. Scales scores are only calculated for cases with at most this share of missing data.
+#' @inheritDotParams make_scale -print_hist -two_items_reliability 
 #' @param boot For pooling, the variance of Cronbach's alpha is bootstrapped. Set number of bootstrap resamples here.
 #' @param seed For pooling, the variance of Cronbach's alpha is bootstrapped. Set a seed to make this reproducible.
 #' @source The approach to pooling Cronbach's alpha is taken from Dion Groothof [on StackOverflow](https://stackoverflow.com/a/70817748/10581449). 
@@ -434,9 +438,8 @@ The following items were reverse coded (with min and max values): \\
 #' 
 #' # Create Dataset with missing data
 #' ess_health <- ess_health %>% sample_n(500) %>% select(etfruit, eatveg , dosprt, health)
-#' N <- nrow(ess_health)
-#' ess_health$etfruit[!rbinom(N, 1, .9)] <- NA
-#' ess_health$eatveg[!rbinom(N, 1, .9)] <- NA
+#' add_missing <- function(x) {x[!rbinom(length(x), 1, .9)] <- NA; x}
+#' ess_health <- ess_health %>% mutate(across(everything(), add_missing))
 #' 
 #' # Impute data
 #' ess_health_mi <- mice(ess_health, printFlag = FALSE) 
@@ -444,12 +447,10 @@ The following items were reverse coded (with min and max values): \\
 #' 
 #' scale <- make_scale_mi(ess_health_mi, c("etfruit", "eatveg"), "healthy")
 
-make_scale_mi <- function(data, scale_items, scale_name, seed = NULL, boot = 5000, ...) {
+make_scale_mi <- function(data, scale_items, scale_name, proration_cutoff = 0, seed = NULL, boot = 5000, ...) {
 
   if (!".imp"  %in% names(data)) stop("data should contain multiple imputations, indicated by an `.imp` variable (see mice::complete() with action = 'long'")
 
-  data <- data %>% dplyr::filter(.data$.imp != 0) #Remove original data if included
-  
   extras <- list(...)
   
   if ("print_hist" %in% names(extras) && extras$print_hist == TRUE) {
@@ -475,12 +476,12 @@ make_scale_mi <- function(data, scale_items, scale_name, seed = NULL, boot = 500
     extras$print_desc <- NULL
   }
   if (length(extras) > 0) {
-  full <- make_scale(data, scale_items = scale_items, scale_name = scale_name, print_desc = FALSE, print_hist = FALSE, return_list = TRUE, !!!extras)
+  full <- make_scale(data, scale_items = scale_items, scale_name = scale_name, print_desc = FALSE, print_hist = FALSE, proration_cutoff = proration_cutoff, return_list = TRUE, !!!extras)
   } else {
-  full <- make_scale(data, scale_items = scale_items, scale_name = scale_name, print_desc = FALSE, print_hist = FALSE, return_list = TRUE)
+  full <- make_scale(data, scale_items = scale_items, scale_name = scale_name, print_desc = FALSE, print_hist = FALSE, return_list = TRUE, proration_cutoff = proration_cutoff)
   }
-  if (full$descriptives$reversed != "") {
-   rev_code <- purrr::map_chr(stringr::str_split(full$descriptives$reversed, stringr::str_trim))
+    if (full$descriptives$reversed != "") {
+   rev_code <- purrr::map_chr(unlist(stringr::str_split(full$descriptives$reversed, " ")), stringr::str_trim)
    purrr::walk(rev_code, function(rev_code_now) {
      data[rev_code_now] <<- psych::reverse.code(-1, data[rev_code_now])
    })
@@ -488,7 +489,7 @@ make_scale_mi <- function(data, scale_items, scale_name, seed = NULL, boot = 500
 
   if(is.null(seed)) seed <- floor(stats::runif(1)*1000)
   
-  m <- length(unique(data$.imp))
+  m <- length(setdiff(unique(data$.imp), 0)) #Ignore m = 0 -> raw data
   boot_alpha <- rep(list(NA), m)
   for (i in seq_len(m)) {
     set.seed(seed + i) # fix random number generator
@@ -502,8 +503,9 @@ make_scale_mi <- function(data, scale_items, scale_name, seed = NULL, boot = 500
   
   pooled_alpha <- pool_estimates(mice::pool.scalar(Q, U))
 
-  descr <- tibble::tibble(score = full$scores) %>% dplyr::bind_cols(data)  %>% dplyr::group_by(.data$.imp) %>%
-    dplyr::summarise(mean = mean(.data$score), sd = sd(.data$score), .groups = "drop") %>%
+  descr <- tibble::tibble(score = full$scores) %>% dplyr::bind_cols(data) %>% 
+    dplyr::filter(.imp != 0)  %>% dplyr::group_by(.data$.imp) %>%
+    dplyr::summarise(mean = mean(.data$score, na.rm = TRUE), sd = sd(.data$score, na.rm = TRUE), .groups = "drop") %>%
     dplyr::summarise(mean = mean(.data$mean), sd = mean(.data$sd))
   
   description_text <- glue::glue('
@@ -513,9 +515,8 @@ make_scale_mi <- function(data, scale_items, scale_name, seed = NULL, boot = 500
                      Cronbach\'s alpha: {round(pooled_alpha[[1]], 2)}')
   
   if (full$descriptives$reversed != "") {
-    reversed <- full$descriptives$reversed
-    rev_details <- data %>% dplyr::select(dplyr::all_of(reversed)) %>% tidyr::pivot_longer(dplyr::everything()) %>% 
-      dplyr::group_by(.data$key) %>% dplyr::summarise(min = min(.data$value), max = max(.data$value))
+    rev_details <- data %>% dplyr::select(dplyr::all_of(rev_code)) %>% tidyr::pivot_longer(dplyr::everything()) %>% 
+      dplyr::group_by(.data$name) %>% dplyr::summarise(min = min(.data$value, na.rm = TRUE), max = max(.data$value, na.rm = TRUE))
     description_text <- glue::glue("{description_text}
                                    The following items were reverse-coded: {glue::glue_collapse(rev_details$name, sep = ', ', last = ' and ')}
                                    ")
