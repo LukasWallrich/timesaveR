@@ -4,7 +4,7 @@
 \alias{tidy.cor_matrix}
 \title{Tidy a correlation matrix}
 \usage{
-tidy.cor_matrix(x, both_directions = TRUE, ...)
+\method{tidy}{cor_matrix}(x, both_directions = TRUE, ...)
 }
 \arguments{
 \item{x}{A \code{cor_marix} object returned from

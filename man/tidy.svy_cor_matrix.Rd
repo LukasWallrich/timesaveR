@@ -4,7 +4,7 @@
 \alias{tidy.svy_cor_matrix}
 \title{Tidy a survey-weighted correlation matrix}
 \usage{
-tidy.svy_cor_matrix(x, both_directions = TRUE, ...)
+\method{tidy}{svy_cor_matrix}(x, both_directions = TRUE, ...)
 }
 \arguments{
 \item{x}{A \code{svy_cor_marix} object returned from
