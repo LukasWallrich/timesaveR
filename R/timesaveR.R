@@ -27,10 +27,11 @@ globalVariables(".")
 #' @importFrom utils getFromNamespace
 #' @import checkmate
 #' @importFrom generics tidy
-#' @importFrom broom tidy #needed to get tidy.lm, tidy.polr etc
+# ## broom needed to get tidy.lm, tidy.polr etc
+#' @importFrom broom tidy 
 #' @importFrom generics glance
 #' @export
-broom::tidy
+generics::tidy
 generics::glance
 
 .check_req_packages <- function(x, note = "") {
