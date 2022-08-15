@@ -27,7 +27,7 @@ report_cor_table(
 }
 \arguments{
 \item{cor_matrix}{A correlation matrix, for example returned from
-\code{\link[=cor_matrix]{cor_matrix()}}, \code{\link[=svy_cor_matrix]{svy_cor_matrix()}}, or \code{\link[=wtd_cor_matrix_mi]{wtd_cor_matrix_mi()}}}
+\code{\link[=cor_matrix]{cor_matrix()}}, \code{\link[=svy_cor_matrix]{svy_cor_matrix()}}, or \code{\link[=cor_matrix_mi]{cor_matrix_mi()}}}
 
 \item{ci}{Method to create CI - default is to use any given in the cor_matrix,
 and otherwise to compute them using z-transformations. The simple SE method
