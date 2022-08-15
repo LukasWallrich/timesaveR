@@ -23,11 +23,11 @@ globalVariables(".")
 #' @importFrom rlang .data
 #' @importFrom rlang :=
 #' @importFrom stats as.formula cor.test sd t.test lm p.adjust.methods quantile coef
-#' @importFrom generics tidy
-#' @importFrom generics glance
 #' @importFrom here here
 #' @importFrom utils getFromNamespace
 #' @import checkmate
+#' @importFrom generics tidy
+#' @importFrom generics glance
 #' @export
 generics::tidy
 generics::glance

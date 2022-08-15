@@ -462,12 +462,6 @@ report_polr_with_std <- function(mod, mod_std, OR = TRUE, conf_level = .95, fmt 
 
 tidy_custom.polr <- function(x, ...) tidy(x, p.values = TRUE, ...)
 
-#' @importFrom broom glance
-#' @importFrom broom tidy
-#' @export
-broom::glance
-broom::tidy
-
 #' Tidy  multiple imputation models created with `mice`
 #'
 #' Note that the `mice` authors prefer to tidy `mipo` rather than `mira` objects and have now included `tidy.mipo` and `glance.mipo` into their package. The `mira` functions here are mostly retained for compatibility with my earlier code.
@@ -493,6 +487,8 @@ broom::tidy
 #'      \item conf.high (if called with conf.int = TRUE)
 #' }
 #' @export
+#' @method
+
 tidy.mira <- function(x, conf.int = TRUE, conf.level = .95, ...) {
   out <- summary(mice::pool(x, ...), type = "all", conf.int = conf.int, conf.level = conf.level) %>%
     dplyr::mutate(term = as.character(.data$term)) %>%
@@ -524,6 +520,8 @@ tidy.mira <- function(x, conf.int = TRUE, conf.level = .95, ...) {
 #' glance(mod)
 #' }
 #' @export
+#' @method 
+
 glance.mira <- function(x, ...) {
   out <- tibble::tibble("nimp" = length(x$analyses))
   out$nobs <- tryCatch(stats::nobs(x$analyses[[1]]), error = function(e) NULL)
@@ -542,6 +540,7 @@ glance.mira <- function(x, ...) {
 #' @param x An object with class tsR_std
 #' @param ... arguments passed on to tidy method
 #' @export
+#' @method 
 
 tidy.tsR_std <- function(x, ...) {
   class(x) <- class(x)[class(x) != "tsR_std"]

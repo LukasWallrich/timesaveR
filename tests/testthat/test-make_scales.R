@@ -29,6 +29,7 @@ test_that("scales works", {
 
 # Create Dataset with missing data
 library(mice)
+library(dplyr)
 set.seed(300688)
 ess_health <- timesaveR::ess_health %>% sample_n(100) %>% select(cgtsmke, dosprt, health)
 add_missing <- function(x) {x[!rbinom(length(x), 1, .9)] <- NA; x}

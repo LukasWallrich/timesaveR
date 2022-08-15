@@ -826,6 +826,7 @@ gt_add_plots <- function(gt_table, plots, col_index) {
 #' \item{n}{Number of observations used to compute the correlation}
 #' \item{ci.low}{Lower bound of confidence interval. Width is determined in call to [cor_matrix()]}
 #' \item{ci.high}{Upper bound of confidence interval. Width is determined in call to [cor_matrix()]}
+#' @method 
 #' @export
 
 tidy.cor_matrix <- function(x, both_directions = TRUE, ...) {
@@ -874,6 +875,7 @@ tidy.cor_matrix <- function(x, both_directions = TRUE, ...) {
 #' \item{estimate}{The estimated value of the correlation}
 #' \item{statistic}{The t-statistic used for significance testing}
 #' \item{p.value}{The two-sided p-value of the correlation}
+#' @method 
 #' @export
 
 tidy.svy_cor_matrix <- function(x, both_directions = TRUE, ...) {
