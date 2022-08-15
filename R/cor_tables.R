@@ -5,7 +5,7 @@
 #' in this package as its first argument
 #'
 #' @param cor_matrix A correlation matrix, for example returned from
-#' [cor_matrix()], [svy_cor_matrix()], or [wtd_cor_matrix_mi()]
+#' [cor_matrix()], [svy_cor_matrix()], or [cor_matrix_mi()]
 #' @param ci Method to create CI - default is to use any given in the cor_matrix,
 #' and otherwise to compute them using z-transformations. The simple SE method
 #' should not be used, but is provided for compatibility.
@@ -71,8 +71,8 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
       
     } else {
       extras <- extras %>% 
-        dplyr::left_join(cor_matrix$desc %>% dplyr::select(var), ., by = c("var" = "row_names")) %>%
-        dplyr::select(-var)
+        dplyr::left_join(cor_matrix$desc %>% dplyr::select(.data$var), ., by = c("var" = "row_names")) %>%
+        dplyr::select(-.data$var)
     }
     
     }
@@ -540,19 +540,80 @@ svy_cor_matrix <- function(svy_data, var_names = NULL) {
 #' but adapted to use weights and return in the format accepted by
 #' `report_cor_table`
 #' @export
+#' @rdname package-deprecated
+#' @seealso cor_matrix_mi
 
 wtd_cor_matrix_mi <- function(mi_list, weights, var_names = NULL) {
+  .Deprecated("cor_matrix_mi")
+  mice::complete(mi_list, "long")
+  cor_matrix_mi(mi_list, weights, var_names)
+}
+
+#' Create a (weighted) correlation matrix from multiply imputed data
+#'
+#' This function takes an imputationList with a vector of weights and returns
+#' a correlation matrix for all numeric variables as well as a list of
+#' descriptives that pools the results across all imputations.
+#'
+#' Variables starting with . are dropped, as these are likely to be .imp and .id
+#' from mice. If you want correlations for such variables, rename them.
+#'
+#' @param data A dataframe with multiple imputations distinguished by a `.imp` variable. 
+#' Typically the output from `mice::complete(mids, "long").
+#' @param weights A variable within `data` that gives the survey weights
+#' @param var_names A named character vector with new variable names or a tibble as provided by [get_rename_tribbles()]
+#' for variables. If NULL, then the variables are not renamed. If names are provided, only the variables included here are retained.
+#' This is most helpful when the results are passed to some print function, such as [report_cor_table()]
+#' To facilitate post-processing, correlations with *original* variable
+#' names are returned in the `tests` element.
+#' @return A correlation matrix list similar to the format provided by
+#' `jtools::svycor()` with the addition of a `desc`-element with means
+#' and standard deviations of the variables.
+#' @source Takes some code from the `miceadds::micombine.cor` function,
+#' but adapted to use weights and return in the format accepted by
+#' [`report_cor_table`]
+#' @export
+#' @examples 
+#' 
+#' library(dplyr)
+#' library(mice)
+#' 
+#' # Create Dataset with missing data
+#' ess_health <- ess_health %>% sample_n(500) %>% 
+#'     select(etfruit, eatveg , dosprt, health, wt = pspwght)
+#' add_missing <- function(x) {x[!rbinom(length(x), 1, .9)] <- NA; x}
+#' ess_health <- ess_health %>% mutate(across(c(everything(), -wt), add_missing))
+#' 
+#' # Impute data
+#' ess_health_mi <- mice(ess_health, printFlag = FALSE) 
+#' ess_health_mi <- complete(ess_health_mi, "long")
+#' 
+#' cor_matrix <- cor_matrix_mi(ess_health_mi, weights = wt)
+
+cor_matrix_mi <- function(data, weights = NULL, var_names = NULL) {
   .check_req_packages(c("survey", "srvyr", "mitools", "mice"))
 
+  if (!".imp"  %in% names(data)) stop("data should contain multiple imputations, indicated by an `.imp` variable (see mice::complete() with action = 'long'")
+
+  data <- data %>% dplyr::filter(.$.imp != 0) #Remove original data if included
+  
+    
   if (is.data.frame(var_names)) {
     assert_names(names(var_names), must.include = c("old", "new"))
     var_names <- var_names$new %>% magrittr::set_names(var_names$old)
   }
 
-  weights <- rlang::enquo(weights)
+  if (!missing(weights)) {
+    weights <- rlang::enquo(weights)
+  } else {
+    mi_df$`.__wt` <- 1
+    weights <- rlang::enquo(!!rlang::sym(".__wt"))
+  }
 
-  mi_list <- purrr::map(mi_list, dplyr::select_if, is.numeric)
+  data <- data %>% dplyr::select(~is.numeric(.))
 
+  mi_list <- data %>% split(.$.imp)
+  
   mi_list <- purrr::map(mi_list, dplyr::select, !!weights, dplyr::everything(), -dplyr::matches("^\\."))
 
   variables <- names(mi_list[[1]])
@@ -560,7 +621,6 @@ wtd_cor_matrix_mi <- function(mi_list, weights, var_names = NULL) {
   ct <- length(variables)
 
   data <- NULL
-
   for (i in seq_len(ct - 1)) {
     for (j in (i + 1):ct) {
       if (i != j) {
@@ -623,7 +683,6 @@ wtd_cor_matrix_mi <- function(mi_list, weights, var_names = NULL) {
   if (exists("used_vars")) {
     cor_matrix$var_renames <- tibble::tibble(old = names(var_names[match(used_vars, var_names)]), new = var_names[match(used_vars, var_names)])
   }
-
 
   cor_matrix
 }

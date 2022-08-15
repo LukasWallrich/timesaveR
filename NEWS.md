@@ -8,12 +8,13 @@
 ## Enhancements
 
 * `make_scale()` now has a `proration_cutoff` argument to specify the maximum share of missing data ignored in each case. This offers a simple way to improve on casewise deletion for handling missing data, without getting scale scores based on an insufficient subset of items. [NB: This is a *breaking* change, earlier versions implicitly had a proration_cutoff of 1, returning scale scores if at least one item was present - which is indefensible when there is a lot of missing data.]
+* Add summary `text` to descriptives returned by `make_scale()` 
 * Enabled `report_lm_with_std()` to show R2 change for more than one pair of models
 * Added option to use `t.test()`-style formula notion in `pairwise_t_tests()` 
 * Allow automatic reverse-coding in `make_scales()`
 * `report_cor_table()` now ensures correct ordering of extra columns if `row_names` column is included
 * Added `tidy.svy_cor_matrix()` to tidy survey-weighted correlation matrices
-* Add summary `text` to descriptives returned by `make_scale()` 
+* Renamed `wtd_cor_matrix_mi()` to `cor_matrix_mi()` to reflect that weights are optional
 
 ## Bug fixes
 * `report_polr_with_std()` works again after `broom::tidy.polr()` update broke it
