@@ -487,7 +487,7 @@ tidy_custom.polr <- function(x, ...) tidy(x, p.values = TRUE, ...)
 #'      \item conf.high (if called with conf.int = TRUE)
 #' }
 #' @export
-#' @method
+#' @method tidy mira
 
 tidy.mira <- function(x, conf.int = TRUE, conf.level = .95, ...) {
   out <- summary(mice::pool(x, ...), type = "all", conf.int = conf.int, conf.level = conf.level) %>%
@@ -520,7 +520,7 @@ tidy.mira <- function(x, conf.int = TRUE, conf.level = .95, ...) {
 #' glance(mod)
 #' }
 #' @export
-#' @method 
+#' @method glance mira
 
 glance.mira <- function(x, ...) {
   out <- tibble::tibble("nimp" = length(x$analyses))
@@ -540,7 +540,7 @@ glance.mira <- function(x, ...) {
 #' @param x An object with class tsR_std
 #' @param ... arguments passed on to tidy method
 #' @export
-#' @method 
+#' @method tidy tsR_std
 
 tidy.tsR_std <- function(x, ...) {
   class(x) <- class(x)[class(x) != "tsR_std"]

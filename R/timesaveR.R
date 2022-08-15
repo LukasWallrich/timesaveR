@@ -27,13 +27,11 @@ globalVariables(".")
 #' @importFrom utils getFromNamespace
 #' @import checkmate
 #' @importFrom generics tidy
+#' @importFrom broom tidy #needed to get tidy.lm, tidy.polr etc
 #' @importFrom generics glance
 #' @export
-generics::tidy
+broom::tidy
 generics::glance
-#'
-#'
-"_PACKAGE"
 
 .check_req_packages <- function(x, note = "") {
   res <- suppressWarnings(lapply(x, requireNamespace, quietly = TRUE)) %>% unlist()
