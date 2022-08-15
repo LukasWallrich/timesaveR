@@ -18,7 +18,7 @@ scale_blank(x, center = TRUE, scale = TRUE)
     equal to the number of columns of \code{x}.}
 }
 \description{
-The `base::scale()` function adds attributes to the output that can lead to
+The \code{base::scale()} function adds attributes to the output that can lead to
 problems later on. This function scales a vector and strips the attributes.
 }
 \keyword{internal}

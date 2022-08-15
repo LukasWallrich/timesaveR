@@ -12,11 +12,11 @@ round_(x, digits = 2)
 \item{digits}{Number of significant digits}
 }
 \value{
-Character vector of rounded values, with trailing zeroes as needed to show `digits` figures after the decimal point
+Character vector of rounded values, with trailing zeroes as needed to show \code{digits} figures after the decimal point
 }
 \description{
 Particularly when creating tables, it is often desirable to keep
-all numbers to the same width. `round()` and similar functions drop
+all numbers to the same width. \code{round()} and similar functions drop
 trailing zeros - this version keeps them and thus rounds 1.201 to 1.20
 rather than 1.2 when 2 digits are requested.
 }

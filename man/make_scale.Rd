@@ -12,6 +12,7 @@ make_scale(
   reverse_items = NULL,
   two_items_reliability = c("spearman_brown", "cron_alpha", "r"),
   r_key = NULL,
+  proration_cutoff = 0.4,
   print_hist = TRUE,
   print_desc = TRUE,
   return_list = FALSE
@@ -39,6 +40,8 @@ and Pearson's "r" are also supported.}
 if the whole scale should be reversed, or to -1 to reverse the scale based on
 the observed maximum.}
 
+\item{proration_cutoff}{Scales scores are only calculated for cases with at most this share of missing data - see details.}
+
 \item{print_hist}{Logical. Should histograms for items and resulting scale be printed?}
 
 \item{print_desc}{Logical. Should descriptives for scales be printed?}
@@ -47,11 +50,20 @@ the observed maximum.}
 }
 \value{
 Depends on \code{return_list} argument. Either just the scale values,
-  or a list of scale values and descriptives. If descriptives are returned, check the `text` element for a convenient summary.
+or a list of scale values and descriptives. If descriptives are returned, check the \code{text} element for a convenient summary.
 }
 \description{
 This function creates a scale by calculating the mean of a set of items,
 and prints and returns descriptives that allow to assess internal consistency
 and spread. It is primarily based on the \code{psych::alpha} function, with
-more parsimonious output and some added functionality.
+more parsimonious output and some added functionality. It also allows to specify
+a threshold for proration so that missing data can be easily and explicitly
+dealt with.
+}
+\details{
+Proration is the easiest way to deal with missing data at the item-level. Here,
+scale means are calculated for cases that have less than a given share of missing data.
+According to \href{https://link.springer.com/article/10.3758/s13428-021-01671-w}{Wu et al. (2022)}.
+a 40\% cut-off is defensible, so this is the default used. For more precise estimation,
+consider item-level multiple imputation, which can be done with \code{make_scale_mi()}.
 }

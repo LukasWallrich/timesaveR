@@ -9,7 +9,7 @@
 \arguments{
 \item{col}{Character indicating column name}
 
-\item{data}{Dataframe that contains `col`}
+\item{data}{Dataframe that contains \code{col}}
 }
 \description{
 Tests whether a column in dataframe, specified by string, is numeric

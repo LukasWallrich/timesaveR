@@ -21,7 +21,7 @@ pairwise_t_test_mi(
 
 \item{weights}{The variable containing survey weights, must be in mi_list}
 
-\item{p.adjust.method}{The method to adjust p-values for multiple comparison (see \code{\link[stats]{p.adjust}})}
+\item{p.adjust.method}{The method to adjust p-values for multiple comparison (see \code{\link[stats:p.adjust]{stats::p.adjust()}})}
 }
 \value{
 A tibble containing the results of the t-tests with one test per row

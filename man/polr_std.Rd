@@ -50,12 +50,12 @@ polr_std(formula, data = NULL, weights = NULL, ...)
   }}
 }
 \description{
-This runs \code{\link[MASS]{polr}} after standardising all continuous predictors, while leaving
+This runs \code{\link[MASS:polr]{MASS::polr()}} after standardising all continuous predictors, while leaving
 factors intact. Note that the Hessian (the observed information matrix)
-is always returned, so that the `Hess` argument cannot be used.
+is always returned, so that the \code{Hess} argument cannot be used.
 }
 \details{
-In the model call, the weights variable will always be called `.weights`. This might
+In the model call, the weights variable will always be called \code{.weights}. This might
 pose a problem when you update the model later on, for  the moment the only workaround
 is to rename the weights variable accordingly (or to fix it and contribute a PR on
 Github).

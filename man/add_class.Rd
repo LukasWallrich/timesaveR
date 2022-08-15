@@ -13,7 +13,7 @@ add_class(x, class_to_add = "exp")
 }
 \description{
 This function adds a given class to an object, so that
-different S3 methods can be called (e.g., `tidy.exp` to get OR for logistic regression models
-(e.g., in `modelsummary::msummary`)
+different S3 methods can be called (e.g., \code{tidy.exp} to get OR for logistic regression models
+(e.g., in \code{modelsummary::msummary})
 }
 \keyword{internal}

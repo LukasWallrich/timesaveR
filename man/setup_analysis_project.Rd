@@ -34,12 +34,12 @@ Otherwise, are placed in root folder}
 Set up simple folder structure and template files for analysis project.
 }
 \details{
-This template includes two helpers worth highlighting. The `take_note()`
+This template includes two helpers worth highlighting. The \code{take_note()}
 function allows to add character strings to a note file that is saved at
-the end of each script. Usage should follow the first example: 
-`take_note("Note created:", timestamp(quiet = TRUE))`. Note that this modifies
-`notes` in place, so the result should not be assigned.
+the end of each script. Usage should follow the first example:
+\code{take_note("Note created:", timestamp(quiet = TRUE))}. Note that this modifies
+\code{notes} in place, so the result should not be assigned.
 
-Then there is the `0_run_all.R` file, which runs all analysis scripts in order
+Then there is the \verb{0_run_all.R} file, which runs all analysis scripts in order
 and documents when this last happened.
 }

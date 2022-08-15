@@ -26,7 +26,7 @@ group/level
 \description{
 This takes the results of multiple comparisons and returns a set of letters
 that can be used to indicate which differences are significant. The difference
-between levels that are assigned the same letter are *not* statistically different.
+between levels that are assigned the same letter are \emph{not} statistically different.
 }
 \examples{
 data("airquality")

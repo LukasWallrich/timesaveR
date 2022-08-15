@@ -13,14 +13,14 @@ get_coef_rename_tribble(mod, show = TRUE)
 }
 \value{
 Code to be edited and passed to tibble::tribble() to create the coef_renames argument for
-\code{\link{report_lm_with_std}} and similar functions. 'New' coefficient names are minimally
+\code{\link[=report_lm_with_std]{report_lm_with_std()}} and similar functions. 'New' coefficient names are minimally
 transformed, but are primarily intended to be placeholders.
 }
 \description{
-Usually, the coefficients in a statistical model such as those returned from `lm()`
+Usually, the coefficients in a statistical model such as those returned from \code{lm()}
 need to be renamed for reporting, particularly when dummy/indicator variables are involved.
 This function returns the code to set up a rename tribble that can then be adjusted
-and passed, for instance, to the \code{\link{report_lm_with_std}} function.
+and passed, for instance, to the \code{\link[=report_lm_with_std]{report_lm_with_std()}} function.
 }
 \examples{
 mod <- lm(mpg ~ wt, mtcars)

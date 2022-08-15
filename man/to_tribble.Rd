@@ -9,7 +9,7 @@ to_tribble(x, show = FALSE, digits = 5)
 \arguments{
 \item{x}{The tibble/dataframe to be converted into tribble code}
 
-\item{show}{Logical. Print code (otherwise, returned - print with `cat()` to get linebreaks etc)}
+\item{show}{Logical. Print code (otherwise, returned - print with \code{cat()} to get linebreaks etc)}
 
 \item{digits}{Number of digits to round numeric columns to.}
 }

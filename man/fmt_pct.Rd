@@ -12,5 +12,5 @@ fmt_pct(x, digits = 1)
 \item{digits}{Number of significant digits, defaults to 1}
 }
 \description{
-Formats fractions as percentages, i.e. multiplying them by 100 and adding '%'
+Formats fractions as percentages, i.e. multiplying them by 100 and adding '\%'
 }

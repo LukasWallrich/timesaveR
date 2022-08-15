@@ -8,9 +8,9 @@ tidy.cor_matrix(x, both_directions = TRUE, ...)
 }
 \arguments{
 \item{x}{A \code{cor_marix} object returned from
-\code{\link{cor_matrix}}}
+\code{\link[=cor_matrix]{cor_matrix()}}}
 
-\item{both_directions}{Should both  \code{cor(A, B)} 
+\item{both_directions}{Should both  \code{cor(A, B)}
 and \code{cor(B, A)} be returned. Defaults to \code{TRUE}.}
 
 \item{...}{Additional arguments. Not used. Needed to match generic signature
@@ -24,12 +24,12 @@ A \code{\link[tibble:tibble]{tibble::tibble()}} with columns:
 \item{statistic}{The t-statistic used for significance testing}
 \item{p.value}{The two-sided p-value of the correlation}
 \item{n}{Number of observations used to compute the correlation}
-\item{ci.low}{Lower bound of confidence interval. Width is determined in call to \code{\link{cor_matrix}}}
-\item{ci.high}{Upper bound of confidence interval. Width is determined in call to \code{\link{cor_matrix}}}
+\item{ci.low}{Lower bound of confidence interval. Width is determined in call to \code{\link[=cor_matrix]{cor_matrix()}}}
+\item{ci.high}{Upper bound of confidence interval. Width is determined in call to \code{\link[=cor_matrix]{cor_matrix()}}}
 }
 \description{
-This function turns the correlation matrix returned by \code{\link{cor_matrix}} and 
-its relatives into a tidy dataframe. Note that by default, results for both the \code{cor(A, B)} 
-and \code{cor(B, A)} are returned, while entries for \code{A, A}, i.e. the values on the diagonal, 
+This function turns the correlation matrix returned by \code{\link[=cor_matrix]{cor_matrix()}} and
+its relatives into a tidy dataframe. Note that by default, results for both the \code{cor(A, B)}
+and \code{cor(B, A)} are returned, while entries for \verb{A, A}, i.e. the values on the diagonal,
 are never included.
 }

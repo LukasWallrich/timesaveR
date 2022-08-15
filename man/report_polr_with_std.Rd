@@ -44,7 +44,7 @@ report_polr_with_std(
 
 \item{filename}{the file name to create on disk. Include '.html' extension to best preserve formatting (see gt::gtsave for details)}
 
-\item{model_names}{If several pairs of models are to be plotted side by side, indicate the label for each *pair* here}
+\item{model_names}{If several pairs of models are to be plotted side by side, indicate the label for each \emph{pair} here}
 
 \item{show_nimp}{Logical. If mira objects are passed, this determines whether the number of imputations will be reported as a model statistic}
 
@@ -53,7 +53,7 @@ stating that dummy variables were not scaled in standardization. If you approach
 
 \item{apa_style}{Logical, should APA-style formatting be applied}
 
-\item{stars}{Named vector of significance stars and their thresholds, check `timesaveR:::std_stars_pad` for default.}
+\item{stars}{Named vector of significance stars and their thresholds, check \code{timesaveR:::std_stars_pad} for default.}
 
 \item{...}{
   Arguments passed on to \code{\link[modelsummary:modelsummary]{modelsummary::modelsummary}}
@@ -175,7 +175,7 @@ containing polr-models) that shows a standardized and non-standardized version o
 side-by-side. Several pairs of such models can be compared side-by-side.
 }
 \details{
-The R2 shown is the maximum likelihood pseudo R2 returned by \link[pscl]{pR2}.
+The R2 shown is the maximum likelihood pseudo R2 returned by \link[pscl:pR2]{pR2}.
 }
 \examples{
 library(MASS)

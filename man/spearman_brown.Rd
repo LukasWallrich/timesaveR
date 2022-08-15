@@ -21,7 +21,7 @@ a number or a dataframe that also includes the scale name and correlation.}
 }
 \value{
 Either the Spearman-Brown coefficient as a single number, or a
-  dataframe including the Pearson correlation coefficient and the scale name
+dataframe including the Pearson correlation coefficient and the scale name
 }
 \description{
 This function calculates the Spearman-Brown reliability for a two-item scale,

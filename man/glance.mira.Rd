@@ -2,12 +2,12 @@
 % Please edit documentation in R/mod_tables.R
 \name{glance.mira}
 \alias{glance.mira}
-\title{Glance a multiple imputation `mice` pooled object}
+\title{Glance a multiple imputation \code{mice} pooled object}
 \usage{
 glance.mira(x, ...)
 }
 \arguments{
-\item{x}{An object with multiply-imputed models from `mice` (class: `mira`)}
+\item{x}{An object with multiply-imputed models from \code{mice} (class: \code{mira})}
 
 \item{...}{extra arguments (not used)}
 }
@@ -15,10 +15,10 @@ glance.mira(x, ...)
 a tibble with one row
 }
 \description{
-Note that the `mice` authors prefer to tidy `mipo` rather than `mira` objects and have now included `tidy.mipo` and `glance.mipo` into their package. The `mira` functions here are mostly retained for compatibility with my earlier code.
+Note that the \code{mice} authors prefer to tidy \code{mipo} rather than \code{mira} objects and have now included \code{tidy.mipo} and \code{glance.mipo} into their package. The \code{mira} functions here are mostly retained for compatibility with my earlier code.
 }
 \note{
-If x contains `lm` models, R2 is included in the output
+If x contains \code{lm} models, R2 is included in the output
 }
 \examples{
 \dontrun{

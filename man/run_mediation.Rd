@@ -31,8 +31,8 @@ run_mediation(
 
 \item{standardized_all}{Should all coefficients (paths, direct and indirect effects) be standardised}
 
-\item{conf.level}{The confidence level to be used for confidence intervals. Must be between 0 and 1 
-(exclusive), defaults to .95, which corresponds to 95"\%" confidence intervals.}
+\item{conf.level}{The confidence level to be used for confidence intervals. Must be between 0 and 1
+(exclusive), defaults to .95, which corresponds to 95"\\%" confidence intervals.}
 
 \item{seed}{Random seed, set to get reproducible results. If you do not want to set a fixed seed,
 you can use seed = sample(1:1e6, 1)}
@@ -42,19 +42,19 @@ you can use seed = sample(1:1e6, 1)}
 \item{...}{Options passed on to lavaan::sem.}
 }
 \value{
-Tibble with direct, total and indirect effects, based on bootstrap resamples. In addition, 'a' coefficients for paths from 
+Tibble with direct, total and indirect effects, based on bootstrap resamples. In addition, 'a' coefficients for paths from
 X to mediators and 'b' coefficients for paths from mediators to Y are returned. Coefficients for CVs
 are returned as an attribute - see below.
 }
 \description{
 Runs mediation analysis with one or more parallel mediators (using lavaan). The
-results can then be plotted with `plot_mediation()`.
+results can then be plotted with \code{plot_mediation()}.
 }
 \details{
 Note that covariates (if given) are used in predicting each mediator and the outcome. The
 coefficients for covariates are returned as an attribute to the main results,
-given that they are not always reported. To access them, use 
-`attr(res, "CV_coefficients")` if you have saved the return of this function in `res`
+given that they are not always reported. To access them, use
+\code{attr(res, "CV_coefficients")} if you have saved the return of this function in \code{res}
 }
 \examples{
 # Might link between depression and self-reported health be partly explained

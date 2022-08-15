@@ -2,12 +2,12 @@
 % Please edit documentation in R/mod_tables.R
 \name{tidy.mira}
 \alias{tidy.mira}
-\title{Tidy  multiple imputation models created with `mice`}
+\title{Tidy  multiple imputation models created with \code{mice}}
 \usage{
 tidy.mira(x, conf.int = TRUE, conf.level = 0.95, ...)
 }
 \arguments{
-\item{x}{A `mira` object containing multiple models based on `mice` imputations.}
+\item{x}{A \code{mira} object containing multiple models based on \code{mice} imputations.}
 
 \item{conf.int}{Logical. Should confidence intervals be returned. Defaults to true.}
 
@@ -16,22 +16,22 @@ tidy.mira(x, conf.int = TRUE, conf.level = 0.95, ...)
 \item{...}{extra arguments (not used)}
 }
 \description{
-Note that the `mice` authors prefer to tidy `mipo` rather than `mira` objects and have now included `tidy.mipo` and `glance.mipo` into their package. The `mira` functions here are mostly retained for compatibility with my earlier code.
+Note that the \code{mice} authors prefer to tidy \code{mipo} rather than \code{mira} objects and have now included \code{tidy.mipo} and \code{glance.mipo} into their package. The \code{mira} functions here are mostly retained for compatibility with my earlier code.
 }
 \note{
 Available stats in result:
 \itemize{
-     \item estimate
-     \item ubar
-     \item b
-     \item t
-     \item dfcom
-     \item df
-     \item riv
-     \item lambda
-     \item fmi
-     \item p.value
-     \item conf.low (if called with conf.int = TRUE)
-     \item conf.high (if called with conf.int = TRUE)
+\item estimate
+\item ubar
+\item b
+\item t
+\item dfcom
+\item df
+\item riv
+\item lambda
+\item fmi
+\item p.value
+\item conf.low (if called with conf.int = TRUE)
+\item conf.high (if called with conf.int = TRUE)
 }
 }
