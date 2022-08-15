@@ -5,7 +5,7 @@
 #' in this package as its first argument
 #'
 #' @param cor_matrix A correlation matrix, for example returned from
-#' \code{cor_matrix()}, \code{svy_cor_matrix()}, or \code{wtd_cor_matrix_mi()}
+#' [cor_matrix()], [svy_cor_matrix()], or [wtd_cor_matrix_mi()]
 #' @param ci Method to create CI - default is to use any given in the cor_matrix,
 #' and otherwise to compute them using z-transformations. The simple SE method
 #' should not be used, but is provided for compatibility.
@@ -14,7 +14,7 @@
 #' intervals are to be calculated using z-transformations
 #' @param add_distributions Add graphs showing variable distributions?
 #' @inheritDotParams plot_distributions -var_names
-#' @param data Original data, only needed if \code{add_distribution = TRUE}
+#' @param data Original data, only needed if `add_distribution = TRUE`
 #' @param notes List of additional notes to show under the table.
 #' @param filename the file name to create on disk. Include '.html' extension to
 #' best preserve formatting (see gt::gtsave for details)
@@ -25,7 +25,7 @@
 #'  needs to be sorted in the same order as the `desc` element in the cor_matrix unless 
 #'  there is a `row_names` column. If there is, this will be used to match it to the `desc` rows.
 #' @param apa_style Logical, should APA-style formatting be applied
-#' @source Based on the apaTables \code{apa.cor.table()} function, but adapted to
+#' @source Based on the apaTables `apa.cor.table()` function, but adapted to
 #' accept weighted correlation matrices and work with the `gt` package instead. Code
 #' for calculation of confidence intervals adapted from
 #' https://medium.com/@shandou/how-to-compute-confidence-interval-for-pearsons-r-a-brief-guide-951445b9cb2d`
@@ -236,21 +236,21 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
 #' Calculate correlation matrix with significance tests and descriptives
 #'
 #' Calculates the correlation matrix between the numeric variables in a given dataframe and
-#' includes descriptives (mean and standard deviation) - ready for creating a nice table with \code{\link{report_cor_table}}
+#' includes descriptives (mean and standard deviation) - ready for creating a nice table with [report_cor_table()]
 #'
 #' By setting missing to "fiml", this function uses the lavaan package to estimate the correlations (and descriptives)
 #' by using a full-information maximum likelihood algorithm. This estimates the covariances separately
 #' for each pattern of missingness and then combines them based on the frequency of each pattern. This
 #' will take longer than pairwise deletion, but should yield more precise estimates in the presence of
-#' missing data. To date, FIML correlation matrices can be obtained with the \code{\link[psych]{corFiml}}
+#' missing data. To date, FIML correlation matrices can be obtained with the [psych::corFiml()]
 #' function, but that function does not report significance tests or confidence intervals, or with the
-#' \code{\link[lavaan]{lavCor}} function - this function also uses \code{lavaan} for the estimation,
+#' [lavaan::lavCor()] function - this function also uses `lavaan` for the estimation,
 #' but facilitates bootstrapping and returns the results in a more accessible format.
 #'
 #' @param data Dataframe. Only numeric variables are included into correlation matrix.
-#' @param var_names A named character vector with new variable names or a tibble as provided by \code{\link{get_rename_tribbles}}
+#' @param var_names A named character vector with new variable names or a tibble as provided by [get_rename_tribbles()]
 #' for variables. If NULL, then the variables are not renamed. If names are provided, only the variables included here are retained.
-#' This is most helpful when the results are passed to some print function, such as \code{\link{report_cor_table}}
+#' This is most helpful when the results are passed to some print function, such as [report_cor_table()]
 #' @param missing How should missing data be dealt with? Options are "pairwise" deletion, "listwise" deletion or "fiml" for full
 #' information maximum likelihood estimation of the correlation table. Note that if you use "fiml", this will also be applied to
 #' the estimation of means and standard deviations.
@@ -431,11 +431,11 @@ cor_matrix <- function(data,
 #'
 #' @param svy_data A survey object created with the survey or srvyr package. Only
 #' numeric variables will be included in the result.
-#' @param var_names A named character vector with new variable names or a tibble as provided by \code{\link{get_rename_tribbles}}
+#' @param var_names A named character vector with new variable names or a tibble as provided by [get_rename_tribbles()]
 #' for variables. If NULL, then the variables are not renamed. If names are provided, only the variables included here are retained.
-#' This is most helpful when the results are passed to some print function, such as \code{\link{report_cor_table}}
+#' This is most helpful when the results are passed to some print function, such as [report_cor_table()]
 #' @return A correlation matrix list in the format provided by
-#' \code{jtools::svycor()} with the addition of a \code{desc}-element with means
+#' `jtools::svycor()` with the addition of a `desc`-element with means
 #' and standard deviations of the variables.
 #' @export
 #'
@@ -528,17 +528,17 @@ svy_cor_matrix <- function(svy_data, var_names = NULL) {
 #'
 #' @param mi_list A list of dataframes of multiple imputation results
 #' @param weights A variable within mi_list that gives the survey weights
-#' @param var_names A named character vector with new variable names or a tibble as provided by \code{\link{get_rename_tribbles}}
+#' @param var_names A named character vector with new variable names or a tibble as provided by [get_rename_tribbles()]
 #' for variables. If NULL, then the variables are not renamed. If names are provided, only the variables included here are retained.
-#' This is most helpful when the results are passed to some print function, such as \code{\link{report_cor_table}}
+#' This is most helpful when the results are passed to some print function, such as [report_cor_table()]
 #' To facilitate post-processing, correlations with original variable
 #' names are returned in the `tests` element.
 #' @return A correlation matrix list similar to the format provided by
-#' \code{jtools::svycor()} with the addition of a \code{desc}-element with means
+#' `jtools::svycor()` with the addition of a `desc`-element with means
 #' and standard deviations of the variables.
-#' @source Takes some code from the \code{miceadds::micombine.cor} function,
+#' @source Takes some code from the `miceadds::micombine.cor` function,
 #' but adapted to use weights and return in the format accepted by
-#' \code{report_cor_table}
+#' `report_cor_table`
 #' @export
 
 wtd_cor_matrix_mi <- function(mi_list, weights, var_names = NULL) {
@@ -638,8 +638,8 @@ wtd_cor_matrix_mi <- function(mi_list, weights, var_names = NULL) {
 #' or density charts.
 #'
 #' @param data A dataframe - if var_names is NULL, all numeric variables in x will be used, otherwise those included in var_names will be selected
-#' @param var_names A named character vector with new variable names or a tibble as provided by \code{\link{get_rename_tribbles}}
-#' If provided, only variables included here will be plotted. Apart from that, this will only determine the names of the list items, so it is most relevant if the output is to be combined with a correlation matrix, e.g., from \code{cor_matrix()}
+#' @param var_names A named character vector with new variable names or a tibble as provided by [get_rename_tribbles()]
+#' If provided, only variables included here will be plotted. Apart from that, this will only determine the names of the list items, so it is most relevant if the output is to be combined with a correlation matrix, e.g., from `cor_matrix()`
 #' @param plot_type Type of plot that should be produced - `histogram` or `density` plot. If `auto`,
 #' histograms are produced for variables that take fewer than 10 unique values, density plots for others. If a number is provided,
 #' that number is used as the maximum number of unique values for which a histogram is used.
@@ -747,26 +747,26 @@ gt_add_plots <- function(gt_table, plots, col_index) {
 
 #' Tidy a correlation matrix
 #' 
-#' This function turns the correlation matrix returned by \code{\link{cor_matrix}} and 
-#' its relatives into a tidy dataframe. Note that by default, results for both the \code{cor(A, B)} 
-#' and \code{cor(B, A)} are returned, while entries for \code{A, A}, i.e. the values on the diagonal, 
+#' This function turns the correlation matrix returned by [cor_matrix()] and 
+#' its relatives into a tidy dataframe. Note that by default, results for both the `cor(A, B)` 
+#' and `cor(B, A)` are returned, while entries for `A, A`, i.e. the values on the diagonal, 
 #' are never included.
 #' 
-#' @param x A \code{cor_marix} object returned from
-#' \code{\link{cor_matrix}}
-#' @param both_directions Should both  \code{cor(A, B)} 
-#' and \code{cor(B, A)} be returned. Defaults to \code{TRUE}.
+#' @param x A `cor_marix` object returned from
+#' [cor_matrix()]
+#' @param both_directions Should both  `cor(A, B)` 
+#' and `cor(B, A)` be returned. Defaults to `TRUE`.
 #' @param ... Additional arguments. Not used. Needed to match generic signature
 #' only. 
-#' @return A \code{\link[tibble:tibble]{tibble::tibble()}} with columns:
+#' @return A [tibble::tibble()] with columns:
 #' \item{column1}{Name of the first variable}
 #' \item{column2}{Name of the second variable}
 #' \item{estimate}{The estimated value of the correlation}
 #' \item{statistic}{The t-statistic used for significance testing}
 #' \item{p.value}{The two-sided p-value of the correlation}
 #' \item{n}{Number of observations used to compute the correlation}
-#' \item{ci.low}{Lower bound of confidence interval. Width is determined in call to \code{\link{cor_matrix}}}
-#' \item{ci.high}{Upper bound of confidence interval. Width is determined in call to \code{\link{cor_matrix}}}
+#' \item{ci.low}{Lower bound of confidence interval. Width is determined in call to [cor_matrix()]}
+#' \item{ci.high}{Upper bound of confidence interval. Width is determined in call to [cor_matrix()]}
 #' @export
 
 tidy.cor_matrix <- function(x, both_directions = TRUE, ...) {
@@ -799,17 +799,17 @@ tidy.cor_matrix <- function(x, both_directions = TRUE, ...) {
 
 #' Tidy a survey-weighted correlation matrix
 #' 
-#' This function turns the correlation matrix returned by \code{\link{svy_cor_matrix}}. Note that by default, results for both the \code{cor(A, B)} 
-#' and \code{cor(B, A)} are returned, while entries for \code{A, A}, i.e. the values on the diagonal, 
+#' This function turns the correlation matrix returned by [svy_cor_matrix()]. Note that by default, results for both the `cor(A, B)` 
+#' and `cor(B, A)` are returned, while entries for `A, A`, i.e. the values on the diagonal, 
 #' are never included.
 #' 
-#' @param x A \code{svy_cor_marix} object returned from
-#' \code{\link{svy_cor_matrix}}
-#' @param both_directions Should both  \code{cor(A, B)} 
-#' and \code{cor(B, A)} be returned. Defaults to \code{TRUE}.
+#' @param x A `svy_cor_marix` object returned from
+#' [svy_cor_matrix()]
+#' @param both_directions Should both  `cor(A, B)` 
+#' and `cor(B, A)` be returned. Defaults to `TRUE`.
 #' @param ... Additional arguments. Not used. Needed to match generic signature
 #' only. 
-#' @return A \code{\link[tibble:tibble]{tibble::tibble()}} with columns:
+#' @return A [tibble::tibble()] with columns:
 #' \item{column1}{Name of the first variable}
 #' \item{column2}{Name of the second variable}
 #' \item{estimate}{The estimated value of the correlation}

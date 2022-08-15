@@ -1,7 +1,7 @@
 #' Paired t.test with Cohen's d
 #'
 #' This function takes two variables that are representing paired data and
-#' calculates a paired samples \code{t.test}. It then also calculates and prints
+#' calculates a paired samples `t.test`. It then also calculates and prints
 #' Cohen's d as a measure of effect size and shows a clearer data label than
 #' the t.test function.
 #'
@@ -24,7 +24,7 @@ paired_t_test_d <- function(data, x, y) {
 
 #' t.test for survey object with Cohen's d
 #'
-#' This function calculates a t.test() for two groups in a \code{srvyr} survey
+#' This function calculates a t.test() for two groups in a `srvyr` survey
 #' object. It is particularly helpful when the grouping variable has more than
 #' two levels and you just want to compare two of them.
 #'
@@ -111,7 +111,7 @@ svy_cohen_d_pair <- function(data, dv, iv, pair = NULL, ttest = TRUE, print = FA
 #' Pairwise t.tests with effect sizes and survey weights
 #'
 #' This function calculates a t.test() for any pair of levels in a
-#' \code{srvyr} survey object. It does currently not do any p-value adjustment
+#' `srvyr` survey object. It does currently not do any p-value adjustment
 #' for multiple comparisons, and print rather than returns the results.
 #'
 #' @param cats Character vector of factor levels to be included in the
@@ -283,7 +283,7 @@ t_test_mi <- function(mi_list, dv, groups, weights = NULL) {
 #'
 #' @inheritParams t_test_mi
 #' @param groups The grouping variable (each distinct value will be treated as a level)
-#' @param p.adjust.method The method to adjust p-values for multiple comparison (see \code{\link[stats]{p.adjust}})
+#' @param p.adjust.method The method to adjust p-values for multiple comparison (see [stats::p.adjust()])
 #' @return A tibble containing the results of the t-tests with one test per row
 #' 
 #' @examples
@@ -463,7 +463,7 @@ get_pairwise_letters <- function(tests,
 #' @param data A dataframe containing the outcome and grouping variable
 #' @param outcome The outcome variable in dataframe, or a formula of the form `outcome ~ group`. If a formula is provided, the group needs to be empty.
 #' @param groups The grouping variable (each distinct value will be treated as a level)
-#' @param p.adjust.method The method to adjust p-values for multiple comparison (see \code{\link[stats]{p.adjust}})
+#' @param p.adjust.method The method to adjust p-values for multiple comparison (see [stats::p.adjust()])
 #' @param conf_level confidence level of the interval.
 #' @param var_equal a logical variable indicating whether to treat the two variances as being equal. If TRUE then the pooled
 #' variance is used to estimate the variance otherwise the Welch (or Satterthwaite)
@@ -526,7 +526,7 @@ pairwise_t_tests <- function(data, outcome, groups = NULL, p.adjust.method = p.a
 
 #' polr() with standardised continuous variables
 #'
-#' This runs \code{\link[MASS]{polr}} after standardising all continuous predictors, while leaving
+#' This runs [MASS::polr()] after standardising all continuous predictors, while leaving
 #' factors intact. Note that the Hessian (the observed information matrix)
 #' is always returned, so that the `Hess` argument cannot be used.
 #'

@@ -2,17 +2,17 @@
 #' 
 #' This dataset contains responses from the World Values Surveys 1995-1997 for 
 #' Australia, Norway, Sweden, and the United States. It is taken from the
-#' \code{carData} package.
+#' `carData` package.
 #' 
 #' #' @format A dataframe with 5,381 rows and 23 columns
 #' \describe{
 #'  \item{poverty}{“Do you think that what the government is doing for people in 
-#'  poverty in this country is about the right amount, too much, or too little?” (ordered): \code{Too Little, About Right, Too Much}}
-#'  \item{religion}{Member of a religion: \code{yes} or \code{no}}
-#'  \item{degree}{Held a university degree: \code{yes} or \code{no}}
-#'  \item{country}{\code{Australia, Norway, Sweden} or \code{USA}}
+#'  poverty in this country is about the right amount, too much, or too little?” (ordered): `Too Little, About Right, Too Much`}
+#'  \item{religion}{Member of a religion: `yes` or `no`}
+#'  \item{degree}{Held a university degree: `yes` or `no`}
+#'  \item{country}{`Australia, Norway, Sweden` or `USA`}
 #'  \item{age}{in years}
-#'  \item{gender}{\code{male} or \code{female}}
+#'  \item{gender}{`male` or `female`}
 #'  }
 #' @name WVS
 #' @docType data
@@ -58,7 +58,7 @@ NULL
 #' @name ess_health
 #' @docType data
 #' @author ESS-ERIC, selected by package author
-#' @references \url{https://www.europeansocialsurvey.org/data/download.html?r=7}
+#' @references <https://www.europeansocialsurvey.org/data/download.html?r=7>
 #' @keywords data
 #'
 NULL

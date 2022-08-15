@@ -2,7 +2,7 @@
 #'
 #' This function creates a tibble that summarises missing data 
 #' with survey weights for missing counts and proportions. (Apart from
-#' that, it recreates the \code{naniar::miss_var_summary()}
+#' that, it recreates the `naniar::miss_var_summary()`
 #' output.)
 #'
 #' @param svy_data A survey object created with the survey package

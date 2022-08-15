@@ -51,22 +51,22 @@ std_stars_pad <- c(`&nbsp;&nbsp;&nbsp;` = 1, `&dagger;&nbsp;&nbsp;` = .1, `*&nbs
 
 #' Significance stars for p-values
 #'
-#' Function returns significance stars for \emph{p}-values, most likely for use
+#' Function returns significance stars for *p*-values, most likely for use
 #' in tables that report the results of multiple statistical tests. An empty
 #' string is returned for NAs, unless that behaviour is overwritten.
 #'
-#'  Symbols and thresholds are *** \emph{p} < .001,  ** \emph{p} < .01, * \emph{p}
-#'  < .05 and † \emph{p} < .1. The symbols can be changed by passing a named character vector sorted
-#'  descendingly to the \code{stars} argument. For the default, the argument would be
-#' \code{stars <- c(`&dagger;` = .1, `*` = 0.05, `**` = 0.01, `***` = 0.001)}
+#'  Symbols and thresholds are *** *p* < .001,  ** *p* < .01, * *p*
+#'  < .05 and † *p* < .1. The symbols can be changed by passing a named character vector sorted
+#'  descendingly to the `stars` argument. For the default, the argument would be
+#' `stars <- c(`&dagger;` = .1, `*` = 0.05, `**` = 0.01, `***` = 0.001)`
 #'
 #' @encoding UTF-8
-#' @param p A \emph{p}-value or (more commonly) a vector of \emph{p}-values
+#' @param p A *p*-value or (more commonly) a vector of *p*-values
 #' @param stars A character vector to change the significance symbols (see details in `sigstars`)
 #' @param ns Logical. Should non-significant values be highlighted as "ns"?
 #' @param pad_html Should all results be padded right to the same width with HTML non-breaking spaces?
 #' @param return_NAs Logical. Should NAs be returned? If not, empty strings are returned instead.
-#' @return A character vector of significance stars for each \emph{p}-value,
+#' @return A character vector of significance stars for each *p*-value,
 #' each padded with spaces to be four characters long
 #' @source Adapted from
 #'  http://www.sthda.com/english/wiki/elegant-correlation-table-using-xtable-r-package
@@ -130,7 +130,7 @@ sigstars <- function(p, stars = NULL, pad_html = FALSE, ns = FALSE, return_NAs =
 
 #' Cut a continuous variable into given proportions
 #'
-#' \code{cut()} and similar functions can cut continuous variables by quantile;
+#' `cut()` and similar functions can cut continuous variables by quantile;
 #' other helper functions exist to cut variables into groups of the same size
 #' or width. This function cuts a continuous variable into given proportions.
 #'
@@ -287,7 +287,7 @@ to_tribble <- function(x, show = FALSE, digits = 5) {
 #'
 #' Renaming categorical variables and their levels, for instance for summary tables, can be fiddly. This
 #' function generates code in which only the new names need to be modified, and which can then be passed
-#' to either \code{\link{rename_cat_variables}} or directly to \code{\link{report_cat_vars}}
+#' to either [rename_cat_variables()] or directly to [report_cat_vars()]
 #'
 #' Only categorical variables should be passed to the function if code for levels is
 #' requested. If a variable has more than 20 distinct values, it is dropped from the levels-tribble-code,
@@ -298,11 +298,11 @@ to_tribble <- function(x, show = FALSE, digits = 5) {
 #' @param ... The variables to be included in the rename tribbles. If none are
 #' specified, all are included, unless there are more than `max_level` variables in the data
 #' @param show Logical - should the output be printed to the console. In any case, it is returned invisibly
-#' @param which Should tribble code be generated for variables (\code{"vars"}), levels (\code{"levels"}) or both (\code{"both"}) (default)
+#' @param which Should tribble code be generated for variables (`"vars"`), levels (`"levels"`) or both (`"both"`) (default)
 #' @param max_levels The maximum number of levels before a variable is dropped from the levels_tribble. Defaults to 20
 #'
 #' @return Code to be edited and passed to tibble::tribble() to create var_names and level_names arguments for
-#' \code{\link{rename_cat_variables}} and \code{\link{report_cat_vars}}. 'New' variable and level names are minimally
+#' [rename_cat_variables()] and [report_cat_vars()]. 'New' variable and level names are minimally
 #' transformed, but are primarily intended to be placeholders.
 #'
 #' @examples
@@ -365,13 +365,13 @@ get_rename_tribbles <- function(data, ..., show = TRUE, which = c("both", "vars"
 #' Usually, the coefficients in a statistical model such as those returned from `lm()`
 #' need to be renamed for reporting, particularly when dummy/indicator variables are involved.
 #' This function returns the code to set up a rename tribble that can then be adjusted
-#' and passed, for instance, to the \code{\link{report_lm_with_std}} function. 
+#' and passed, for instance, to the [report_lm_with_std()] function. 
 #'
 #' @param mod A model (e.g., returned from lm). coef() is called to extract the coefficient names.
 #' @param show Logical - should the output be printed to the console. In any case, it is returned invisibly
 #'
 #' @return Code to be edited and passed to tibble::tribble() to create the coef_renames argument for
-#' \code{\link{report_lm_with_std}} and similar functions. 'New' coefficient names are minimally
+#' [report_lm_with_std()] and similar functions. 'New' coefficient names are minimally
 #' transformed, but are primarily intended to be placeholders.
 #'
 #' @examples
@@ -438,7 +438,7 @@ dump_to_clip <- function(objects) {
 #' @param x Character string of desired vector items, separated by spaces, tabs or linebreaks. If NULL, it will be read from the clipboard.
 #' @param strings Should vector items be considered as strings, i.e. quoted.
 #' @param separators Which separator should x be split by. This defaults to the "top-level" found in x, i.e., newlines, if there are any, and otherwise tabs or spaces. Can also be "all".
-#' @param to_clip Should code for vector be copied into clipboard? Defaults to TRUE in interactive use, but only works when \code{clipr} package is installed
+#' @param to_clip Should code for vector be copied into clipboard? Defaults to TRUE in interactive use, but only works when `clipr` package is installed
 #' @param return Should code or a vector be returned? Defaults to code
 #' @examples
 #' line_to_vector("a b c", strings = TRUE)

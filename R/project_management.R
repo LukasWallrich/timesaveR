@@ -147,7 +147,7 @@ writeLines(notes, here("last_complete_run.txt"))
 
 #' @title Export package-specific R snippets
 #'
-#' @description \code{add_package_snippets} copies all (missing) snippet definitions
+#' @description `add_package_snippets` copies all (missing) snippet definitions
 #'   in 'inst/rstudio/r.snippets' and 'rmd.snippets' (if not empty) to the RStudio user snippet location.
 #'
 #' @return boolean invisible(FALSE) if nothing was added, invisible(TRUE) if snipped definitions were added
@@ -196,7 +196,7 @@ add_package_snippets <- function() {
 
     # Try to get template, if template is not found skip it
     #
-    pckgSnippetsFilesPath <- system.file("rstudio", pckgSnippetsFiles[i], package = "rNuggets")
+    pckgSnippetsFilesPath <- system.file("rstudio", pckgSnippetsFiles[i], package = "timesaveR")
     if (pckgSnippetsFilesPath == "") {
       next()
     }
@@ -314,7 +314,7 @@ rproj_to_clip <- function() {
 
 #' @title Save ggplot-graph and show in folder
 #'
-#' @description This wraps \code{ggsave} and opens the folder where the graph was saved in a Shell.
+#' @description This wraps `ggsave` and opens the folder where the graph was saved in a Shell.
 #' From there, it can easily be dragged and dropped into the application where you want to use it.
 #' It also changes the default units from in to cm, and defaults to saving temporary png files.
 #'

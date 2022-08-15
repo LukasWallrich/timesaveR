@@ -6,9 +6,9 @@
 #'
 #' @param mod A lm-model/mira object of lm models, with variables not standardized (or a list of such models)
 #' @param mod_std A lm-model/mira object of lm models, with standardized variables. Can be
-#' created with \code{\link{lm_std}} (or a list of such models)
+#' created with [lm_std()] (or a list of such models)
 #' @param conf_level Confidence level to use for confidence intervals, defaults to .95
-#' @param coef_renames A named character vector with new names for the coefficients or a tibble as provided by \code{\link{get_coef_rename_tribble}}
+#' @param coef_renames A named character vector with new names for the coefficients or a tibble as provided by [get_coef_rename_tribble()]
 #' for variables. If NULL, then the coefficients are not renamed.
 #' @param filename the file name to create a HTML file on disk.
 #' @param model_names If several pairs of models are to be plotted side by side, indicate the label for each *pair* here
@@ -264,7 +264,7 @@ if (!("lm" %in% class(mod_std[[1]]) || ("mira" %in% class(mod_std[[1]]) &&
 #' Report F-test for significance of multiply imputed lm models
 #'
 #' Takes a mira object (list of lm models based on mice imputations) and returns
-#' an F-test for their significance, based on \code{\link[miceadds]{micombine.F}}
+#' an F-test for their significance, based on [miceadds::micombine.F()]
 #'
 #' @param mod A mira object (list of lm models in `analyses` element)
 #' @param return_list Logical. Should items of test be returned in a list?
@@ -308,7 +308,7 @@ mira.lm_F_test <- function(mod, return_list = FALSE) {
 #' containing polr-models) that shows a standardized and non-standardized version of the model
 #' side-by-side. Several pairs of such models can be compared side-by-side.
 #' 
-#' The R2 shown is the maximum likelihood pseudo R2 returned by \link[pscl]{pR2}.
+#' The R2 shown is the maximum likelihood pseudo R2 returned by [pR2][pscl::pR2].
 #'
 #' @param mod A polr-model/mira object of polr models, with variables not standardized (or a list of such models)
 #' @param mod_std A polr-model/mira object of polr models, with standardized predictor variables (or a list of such models)

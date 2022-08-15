@@ -11,9 +11,9 @@
 #' levels of categorical variables
 #' @param ... Categorical variables to be included
 #' @param var_names Tibble of old and new variable names, if variables are to be
-#' renamed for display. See \code{\link{get_rename_tribbles}} for required format
+#' renamed for display. See [get_rename_tribbles()] for required format
 #' @param level_names Tibble of old and new level names, if levels are to be
-#' renamed for display. See \code{\link{get_rename_tribbles}} for required format
+#' renamed for display. See [get_rename_tribbles()] for required format
 #' @param alpha_level The level of significance for the pairwise comparisons
 #' (after p.adjust). Defaults to .05
 #' @param p_adjust One of p_adjust.methods, defaults to Holm
