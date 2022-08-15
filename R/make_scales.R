@@ -67,7 +67,7 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
   
   if ((reverse != "spec")[1]) {
     check.keys <- reverse[1] != "none"
-    msg <- capture.output(alpha_obj <- suppressWarnings(scale_vals %>% psych::alpha(na.rm = TRUE, check.keys = check.keys)))
+    msg <- utils::capture.output(alpha_obj <- suppressWarnings(scale_vals %>% psych::alpha(na.rm = TRUE, check.keys = check.keys)))
     if (length(msg) > 0) {
       stringr::str_replace(msg, "To do this, run the function again with the 'check.keys=TRUE' option", "If that makes sense, rerun the function and either specify these items to be reversed or allow automatic reverse coding") %>%
         stringr::str_replace("with the total scale", paste("with the total", scale_name, "scale")) %>% 
@@ -448,6 +448,8 @@ make_scale_mi <- function(data, scale_items, scale_name, seed = NULL, boot = 500
 
   if (!".imp"  %in% names(data)) stop("data should contain multiple imputations, indicated by an `.imp` variable (see mice::complete() with action = 'long'")
 
+  data <- data %>% dplyr::filter(.data$.imp != 0) #Remove original data if included
+  
   extras <- list(...)
   
   if ("print_hist" %in% names(extras) && extras$print_hist == TRUE) {
@@ -484,7 +486,7 @@ make_scale_mi <- function(data, scale_items, scale_name, seed = NULL, boot = 500
    })
   }
 
-  if(is.null(seed)) seed <- floor(runif(1)*1000)
+  if(is.null(seed)) seed <- floor(stats::runif(1)*1000)
   
   m <- length(unique(data$.imp))
   boot_alpha <- rep(list(NA), m)
@@ -500,9 +502,9 @@ make_scale_mi <- function(data, scale_items, scale_name, seed = NULL, boot = 500
   
   pooled_alpha <- pool_estimates(mice::pool.scalar(Q, U))
 
-  descr <- tibble(score = full$scores) %>% dplyr::bind_cols(data)  %>% dplyr::group_by(.data$.imp) %>%
-    dplyr::summarise(mean = mean(score), sd = sd(score), .groups = "drop") %>%
-    dplyr::summarise(mean = mean(mean), sd = mean(sd))
+  descr <- tibble::tibble(score = full$scores) %>% dplyr::bind_cols(data)  %>% dplyr::group_by(.data$.imp) %>%
+    dplyr::summarise(mean = mean(.data$score), sd = sd(.data$score), .groups = "drop") %>%
+    dplyr::summarise(mean = mean(.data$mean), sd = mean(.data$sd))
   
   description_text <- glue::glue('
     
@@ -513,7 +515,7 @@ make_scale_mi <- function(data, scale_items, scale_name, seed = NULL, boot = 500
   if (full$descriptives$reversed != "") {
     reversed <- full$descriptives$reversed
     rev_details <- data %>% dplyr::select(dplyr::all_of(reversed)) %>% tidyr::pivot_longer(dplyr::everything()) %>% 
-      dplyr::group_by(key) %>% dplyr::summarise(min = min(value), max = max(value))
+      dplyr::group_by(.data$key) %>% dplyr::summarise(min = min(.data$value), max = max(.data$value))
     description_text <- glue::glue("{description_text}
                                    The following items were reverse-coded: {glue::glue_collapse(rev_details$name, sep = ', ', last = ' and ')}
                                    ")
@@ -535,12 +537,12 @@ make_scale_mi <- function(data, scale_items, scale_name, seed = NULL, boot = 500
       descriptives <- list(n_items = length(scale_items), reliability = pooled_alpha[[1]], reliability_method = "cron_alpha",
                            mean = descr$mean, SD = descr$sd, 
                            m_imputations = length(unique(data$`.imp`)),
-                           reversed = rev_details,
                            text = description_text)
+      if (exists("rev_details")) descriptives$reversed <- rev_details
       return(list(scores = full$scores, descriptives = descriptives))
     }
     
-    scores
+  full$scores
 
 }
 
@@ -548,18 +550,18 @@ make_scale_mi <- function(data, scale_items, scale_name, seed = NULL, boot = 500
 
 .cronbach_boot <- function(list_compl_data, boot = 1e4, ci = FALSE) {
   n <- nrow(list_compl_data); p <- ncol(list_compl_data)
-  total_variance <- var(rowSums(list_compl_data))
+  total_variance <- stats::var(rowSums(list_compl_data))
   item_variance <- sum(apply(list_compl_data, 2, sd)^2)
   alpha <- (p/(p - 1)) * (1 - (item_variance/total_variance))
   out <- list(alpha = alpha)
   boot_alpha <- numeric(boot)
     for (i in seq_len(boot)) {
       boot_dat <- list_compl_data[sample(seq_len(n), replace = TRUE), ]
-      total_variance <- var(rowSums(boot_dat))
+      total_variance <- stats::var(rowSums(boot_dat))
       item_variance <- sum(apply(boot_dat, 2, sd)^2)
       boot_alpha[i] <- (p/(p - 1)) * (1 - (item_variance/total_variance))
     }
-    out$var <- var(boot_alpha)
+    out$var <- stats::var(boot_alpha)
   
   if (ci){
     out$ci <- quantile(boot_alpha, c(.025,.975))
@@ -572,8 +574,8 @@ make_scale_mi <- function(data, scale_items, scale_name, seed = NULL, boot = 500
 pool_estimates <- function(x) {
   out <- c(
     alpha = x$qbar,
-    lwr = x$qbar - qt(0.975, x$df) * sqrt(x$t),
-    upr = x$qbar + qt(0.975, x$df) * sqrt(x$t)
+    lwr = x$qbar - stats::qt(0.975, x$df) * sqrt(x$t),
+    upr = x$qbar + stats::qt(0.975, x$df) * sqrt(x$t)
   )
   return(out)
 }

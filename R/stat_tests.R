@@ -484,7 +484,7 @@ pairwise_t_tests <- function(data, outcome, groups = NULL, p.adjust.method = p.a
   }
   
   if (missing(groups)) {
-    if (!class(outcome)=="formula") stop("If groups are not specified separately, the outcome argument must be a formula of the form `outcome ~ group`")
+    if (!inherits(outcome, "formula")) stop("If groups are not specified separately, the outcome argument must be a formula of the form `outcome ~ group`")
     groups <- as.character(outcome[[3]])
     if (length(groups) > 1) stop("If formula notation is used, only one grouping variable should be provided on the RHS")
     groups <- rlang::sym(groups)

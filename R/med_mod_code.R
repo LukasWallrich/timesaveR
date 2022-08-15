@@ -8,7 +8,6 @@
 #' given that they are not always reported. To access them, use 
 #' `attr(res, "CV_coefficients")` if you have saved the return of this function in `res`
 #'
-#' @encoding UTF-8
 #' @param data Dataframe 
 #' @param X Predictor variable (all variables can be passed as character or 'bare')
 #' @param Y Outcome variable 
@@ -16,11 +15,11 @@
 #' @param CVs Covariates (in predicting mediators and outcomes) 
 #' @param standardized_all Should all coefficients (paths, direct and indirect effects) be standardised
 #' @param conf.level The confidence level to be used for confidence intervals. Must be between 0 and 1 
-#' (exclusive), defaults to .95, which corresponds to 95"\%" confidence intervals.
+#' (exclusive), defaults to .95, which corresponds to 95% confidence intervals.
 #' @param seed Random seed, set to get reproducible results. If you do not want to set a fixed seed,
 #' you can use seed = sample(1:1e6, 1)
 #' @param bootstraps Number of bootstraps, defaults to 5000.
-#' @param ... Options passed on to lavaan::sem. 
+#' @param ... Options passed on to [lavaan::sem()]. 
 #' @return Tibble with direct, total and indirect effects, based on bootstrap resamples. In addition, 'a' coefficients for paths from 
 #' X to mediators and 'b' coefficients for paths from mediators to Y are returned. Coefficients for CVs
 #' are returned as an attribute - see below.
