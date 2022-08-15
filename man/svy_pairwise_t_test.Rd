@@ -16,7 +16,7 @@ svy_pairwise_t_test(data, dv, iv, cats, p.adjust = "holm", ...)
 \item{cats}{Character vector of factor levels to be included in the
 pairwise tests. If set to NULL, all levels are used.}
 
-\item{p.adjust}{Method to adjust p-values for multiple comparisons. One of 
+\item{p.adjust}{Method to adjust p-values for multiple comparisons. One of
 "holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr" or "none".}
 
 \item{...}{

@@ -7,12 +7,12 @@
 mira.lm_F_test(mod, return_list = FALSE)
 }
 \arguments{
-\item{mod}{A mira object (list of lm models in `analyses` element)}
+\item{mod}{A mira object (list of lm models in \code{analyses} element)}
 
 \item{return_list}{Logical. Should items of test be returned in a list?
 Otherwise, a string for reporting is returned, with Markdown formatting for APA style}
 }
 \description{
 Takes a mira object (list of lm models based on mice imputations) and returns
-an F-test for their significance, based on \code{\link[miceadds]{micombine.F}}
+an F-test for their significance, based on \code{\link[miceadds:micombine.F]{miceadds::micombine.F()}}
 }

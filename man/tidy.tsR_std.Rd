@@ -12,6 +12,6 @@ tidy.tsR_std(x, ...)
 \item{...}{arguments passed on to tidy method}
 }
 \description{
-Strips tsR_std class and calls tidy() again 
+Strips tsR_std class and calls tidy() again
 (for use with lm_std() and polr_std() outputs)
 }

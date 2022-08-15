@@ -5,7 +5,7 @@
 \title{Calculate correlation matrix with significance tests and descriptives}
 \source{
 Adapted from
- http://www.sthda.com/english/wiki/elegant-correlation-table-using-xtable-r-package
+http://www.sthda.com/english/wiki/elegant-correlation-table-using-xtable-r-package
 }
 \usage{
 cor_matrix(
@@ -21,9 +21,9 @@ cor_matrix(
 \arguments{
 \item{data}{Dataframe. Only numeric variables are included into correlation matrix.}
 
-\item{var_names}{A named character vector with new variable names or a tibble as provided by \code{\link{get_rename_tribbles}}
+\item{var_names}{A named character vector with new variable names or a tibble as provided by \code{\link[=get_rename_tribbles]{get_rename_tribbles()}}
 for variables. If NULL, then the variables are not renamed. If names are provided, only the variables included here are retained.
-This is most helpful when the results are passed to some print function, such as \code{\link{report_cor_table}}}
+This is most helpful when the results are passed to some print function, such as \code{\link[=report_cor_table]{report_cor_table()}}}
 
 \item{missing}{How should missing data be dealt with? Options are "pairwise" deletion, "listwise" deletion or "fiml" for full
 information maximum likelihood estimation of the correlation table. Note that if you use "fiml", this will also be applied to
@@ -44,16 +44,16 @@ A list including the correlation matrix, p-values, standard errors, t-values, pa
 }
 \description{
 Calculates the correlation matrix between the numeric variables in a given dataframe and
-includes descriptives (mean and standard deviation) - ready for creating a nice table with \code{\link{report_cor_table}}
+includes descriptives (mean and standard deviation) - ready for creating a nice table with \code{\link[=report_cor_table]{report_cor_table()}}
 }
 \details{
 By setting missing to "fiml", this function uses the lavaan package to estimate the correlations (and descriptives)
 by using a full-information maximum likelihood algorithm. This estimates the covariances separately
 for each pattern of missingness and then combines them based on the frequency of each pattern. This
 will take longer than pairwise deletion, but should yield more precise estimates in the presence of
-missing data. To date, FIML correlation matrices can be obtained with the \code{\link[psych]{corFiml}}
+missing data. To date, FIML correlation matrices can be obtained with the \code{\link[psych:corFiml]{psych::corFiml()}}
 function, but that function does not report significance tests or confidence intervals, or with the
-\code{\link[lavaan]{lavCor}} function - this function also uses \code{lavaan} for the estimation,
+\code{\link[lavaan:lavCor]{lavaan::lavCor()}} function - this function also uses \code{lavaan} for the estimation,
 but facilitates bootstrapping and returns the results in a more accessible format.
 }
 \references{

@@ -15,10 +15,10 @@ plot_distributions(
 \arguments{
 \item{data}{A dataframe - if var_names is NULL, all numeric variables in x will be used, otherwise those included in var_names will be selected}
 
-\item{var_names}{A named character vector with new variable names or a tibble as provided by \code{\link{get_rename_tribbles}}
+\item{var_names}{A named character vector with new variable names or a tibble as provided by \code{\link[=get_rename_tribbles]{get_rename_tribbles()}}
 If provided, only variables included here will be plotted. Apart from that, this will only determine the names of the list items, so it is most relevant if the output is to be combined with a correlation matrix, e.g., from \code{cor_matrix()}}
 
-\item{plot_type}{Type of plot that should be produced - `histogram` or `density` plot. If `auto`,
+\item{plot_type}{Type of plot that should be produced - \code{histogram} or \code{density} plot. If \code{auto},
 histograms are produced for variables that take fewer than 10 unique values, density plots for others. If a number is provided,
 that number is used as the maximum number of unique values for which a histogram is used.}
 

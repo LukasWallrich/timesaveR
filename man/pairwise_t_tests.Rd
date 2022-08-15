@@ -16,11 +16,11 @@ pairwise_t_tests(
 \arguments{
 \item{data}{A dataframe containing the outcome and grouping variable}
 
-\item{outcome}{The outcome variable in dataframe, or a formula of the form `outcome ~ group`. If a formula is provided, the group needs to be empty.}
+\item{outcome}{The outcome variable in dataframe, or a formula of the form \code{outcome ~ group}. If a formula is provided, the group needs to be empty.}
 
 \item{groups}{The grouping variable (each distinct value will be treated as a level)}
 
-\item{p.adjust.method}{The method to adjust p-values for multiple comparison (see \code{\link[stats]{p.adjust}})}
+\item{p.adjust.method}{The method to adjust p-values for multiple comparison (see \code{\link[stats:p.adjust]{stats::p.adjust()}})}
 
 \item{conf_level}{confidence level of the interval.}
 
@@ -29,7 +29,7 @@ variance is used to estimate the variance otherwise the Welch (or Satterthwaite)
 approximation to the degrees of freedom is used.}
 }
 \value{
-A tibble containing the results of the t-tests with one test per row, including a column (`apa`) formatted for reporting
+A tibble containing the results of the t-tests with one test per row, including a column (\code{apa}) formatted for reporting
 }
 \description{
 This runs pairwise independent-samples t-tests (assuming unequal variance by default, but can be changed)

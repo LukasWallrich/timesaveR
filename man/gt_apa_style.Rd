@@ -15,6 +15,6 @@ gt_apa_style(gt_table, fmt_labels_md = TRUE)
 \item{fmt_labels_md}{Should row and column labels be formatted with markdown/HTML (Defaults to TRUE)}
 }
 \description{
-This function takes a `gt` table object and changes font-type, borders etc
+This function takes a \code{gt} table object and changes font-type, borders etc
 to align with APA style.
 }

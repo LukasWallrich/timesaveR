@@ -5,7 +5,7 @@
 \title{Create a correlation table with summary statistics in APA style}
 \source{
 Based on the apaTables \code{apa.cor.table()} function, but adapted to
-accept weighted correlation matrices and work with the `gt` package instead. Code
+accept weighted correlation matrices and work with the \code{gt} package instead. Code
 for calculation of confidence intervals adapted from
 https://medium.com/@shandou/how-to-compute-confidence-interval-for-pearsons-r-a-brief-guide-951445b9cb2d`
 }
@@ -27,7 +27,7 @@ report_cor_table(
 }
 \arguments{
 \item{cor_matrix}{A correlation matrix, for example returned from
-\code{cor_matrix()}, \code{svy_cor_matrix()}, or \code{wtd_cor_matrix_mi()}}
+\code{\link[=cor_matrix]{cor_matrix()}}, \code{\link[=svy_cor_matrix]{svy_cor_matrix()}}, or \code{\link[=wtd_cor_matrix_mi]{wtd_cor_matrix_mi()}}}
 
 \item{ci}{Method to create CI - default is to use any given in the cor_matrix,
 and otherwise to compute them using z-transformations. The simple SE method
@@ -46,21 +46,21 @@ best preserve formatting (see gt::gtsave for details)}
 
 \item{notes}{List of additional notes to show under the table.}
 
-\item{stars}{A character vector to change the significance symbols (see details in `sigstars`)}
+\item{stars}{A character vector to change the significance symbols (see details in \code{sigstars})}
 
 \item{add_title}{Should title be added to table? Set to TRUE for default
 title or to character for custom title}
 
 \item{extras}{Tibble of additional columns to be added after the descriptives column -
-needs to be sorted in the same order as the `desc` element in the cor_matrix unless 
-there is a `row_names` column. If there is, this will be used to match it to the `desc` rows.}
+needs to be sorted in the same order as the \code{desc} element in the cor_matrix unless
+there is a \code{row_names} column. If there is, this will be used to match it to the \code{desc} rows.}
 
 \item{apa_style}{Logical, should APA-style formatting be applied}
 
 \item{...}{
   Arguments passed on to \code{\link[=plot_distributions]{plot_distributions}}
   \describe{
-    \item{\code{plot_type}}{Type of plot that should be produced - `histogram` or `density` plot. If `auto`,
+    \item{\code{plot_type}}{Type of plot that should be produced - \code{histogram} or \code{density} plot. If \code{auto},
 histograms are produced for variables that take fewer than 10 unique values, density plots for others. If a number is provided,
 that number is used as the maximum number of unique values for which a histogram is used.}
     \item{\code{hist_align_y}}{Should histograms use the same y-axis, so that bin heights are comparable? Defaults to FALSE}
@@ -69,7 +69,7 @@ that number is used as the maximum number of unique values for which a histogram
 }
 \value{
 A table that can be printed in the RStudio console to be shown in the
-viewer. Unless it is to be post-processed with further `gt` functions, it should
+viewer. Unless it is to be post-processed with further \code{gt} functions, it should
 usually be saved by passing a filename argument.
 }
 \description{

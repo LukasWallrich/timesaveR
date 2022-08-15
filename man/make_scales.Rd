@@ -20,8 +20,8 @@ make_scales(
 each vector contains the items for that scale (variables in data)}
 
 \item{reversed}{How should items be reverse-coded. Can be FALSE (no reverse-coding),
-TRUE (automatic reverse-coding of items negatively correlated with remainder), or a 
-named list of characters vectors. Names are the scale names, each vector contains 
+TRUE (automatic reverse-coding of items negatively correlated with remainder), or a
+named list of characters vectors. Names are the scale names, each vector contains
 the items to be reverse-coded for that scale. If TRUE, the result must be checked carefully!}
 
 \item{two_items_reliability}{How should the reliability of two-item scales be
@@ -37,8 +37,8 @@ and Pearson's "r" are also supported.}
   }}
 }
 \value{
-A list of two dataframes: scale values (`scores`) and
-descriptive statistics for each scale (`descriptives`)
+A list of two dataframes: scale values (\code{scores}) and
+descriptive statistics for each scale (\code{descriptives})
 }
 \description{
 This function creates multiple scales, returns descriptives and supports

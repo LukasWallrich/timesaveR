@@ -16,11 +16,11 @@ wtd_cor_matrix_mi(mi_list, weights, var_names = NULL)
 
 \item{weights}{A variable within mi_list that gives the survey weights}
 
-\item{var_names}{A named character vector with new variable names or a tibble as provided by \code{\link{get_rename_tribbles}}
+\item{var_names}{A named character vector with new variable names or a tibble as provided by \code{\link[=get_rename_tribbles]{get_rename_tribbles()}}
 for variables. If NULL, then the variables are not renamed. If names are provided, only the variables included here are retained.
-This is most helpful when the results are passed to some print function, such as \code{\link{report_cor_table}}
+This is most helpful when the results are passed to some print function, such as \code{\link[=report_cor_table]{report_cor_table()}}
 To facilitate post-processing, correlations with original variable
-names are returned in the `tests` element.}
+names are returned in the \code{tests} element.}
 }
 \value{
 A correlation matrix list similar to the format provided by

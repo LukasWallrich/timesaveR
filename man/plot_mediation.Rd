@@ -44,8 +44,8 @@ A list of a the graph and the associated code.
 }
 \description{
 Returns graphViz code and graph for (multiple) mediation model.
-Coefficients and significance values for paths need to be provided, 
-based on the format returned by `run_moderation()`
+Coefficients and significance values for paths need to be provided,
+based on the format returned by \code{run_moderation()}
 }
 \examples{
 \dontrun{

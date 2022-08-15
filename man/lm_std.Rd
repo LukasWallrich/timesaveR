@@ -57,7 +57,7 @@ This runs lm() after standardising all continuous variables, while leaving
 factors intact.
 }
 \details{
-In the model call, the weights variable will always be called `.weights`. This might
+In the model call, the weights variable will always be called \code{.weights}. This might
 pose a problem when you update the model later on, for  the moment the only workaround
 is to rename the weights variable accordingly (or to fix it and contribute a PR on
 Github).
@@ -68,5 +68,5 @@ lm_std(Sepal.Length ~ Sepal.Width + Species, iris)
 \references{
 See (Fox, 2015) for an argument why dummy variables should never
 be standardised. If you want to run a model with all variables standardised,
-one option is `QuantPsyc::lm.beta()`
+one option is \code{QuantPsyc::lm.beta()}
 }

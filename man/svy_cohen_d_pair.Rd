@@ -22,7 +22,7 @@ Cohen's d is calculated. Defaults to TRUE.}
 \item{print}{Logical. Should results be printed.}
 }
 \value{
-Returns a one-row tibble with tidy results of t-test and Cohen's d. 
+Returns a one-row tibble with tidy results of t-test and Cohen's d.
 If print is TRUE, results are returned invisibly.
 }
 \description{

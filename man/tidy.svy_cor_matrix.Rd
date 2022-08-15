@@ -8,9 +8,9 @@ tidy.svy_cor_matrix(x, both_directions = TRUE, ...)
 }
 \arguments{
 \item{x}{A \code{svy_cor_marix} object returned from
-\code{\link{svy_cor_matrix}}}
+\code{\link[=svy_cor_matrix]{svy_cor_matrix()}}}
 
-\item{both_directions}{Should both  \code{cor(A, B)} 
+\item{both_directions}{Should both  \code{cor(A, B)}
 and \code{cor(B, A)} be returned. Defaults to \code{TRUE}.}
 
 \item{...}{Additional arguments. Not used. Needed to match generic signature
@@ -25,7 +25,7 @@ A \code{\link[tibble:tibble]{tibble::tibble()}} with columns:
 \item{p.value}{The two-sided p-value of the correlation}
 }
 \description{
-This function turns the correlation matrix returned by \code{\link{svy_cor_matrix}}. Note that by default, results for both the \code{cor(A, B)} 
-and \code{cor(B, A)} are returned, while entries for \code{A, A}, i.e. the values on the diagonal, 
+This function turns the correlation matrix returned by \code{\link[=svy_cor_matrix]{svy_cor_matrix()}}. Note that by default, results for both the \code{cor(A, B)}
+and \code{cor(B, A)} are returned, while entries for \verb{A, A}, i.e. the values on the diagonal,
 are never included.
 }

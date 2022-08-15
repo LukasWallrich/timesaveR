@@ -4,13 +4,13 @@
 \alias{fmt_labels_md}
 \title{A convenience function to render markdown to html in row and column labels}
 \source{
-Developed with Vincent Arel-Bundock and first included in `modelsummary`-package
+Developed with Vincent Arel-Bundock and first included in \code{modelsummary}-package
 }
 \usage{
 fmt_labels_md(tab, position = c("both", "row", "column"))
 }
 \arguments{
-\item{tab}{a `gt` table object}
+\item{tab}{a \code{gt} table object}
 
 \item{position}{character string determines wither row, column or both
 labels should be rendered.}
@@ -19,7 +19,7 @@ labels should be rendered.}
 A convenience function to render markdown to html in row and column labels
 }
 \note{
-This function only works for HTML output, since the `gt` render tools
+This function only works for HTML output, since the \code{gt} render tools
 are less developed for LaTeX and RTF output.
 }
 \keyword{internal}

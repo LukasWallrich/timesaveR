@@ -32,10 +32,10 @@ levels of categorical variables}
 \item{...}{Categorical variables to be included}
 
 \item{var_names}{Tibble of old and new variable names, if variables are to be
-renamed for display. See \code{\link{get_rename_tribbles}} for required format}
+renamed for display. See \code{\link[=get_rename_tribbles]{get_rename_tribbles()}} for required format}
 
 \item{level_names}{Tibble of old and new level names, if levels are to be
-renamed for display. See \code{\link{get_rename_tribbles}} for required format}
+renamed for display. See \code{\link[=get_rename_tribbles]{get_rename_tribbles()}} for required format}
 
 \item{p_adjust}{One of p_adjust.methods, defaults to Holm}
 
@@ -61,8 +61,8 @@ the tag should be added to.}
 \item{exclude_na}{Should cases that are NA on a categorical variable be dropped from that section?}
 }
 \value{
-A list including a tibble of descriptive statistics (`descr`), the
-`gt`-table (`tab`) and the HTML code (`html_code`) with `css_tags` added
+A list including a tibble of descriptive statistics (\code{descr}), the
+\code{gt}-table (\code{tab}) and the HTML code (\code{html_code}) with \code{css_tags} added
 }
 \description{
 This takes a set of categorical variables and a continuous dependent variable

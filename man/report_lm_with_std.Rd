@@ -25,11 +25,11 @@ report_lm_with_std(
 \item{mod}{A lm-model/mira object of lm models, with variables not standardized (or a list of such models)}
 
 \item{mod_std}{A lm-model/mira object of lm models, with standardized variables. Can be
-created with \code{\link{lm_std}} (or a list of such models)}
+created with \code{\link[=lm_std]{lm_std()}} (or a list of such models)}
 
 \item{conf_level}{Confidence level to use for confidence intervals, defaults to .95}
 
-\item{coef_renames}{A named character vector with new names for the coefficients or a tibble as provided by \code{\link{get_coef_rename_tribble}}
+\item{coef_renames}{A named character vector with new names for the coefficients or a tibble as provided by \code{\link[=get_coef_rename_tribble]{get_coef_rename_tribble()}}
 for variables. If NULL, then the coefficients are not renamed.}
 
 \item{fmt}{determines how to format numeric values
@@ -46,7 +46,7 @@ for variables. If NULL, then the coefficients are not renamed.}
 
 \item{filename}{the file name to create a HTML file on disk.}
 
-\item{model_names}{If several pairs of models are to be plotted side by side, indicate the label for each *pair* here}
+\item{model_names}{If several pairs of models are to be plotted side by side, indicate the label for each \emph{pair} here}
 
 \item{show_nimp}{Logical - DEFUNCT. If mira objects are passed, this determines whether the number of imputations will be reported as a model statistic}
 
@@ -56,7 +56,7 @@ for variables. If NULL, then the coefficients are not renamed.}
 
 \item{apa_style}{Logical, should APA-style formatting be applied}
 
-\item{stars}{Named vector of significance stars and their thresholds, check `timesaveR:::std_stars_pad` for default.}
+\item{stars}{Named vector of significance stars and their thresholds, check \code{timesaveR:::std_stars_pad} for default.}
 
 \item{...}{
   Arguments passed on to \code{\link[modelsummary:modelsummary]{modelsummary::modelsummary}}
@@ -86,10 +86,10 @@ Examples section below.}
   }}
 }
 \value{
-A list with `gt_tab` (the gt-table object including the parts of the table
+A list with \code{gt_tab} (the gt-table object including the parts of the table
 that can be created with gt. This can be post-processed and formatted with functions in
 the gt-package, but does not include the lower part with model statistics, e.g., R^2.) and
-`html_code` (the code that creates the full table, and is used to render it in
+\code{html_code} (the code that creates the full table, and is used to render it in
 the Viewer).
 }
 \description{
