@@ -15,7 +15,9 @@ make_scale_mi(
   scale_name,
   proration_cutoff = 0,
   seed = NULL,
+  alpha_ci = FALSE,
   boot = 5000,
+  parallel = TRUE,
   ...
 )
 }
@@ -31,7 +33,11 @@ variable. Typically the output from \code{mice::complete(mids, "long")}.}
 
 \item{seed}{For pooling, the variance of Cronbach's alpha is bootstrapped. Set a seed to make this reproducible.}
 
+\item{alpha_ci}{Should a confidence interval for Cronbach's alpha be returned? Note that this requires bootstrapping and thus makes the function much slower. TRUE corresponds to a 95\% confidence interval, other widths can be specified as fractions, e.g., .9}
+
 \item{boot}{For pooling, the variance of Cronbach's alpha is bootstrapped. Set number of bootstrap resamples here.}
+
+\item{parallel}{Should bootstrapping be conducted in paralell (using \code{parallel}-package)? Pass a number to select the number of cores - otherwise, the function will use all but one core.}
 
 \item{...}{
   Arguments passed on to \code{\link[=make_scale]{make_scale}}
