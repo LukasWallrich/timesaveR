@@ -31,7 +31,7 @@ globalVariables(".")
 #' @importFrom broom tidy 
 #' @importFrom generics glance
 #' @export
-generics::tidy
+broom::tidy #with generics::tidy, model summary tables fail
 generics::glance
 
 .check_req_packages <- function(x, note = "") {

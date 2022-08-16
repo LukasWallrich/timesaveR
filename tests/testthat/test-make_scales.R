@@ -39,9 +39,23 @@ ess_health <- ess_health %>% mutate(across(everything(), add_missing))
 ess_health_mi <- mice(ess_health, printFlag = FALSE) 
 ess_health_mi <- complete(ess_health_mi, "long", include = TRUE)
 
-scale <- make_scale_mi(ess_health_mi, c("cgtsmke", "dosprt", "health"), "healthy", boot = 100, print_desc = FALSE)
+scale1 <- make_scale_mi(ess_health_mi, c("cgtsmke", "dosprt", "health"), "healthy", print_desc = FALSE)
 
-test_that("make_scale_mi works", {
-  expect_equal(scale$descriptives$reliability, 0.068783606)
-  expect_equal(scale$descriptives$mean, 3.7546667)
+chk <- Sys.getenv("_R_CHECK_LIMIT_CORES_", "")
+
+if (nzchar(chk) && chk == "TRUE") {
+  # use 2 cores in CRAN/Travis/AppVeyor
+  parallel <- 2L
+} else {
+  # use all cores in devtools::test()
+  parallel <- TRUE
+}
+scale2 <- make_scale_mi(ess_health_mi, c("cgtsmke", "dosprt", "health"), "healthy", boot = 100, print_desc = FALSE, parallel = parallel, alpha_ci = .9)
+scale2$descriptives$reliability_ci_lower
+
+test_that("make_scale_mi works (including parallel)", {
+  expect_equal(scale1$descriptives$reliability, 0.068783606)
+  expect_equal(scale1$descriptives$mean, 3.7546667)
+  expect_equal(scale2$descriptives$reliability, 0.068783606)
+  expect_equal(scale2$descriptives$reliability_ci_lower, 0.046360357)
 })

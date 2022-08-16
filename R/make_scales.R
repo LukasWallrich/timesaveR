@@ -418,7 +418,7 @@ The following items were reverse coded (with min and max values): \\
 #' returns pooled descriptive statistics (including Cronbach's alpha). Note that
 #' this function only supports Cronbach's alpha, including for two-item scales.
 #' 
-#' Scale scores are returned for the raw data as well (if it is included in `data`).
+#' Scale scores are returned for the raw data as well (if it is included in `data`). 
 #' Descriptive statistics and reliability estimates are only based on the imputed datasets.
 #'
 #' @param data A dataframe containing multiple imputations, distinguished by a `.imp` 
@@ -426,8 +426,10 @@ The following items were reverse coded (with min and max values): \\
 #' @inheritParams make_scale
 #' @param proration_cutoff Applies only to raw data (.imp == 0) in data. Scales scores are only calculated for cases with at most this share of missing data.
 #' @inheritDotParams make_scale -print_hist -two_items_reliability 
+#' @param alpha_ci Should a confidence interval for Cronbach's alpha be returned? Note that this requires bootstrapping and thus makes the function much slower. TRUE corresponds to a 95% confidence interval, other widths can be specified as fractions, e.g., .9
 #' @param boot For pooling, the variance of Cronbach's alpha is bootstrapped. Set number of bootstrap resamples here.
 #' @param seed For pooling, the variance of Cronbach's alpha is bootstrapped. Set a seed to make this reproducible.
+#' @param parallel Should bootstrapping be conducted in paralell (using `parallel`-package)? Pass a number to select the number of cores - otherwise, the function will use all but one core.
 #' @source The approach to pooling Cronbach's alpha is taken from Dion Groothof [on StackOverflow](https://stackoverflow.com/a/70817748/10581449). 
 #' The development of the function was motivated by [Gottschall, West & Enders (2012)](https://doi.org/10.1080/00273171.2012.640589) who showed 
 #' that multiple imputation at item level results in much higher statistical power than multiple imputation at scale level.
@@ -447,8 +449,21 @@ The following items were reverse coded (with min and max values): \\
 #' 
 #' scale <- make_scale_mi(ess_health_mi, c("etfruit", "eatveg"), "healthy")
 
-make_scale_mi <- function(data, scale_items, scale_name, proration_cutoff = 0, seed = NULL, boot = 5000, ...) {
+make_scale_mi <- function(data, scale_items, scale_name, proration_cutoff = 0, seed = NULL, alpha_ci = FALSE, boot = 5000, parallel = TRUE,  ...) {
 
+  if (!alpha_ci) {
+    args <- as.list(match.call(sys.function(1), sys.call(1), expand.dots = FALSE))[-1]
+    if ("boot" %in% names(args) | "parallel" %in% names(args)) {
+      message("Note: boot and parallel arguments are ignored if alpha_ci = FALSE. In that case, no bootstrapping is needed.")
+    }
+    boot <- 1
+    parallel <- FALSE
+  } else if (alpha_ci == TRUE) {
+    alpha_ci <- .95
+  }
+  
+  if(alpha_ci) assert_numeric(alpha_ci, lower = 0, upper = 1)
+  
   if (!".imp"  %in% names(data)) stop("data should contain multiple imputations, indicated by an `.imp` variable (see mice::complete() with action = 'long'")
 
   extras <- list(...)
@@ -491,20 +506,41 @@ make_scale_mi <- function(data, scale_items, scale_name, proration_cutoff = 0, s
   
   m <- length(setdiff(unique(data$.imp), 0)) #Ignore m = 0 -> raw data
   boot_alpha <- rep(list(NA), m)
+  
+  if (!parallel) {
   for (i in seq_len(m)) {
     set.seed(seed + i) # fix random number generator
     sub <- data[data$.imp == i, ] %>% dplyr::select(dplyr::all_of(scale_items))
     boot_alpha[[i]] <- .cronbach_boot(sub, boot = boot)
+  } } else {
+    if (boot < 1000) message("Note: You requested a rather low number of bootstraps (", boot, ") with parallel computing (`parallel` argument). parallel = FALSE would probably be faster.")
+    if (nrow(data)/(m+1)) message("Note: You requested parallel computing (`parallel` argument) for a rather small sample size (", nrow(data)/(m+1), "). parallel = FALSE might be faster.")
+    
+    det_cores <- parallel::detectCores()
+    if (parallel == TRUE) {
+      parallel <- det_cores - 1
+    } else if (parallel > det_cores) {
+      warning(parallel, " cores requested, while only ", det_cores, "are available. Therefore, `parallel`-argument is reset to ", det_cores, ".")
+      parallel <- det_cores
+    }
+    
+    future::plan("multisession", workers = parallel)
+    
+    boot_alpha <- future.apply::future_lapply(seq_len(m), 
+                                              function(i) {
+      sub <- data[data$.imp == i, ] %>% dplyr::select(dplyr::all_of(scale_items))
+      .cronbach_boot(sub, boot = boot)
+    }, future.seed = seed)
+    
   }
   
   # obtain Q and U (see ?mice::pool.scalar)
   Q <- sapply(boot_alpha, function(x) x$alpha)
   U <- sapply(boot_alpha, function(x) x$var)
-  
-  pooled_alpha <- pool_estimates(mice::pool.scalar(Q, U))
+  pooled_alpha <- pool_estimates(mice::pool.scalar(Q, U), ci = alpha_ci)
 
   descr <- tibble::tibble(score = full$scores) %>% dplyr::bind_cols(data) %>% 
-    dplyr::filter(.imp != 0)  %>% dplyr::group_by(.data$.imp) %>%
+    dplyr::filter(.data$.imp != 0)  %>% dplyr::group_by(.data$.imp) %>%
     dplyr::summarise(mean = mean(.data$score, na.rm = TRUE), sd = sd(.data$score, na.rm = TRUE), .groups = "drop") %>%
     dplyr::summarise(mean = mean(.data$mean), sd = mean(.data$sd))
   
@@ -512,8 +548,9 @@ make_scale_mi <- function(data, scale_items, scale_name, proration_cutoff = 0, s
     
                      Descriptives for {scale_name} scale:
                      Mean: {round_(descr$mean, 3)}  SD: {round_(descr$sd, 3)}
-                     Cronbach\'s alpha: {round(pooled_alpha[[1]], 2)}')
-  
+                     Cronbach\'s alpha: {round_(pooled_alpha[[1]], 2)}{ifelse(alpha_ci, paste0(", ", fmt_pct(alpha_ci,0), " CI [",round_(pooled_alpha[[2]], 2), ",", round_(pooled_alpha[[3]], 2), "]"), "")}')
+
+    
   if (full$descriptives$reversed != "") {
     rev_details <- data %>% dplyr::select(dplyr::all_of(rev_code)) %>% tidyr::pivot_longer(dplyr::everything()) %>% 
       dplyr::group_by(.data$name) %>% dplyr::summarise(min = min(.data$value, na.rm = TRUE), max = max(.data$value, na.rm = TRUE))
@@ -539,6 +576,12 @@ make_scale_mi <- function(data, scale_items, scale_name, proration_cutoff = 0, s
                            mean = descr$mean, SD = descr$sd, 
                            m_imputations = length(unique(data$`.imp`)),
                            text = description_text)
+      if (alpha_ci) {
+        descriptives$reliability_ci_lower <- pooled_alpha[[2]]
+        descriptives$reliability_ci_upper <- pooled_alpha[[3]]
+        descriptives$reliability_ci_level <- alpha_ci
+      }
+      
       if (exists("rev_details")) descriptives$reversed <- rev_details
       return(list(scores = full$scores, descriptives = descriptives))
     }
@@ -549,7 +592,7 @@ make_scale_mi <- function(data, scale_items, scale_name, proration_cutoff = 0, s
 
 # Helper functions based on https://stackoverflow.com/a/70817748/10581449
 
-.cronbach_boot <- function(list_compl_data, boot = 1e4, ci = FALSE) {
+.cronbach_boot <- function(list_compl_data, boot = 1e4) {
   n <- nrow(list_compl_data); p <- ncol(list_compl_data)
   total_variance <- stats::var(rowSums(list_compl_data))
   item_variance <- sum(apply(list_compl_data, 2, sd)^2)
@@ -564,19 +607,16 @@ make_scale_mi <- function(data, scale_items, scale_name, proration_cutoff = 0, s
     }
     out$var <- stats::var(boot_alpha)
   
-  if (ci){
-    out$ci <- quantile(boot_alpha, c(.025,.975))
-  }
   return(out)
 }
 
 
 # pooled estimates
-pool_estimates <- function(x) {
+pool_estimates <- function(x, ci = .95) {
   out <- c(
     alpha = x$qbar,
-    lwr = x$qbar - stats::qt(0.975, x$df) * sqrt(x$t),
-    upr = x$qbar + stats::qt(0.975, x$df) * sqrt(x$t)
+    lwr = x$qbar - stats::qt(1-(ci/2), x$df) * sqrt(x$t),
+    upr = x$qbar + stats::qt(1-(ci/2), x$df) * sqrt(x$t)
   )
   return(out)
 }

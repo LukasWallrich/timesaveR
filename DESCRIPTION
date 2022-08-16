@@ -37,7 +37,10 @@ Imports:
     stringr,
     tibble,
     tidyr,
-    tidyselect
+    tidyselect,
+    Matrix,
+    future.apply,
+    future
 Suggests:
     clipr,
     DiagrammeR,
