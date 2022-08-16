@@ -33,3 +33,18 @@ test_that("cor_matrix_mi works", {
   expect_equal(out2[[1]][1,2], 
                -0.19071925)
 })
+
+# Create Dataset with missing data
+library(mice)
+library(dplyr)
+set.seed(300688)
+ess_health <- timesaveR::ess_health %>% sample_n(100) %>% select(cgtsmke, dosprt, health)
+add_missing <- function(x) {x[!rbinom(length(x), 1, .9)] <- NA; x}
+ess_health <- ess_health %>% mutate(across(c(everything()), add_missing))
+
+out <- cor_matrix(ess_health, missing = "fiml")
+
+test_that("cor_matrix works with fiml", {
+  expect_equal(out$cors[2,1], -0.19917584)
+})
+  

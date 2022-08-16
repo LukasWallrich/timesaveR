@@ -388,15 +388,15 @@ cor_matrix <- function(data,
       }
       m
     }
-    cors <- fill_matrix("est")
-    std.err <- fill_matrix("se")
-    p.values <- fill_matrix("pvalue")
-    t.values <- m
+    cors <- fill_matrix("est") %>% Matrix::forceSymmetric(uplo = "L")
+    std.err <- fill_matrix("se") %>% Matrix::forceSymmetric(uplo = "L")
+    p.values <- fill_matrix("pvalue") %>% Matrix::forceSymmetric(uplo = "L")
+    t.values <- m 
     t.values[TRUE] <- NA
     n.matrix <- m
     n.matrix[TRUE] <- nrow(data)
-    ci_low <- fill_matrix("ci.lower")
-    ci_high <- fill_matrix("ci.upper")
+    ci_low <- fill_matrix("ci.lower") %>% Matrix::forceSymmetric(uplo = "L")
+    ci_high <- fill_matrix("ci.upper") %>% Matrix::forceSymmetric(uplo = "L")
   }
 
   cor_matrix <- list(cors = cors, std.err = std.err, p.values = p.values, t.values = t.values, n = n.matrix, ci.low = ci_low, ci.high = ci_high, desc = desc_stat)
