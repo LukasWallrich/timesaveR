@@ -42,7 +42,7 @@ There are many functions in the package, and we will create vignettes detailing 
 
 ## Load the package
 
-(I also load the `tidyverse` since that is the recommended usage - of course, there are base R alternatives for most of the steps.)
+(I also load the `tidyverse` since that is the recommended usage - of course, there are base R alternatives for all of the steps.)
 
 ```r
 library(tidyverse)
