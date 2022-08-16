@@ -60,7 +60,7 @@ descriptives that pools the results across all imputations."><meta property="og:
     <div class="page-header">
     <h1>Create a correlation matrix from multiply imputed data with weights</h1>
     <small class="dont-index">Source: <a href="https://github.com/LukasWallrich/timesaveR/blob/HEAD/R/cor_tables.R" class="external-link"><code>R/cor_tables.R</code></a></small>
-    <div class="hidden name"><code>wtd_cor_matrix_mi.Rd</code></div>
+    <div class="hidden name"><code>package-deprecated.Rd</code></div>
     </div>
 
     <div class="ref-description">
@@ -90,11 +90,11 @@ but adapted to use weights and return in the format accepted by
 
 
 <dt>var_names</dt>
-<dd><p>A named character vector with new variable names or a tibble as provided by <code><a href="get_rename_tribbles.html">get_rename_tribbles</a></code>
+<dd><p>A named character vector with new variable names or a tibble as provided by <code><a href="get_rename_tribbles.html">get_rename_tribbles()</a></code>
 for variables. If NULL, then the variables are not renamed. If names are provided, only the variables included here are retained.
-This is most helpful when the results are passed to some print function, such as <code><a href="report_cor_table.html">report_cor_table</a></code>
+This is most helpful when the results are passed to some print function, such as <code><a href="report_cor_table.html">report_cor_table()</a></code>
 To facilitate post-processing, correlations with original variable
-names are returned in the `tests` element.</p></dd>
+names are returned in the <code>tests</code> element.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -109,6 +109,10 @@ and standard deviations of the variables.</p>
     <h2>Details</h2>
     <p>Variables starting with . are dropped, as these are likely to be .imp and .id
 from mice. If you want correlations for such variables, rename them.</p>
+    </div>
+    <div id="see-also">
+    <h2>See also</h2>
+    <div class="dont-index"><p>cor_matrix_mi</p></div>
     </div>
 
   </div>

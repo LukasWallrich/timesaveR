@@ -85,7 +85,7 @@ and returns the results and effect sizes in a tidy dataframe. Beware: It will au
 
 
 <dt>outcome</dt>
-<dd><p>The outcome variable in dataframe, or a formula of the form `outcome ~ group`. If a formula is provided, the group needs to be empty.</p></dd>
+<dd><p>The outcome variable in dataframe, or a formula of the form <code>outcome ~ group</code>. If a formula is provided, the group needs to be empty.</p></dd>
 
 
 <dt>groups</dt>
@@ -93,7 +93,7 @@ and returns the results and effect sizes in a tidy dataframe. Beware: It will au
 
 
 <dt>p.adjust.method</dt>
-<dd><p>The method to adjust p-values for multiple comparison (see <code><a href="https://rdrr.io/r/stats/p.adjust.html" class="external-link">p.adjust</a></code>)</p></dd>
+<dd><p>The method to adjust p-values for multiple comparison (see <code><a href="https://rdrr.io/r/stats/p.adjust.html" class="external-link">stats::p.adjust()</a></code>)</p></dd>
 
 
 <dt>conf_level</dt>
@@ -110,7 +110,7 @@ approximation to the degrees of freedom is used.</p></dd>
     <h2>Value</h2>
     
 
-<p>A tibble containing the results of the t-tests with one test per row, including a column (`apa`) formatted for reporting</p>
+<p>A tibble containing the results of the t-tests with one test per row, including a column (<code>apa</code>) formatted for reporting</p>
     </div>
 
     <div id="ref-examples">

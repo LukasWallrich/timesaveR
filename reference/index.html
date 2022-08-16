@@ -83,28 +83,32 @@ relationship with a continuous outcome variable</p></td>
 proportional odd logistic regression models</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="calculate-correlation-matrices">Calculate correlation matrices <a href="#calculate-correlation-matrices" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p><p>It can be surprisingly difficult to calculate correlation matrices, particularly when data is weighted or incomplete</p>
+          <p class="section-desc"></p><p>It can be surprisingly difficult to calculate correlation matrices, particularly when data is weighted or incomplete. These functions help and prepare data for <code><a href="../reference/report_cor_table.html">report_cor_table()</a></code></p>
         </th>
       </tr></tbody><tbody><tr><td>
           <p><code><a href="cor_matrix.html">cor_matrix()</a></code> </p>
         </td>
         <td><p>Calculate correlation matrix with significance tests and descriptives</p></td>
       </tr><tr><td>
+          <p><code><a href="cor_matrix_mi.html">cor_matrix_mi()</a></code> </p>
+        </td>
+        <td><p>Create a (weighted) correlation matrix from multiply imputed data</p></td>
+      </tr><tr><td>
+          <p><code><a href="package-deprecated.html">wtd_cor_matrix_mi()</a></code> </p>
+        </td>
+        <td><p>Create a correlation matrix from multiply imputed data with weights</p></td>
+      </tr><tr><td>
           <p><code><a href="svy_cor_matrix.html">svy_cor_matrix()</a></code> </p>
         </td>
         <td><p>Create a correlation matrix from survey data with summary statistics</p></td>
       </tr><tr><td>
-          <p><code><a href="tidy.cor_matrix.html">tidy.cor_matrix()</a></code> </p>
+          <p><code><a href="tidy.cor_matrix.html">tidy(<i>&lt;cor_matrix&gt;</i>)</a></code> </p>
         </td>
         <td><p>Tidy a correlation matrix</p></td>
       </tr><tr><td>
-          <p><code><a href="tidy.svy_cor_matrix.html">tidy.svy_cor_matrix()</a></code> </p>
+          <p><code><a href="tidy.svy_cor_matrix.html">tidy(<i>&lt;svy_cor_matrix&gt;</i>)</a></code> </p>
         </td>
         <td><p>Tidy a survey-weighted correlation matrix</p></td>
-      </tr><tr><td>
-          <p><code><a href="wtd_cor_matrix_mi.html">wtd_cor_matrix_mi()</a></code> </p>
-        </td>
-        <td><p>Create a correlation matrix from multiply imputed data with weights</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="formatters-and-reporting-helpers">Formatters and reporting helpers <a href="#formatters-and-reporting-helpers" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p><p>Functions to format numbers for statistical reporting and other helpers for statistical reporting</p>
@@ -178,25 +182,25 @@ proportional odd logistic regression models</p></td>
         </td>
         <td><p>Create distribution charts to show in descriptive table</p></td>
       </tr><tr><td>
-          <p><code><a href="tidy.cor_matrix.html">tidy.cor_matrix()</a></code> </p>
+          <p><code><a href="tidy.cor_matrix.html">tidy(<i>&lt;cor_matrix&gt;</i>)</a></code> </p>
         </td>
         <td><p>Tidy a correlation matrix</p></td>
       </tr><tr><td>
-          <p><code><a href="tidy.mira.html">tidy.mira()</a></code> </p>
+          <p><code><a href="tidy.mira.html">tidy(<i>&lt;mira&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Tidy  multiple imputation models created with `mice`</p></td>
+        <td><p>Tidy  multiple imputation models created with <code>mice</code></p></td>
       </tr><tr><td>
-          <p><code><a href="tidy.svy_cor_matrix.html">tidy.svy_cor_matrix()</a></code> </p>
+          <p><code><a href="tidy.svy_cor_matrix.html">tidy(<i>&lt;svy_cor_matrix&gt;</i>)</a></code> </p>
         </td>
         <td><p>Tidy a survey-weighted correlation matrix</p></td>
       </tr><tr><td>
-          <p><code><a href="tidy.tsR_std.html">tidy.tsR_std()</a></code> </p>
+          <p><code><a href="tidy.tsR_std.html">tidy(<i>&lt;tsR_std&gt;</i>)</a></code> </p>
         </td>
         <td><p>Helper function to enable tidiers to be used on standardized models</p></td>
       </tr><tr><td>
-          <p><code><a href="glance.mira.html">glance.mira()</a></code> </p>
+          <p><code><a href="glance.mira.html">glance(<i>&lt;mira&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Glance a multiple imputation `mice` pooled object</p></td>
+        <td><p>Glance a multiple imputation <code>mice</code> pooled object</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="run-and-plot-mediation-models">Run and plot mediation models <a href="#run-and-plot-mediation-models" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p><p>Mediation models can be estimated with lavaan. These functions offer a simple interface and an integrated path from modeling to visualisation</p>
@@ -221,6 +225,10 @@ proportional odd logistic regression models</p></td>
           <p><code><a href="make_scales.html">make_scales()</a></code> </p>
         </td>
         <td><p>Create multiple scales by calculating item means and returns descriptives</p></td>
+      </tr><tr><td>
+          <p><code><a href="make_scale_mi.html">make_scale_mi()</a></code> </p>
+        </td>
+        <td><p>Create a scale based on multiple imputation at item level</p></td>
       </tr><tr><td>
           <p><code><a href="spearman_brown.html">spearman_brown()</a></code> </p>
         </td>

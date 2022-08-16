@@ -89,7 +89,7 @@ in this package as its first argument</p>
     <div id="source">
     <h2>Source</h2>
     <p>Based on the apaTables <code>apa.cor.table()</code> function, but adapted to
-accept weighted correlation matrices and work with the `gt` package instead. Code
+accept weighted correlation matrices and work with the <code>gt</code> package instead. Code
 for calculation of confidence intervals adapted from
 https://medium.com/@shandou/how-to-compute-confidence-interval-for-pearsons-r-a-brief-guide-951445b9cb2d`</p>
     </div>
@@ -97,7 +97,7 @@ https://medium.com/@shandou/how-to-compute-confidence-interval-for-pearsons-r-a-
     <h2>Arguments</h2>
     <dl><dt>cor_matrix</dt>
 <dd><p>A correlation matrix, for example returned from
-<code><a href="cor_matrix.html">cor_matrix()</a></code>, <code><a href="svy_cor_matrix.html">svy_cor_matrix()</a></code>, or <code><a href="wtd_cor_matrix_mi.html">wtd_cor_matrix_mi()</a></code></p></dd>
+<code><a href="cor_matrix.html">cor_matrix()</a></code>, <code><a href="svy_cor_matrix.html">svy_cor_matrix()</a></code>, or <code><a href="cor_matrix_mi.html">cor_matrix_mi()</a></code></p></dd>
 
 
 <dt>ci</dt>
@@ -130,7 +130,7 @@ best preserve formatting (see gt::gtsave for details)</p></dd>
 
 
 <dt>stars</dt>
-<dd><p>A character vector to change the significance symbols (see details in `sigstars`)</p></dd>
+<dd><p>A character vector to change the significance symbols (see details in <code>sigstars</code>)</p></dd>
 
 
 <dt>add_title</dt>
@@ -140,8 +140,8 @@ title or to character for custom title</p></dd>
 
 <dt>extras</dt>
 <dd><p>Tibble of additional columns to be added after the descriptives column -
-needs to be sorted in the same order as the `desc` element in the cor_matrix unless 
-there is a `row_names` column. If there is, this will be used to match it to the `desc` rows.</p></dd>
+needs to be sorted in the same order as the <code>desc</code> element in the cor_matrix unless
+there is a <code>row_names</code> column. If there is, this will be used to match it to the <code>desc</code> rows.</p></dd>
 
 
 <dt>apa_style</dt>
@@ -150,7 +150,7 @@ there is a `row_names` column. If there is, this will be used to match it to the
 
 <dt>...</dt>
 <dd><p>Arguments passed on to <code><a href="plot_distributions.html">plot_distributions</a></code></p><dl><dt><code>plot_type</code></dt>
-<dd><p>Type of plot that should be produced - `histogram` or `density` plot. If `auto`,
+<dd><p>Type of plot that should be produced - <code>histogram</code> or <code>density</code> plot. If <code>auto</code>,
 histograms are produced for variables that take fewer than 10 unique values, density plots for others. If a number is provided,
 that number is used as the maximum number of unique values for which a histogram is used.</p></dd>
 
@@ -169,7 +169,7 @@ that number is used as the maximum number of unique values for which a histogram
     
 
 <p>A table that can be printed in the RStudio console to be shown in the
-viewer. Unless it is to be post-processed with further `gt` functions, it should
+viewer. Unless it is to be post-processed with further <code>gt</code> functions, it should
 usually be saved by passing a filename argument.</p>
     </div>
 

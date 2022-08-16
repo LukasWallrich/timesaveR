@@ -96,7 +96,7 @@ side-by-side. Several pairs of such models can be compared side-by-side.</p>
 
 <dt>mod_std</dt>
 <dd><p>A lm-model/mira object of lm models, with standardized variables. Can be
-created with <code><a href="lm_std.html">lm_std</a></code> (or a list of such models)</p></dd>
+created with <code><a href="lm_std.html">lm_std()</a></code> (or a list of such models)</p></dd>
 
 
 <dt>conf_level</dt>
@@ -104,7 +104,7 @@ created with <code><a href="lm_std.html">lm_std</a></code> (or a list of such mo
 
 
 <dt>coef_renames</dt>
-<dd><p>A named character vector with new names for the coefficients or a tibble as provided by <code><a href="get_coef_rename_tribble.html">get_coef_rename_tribble</a></code>
+<dd><p>A named character vector with new names for the coefficients or a tibble as provided by <code><a href="get_coef_rename_tribble.html">get_coef_rename_tribble()</a></code>
 for variables. If NULL, then the coefficients are not renamed.</p></dd>
 
 
@@ -127,7 +127,7 @@ for variables. If NULL, then the coefficients are not renamed.</p></dd>
 
 
 <dt>model_names</dt>
-<dd><p>If several pairs of models are to be plotted side by side, indicate the label for each *pair* here</p></dd>
+<dd><p>If several pairs of models are to be plotted side by side, indicate the label for each <em>pair</em> here</p></dd>
 
 
 <dt>show_nimp</dt>
@@ -147,7 +147,7 @@ for variables. If NULL, then the coefficients are not renamed.</p></dd>
 
 
 <dt>stars</dt>
-<dd><p>Named vector of significance stars and their thresholds, check `timesaveR:::std_stars_pad` for default.</p></dd>
+<dd><p>Named vector of significance stars and their thresholds, check <code>timesaveR:::std_stars_pad</code> for default.</p></dd>
 
 
 <dt>...</dt>
@@ -183,10 +183,10 @@ Examples section below.</p></dd>
     <h2>Value</h2>
     
 
-<p>A list with `gt_tab` (the gt-table object including the parts of the table
+<p>A list with <code>gt_tab</code> (the gt-table object including the parts of the table
 that can be created with gt. This can be post-processed and formatted with functions in
 the gt-package, but does not include the lower part with model statistics, e.g., R^2.) and
-`html_code` (the code that creates the full table, and is used to render it in
+<code>html_code</code> (the code that creates the full table, and is used to render it in
 the Viewer).</p>
     </div>
 

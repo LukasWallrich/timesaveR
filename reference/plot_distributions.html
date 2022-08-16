@@ -84,12 +84,12 @@ or density charts.</p>
 
 
 <dt>var_names</dt>
-<dd><p>A named character vector with new variable names or a tibble as provided by <code><a href="get_rename_tribbles.html">get_rename_tribbles</a></code>
+<dd><p>A named character vector with new variable names or a tibble as provided by <code><a href="get_rename_tribbles.html">get_rename_tribbles()</a></code>
 If provided, only variables included here will be plotted. Apart from that, this will only determine the names of the list items, so it is most relevant if the output is to be combined with a correlation matrix, e.g., from <code><a href="cor_matrix.html">cor_matrix()</a></code></p></dd>
 
 
 <dt>plot_type</dt>
-<dd><p>Type of plot that should be produced - `histogram` or `density` plot. If `auto`,
+<dd><p>Type of plot that should be produced - <code>histogram</code> or <code>density</code> plot. If <code>auto</code>,
 histograms are produced for variables that take fewer than 10 unique values, density plots for others. If a number is provided,
 that number is used as the maximum number of unique values for which a histogram is used.</p></dd>
 

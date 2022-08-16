@@ -40,6 +40,9 @@
     <loc>https://lukaswallrich.github.io/timesaveR/reference/cor_matrix.html</loc>
   </url>
   <url>
+    <loc>https://lukaswallrich.github.io/timesaveR/reference/cor_matrix_mi.html</loc>
+  </url>
+  <url>
     <loc>https://lukaswallrich.github.io/timesaveR/reference/cut_p.html</loc>
   </url>
   <url>
@@ -109,6 +112,9 @@
     <loc>https://lukaswallrich.github.io/timesaveR/reference/make_scale.html</loc>
   </url>
   <url>
+    <loc>https://lukaswallrich.github.io/timesaveR/reference/make_scale_mi.html</loc>
+  </url>
+  <url>
     <loc>https://lukaswallrich.github.io/timesaveR/reference/make_scales.html</loc>
   </url>
   <url>
@@ -116,6 +122,9 @@
   </url>
   <url>
     <loc>https://lukaswallrich.github.io/timesaveR/reference/na_share.html</loc>
+  </url>
+  <url>
+    <loc>https://lukaswallrich.github.io/timesaveR/reference/package-deprecated.html</loc>
   </url>
   <url>
     <loc>https://lukaswallrich.github.io/timesaveR/reference/paired_t_test_d.html</loc>
@@ -215,8 +224,5 @@
   </url>
   <url>
     <loc>https://lukaswallrich.github.io/timesaveR/reference/to_tribble.html</loc>
-  </url>
-  <url>
-    <loc>https://lukaswallrich.github.io/timesaveR/reference/wtd_cor_matrix_mi.html</loc>
   </url>
 </urlset>
