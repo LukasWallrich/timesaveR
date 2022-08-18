@@ -76,7 +76,9 @@ this function only supports Cronbach's alpha, including for two-item scales.</p>
 <span>  <span class="va">scale_name</span>,</span>
 <span>  proration_cutoff <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  alpha_ci <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  boot <span class="op">=</span> <span class="fl">5000</span>,</span>
+<span>  parallel <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -110,8 +112,16 @@ variable. Typically the output from <code>mice::complete(mids, "long")</code>.</
 <dd><p>For pooling, the variance of Cronbach's alpha is bootstrapped. Set a seed to make this reproducible.</p></dd>
 
 
+<dt>alpha_ci</dt>
+<dd><p>Should a confidence interval for Cronbach's alpha be returned? Note that this requires bootstrapping and thus makes the function much slower. TRUE corresponds to a 95% confidence interval, other widths can be specified as fractions, e.g., .9</p></dd>
+
+
 <dt>boot</dt>
 <dd><p>For pooling, the variance of Cronbach's alpha is bootstrapped. Set number of bootstrap resamples here.</p></dd>
+
+
+<dt>parallel</dt>
+<dd><p>Should bootstrapping be conducted in paralell (using <code>parallel</code>-package)? Pass a number to select the number of cores - otherwise, the function will use all but one core.</p></dd>
 
 
 <dt>...</dt>
@@ -162,8 +172,8 @@ Descriptive statistics and reliability estimates are only based on the imputed d
 <span class="r-in"><span><span class="va">scale</span> <span class="op">&lt;-</span> <span class="fu">make_scale_mi</span><span class="op">(</span><span class="va">ess_health_mi</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"etfruit"</span>, <span class="st">"eatveg"</span><span class="op">)</span>, <span class="st">"healthy"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Descriptives for healthy scale:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Mean: 3.090  SD: 1.178</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cronbach's alpha: 0.71</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Mean: 2.971  SD: 1.063</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cronbach's alpha: 0.57</span>
 </code></pre></div>
     </div>
   </div>
