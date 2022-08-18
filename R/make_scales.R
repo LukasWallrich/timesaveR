@@ -53,6 +53,8 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
     stop("All variables for scale ", scale_name, " only contain missing values.", call. = FALSE)
   }
 
+  if (length(scale_items) < 2) stop("Scales need to have at least two items specified in `scale_items`")
+  
   assert_choice(reverse[1], c("auto", "none", "spec"))
 
   if (!is.null(reverse_items) && !reverse[1] == "spec") stop('reverse_items should only be specified together with reverse = "spec"')
@@ -61,6 +63,9 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
   scale_vals <- data %>%
     dplyr::select(dplyr::one_of(scale_items)) %>%
     dplyr::mutate_all(as.numeric)
+  
+  l <- scale_vals %>% dplyr::summarise(dplyr::across(dplyr::everything(), l = length(unique(.x)))) %>% unlist()
+  if(length(l <- names(l)[l==0])) warning("Some scale variables have zero variance. This is frequently a mistake and can lead to errors in this function: ", glue::glue_collapse(l, sep = ", ", last = " & "))
   
   proration_cutoff <- proration_cutoff * ncol(scale_vals)
   scale_vals[rowSums(is.na(scale_vals))>proration_cutoff,] <- NA
