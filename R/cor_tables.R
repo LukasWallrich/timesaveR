@@ -652,6 +652,8 @@ cor_matrix_mi <- function(data, weights = NULL, var_names = NULL) {
   p.values <- to_matrix(data, variables, "p.value")
   t.values <- to_matrix(data, variables, "statistic")
   dfs <- to_matrix(data, variables, "df")
+  n <- dfs
+  n[TRUE] <- nrow(mi_list[[1]])
 
   imp_svy <- survey::svydesign(~1, weights = as.formula(paste0("~`", dplyr::as_label(weights), "`")), data = mitools::imputationList(mi_list))
 
@@ -663,7 +665,7 @@ cor_matrix_mi <- function(data, weights = NULL, var_names = NULL) {
     desc <- rbind(desc, data.frame(var = variables[i], M = M, SD = SD))
   }
 
-  cor_matrix <- list(cors = cors, std.err = std.err, p.values = p.values, t.values = t.values, df = dfs, desc = desc, tests = data)
+  cor_matrix <- list(cors = cors, std.err = std.err, p.values = p.values, t.values = t.values, df = dfs, n = n, desc = desc, tests = data)
 
   if (!is.null(var_names)) {
     cor_matrix[1:5] <- purrr::map(cor_matrix[1:5], function(x) {
