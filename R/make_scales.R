@@ -64,7 +64,7 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
     dplyr::select(dplyr::one_of(scale_items)) %>%
     dplyr::mutate_all(as.numeric)
   
-  l <- scale_vals %>% dplyr::summarise(dplyr::across(dplyr::everything(), l = length(unique(.x)))) %>% unlist()
+  l <- scale_vals %>% dplyr::summarise(dplyr::across(dplyr::everything(), ~length(unique(.x)))) %>% unlist()
   if(length(l <- names(l)[l==0])) warning("Some scale variables have zero variance. This is frequently a mistake and can lead to errors in this function: ", glue::glue_collapse(l, sep = ", ", last = " & "))
   
   proration_cutoff <- proration_cutoff * ncol(scale_vals)
