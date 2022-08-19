@@ -471,7 +471,7 @@ make_scale_mi <- function(data, scale_items, scale_name, proration_cutoff = 0, s
   
   if (!".imp"  %in% names(data)) stop("data should contain multiple imputations, indicated by an `.imp` variable (see mice::complete() with action = 'long'")
 
-  extras <- list(...)
+  extras <- rlang::list2(...)
   
   if ("print_hist" %in% names(extras) && extras$print_hist == TRUE) {
     warning("Cannot print histograms for multiply imputed data. Argument is ignored")
@@ -495,11 +495,7 @@ make_scale_mi <- function(data, scale_items, scale_name, proration_cutoff = 0, s
     print_desc <- extras$print_desc
     extras$print_desc <- NULL
   }
-  if (length(extras) > 0) {
-  full <- make_scale(data, scale_items = scale_items, scale_name = scale_name, print_desc = FALSE, print_hist = FALSE, proration_cutoff = proration_cutoff, return_list = TRUE, !!!extras)
-  } else {
-  full <- make_scale(data, scale_items = scale_items, scale_name = scale_name, print_desc = FALSE, print_hist = FALSE, return_list = TRUE, proration_cutoff = proration_cutoff)
-  }
+  full <- rlang::exec("make_scale", data, scale_items = scale_items, scale_name = scale_name, print_desc = FALSE, print_hist = FALSE, proration_cutoff = proration_cutoff, return_list = TRUE, !!!extras)
     if (full$descriptives$reversed != "") {
    rev_code <- purrr::map_chr(unlist(stringr::str_split(full$descriptives$reversed, " ")), stringr::str_trim)
    purrr::walk(rev_code, function(rev_code_now) {
