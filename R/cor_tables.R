@@ -10,7 +10,7 @@
 #' and otherwise to compute them using z-transformations. The simple SE method
 #' should not be used, but is provided for compatibility.
 #' @param n Number of observations to calculate confidence intervals - only
-#' needed if cor_matrix does not contain degrees of freedom (df) and confidence
+#' needed if cor_matrix does not contain degrees of freedom (df) or numbers of observations (n) and confidence
 #' intervals are to be calculated using z-transformations
 #' @param add_distributions Add graphs showing variable distributions?
 #' @inheritDotParams plot_distributions -var_names
@@ -105,6 +105,7 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
     ". ", rownames(cor_matrix[[1]]),
     sep = ""
   )
+  
   if (!is.null(cor_matrix[["ci.low"]]) && ci[1] == "given") {
     get_cor.ci.low <- function(cor_matrix, cor.r, cor.se, i, j, df) {
       if (!is.null(cor_matrix[["ci.low"]])) {
@@ -117,10 +118,9 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
         return(cor_matrix[["ci.high"]][i, j])
       }
     }
-  } else if ("z_transform" %in% ci && !(is.null(cor_matrix[["df"]]) && is.null(n))) {
-    get_cor.ci.low <- function(cor_matrix, cor.r, cor.se, i, j, df) {
+  } else if ("z_transform" %in% ci && (!is.null(cor_matrix[["df"]]) || !is.null(cor_matrix[["n"]])) && is.null(n)) {
+    get_cor.ci.low <- function(cor_matrix, cor.r, cor.se, i, j, n) {
       z_prime <- .5 * log((1 + cor.r) / (1 - cor.r))
-      n <- df + 1
       CI_low <- z_prime - 1.96 * 1 / sqrt(n - 3)
       tanh(CI_low)
     }
@@ -134,7 +134,11 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
 
     if (is.null(cor_matrix[["df"]])) {
       cor_matrix$df <- cor_matrix$cors
+      if (!is.null(cor_matrix$n)) {
+        cor_matrix$df[] <- cor_matrix$n - 1
+      } else {
       cor_matrix$df[] <- n - 1
+      }
     }
   } else {
     message("Confidence intervals are calculated based on correlation

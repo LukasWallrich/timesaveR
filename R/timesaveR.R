@@ -82,7 +82,11 @@ print.timesaveR_raw_html <- function(x, ...) {
   } else {
     res <- x
   }
-  suppressMessages(print(htmltools::browsable(htmltools::HTML(res)))) 
+  if (interactive()) {
+    suppressMessages(print(htmltools::browsable(htmltools::HTML(res)))) 
+  } else (
+    suppressMessages(print(htmltools::HTML(res))) 
+  )
 }
 
 #' Knitr S3 method to print tables
