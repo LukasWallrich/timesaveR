@@ -278,8 +278,9 @@ cor_matrix <- function(data,
                        method = c("pearson", "spearman", "kendall"),
                        adjust = "none",
                        bootstrap = NULL) {
+  
   data %<>% dplyr::select_if(is.numeric)
-
+  if (ncol(data) < 2) stop("Data needs to contain at least two numeric columns.")
   missing <- dplyr::case_when(
     missing[1] == "pairwise" ~ "pairwise",
     missing[1] == "listwise" ~ "complete",

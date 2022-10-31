@@ -24,7 +24,7 @@ jobs:
         run: sudo apt-get install libcurl4-openssl-dev libnode-dev
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::rcmdcheck roxygen2
+          extra-packages: any::rcmdcheck, any::roxygen2
           needs: check
 
       - name: Document
