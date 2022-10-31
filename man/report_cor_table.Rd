@@ -34,7 +34,7 @@ and otherwise to compute them using z-transformations. The simple SE method
 should not be used, but is provided for compatibility.}
 
 \item{n}{Number of observations to calculate confidence intervals - only
-needed if cor_matrix does not contain degrees of freedom (df) and confidence
+needed if cor_matrix does not contain degrees of freedom (df) or numbers of observations (n) and confidence
 intervals are to be calculated using z-transformations}
 
 \item{add_distributions}{Add graphs showing variable distributions?}
