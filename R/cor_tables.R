@@ -434,6 +434,7 @@ cor_matrix <- function(data,
 #' @param var_names A named character vector with new variable names or a tibble as provided by [get_rename_tribbles()]
 #' for variables. If NULL, then the variables are not renamed. If names are provided, only the variables included here are retained.
 #' This is most helpful when the results are passed to some print function, such as [report_cor_table()]
+#' @param return_n Should the sample size be returned? Note that this is *not* survey-weighted, and should thus only be used when the weights add up to the number of observations.
 #' @return A correlation matrix list in the format provided by
 #' `jtools::svycor()` with the addition of a `desc`-element with means
 #' and standard deviations of the variables.
@@ -456,7 +457,7 @@ cor_matrix <- function(data,
 #' }
 #' }
 #'
-svy_cor_matrix <- function(svy_data, var_names = NULL) {
+svy_cor_matrix <- function(svy_data, var_names = NULL, return_n = FALSE) {
   .check_req_packages(c("jtools", "survey", "srvyr", "weights"))
 
   assert_class(svy_data, "survey.design")
@@ -479,6 +480,11 @@ svy_cor_matrix <- function(svy_data, var_names = NULL) {
   names(svy_data$variables) <- stringr::str_replace_all(names(svy_data$variables), stringr::fixed("_1"), "_.1")
   
   cor_matrix <- jtools::svycor(~., svy_data, na.rm = TRUE, sig.stats = TRUE)
+  if (return_n) {
+    cor_matrix_no_survey <- psych::corr.test(svy_data$variables)
+    cor_matrix$n <- cor_matrix_no_survey$n
+  }
+  
   cor_matrix$desc <- svy_data %>%
     srvyr::select_if(is.numeric) %>%
     srvyr::summarise_all(.funs = list(`1M` = srvyr::survey_mean, `1SD` = srvyr::survey_var), na.rm = TRUE) %>%
