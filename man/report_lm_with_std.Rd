@@ -34,9 +34,9 @@ for variables. If NULL, then the coefficients are not renamed.}
 
 \item{fmt}{determines how to format numeric values
 \itemize{
-\item integer: the number of digits to keep after the period \code{format(round(x, fmt), nsmall=fmt)}
+\item integer: the number of digits to keep after the decimal: \code{format(x, digits = 1, nsmall = fmt, scientific = FALSE)}
+\item function: returns a formatted character string. For example, the \code{format()} function can be used in combination with the \code{fmt} argument for full control of number formatting: number of digits, number of digits after the decimal, scientific notation, etc. See the Examples section below.
 \item character: passed to the \code{sprintf} function (e.g., '\%.3f' keeps 3 digits with trailing zero). See \code{?sprintf}
-\item function: returns a formatted character string.
 \item NULL: does not format numbers, which allows users to include function in the "glue" strings in the \code{estimate} and \code{statistic} arguments.
 \item A named list to format distinct elements of the table differently. Names correspond to column names produced by \code{get_estimates(model)} or \code{get_gof(model)}. Values are integers, characters, or functions, as described above. The \code{fmt} element is used as default for unspecified elements Ex: \code{fmt=list("estimate"=2, "std.error"=1, "r.squared"=4, "fmt"=3)}
 \item LaTeX output: To ensure proper typography, all numeric entries are enclosed in the \verb{\\num{}} command, which requires the \code{siunitx} package to be loaded in the LaTeX preamble. This behavior can be altered with global options. See the 'Details' section.
@@ -78,8 +78,9 @@ Examples section below.}
 \item \code{"^(?!.*ei|.*pt)"}: keep coefficients matching either the "ei" or the "pt" substrings.
 \item See the Examples section below for complete code.
 }}
-    \item{\code{coef_rename}}{named character vector or function
+    \item{\code{coef_rename}}{logical, named character, or function
 \itemize{
+\item Logical: TRUE renames variables based on the "label" attribute of each column. See the Example section below.
 \item Named character vector: Values refer to the variable names that will appear in the table. Names refer to the original term names stored in the model object. Ex: c("hp:mpg"="hp X mpg")
 \item Function: Accepts a character vector of the model's term names and returns a named vector like the one described above. The \code{modelsummary} package supplies a \code{coef_rename()} function which can do common cleaning tasks: \code{modelsummary(model, coef_rename = coef_rename)}
 }}
