@@ -280,6 +280,12 @@ cor_matrix <- function(data,
                        bootstrap = NULL) {
   
   data %<>% dplyr::select_if(is.numeric)
+  all_missing <- data %>% dplyr::summarise(dplyr::across(dplyr::everything(), ~all(is.na(.x)))) %>% unlist()
+  if (any(all_missing)) {
+    all_missing <- names(data)[all_missing]
+    message(glue::glue_collapse(all_missing, sep = ", ", last = " and "), " only have missing values. Therefore, they are dropped from the correlation table.")
+    data <- data %>% dplyr::select(-dplyr::all_of(all_missing))
+  }
   if (ncol(data) < 2) stop("Data needs to contain at least two numeric columns.")
   missing <- dplyr::case_when(
     missing[1] == "pairwise" ~ "pairwise",
@@ -606,8 +612,15 @@ cor_matrix_mi <- function(data, weights = NULL, var_names = NULL) {
 
   if (!".imp"  %in% names(data)) stop("data should contain multiple imputations, indicated by an `.imp` variable (see mice::complete() with action = 'long'")
 
-  data <- data %>% dplyr::filter(.$.imp != 0) #Remove original data if included
+  data <- data %>% dplyr::filter(.data$.imp != 0) #Remove original data if included
   
+  all_missing <- data %>% dplyr::summarise(dplyr::across(dplyr::everything(), ~all(is.na(.x)))) %>% unlist()
+  
+  if (any(all_missing)) {
+    all_missing <- names(data)[all_missing]
+    message(glue::glue_collapse(all_missing, sep = ", ", last = " and "), " only have missing values. Therefore, they are dropped from the correlation table.")
+    data <- data %>% dplyr::select(-dplyr::all_of(all_missing))
+  }
     
   if (is.data.frame(var_names)) {
     assert_names(names(var_names), must.include = c("old", "new"))

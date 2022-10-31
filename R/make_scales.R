@@ -37,7 +37,8 @@
 #' @return Depends on `return_list` argument. Either just the scale values,
 #'   or a list of scale values and descriptives. If descriptives are returned, check the `text` element for a convenient summary.
 #' @export
-#'
+#' @examples 
+#' scores <- make_scale(ess_health, scale_items = c("etfruit", "eatveg"), scale_name = "Healthy eating")
 
 make_scale <- function(data, scale_items, scale_name, reverse = c(
                          "auto",
@@ -63,7 +64,7 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
 
   if (!is.null(reverse_items) && !reverse[1] == "spec") stop('reverse_items should only be specified together with reverse = "spec"')
 
-  if (is.null(r_key)) r_key <- 0
+    if (is.null(r_key)) r_key <- 0
   scale_vals <- data %>%
     dplyr::select(dplyr::one_of(scale_items)) %>%
     dplyr::mutate_all(as.numeric)
@@ -103,7 +104,7 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
   }
 
   l <- scale_vals %>% dplyr::summarise(dplyr::across(dplyr::everything(), ~length(unique(.x)))) %>% unlist()
-  if(length(l <- names(l)[l==0])) warning("Some scale variables have zero variance. This is frequently a mistake and can lead to errors in this function: ", glue::glue_collapse(l, sep = ", ", last = " & "))
+  if(any(l < 2)) warning("Some scale variables have zero variance. This is frequently a mistake and can lead to errors in this function: ", glue::glue_collapse(names(scale_vals)[l < 2], sep = ", ", last = " & "))
   
   proration_cutoff <- proration_cutoff * ncol(scale_vals)
   scale_vals[rowSums(is.na(scale_vals))>proration_cutoff,] <- NA
@@ -125,6 +126,13 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
   } else if (r_key > 0) {
     alpha_obj$scores <- psych::reverse.code(-1, alpha_obj$scores, maxi = r_key)
   }
+  #Return type changed in psych - this ensures compatibility with both versions
+  if (is.list(alpha_obj$keys)) {
+    x <- alpha_obj$keys[[1]]
+    alpha_obj$keys <- c(1, -1)[stringr::str_detect(x, "-") + 1]
+    names(alpha_obj$keys) <- stringr::str_remove(x, "^-")
+  }
+  
   reversed <- names(alpha_obj$keys[alpha_obj$keys == -1])
   if (length(scale_items) == 2) {
     reliab_method <- two_items_reliability[1]
