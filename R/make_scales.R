@@ -31,6 +31,9 @@
 #' @param print_hist Logical. Should histograms for items and resulting scale be printed?
 #' @param print_desc Logical. Should descriptives for scales be printed?
 #' @param return_list Logical. Should only scale values be returned, or descriptives as well?
+#' @param harmonize_ranges Should items that have different ranges be rescaled? Default is *not* to do it but issue a 
+#' message to flag this potential issue - set to FALSE to suppress that message. If TRUE, items are rescaled to match the first
+#' item given. Alternatively pass a vector (c(min, max)) to specify the desired range.
 #' @return Depends on `return_list` argument. Either just the scale values,
 #'   or a list of scale values and descriptives. If descriptives are returned, check the `text` element for a convenient summary.
 #' @export
@@ -44,7 +47,8 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
                          "r"
                        ), r_key = NULL, 
                        proration_cutoff = .4,
-                       print_hist = TRUE, print_desc = TRUE, return_list = FALSE) {
+                       print_hist = TRUE, print_desc = TRUE, return_list = FALSE,
+                       harmonize_ranges = NULL) {
   if (!all(scale_items %in% names(data))) stop("Not all scale_items can be found in the dataset. The following are missing: ", paste(setdiff(scale_items, names(data)), collapse = ", "), call. = FALSE)
 
   if (data %>% dplyr::select(dplyr::any_of(scale_items)) %>% {
@@ -64,6 +68,40 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
     dplyr::select(dplyr::one_of(scale_items)) %>%
     dplyr::mutate_all(as.numeric)
   
+    if (is.null(harmonize_ranges[1]) || !is.logical(harmonize_ranges[1]) || harmonize_ranges[1]) {
+    ranges <- scale_vals %>%
+      dplyr::summarise(across(everything(), range_)) %>% unlist()
+    if (length(unique(ranges)) > 1) {
+      if (is.null(harmonize_ranges)) {
+        message("Not all items have the same range. This should be ok if respondents did not use the full range, but is likely a problem when the ranges offered were different. The observed ranges are ", glue::glue_collapse(unique(ranges), sep = ", ", last = " and "), ". If the ranges should be harmonized, rerun the function with harmonize_ranges = TRUE.")
+      } else {
+        if (!is.logical(harmonize_ranges[1])) {
+          if (length(harmonize_ranges) != 2) stop("If harmonise scale is not NULL or logical, it needs to consist of exactly two items specifying the min and max value")
+          min_val <- harmonize_ranges[1]
+          max_val <- harmonize_ranges[2]
+        } else {
+          x <- scale_vals %>%
+            dplyr::select(1) %>%
+            dplyr::summarise(dplyr::across(dplyr::everything(), list(~min(.x, na.rm = TRUE), ~max(.x, na.rm = TRUE))))
+          min_val <- x[[1, 1]]
+          max_val <- x[[1, 2]]
+        }
+        message("Not all items have the same range. They will be rescaled to the range from ", min_val, " to ", max_val,
+                ". Note that this is not valid if any of the items did not have responses that covered the entire possible range. ",
+                "If that is the case, you should rescale before calling the function and set harmonize_ranges = FALSE. ",
+                "The observed ranges are\n* ", glue::glue_collapse(paste(names(ranges), ranges, sep = ": "), sep = ",\n* ", last = " and\n* "), ".")
+        
+        rescale_range <- function(x) {
+          ((x - min(x, na.rm = TRUE))/(max(x, na.rm = TRUE) - min(x, na.rm = TRUE))) *
+            (max_val-min_val) + min_val
+        }
+        
+        scale_vals %>% 
+          dplyr::summarise(across(everything(), rescale_range))
+      }
+    }
+  }
+
   l <- scale_vals %>% dplyr::summarise(dplyr::across(dplyr::everything(), ~length(unique(.x)))) %>% unlist()
   if(length(l <- names(l)[l==0])) warning("Some scale variables have zero variance. This is frequently a mistake and can lead to errors in this function: ", glue::glue_collapse(l, sep = ", ", last = " & "))
   
@@ -149,6 +187,22 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
   }
 
   scores
+}
+
+range_ <- function(x, digits = 2, simplify = FALSE) {
+  x <- c(x) #drop matrix dimensions
+  if(simplify) {
+    if(length(na.omit(unique(x))) == 1) return(round_(na.omit(unique(x)), digits))
+  }
+  glue::glue("{round_(min(x, na.rm = TRUE), digits)} - {round_(max(x, na.rm = TRUE), digits)}")
+}
+
+range_ <- function(x, digits = 2, simplify = FALSE) {
+  x <- c(x) #drop matrix dimensions
+  if(simplify) {
+    if(length(na.omit(unique(x))) == 1) return(round_(na.omit(unique(x)), digits))
+  }
+  glue::glue("{round_(min(x, na.rm = TRUE), digits)} - {round_(max(x, na.rm = TRUE), digits)}")
 }
 
 #' Create multiple scales by calculating item means and returns descriptives
@@ -458,7 +512,7 @@ make_scale_mi <- function(data, scale_items, scale_name, proration_cutoff = 0, s
 
   if (!alpha_ci) {
     args <- as.list(match.call(sys.function(1), sys.call(1), expand.dots = FALSE))[-1]
-    if ("boot" %in% names(args) | "parallel" %in% names(args)) {
+    if ("boot" %in% names(args) || "parallel" %in% names(args)) {
       message("Note: boot and parallel arguments are ignored if alpha_ci = FALSE. In that case, no bootstrapping is needed.")
     }
     boot <- 1
