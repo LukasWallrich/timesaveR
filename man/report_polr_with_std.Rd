@@ -32,9 +32,9 @@ report_polr_with_std(
 
 \item{fmt}{determines how to format numeric values
 \itemize{
-\item integer: the number of digits to keep after the period \code{format(round(x, fmt), nsmall=fmt)}
+\item integer: the number of digits to keep after the decimal: \code{format(x, digits = 1, nsmall = fmt, scientific = FALSE)}
+\item function: returns a formatted character string. For example, the \code{format()} function can be used in combination with the \code{fmt} argument for full control of number formatting: number of digits, number of digits after the decimal, scientific notation, etc. See the Examples section below.
 \item character: passed to the \code{sprintf} function (e.g., '\%.3f' keeps 3 digits with trailing zero). See \code{?sprintf}
-\item function: returns a formatted character string.
 \item NULL: does not format numbers, which allows users to include function in the "glue" strings in the \code{estimate} and \code{statistic} arguments.
 \item A named list to format distinct elements of the table differently. Names correspond to column names produced by \code{get_estimates(model)} or \code{get_gof(model)}. Values are integers, characters, or functions, as described above. The \code{fmt} element is used as default for unspecified elements Ex: \code{fmt=list("estimate"=2, "std.error"=1, "r.squared"=4, "fmt"=3)}
 \item LaTeX output: To ensure proper typography, all numeric entries are enclosed in the \verb{\\num{}} command, which requires the \code{siunitx} package to be loaded in the LaTeX preamble. This behavior can be altered with global options. See the 'Details' section.
@@ -61,7 +61,7 @@ stating that dummy variables were not scaled in standardization. If you approach
     \item{\code{output}}{filename or object type (character string)
 \itemize{
 \item Supported filename extensions: .docx, .html, .tex, .md, .txt, .png, .jpg.
-\item Supported object types: "default", "html", "markdown", "latex", "latex_tabular", "data.frame", "gt", "kableExtra", "huxtable", "flextable", "jupyter". The "modelsummary_list" value produces a lightweight object which can be saved and fed back to the \code{modelsummary} function.
+\item Supported object types: "default", "html", "markdown", "latex", "latex_tabular", "data.frame", "gt", "kableExtra", "huxtable", "flextable", "DT", "jupyter". The "modelsummary_list" value produces a lightweight object which can be saved and fed back to the \code{modelsummary} function.
 \item Warning: Users should not supply a file name to the \code{output} argument if they intend to customize the table with external packages. See the 'Details' section.
 \item LaTeX compilation requires the \code{booktabs} and \code{siunitx} packages, but \code{siunitx} can be disabled or replaced with global options. See the 'Details' section.
 \item The default output formats and table-making packages can be modified with global options. See the 'Details' section.
@@ -124,8 +124,9 @@ Examples section below.}
 \item \code{"^(?!.*ei|.*pt)"}: keep coefficients matching either the "ei" or the "pt" substrings.
 \item See the Examples section below for complete code.
 }}
-    \item{\code{coef_rename}}{named character vector or function
+    \item{\code{coef_rename}}{logical, named character, or function
 \itemize{
+\item Logical: TRUE renames variables based on the "label" attribute of each column. See the Example section below.
 \item Named character vector: Values refer to the variable names that will appear in the table. Names refer to the original term names stored in the model object. Ex: c("hp:mpg"="hp X mpg")
 \item Function: Accepts a character vector of the model's term names and returns a named vector like the one described above. The \code{modelsummary} package supplies a \code{coef_rename()} function which can do common cleaning tasks: \code{modelsummary(model, coef_rename = coef_rename)}
 }}
@@ -147,6 +148,10 @@ model information. This argument accepts 4 types of values:
     \item{\code{group_map}}{named or unnamed character vector. Subset, rename, and
 reorder coefficient groups specified a grouping variable specified in the
 \code{shape} argument formula. This argument behaves like \code{coef_map}.}
+    \item{\code{add_columns}}{a data.frame (or tibble) with the same number of rows as
+#' your main table. By default, rows are appended to the bottom of the table.
+You can define a "position" attribute of integers to set the columns positions.
+See Examples section below.}
     \item{\code{add_rows}}{a data.frame (or tibble) with the same number of columns as
 your main table. By default, rows are appended to the bottom of the table.
 You can define a "position" attribute of integers to set the row positions.
@@ -157,11 +162,11 @@ the table (e.g., \code{align = "lcc"}).  Valid characters: l, c, r, d.
 \item "l": left-aligned column
 \item "c": centered column
 \item "r": right-aligned column
-\item "d": dot-aligned column. Only supported for LaTeX/PDF tables produced by \code{kableExtra}. These commands must appear in the LaTeX preamble (they are added automatically when compiling Rmarkdown documents to PDF):
+\item "d": dot-aligned column. For LaTeX/PDF output, this option requires at least version 3.0.25 of the siunitx LaTeX package. These commands must appear in the LaTeX preamble (they are added automatically when compiling Rmarkdown documents to PDF):
 \itemize{
 \item \verb{\\usepackage{booktabs}}
 \item \verb{\\usepackage{siunitx}}
-\item \verb{\\newcolumntype{d}{S[input-symbols = ()]}}
+\item \verb{\\newcolumntype{d}{S[ input-open-uncertainty=, input-close-uncertainty=, parse-numbers = false, table-align-text-pre=false, table-align-text-post=false ]}}
 }
 }}
     \item{\code{title}}{string}

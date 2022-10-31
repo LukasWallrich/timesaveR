@@ -52,6 +52,9 @@ if the whole scale should be reversed, or to -1 to reverse the scale based on
 the observed maximum.}
     \item{\code{print_desc}}{Logical. Should descriptives for scales be printed?}
     \item{\code{return_list}}{Logical. Should only scale values be returned, or descriptives as well?}
+    \item{\code{harmonize_ranges}}{Should items that have different ranges be rescaled? Default is \emph{not} to do it but issue a
+message to flag this potential issue - set to FALSE to suppress that message. If TRUE, items are rescaled to match the first
+item given. Alternatively pass a vector (c(min, max)) to specify the desired range.}
   }}
 }
 \description{
