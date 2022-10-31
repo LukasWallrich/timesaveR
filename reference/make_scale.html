@@ -87,7 +87,8 @@ dealt with.</p>
 <span>  proration_cutoff <span class="op">=</span> <span class="fl">0.4</span>,</span>
 <span>  print_hist <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  print_desc <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  return_list <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  return_list <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  harmonize_ranges <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -142,6 +143,12 @@ the observed maximum.</p></dd>
 
 <dt>return_list</dt>
 <dd><p>Logical. Should only scale values be returned, or descriptives as well?</p></dd>
+
+
+<dt>harmonize_ranges</dt>
+<dd><p>Should items that have different ranges be rescaled? Default is <em>not</em> to do it but issue a
+message to flag this potential issue - set to FALSE to suppress that message. If TRUE, items are rescaled to match the first
+item given. Alternatively pass a vector (c(min, max)) to specify the desired range.</p></dd>
 
 </dl></div>
     <div id="value">

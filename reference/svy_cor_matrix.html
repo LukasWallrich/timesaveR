@@ -70,7 +70,7 @@ statistics. Only numeric variables are included in the result.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">svy_cor_matrix</span><span class="op">(</span><span class="va">svy_data</span>, var_names <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">svy_cor_matrix</span><span class="op">(</span><span class="va">svy_data</span>, var_names <span class="op">=</span> <span class="cn">NULL</span>, return_n <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -84,6 +84,10 @@ numeric variables will be included in the result.</p></dd>
 <dd><p>A named character vector with new variable names or a tibble as provided by <code><a href="get_rename_tribbles.html">get_rename_tribbles()</a></code>
 for variables. If NULL, then the variables are not renamed. If names are provided, only the variables included here are retained.
 This is most helpful when the results are passed to some print function, such as <code><a href="report_cor_table.html">report_cor_table()</a></code></p></dd>
+
+
+<dt>return_n</dt>
+<dd><p>Should the sample size be returned? Note that this is <em>not</em> survey-weighted, and should thus only be used when the weights add up to the number of observations.</p></dd>
 
 </dl></div>
     <div id="value">

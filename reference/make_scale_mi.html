@@ -145,6 +145,11 @@ the observed maximum.</p></dd>
     <dt><code>return_list</code></dt>
 <dd><p>Logical. Should only scale values be returned, or descriptives as well?</p></dd>
 
+    <dt><code>harmonize_ranges</code></dt>
+<dd><p>Should items that have different ranges be rescaled? Default is <em>not</em> to do it but issue a
+message to flag this potential issue - set to FALSE to suppress that message. If TRUE, items are rescaled to match the first
+item given. Alternatively pass a vector (c(min, max)) to specify the desired range.</p></dd>
+
   
 </dl></dd>
 
@@ -170,10 +175,11 @@ Descriptive statistics and reliability estimates are only based on the imputed d
 <span class="r-in"><span><span class="va">ess_health_mi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tidyr.tidyverse.org/reference/complete.html" class="external-link">complete</a></span><span class="op">(</span><span class="va">ess_health_mi</span>, <span class="st">"long"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">scale</span> <span class="op">&lt;-</span> <span class="fu">make_scale_mi</span><span class="op">(</span><span class="va">ess_health_mi</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"etfruit"</span>, <span class="st">"eatveg"</span><span class="op">)</span>, <span class="st">"healthy"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Not all items have the same range. This should be ok if respondents did not use the full range, but is likely a problem when the ranges offered were different. The observed ranges are 1.00 - 7.00 and 1.00 - 6.00. If the ranges should be harmonized, rerun the function with harmonize_ranges = TRUE.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Descriptives for healthy scale:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Mean: 3.000  SD: 1.048</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cronbach's alpha: 0.56</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Mean: 3.006  SD: 1.117</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cronbach's alpha: 0.66</span>
 </code></pre></div>
     </div>
   </div>
