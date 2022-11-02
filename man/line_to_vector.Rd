@@ -5,7 +5,7 @@
 \title{Turn line of items separated by whitespace into vector or code for c()}
 \usage{
 line_to_vector(
-  x = readLines("clipboard", warn = FALSE),
+  x = NULL,
   strings = TRUE,
   separators = c("top-level", "all"),
   to_clip = interactive(),
