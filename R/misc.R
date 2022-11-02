@@ -530,7 +530,7 @@ rm_na <- function(x) {
 #' @param replace One or more values to replace by NA.
 #' 
 #' @export
-#' @keywords examples
+#' @examples
 #' library(dplyr)
 #' 
 #' ess_health %>% 
@@ -560,7 +560,7 @@ na_ifs <- function(x, replace) {
 #' `"&"` (and) is the other common choice, though `"xor"` would also work.
 #' 
 #' @export
-#' @keywords examples
+#' @examples
 #' library(dplyr)
 #' 
 #' ess_health %>% 
