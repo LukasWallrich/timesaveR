@@ -72,3 +72,6 @@ According to \href{https://link.springer.com/article/10.3758/s13428-021-01671-w}
 a 40\% cut-off is defensible, so this is the default used. For more precise estimation,
 consider item-level multiple imputation, which can be done with \code{make_scale_mi()}.
 }
+\examples{
+scores <- make_scale(ess_health, scale_items = c("etfruit", "eatveg"), scale_name = "Healthy eating")
+}
