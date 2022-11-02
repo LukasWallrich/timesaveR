@@ -24,26 +24,12 @@ to AND by setting operator = "&".
 Note that the function is called \code{na_when} to prevent clashing with dplyr's \code{na_if} ...
 even though the latter might be the more intuitive name.
 }
-\keyword{"&"))}
-\keyword{"DE",}
-\keyword{%>%}
-\keyword{19,}
-\keyword{21))}
-\keyword{6,}
-\keyword{<}
-\keyword{=}
-\keyword{==}
-\keyword{>}
-\keyword{agea}
-\keyword{cntry}
-\keyword{cyl}
-\keyword{ess_health}
-\keyword{examples}
-\keyword{library(dplyr)}
-\keyword{mpg}
-\keyword{mtcars}
-\keyword{mutate(carb}
-\keyword{mutate(eisced}
-\keyword{na_when(carb,}
-\keyword{na_when(eisced,}
-\keyword{operator}
+\examples{
+library(dplyr)
+
+ess_health \%>\% 
+    mutate(eisced = na_when(eisced, cntry == "DE", agea < 21))
+    
+mtcars \%>\% 
+    mutate(carb = na_when(carb, cyl > 6, mpg < 19, operator = "&"))     
+}
