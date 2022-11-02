@@ -73,6 +73,8 @@ reference:
   - line_to_vector
   - ggsave_show
   - dummy_code
+  - na_ifs
+  - na_when
 - title: Miscellaneous
 - contents:
   - timesaveR
