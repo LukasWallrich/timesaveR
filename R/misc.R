@@ -452,11 +452,19 @@ dump_to_clip <- function(objects) {
 #' weekend <- line_to_vector("Friday Saturday Sunday", return = "vector")
 #' @export
 
-line_to_vector <- function(x = readLines("clipboard", warn = FALSE), strings = TRUE, separators = c("top-level", "all"), to_clip = interactive(), return = c("code", "vector")) {
-  assert_character(x)
+line_to_vector <- function(x = NULL, strings = TRUE, separators = c("top-level", "all"), to_clip = interactive(), return = c("code", "vector")) {
   assert_choice(separators[1], c("all", "top-level"))
   assert_choice(return[1], c("code", "vector"))
 
+  if (is.null(x)) {
+    if (!requireNamespace("clipr", quietly = TRUE)) {
+      warning("clipr package is needed to read from the clipboard, but is not available. Please specify 'x' or install the package.")
+    } else {
+      x <- clipr::read_clip()
+    }
+  }
+  assert_character(x)
+  
   if (separators[1] == "all") {
     x <- strsplit(x, " |\\n|\\t") %>% unlist()
   } else {
@@ -510,6 +518,60 @@ na_share <- function(x, round = 2) {
 
 rm_na <- function(x) {
   x[!is.na(x)]
+}
+
+#' Set variable to NA when it has specific values
+#'
+#' This function replaces specific values in a variable with NA. It would most commonly be used
+#' to remove missing values indicated with codes such as "NA", -999 or "none". 
+#' (NB: It is very similar to dplyr's `na_if` but accepts more than one value.) 
+#'
+#' @param x The variable to transform.
+#' @param replace One or more values to replace by NA.
+#' 
+#' @export
+#' @keywords examples
+#' library(dplyr)
+#' 
+#' ess_health %>% 
+#'     mutate(eisced = na_ifs(eisced, c(7, 55)))
+  
+
+na_ifs <- function(x, replace) {
+  purrr::map(replace, function(z) {
+    x[x == z] <<- NA
+  })
+  x
+}
+
+#' Set variable to NA based on conditions
+#'
+#' This function sets a variable to NA based on one or several logical conditions. 
+#' It would most naturally be used inside a dplyr-mutate call.
+#' By default, the conditions are combined with a logical OR, yet this can be changed
+#' to AND by setting operator = "&".
+#' 
+#' Note that the function is called `na_when` to prevent clashing with dplyr's `na_if` ... 
+#' even though the latter might be the more intuitive name.
+#'
+#' @param x The variable to transform.
+#' @param ... One or more logical conditions, involving x or other variables.
+#' @param operator Name of a logical operator to combine the conditions. Defaults to `"|"` (or),
+#' `"&"` (and) is the other common choice, though `"xor"` would also work.
+#' 
+#' @export
+#' @keywords examples
+#' library(dplyr)
+#' 
+#' ess_health %>% 
+#'     mutate(eisced = na_when(eisced, cntry == "DE", agea < 21))
+#'     
+#' mtcars %>% 
+#'     mutate(carb = na_when(carb, cyl > 6, mpg < 19, operator = "&"))     
+
+na_when <- function(x, ..., operator = "|") {
+  condition <- Reduce(operator, list(...))
+  ifelse(condition, NA, x)
 }
 
 #' Add class
