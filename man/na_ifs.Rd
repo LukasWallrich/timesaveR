@@ -16,12 +16,9 @@ This function replaces specific values in a variable with NA. It would most comm
 to remove missing values indicated with codes such as "NA", -999 or "none".
 (NB: It is very similar to dplyr's \code{na_if} but accepts more than one value.)
 }
-\keyword{%>%}
-\keyword{55)))}
-\keyword{=}
-\keyword{c(7,}
-\keyword{ess_health}
-\keyword{examples}
-\keyword{library(dplyr)}
-\keyword{mutate(eisced}
-\keyword{na_ifs(eisced,}
+\examples{
+library(dplyr)
+
+ess_health \%>\% 
+    mutate(eisced = na_ifs(eisced, c(7, 55)))
+}
