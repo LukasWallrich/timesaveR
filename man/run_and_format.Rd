@@ -17,7 +17,7 @@ examples. Instead, it is intended to be used to quickly get a formatted bit
 of code and output that is not self-contained, e.g., for teaching materials.
 }
 \examples{
-if (interactive) {
+if (interactive()) {
   name <- "Lukas"
   run_and_format(paste("My name is", name))
 }
