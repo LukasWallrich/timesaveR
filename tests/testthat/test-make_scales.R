@@ -41,16 +41,7 @@ ess_health_mi <- complete(ess_health_mi, "long", include = TRUE)
 
 scale1 <- make_scale_mi(ess_health_mi, c("cgtsmke", "dosprt", "health"), "healthy", print_desc = FALSE)
 
-chk <- Sys.getenv("_R_CHECK_LIMIT_CORES_", "")
-
-if (nzchar(chk) && chk == "TRUE") {
-  # use 2 cores in CRAN/Travis/AppVeyor
-  parallel <- 2L
-} else {
-  # use all cores in devtools::test()
-  parallel <- TRUE
-}
-scale2 <- make_scale_mi(ess_health_mi, c("cgtsmke", "dosprt", "health"), "healthy", boot = 100, print_desc = FALSE, parallel = parallel, alpha_ci = .9)
+scale2 <- make_scale_mi(ess_health_mi, c("cgtsmke", "dosprt", "health"), "healthy", boot = 100, print_desc = FALSE, parallel = 2, alpha_ci = .9)
 scale2$descriptives$reliability_ci_lower
 
 test_that("make_scale_mi works (including parallel)", {
