@@ -610,7 +610,7 @@ add_class <- function(x, class_to_add = "exp") {
 #' 
 #' @param code The code to run - can be NULL, then the code is retrieved from the clipboard.
 #' @examples 
-#' if (interactive) {
+#' if (interactive()) {
 #'   name <- "Lukas"
 #'   run_and_format(paste("My name is", name))
 #' }
