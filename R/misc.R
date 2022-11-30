@@ -599,3 +599,42 @@ add_class <- function(x, class_to_add = "exp") {
 .is.numeric_col <- function(col, data) {
   is.numeric(magrittr::extract2(data, col))
 }
+
+#' Run a code snippet and copy formatted code and output to clipboard
+#'
+#' This builds on the [reprex::reprex()] function to take a chunk of code,
+#' run it and copy the formatted code and output to the clipboard. Note that 
+#' this does NOT run in a clean session and is thus unlikely to create *reproducible*
+#' examples. Instead, it is intended to be used to quickly get a formatted bit 
+#' of code and output that is not self-contained, e.g., for teaching materials.
+#' 
+#' @param code The code to run - can be NULL, then the code is retrieved from the clipboard.
+#' @examples 
+#' if (interactive) {
+#'   name <- "Lukas"
+#'   run_and_format(paste("My name is", name))
+#' }
+#' @export
+
+
+run_and_format <- function (code = NULL) {
+  
+  reprex:::reprex_impl(
+    x_expr = substitute(code),
+    input = NULL,
+    wd = NULL,
+    venue = "gh",
+    
+    render = TRUE,
+    new_session = FALSE,
+    
+    advertise       = FALSE,
+    session_info    = FALSE,
+    style           = TRUE,
+    html_preview    = TRUE,
+    comment         = "#>",
+    tidyverse_quiet = TRUE,
+    std_out_err     = FALSE
+  )
+  
+}

@@ -69,6 +69,7 @@ reference:
   - setup_analysis_project
   - clip_excel
   - dump_to_clip
+  - run_and_format
   - to_tribble
   - line_to_vector
   - ggsave_show
