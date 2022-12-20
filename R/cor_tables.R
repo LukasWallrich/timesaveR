@@ -71,8 +71,8 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
       
     } else {
       extras <- extras %>% 
-        dplyr::left_join(cor_matrix$desc %>% dplyr::select(.data$var), ., by = c("var" = "row_names")) %>%
-        dplyr::select(-.data$var)
+        dplyr::left_join(cor_matrix$desc %>% dplyr::select("var"), ., by = c("var" = "row_names")) %>%
+        dplyr::select(-"var")
     }
     
     }
@@ -342,7 +342,7 @@ cor_matrix <- function(data,
       psych::describe() %>%
       data.frame() %>%
       tibble::rownames_to_column("var") %>%
-      dplyr::select(.data$var, M = .data$mean, SD = .data$sd)
+      dplyr::select("var", M = "mean", SD = "sd")
   } else {
     .check_req_packages("lavaan", "FIML method for dealing with missing data uses the lavaan package. ")
     
@@ -352,7 +352,7 @@ cor_matrix <- function(data,
 
     Ms <- lavaan::parameterestimates(mod) %>%
       dplyr::filter(.data$op == "~1") %>%
-      dplyr::select(var = .data$lhs, M = .data$est)
+      dplyr::select(var = "lhs", M = "est")
 
     desc_stat <- lavaan::parameterestimates(mod) %>%
       dplyr::filter(.data$op == "~~" & .data$lhs == .data$rhs) %>%

@@ -71,7 +71,7 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
   
     if (is.null(harmonize_ranges[1]) || !is.logical(harmonize_ranges[1]) || harmonize_ranges[1]) {
     ranges <- scale_vals %>%
-      dplyr::summarise(across(everything(), range_)) %>% unlist()
+      dplyr::summarise(dplyr::across(dplyr::everything(), range_)) %>% unlist()
     if (length(unique(ranges)) > 1) {
       if (is.null(harmonize_ranges)) {
         message("Not all items have the same range. This should be ok if respondents did not use the full range, but is likely a problem when the ranges offered were different. The observed ranges are ", glue::glue_collapse(unique(ranges), sep = ", ", last = " and "), ". If the ranges should be harmonized, rerun the function with harmonize_ranges = TRUE.")
@@ -200,15 +200,7 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
 range_ <- function(x, digits = 2, simplify = FALSE) {
   x <- c(x) #drop matrix dimensions
   if(simplify) {
-    if(length(na.omit(unique(x))) == 1) return(round_(na.omit(unique(x)), digits))
-  }
-  glue::glue("{round_(min(x, na.rm = TRUE), digits)} - {round_(max(x, na.rm = TRUE), digits)}")
-}
-
-range_ <- function(x, digits = 2, simplify = FALSE) {
-  x <- c(x) #drop matrix dimensions
-  if(simplify) {
-    if(length(na.omit(unique(x))) == 1) return(round_(na.omit(unique(x)), digits))
+    if(length(stats::na.omit(unique(x))) == 1) return(round_(stats::na.omit(unique(x)), digits))
   }
   glue::glue("{round_(min(x, na.rm = TRUE), digits)} - {round_(max(x, na.rm = TRUE), digits)}")
 }
@@ -311,7 +303,7 @@ make_scales <- function(data, items, reversed = FALSE, two_items_reliability = c
   descriptives <- purrr::map2_dfr(descript, names(descript), function(descr, scale) {
     descr$text <- stringr::str_flatten(descr$text)
     descr$Scale <- scale
-    data.frame(descr) %>% dplyr::select(.data$Scale, dplyr::everything())
+    data.frame(descr) %>% dplyr::select("Scale", dplyr::everything())
   })
   
   list(scores = tibble::tibble(scores), descriptives = tibble::tibble(descriptives))
@@ -570,6 +562,12 @@ make_scale_mi <- function(data, scale_items, scale_name, proration_cutoff = 0, s
   m <- length(setdiff(unique(data$.imp), 0)) #Ignore m = 0 -> raw data
   boot_alpha <- rep(list(NA), m)
   
+  if (!rlang::is_installed(c("future", "future.apply"))) {
+    message("make_scale_mi() can only be parallelised when the future and future.apply packages",
+            " are installed. They are not, so setting parallel = FALSE")
+    parallel <- FALSE
+  }
+  
   if (!parallel) {
   for (i in seq_len(m)) {
     set.seed(seed + i) # fix random number generator
@@ -587,6 +585,7 @@ make_scale_mi <- function(data, scale_items, scale_name, proration_cutoff = 0, s
       parallel <- det_cores
     }
     
+
     future::plan("multisession", workers = parallel)
     
     boot_alpha <- future.apply::future_lapply(seq_len(m), 
@@ -594,7 +593,7 @@ make_scale_mi <- function(data, scale_items, scale_name, proration_cutoff = 0, s
       sub <- data[data$.imp == i, ] %>% dplyr::select(dplyr::all_of(scale_items))
       .cronbach_boot(sub, boot = boot)
     }, future.seed = seed)
-    
+browser()    
   }
   
   # obtain Q and U (see ?mice::pool.scalar)

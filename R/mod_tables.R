@@ -118,7 +118,7 @@ if (!("lm" %in% class(mod_std[[1]]) || ("mira" %in% class(mod_std[[1]]) &&
       gt::cols_label(.list = col_labels) %>%
       gt::cols_align("right", gt::everything()) %>%
       gt::cols_align("left", columns = 1) %>%
-      gt:::dt_source_notes_set("") # Remove std star note
+      gt::rm_source_notes() # Remove std star note
   } else {
     tab <- modelsummary::msummary(mods, output = "gt", statistic = NULL, estimate = rep(c(
       "{estimate} ({std.error}){stars}",
@@ -128,7 +128,7 @@ if (!("lm" %in% class(mod_std[[1]]) || ("mira" %in% class(mod_std[[1]]) &&
       gt::cols_label(.list = col_labels) %>%
       gt::cols_align("right", gt::everything()) %>%
       gt::cols_align("left", columns = 1) %>%
-      gt:::dt_source_notes_set("") # Remove std star note
+      gt::rm_source_notes() # Remove std star note
   }
 
   if (apa_style) tab <- tab %>% gt_apa_style()
@@ -375,7 +375,7 @@ report_polr_with_std <- function(mod, mod_std, OR = TRUE, conf_level = .95, fmt 
       gt::cols_label(.list = col_labels) %>%
       gt::cols_align("right", gt::everything()) %>%
       gt::cols_align("left", columns = 1) %>%
-      gt:::dt_source_notes_set("") # Remove std star note
+      gt::rm_source_notes("") # Remove std star note
   } else {
     tab <- modelsummary::msummary(mods, output = "gt", statistic = NULL, 
                                   estimate = "{estimate} {stars} [{conf.low}, {conf.high}]", 
@@ -384,7 +384,7 @@ report_polr_with_std <- function(mod, mod_std, OR = TRUE, conf_level = .95, fmt 
       gt::cols_label(.list = col_labels) %>%
       gt::cols_align("right", gt::everything()) %>%
       gt::cols_align("left", columns = 1) %>%
-      gt:::dt_source_notes_set("") # Remove std star note
+      gt::rm_source_notes("") # Remove std star note
   }
   if (apa_style) tab <- tab %>% gt_apa_style()
 
@@ -495,7 +495,7 @@ tidy.mira <- function(x, conf.int = TRUE, conf.level = .95, ...) {
     tibble::as_tibble()
   conf_vars <- names(out)[stringr::str_detect(names(out), "%")]
   names(out)[names(out) %in% conf_vars] <- c("conf.low", "conf.high")
-  out <- out %>% dplyr::select(.data$term, order(names(.)))
+  out <- out %>% dplyr::select("term", order(names(.)))
   return(out)
 }
 

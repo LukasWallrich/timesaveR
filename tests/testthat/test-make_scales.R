@@ -41,12 +41,12 @@ ess_health_mi <- complete(ess_health_mi, "long", include = TRUE)
 
 scale1 <- make_scale_mi(ess_health_mi, c("cgtsmke", "dosprt", "health"), "healthy", print_desc = FALSE)
 
-scale2 <- make_scale_mi(ess_health_mi, c("cgtsmke", "dosprt", "health"), "healthy", boot = 100, print_desc = FALSE, parallel = 2, alpha_ci = .9)
+scale2 <- make_scale_mi(ess_health_mi, c("cgtsmke", "dosprt", "health"), "healthy", boot = 100, print_desc = FALSE, parallel = FALSE, alpha_ci = .9)
 scale2$descriptives$reliability_ci_lower
 
 test_that("make_scale_mi works (including parallel)", {
   expect_equal(scale1$descriptives$reliability, 0.068783606)
   expect_equal(scale1$descriptives$mean, 3.7546667)
   expect_equal(scale2$descriptives$reliability, 0.068783606)
-  expect_equal(scale2$descriptives$reliability_ci_lower, 0.046360357)
+  expect_equal(scale2$descriptives$reliability_ci_lower, 0.0476434193)
 })

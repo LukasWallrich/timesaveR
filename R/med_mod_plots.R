@@ -81,7 +81,7 @@ plot_mediation <- function(IV, DV, Ms, data, digits = 2, coef_offset = length(Ms
   if (ind_p_values == TRUE) {
     pos <- data %>%
       dplyr::mutate(ci = fmt_ci(.data$ci.lower, .data$ci.upper, digits), est = paste0(sprintf(paste0("%.", digits, "f"), .data$est), sigstars(.data$pvalue))) %>%
-      dplyr::select(obj = .data$type, .data$est, .data$ci) %>%
+      dplyr::select(obj = "type", "est", "ci") %>%
       dplyr::full_join(pos, by = "obj")
   } else {
     pos <- data %>%
@@ -95,7 +95,7 @@ plot_mediation <- function(IV, DV, Ms, data, digits = 2, coef_offset = length(Ms
           paste0(sprintf(paste0("%.", digits, "f"), .data$est), sigstars(.data$pvalue))
         )
       ) %>%
-      dplyr::select(obj = .data$type, .data$est, .data$ci) %>%
+      dplyr::select(obj = "type", "est", "ci") %>%
       dplyr::full_join(pos, by = "obj")
   }
   pos$est[pos$obj == "note"] <- paste("<i>Direct effect:</i> ", pos$est[pos$obj == "direct"], pos$ci[pos$obj == "direct"], "<br />", "<i>Total effect: </i>", pos$est[pos$obj == "total"], pos$ci[pos$obj == "total"])

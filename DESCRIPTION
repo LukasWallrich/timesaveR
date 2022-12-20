@@ -38,9 +38,7 @@ Imports:
     tibble,
     tidyr,
     tidyselect,
-    Matrix,
-    future.apply,
-    future
+    Matrix
 Suggests:
     clipr,
     DiagrammeR,
@@ -67,7 +65,9 @@ Suggests:
     weights,
     testthat (>= 3.0.0),
     xml2,
-    reprex
+    reprex,
+    future.apply,
+    future
 VignetteBuilder: 
     knitr
 Config/testthat/edition: 3

@@ -125,14 +125,13 @@ report_cat_vars <- function(data, dv, ..., var_names = NULL, level_names = NULL,
       p.adjust.method = p_adjust[1]
     ) %>%
       get_pairwise_letters(alpha_level = alpha_level) %>%
-      dplyr::select(.data$level, .data$letters)
+      dplyr::select("level", "letters")
   })
 
   descr <- purrr::map2(descr, tests, function(x, y) {
     dplyr::left_join(x, y, by = "level") %>%
       dplyr::select(
-        .data$group_var, .data$level, .data$N, .data$Share, .data$M,
-        .data$SD, .data$letters
+        "group_var,", "level,", "N,", "Share,", "M,", "SD,", "letters"
       )
   }) %>%
     purrr::map_dfr(rbind)
@@ -142,7 +141,7 @@ report_cat_vars <- function(data, dv, ..., var_names = NULL, level_names = NULL,
       `*M (SD)*` = paste0(round_(.data$M, 2), " (", round_(.data$SD, 2), ")"),
       N = round_(.data$N, 0), `*M (SD)*` = paste0(.data$`*M (SD)*`, " <sup>", .data$letters, "</sup>")
     ) %>%
-    dplyr::select(.data$group_var, .data$level, .data$N, .data$Share, .data$`*M (SD)*`)
+    dplyr::select("group_var", "level", "N", "Share", "*M (SD)*")
 
   f <- function(x) {
     stats::setNames(lapply(

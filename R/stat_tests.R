@@ -511,7 +511,9 @@ pairwise_t_tests <- function(data, outcome, groups = NULL, p.adjust.method = p.a
       dplyr::summarise(M = mean({{ outcome }}, na.rm = TRUE), var = stats::var({{ outcome }}, na.rm = TRUE), .groups = "drop")
     cohens_d <- (desc$M[1] - desc$M[2]) / sqrt((desc$var[1] + desc$var[2]) / 2)
     out <- cbind(tibble::tibble(var_1 = x[1], var_2 = x[2], cohens_d = cohens_d), out) %>%
-      dplyr::select(.data$var_1, .data$var_2, mean_1 = .data$estimate1, mean_2 = .data$estimate2, mean_diff = .data$estimate, conf_low = .data$conf.low, conf_high = .data$conf.high, t_value = .data$statistic, df = .data$parameter, p_value = .data$p.value, .data$cohens_d, test = .data$method)
+      dplyr::select("var_1", "var_2", mean_1 = "estimate1", mean_2 = "estimate2", mean_diff = "estimate", 
+                    conf_low = "conf.low", conf_high = "conf.high", t_value = "statistic", 
+                    df = "parameter", p_value = "p.value", "cohens_d", test = "method")
   })
 
   out$p_value %<>% stats::p.adjust(p.adjust.method)
