@@ -38,7 +38,8 @@
 #'   or a list of scale values and descriptives. If descriptives are returned, check the `text` element for a convenient summary.
 #' @export
 #' @examples 
-#' scores <- make_scale(ess_health, scale_items = c("etfruit", "eatveg"), scale_name = "Healthy eating")
+#' scores <- make_scale(ess_health, scale_items = c("etfruit", "eatveg"), 
+#'                      scale_name = "Healthy eating")
 
 make_scale <- function(data, scale_items, scale_name, reverse = c(
                          "auto",
@@ -98,7 +99,7 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
         }
         
         scale_vals %>% 
-          dplyr::summarise(across(everything(), rescale_range))
+          dplyr::summarise(dplyr::across(dplyr::everything(), rescale_range))
       }
     }
   }
@@ -593,7 +594,6 @@ make_scale_mi <- function(data, scale_items, scale_name, proration_cutoff = 0, s
       sub <- data[data$.imp == i, ] %>% dplyr::select(dplyr::all_of(scale_items))
       .cronbach_boot(sub, boot = boot)
     }, future.seed = seed)
-browser()    
   }
   
   # obtain Q and U (see ?mice::pool.scalar)

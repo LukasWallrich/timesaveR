@@ -119,8 +119,9 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
       }
     }
   } else if ("z_transform" %in% ci && (!is.null(cor_matrix[["df"]]) || !is.null(cor_matrix[["n"]])) && is.null(n)) {
-    get_cor.ci.low <- function(cor_matrix, cor.r, cor.se, i, j, n) {
+    get_cor.ci.low <- function(cor_matrix, cor.r, cor.se, i, j, df) {
       z_prime <- .5 * log((1 + cor.r) / (1 - cor.r))
+      n <- df + 1
       CI_low <- z_prime - 1.96 * 1 / sqrt(n - 3)
       tanh(CI_low)
     }
