@@ -12,7 +12,7 @@
 #' @export
 
 rename_cat_variables <- function(data, var_names = NULL, level_names = NULL) {
-
+  
   drop_list <- FALSE
   if (!inherits(data, "list")) {
     data <- list(data)
@@ -29,6 +29,7 @@ rename_cat_variables <- function(data, var_names = NULL, level_names = NULL) {
       data
     }
 
+    
     for (i in seq_along(level_names_lst)) {
       data <- purrr::map(data, relevel, level_names_lst[[i]]$var, level_names_lst[[i]]$level_old, level_names_lst[[i]]$level_new)
     }

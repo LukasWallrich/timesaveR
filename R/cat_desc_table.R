@@ -118,7 +118,7 @@ report_cat_vars <- function(data, dv, ..., var_names = NULL, level_names = NULL,
         level = as.character(.data$level)
       )
   })
-
+  
   tests <- purrr::map(vars, function(x) {
     stats::pairwise.t.test(data %>% dplyr::select(!!dv) %>% dplyr::pull(),
       data %>% dplyr::select(!!x) %>% dplyr::pull(),
@@ -131,7 +131,7 @@ report_cat_vars <- function(data, dv, ..., var_names = NULL, level_names = NULL,
   descr <- purrr::map2(descr, tests, function(x, y) {
     dplyr::left_join(x, y, by = "level") %>%
       dplyr::select(
-        "group_var,", "level,", "N,", "Share,", "M,", "SD,", "letters"
+        "group_var", "level", "N", "Share", "M", "SD", "letters"
       )
   }) %>%
     purrr::map_dfr(rbind)
