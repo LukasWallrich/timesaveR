@@ -46,7 +46,7 @@ best preserve formatting (see gt::gtsave for details)}
 
 \item{notes}{List of additional notes to show under the table.}
 
-\item{stars}{A character vector to change the significance symbols (see details in \code{sigstars})}
+\item{stars}{A character vector to change the significance symbols (see details below)}
 
 \item{add_title}{Should title be added to table? Set to TRUE for default
 title or to character for custom title}

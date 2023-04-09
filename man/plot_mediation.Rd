@@ -28,9 +28,9 @@ plot_mediation(
 \item{digits}{Number of digits for rounding}
 
 \item{coef_offset}{Tibble with values to position mediators. If not
-provided, function will align mediators automatically, which is unlikely to
-provide a well-aligned path (except for cases when offset has been implemented
-for that number of mediators, currently 1 and 3). However, returned code can still
+provided, the function will align mediators automatically, which is unlikely to
+provide a well-aligned chart (except for cases when the offset has been explicitly
+implemented for that number of mediators, currently 1 and 3). However, the returned code can still
 be edited. See timesaveR:::.coef_offset_3 for an example of an offset tibble.}
 
 \item{filename}{If provided, graph will be saved as .svg file.}
@@ -49,14 +49,24 @@ based on the format returned by \code{run_moderation()}
 }
 \examples{
 \dontrun{
-# Estimate mediation model
+# Estimate mediation model (usually with bootstraps > 1000!)
 
-res <- run_mediation(ess_health, fltdpr, health, dosprt, agea, bootstraps = 100)
+res <- run_mediation(ess_health, fltdpr, health, dosprt, agea, bootstraps = 50)
 
 # Run plot command
-plot_mediation(
+plot <- plot_mediation(
   IV = "Frequency of  <br /> feeling depressed",
-  DV = "Self-reported <br /> poor health", Ms = "Frequency of <br /> physical activity", data = res
+  DV = "Self-reported <br /> poor health", Ms = "Frequency of <br /> physical activity", 
+  data = res
 )
+
+# Show the graph
+plot$graph
+
+# Show the code 
+plot$code
+
+# To create the graph again (e.g., after you edit its code)
+DiagrammeR::grViz(plot$code)
 }
 }

@@ -11,30 +11,29 @@ run_mediation(
   Ms,
   CVs = NULL,
   standardized_all = TRUE,
-  conf.level = 0.95,
-  seed = 987654321,
+  conf_level = 0.95,
+  seed = NULL,
   bootstraps = 5000,
   ...
 )
 }
 \arguments{
-\item{data}{Dataframe}
+\item{data}{Data frame}
 
-\item{X}{Predictor variable (all variables can be passed as character or 'bare')}
+\item{X}{Predictor variable (all variables should be passed 'bare' in tidyverse style)}
 
 \item{Y}{Outcome variable}
 
 \item{Ms}{Mediator variable(s)}
 
-\item{CVs}{Covariates (in predicting mediators and outcomes)}
+\item{CVs}{Covariates (in predicting mediators \emph{and} outcomes)}
 
-\item{standardized_all}{Should all coefficients (paths, direct and indirect effects) be standardised}
+\item{standardized_all}{Logical. Should all coefficients (paths, direct and indirect effects) be standardized?}
 
-\item{conf.level}{The confidence level to be used for confidence intervals. Must be between 0 and 1
-(exclusive), defaults to .95, which corresponds to 95\% confidence intervals.}
+\item{conf_level}{The confidence level to be used for confidence intervals. Must be between 0 and 1
+(exclusive), defaults to .95 (i.e. 95\% confidence intervals).}
 
-\item{seed}{Random seed, set to get reproducible results. If you do not want to set a fixed seed,
-you can use seed = sample(1:1e6, 1)}
+\item{seed}{Random seed. You should set this to get reproducible results.}
 
 \item{bootstraps}{Number of bootstraps, defaults to 5000.}
 
@@ -42,28 +41,29 @@ you can use seed = sample(1:1e6, 1)}
 }
 \value{
 Tibble with direct, total and indirect effects, based on bootstrap resamples. In addition, 'a' coefficients for paths from
-X to mediators and 'b' coefficients for paths from mediators to Y are returned. Coefficients for CVs
-are returned as an attribute - see below.
+X to mediators and 'b' coefficients for paths from mediators to Y are returned. Coefficients for covariates
+are returned as an attribute - see the example.
 }
 \description{
-Runs mediation analysis with one or more parallel mediators (using lavaan). The
-results can then be plotted with \code{plot_mediation()}.
+Runs mediation analysis with one or more parallel mediators (using the \code{lavaan}
+package). The results can then be plotted with \code{plot_mediation()}.
 }
 \details{
 Note that covariates (if given) are used in predicting each mediator and the outcome. The
 coefficients for covariates are returned as an attribute to the main results,
-given that they are not always reported. To access them, use
-\code{attr(res, "CV_coefficients")} if you have saved the return of this function in \code{res}
+given that they are not always reported. To access them, use \code{attr(res, "CV_coefficients")}
+if you have saved the return of this function in \code{res}. The lavaan code to estimate the model is
+also returned as an attribute, access it with \code{attr(res, "lavaan_code")}.
 }
 \examples{
-# Might link between depression and self-reported health be partly explained
+# Might the link between depression and self-reported health be partly explained
 # by reductions in physical activity level, when holding age constant?
  
- res <- run_mediation(ess_health, fltdpr, health, dosprt, agea, bootstraps = 100) 
+ res <- run_mediation(ess_health, fltdpr, health, dosprt, agea, bootstraps = 50) 
 
  res
  
  attr(res, "CV_coefficients")
  
-# NB: bootstraps = 100 only set to reduce running time - should be 1000+
+# NB: bootstraps = 50 only set to reduce running time - should be 1000+
 }

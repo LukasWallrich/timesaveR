@@ -26,7 +26,7 @@ of the variables considered? Defaults to TRUE.}
 in the returned tibble? Defaults to FALSE.}
 }
 \description{
-This function creates a tibble that summarises missing data
+This function creates a tibble that summarizes missing data
 with survey weights for missing counts and proportions. (Apart from
 that, it recreates the \code{naniar::miss_var_summary()}
 output.)

@@ -12,17 +12,22 @@ A dataframe with 7,226 rows and 23 columns
 \item{agea}{Age}
 \item{eisced}{Education}
 \item{pweight}{Population weight - adjust for different population sizes between countries}
-\item{pspwght}{Post-stratification weight - adjusts for bias in national samples due to sampling error and non-response (considering gender, age, education and region) AND for unequal inclusion probabilities due to survey design}
+\item{pspwght}{Post-stratification weight - adjusts for bias in national samples
+due to sampling error and non-response (considering gender, age, education and region)
+AND for unequal inclusion probabilities due to survey design}
 \item{health}{Overall health, from 1 = very good to 5 = very bad}
 \item{height}{Height (cm)}
 \item{weight}{Weight (kg)}
 \item{icbrnct}{Respondent born in country, 1 = yes, 2 = no}
-\item{etfruit}{How often eat fruit, excluding drinking juice, from 1 = three times or more per day to 7 = never}
-\item{eatveg }{How often eat vegetables or salad, excluding potatoes,  from 1 = three times or more per day to 7 = never}
+\item{etfruit}{How often eat fruit, excluding drinking juice, from 1 = three
+times or more per day to 7 = never}
+\item{eatveg }{How often eat vegetables or salad, excluding potatoes,  from
+1 = three times or more per day to 7 = never}
 \item{dosprt }{Do sports or other physical activity, how many of last 7 days}
 \item{cgtsmke}{Cigarettes smoking behaviour, from 1 = I smoke daily to 5 = I have never smoked}
 \item{alcfreq}{How often drink alcohol, from 1 = every day to 5  = never}
-\item{fltdpr}{Felt depressed in past week, from 1 = none/almost none of the time to 4 = all/almost all of the time (same for next 7 variables)}
+\item{fltdpr}{Felt depressed in past week, from 1 = none/almost none of the
+time to 4 = all/almost all of the time (same for next 7 variables)}
 \item{flteeff}{Felt everything did as effort}
 \item{slprl}{Sleep was restless}
 \item{wrhpp}{Were happy}

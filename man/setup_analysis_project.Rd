@@ -31,15 +31,15 @@ Otherwise, are placed in root folder}
 \item{github_packages}{Character vector of packages to be loaded and installed from Github if needed at start of each analysis file.}
 }
 \description{
-Set up simple folder structure and template files for analysis project.
+This sets up simple folder structure and template files for an analysis project.
 }
 \details{
-This template includes two helpers worth highlighting. The \code{take_note()}
+The template includes two helpers worth highlighting. The \strong{\code{take_note()}}
 function allows to add character strings to a note file that is saved at
 the end of each script. Usage should follow the first example:
 \code{take_note("Note created:", timestamp(quiet = TRUE))}. Note that this modifies
 \code{notes} in place, so the result should not be assigned.
 
-Then there is the \verb{0_run_all.R} file, which runs all analysis scripts in order
+Then there is the \strong{\verb{0_run_all.R}} file, which runs all analysis scripts in order
 and documents when this last happened.
 }

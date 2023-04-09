@@ -27,7 +27,8 @@ report_cat_vars(
 \item{data}{Dataframe containing the variables specified}
 
 \item{dv}{The continuous dependent variable to be presented alongside the
-levels of categorical variables}
+levels of categorical variables. Set to NULL to just show the distribution of
+the categorical variables.}
 
 \item{...}{Categorical variables to be included}
 

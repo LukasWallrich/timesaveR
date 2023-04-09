@@ -4,14 +4,19 @@
 \alias{fmt_p}
 \title{Format p-value in line with APA standard (no leading 0)}
 \usage{
-fmt_p(p_value, digits = 3)
+fmt_p(p_value, digits = 3, equal_sign = TRUE)
 }
 \arguments{
 \item{p_value}{Numeric, or a vector of numbers}
 
 \item{digits}{Number of significant digits, defaults to 3}
+
+\item{equal_sign}{Logical. Should \emph{p}-values be prefixed with \code{=} unless they
+are reported as \code{<} Defaults to TRUE, for use in text that reports result,
+FALSE is particularly useful for tables.}
 }
 \description{
 Formats p-value in line with APA standard, returning it without leading 0 and
-as < .001 and > .99 when it is extremely small or large.
+as < .001 (or below the smallest value expressible with the given number of
+significant digits) and > .99 when it is extremely small or large.
 }

@@ -37,7 +37,7 @@ variable. Typically the output from \code{mice::complete(mids, "long")}.}
 
 \item{boot}{For pooling, the variance of Cronbach's alpha is bootstrapped. Set number of bootstrap resamples here.}
 
-\item{parallel}{Should bootstrapping be conducted in paralell (using \code{parallel}-package)? Pass a number to select the number of cores - otherwise, the function will use all but one core.}
+\item{parallel}{Should bootstrapping be conducted in parallel (using \code{parallel}-package)? Pass a number to select the number of cores - otherwise, the function will use all but one core.}
 
 \item{...}{
   Arguments passed on to \code{\link[=make_scale]{make_scale}}

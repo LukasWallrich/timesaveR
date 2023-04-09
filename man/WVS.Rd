@@ -13,7 +13,8 @@ Australia, Norway, Sweden, and the United States. It is taken from the
 #' @format A dataframe with 5,381 rows and 23 columns
 \describe{
 \item{poverty}{“Do you think that what the government is doing for people in
-poverty in this country is about the right amount, too much, or too little?” (ordered): \verb{Too Little, About Right, Too Much}}
+poverty in this country is about the right amount, too much, or too little?” (ordered):
+\verb{Too Little, About Right, Too Much}}
 \item{religion}{Member of a religion: \code{yes} or \code{no}}
 \item{degree}{Held a university degree: \code{yes} or \code{no}}
 \item{country}{\verb{Australia, Norway, Sweden} or \code{USA}}

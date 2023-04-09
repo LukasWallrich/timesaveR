@@ -2,7 +2,7 @@
 % Please edit documentation in R/make_scales.R
 \name{make_scales}
 \alias{make_scales}
-\title{Create multiple scales by calculating item means and returns descriptives}
+\title{Create multiple scales by calculating item means and return descriptives}
 \usage{
 make_scales(
   data,

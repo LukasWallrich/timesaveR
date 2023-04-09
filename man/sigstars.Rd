@@ -14,7 +14,7 @@ sigstars(p, stars = NULL, pad_html = FALSE, ns = FALSE, return_NAs = FALSE)
 \arguments{
 \item{p}{A \emph{p}-value or (more commonly) a vector of \emph{p}-values}
 
-\item{stars}{A character vector to change the significance symbols (see details in \code{sigstars})}
+\item{stars}{A character vector to change the significance symbols (see details below)}
 
 \item{pad_html}{Should all results be padded right to the same width with HTML non-breaking spaces?}
 

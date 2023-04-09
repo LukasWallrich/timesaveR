@@ -4,7 +4,7 @@
 \alias{fmt_ci}
 \title{Format confidence interval based on the bounds}
 \usage{
-fmt_ci(lower, upper, digits = 2)
+fmt_ci(lower, upper, digits = 2, drop_0 = FALSE)
 }
 \arguments{
 \item{lower}{Lower bound(s) of confidence interval(s). Numeric, or a vector of numbers}
@@ -12,6 +12,9 @@ fmt_ci(lower, upper, digits = 2)
 \item{upper}{Lower bound(s) of confidence interval(s). Numeric, or a vector of numbers}
 
 \item{digits}{Number of significant digits, defaults to 2}
+
+\item{drop_0}{Logical. Should leading 0 be dropped, e.g., when reporting correlation coefficients.
+Note that this only makes sense (and only works) when the values are between -1 and 1}
 }
 \description{
 Constructs a confidence intervals from upper and lower bounds,

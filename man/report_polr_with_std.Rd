@@ -30,14 +30,24 @@ report_polr_with_std(
 
 \item{conf_level}{Confidence level to use for confidence intervals, defaults to .95}
 
-\item{fmt}{determines how to format numeric values
+\item{fmt}{how to format numeric values: integer, user-supplied function, or \code{modelsummary} function.
 \itemize{
-\item integer: the number of digits to keep after the decimal: \code{format(x, digits = 1, nsmall = fmt, scientific = FALSE)}
-\item function: returns a formatted character string. For example, the \code{format()} function can be used in combination with the \code{fmt} argument for full control of number formatting: number of digits, number of digits after the decimal, scientific notation, etc. See the Examples section below.
-\item character: passed to the \code{sprintf} function (e.g., '\%.3f' keeps 3 digits with trailing zero). See \code{?sprintf}
-\item NULL: does not format numbers, which allows users to include function in the "glue" strings in the \code{estimate} and \code{statistic} arguments.
-\item A named list to format distinct elements of the table differently. Names correspond to column names produced by \code{get_estimates(model)} or \code{get_gof(model)}. Values are integers, characters, or functions, as described above. The \code{fmt} element is used as default for unspecified elements Ex: \code{fmt=list("estimate"=2, "std.error"=1, "r.squared"=4, "fmt"=3)}
-\item LaTeX output: To ensure proper typography, all numeric entries are enclosed in the \verb{\\num{}} command, which requires the \code{siunitx} package to be loaded in the LaTeX preamble. This behavior can be altered with global options. See the 'Details' section.
+\item Integer: Number of decimal digits
+\item User-supplied functions:
+\itemize{
+\item Any function which accepts a numeric vector and returns a character vector of the same length.
+}
+\item \code{modelsummary} functions:
+\itemize{
+\item \code{fmt = fmt_significant(2)}: Two significant digits (at the term-level)
+\item \code{fmt = fmt_decimal(digits = 2, pdigits = 3)}: Decimal digits for estimate and p values
+\item \code{fmt = fmt_sprintf("\%.3f")}: See \code{?sprintf}
+\item \code{fmt = fmt_term("(Intercept)" = 1, "X" = 2)}: Format terms differently
+\item \code{fmt = fmt_statistic("estimate" = 1, "std.error" = 2)}: Format statistics differently.
+\item \code{fmt = fmt_identity()}: unformatted raw values
+}
+\item string:
+\item Note on LaTeX output: To ensure proper typography, all numeric entries are enclosed in the \verb{\\num{}} command, which requires the \code{siunitx} package to be loaded in the LaTeX preamble. This behavior can be altered with global options. See the 'Details' section.
 }}
 
 \item{statistic_vertical}{Should standard errors and CIs be shown below coefficients? Defaults to horizontal layout}
@@ -89,16 +99,10 @@ sections below):
 number of models. If TRUE, the \code{estimate}, \code{conf.low}, and \code{conf.high}
 statistics are exponentiated, and the \code{std.error} is transformed to
 \code{exp(estimate)*std.error}.}
-    \item{\code{shape}}{formula which determines the shape of the table. The left side
-determines what appears on rows, and the right side determines what appears
-on columns. The formula can include a group identifier to display related terms
-together, which can be useful for models with multivariate outcomes or
-grouped coefficients (See examples section below). This identifier must be
-one of the column names produced by: \code{get_estimates(model)}. The group
-identifier can be combined with the term identifier in a single column by
-using the colon to represent an interaction. If an incomplete formula is
-supplied (e.g., \code{~statistic}), \code{modelsummary} tries to complete it
-automatically. Potential \code{shape} values include:
+    \item{\code{shape}}{\code{NULL}, formula, or "rbind" string which determines the shape of a table.
+\itemize{
+\item \code{NULL}: Default shape with terms in rows and models in columns.
+\item Formula: The left side determines what appears on rows, and the right side determines what appears on columns. The formula can include one or more group identifier(s) to display related terms together, which can be useful for models with multivariate outcomes or grouped coefficients (See examples section below). The group identifier(s) must be column names produced by: \code{get_estimates(model)}. The group identifier(s) can be combined with the term identifier in a single column by using the colon to represent an interaction. If an incomplete formula is supplied (e.g., \code{~statistic}), \code{modelsummary} tries to complete it automatically. Potential \code{shape} values include:
 \itemize{
 \item \code{term + statistic ~ model}: default
 \item \code{term ~ model + statistic}: statistics in separate columns
@@ -106,6 +110,13 @@ automatically. Potential \code{shape} values include:
 \item \code{term + response + statistic ~ model}: term and group id in separate columns
 \item \code{term : response + statistic ~ model}: term and group id in a single column
 \item \code{term ~ response}
+}
+\item "rbind": bind rows of two or more regression tables to create "panels" or "stacks" of regression models. When \code{shape="rbind"}, the \code{models} argument must be a (potentially named) nested list of models.
+\itemize{
+\item Unnamed nested list with 2 panels: \code{list(list(model1, model2), list(model3, model4))}
+\item Named nested list with 2 panels: \code{list("Panel A" = list(model1, model2), "Panel B" = list(model3, model4))}
+\item Named panels and named models: \code{list("Panel A" = list("(I)" = model1, "(II)" = model2), "Panel B" = list("(I)" = model3, "(II)" = model4))}
+}
 }}
     \item{\code{coef_map}}{character vector. Subset, rename, and reorder coefficients.
 Coefficients omitted from this vector are omitted from the table. The order

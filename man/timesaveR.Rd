@@ -17,7 +17,6 @@ mediation models.
 Useful links:
 \itemize{
   \item \url{https://lukaswallrich.github.io/timesaveR/}
-  \item \url{https://lukaswallrich.github.io/timesaveR}
   \item Report bugs at \url{https://github.com/LukasWallrich/timesaveR/issues}
 }
 
