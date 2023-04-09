@@ -8,7 +8,8 @@
 #'
 #' @param data Dataframe containing the variables specified
 #' @param dv The continuous dependent variable to be presented alongside the
-#' levels of categorical variables
+#' levels of categorical variables. Set to NULL to just show the distribution of
+#' the categorical variables.
 #' @param ... Categorical variables to be included
 #' @param var_names Tibble of old and new variable names, if variables are to be
 #' renamed for display. See [get_rename_tribbles()] for required format
@@ -55,8 +56,6 @@
 #'              level_names = level_renames)
 #' @export
 
-# TK - implement dv = NULL to only show distribution
-
 report_cat_vars <- function(data, dv, ..., var_names = NULL, level_names = NULL,
                           p_adjust = p.adjust.methods, alpha_level = .05,
                           filename = NULL, notes = list(), dv_name = NULL,
@@ -75,7 +74,7 @@ report_cat_vars <- function(data, dv, ..., var_names = NULL, level_names = NULL,
   assert(p_adjust[1] %in% p.adjust.methods)
 
   assert_character(dv_name, null.ok = TRUE)
-
+  
   qassert(alpha_level, "R1(0,1)")
   qassert(bold_vars, "B1")
   qassert(na.rm, "B1")
@@ -88,6 +87,15 @@ report_cat_vars <- function(data, dv, ..., var_names = NULL, level_names = NULL,
 
   vars <- rlang::enquos(...)
   dv <- rlang::enquo(dv)
+  
+  if (rlang::quo_is_null(dv)) {
+    no_dv <- TRUE
+    `__none__` <- NULL # To remove 'no visible binding' warning
+    dv <- rlang::expr(`__none__`)
+    data <- data %>% dplyr::mutate(!!dv := 1)
+    
+  }
+  
   data <- rename_cat_variables(data, var_names = var_names, level_names = level_names)
 
   if (!is.null(var_names)) {
@@ -119,6 +127,8 @@ report_cat_vars <- function(data, dv, ..., var_names = NULL, level_names = NULL,
       )
   })
   
+  if (!(exists("no_dv") && no_dv == TRUE)) {
+  
   tests <- purrr::map(vars, function(x) {
     stats::pairwise.t.test(data %>% dplyr::select(!!dv) %>% dplyr::pull(),
       data %>% dplyr::select(!!x) %>% dplyr::pull(),
@@ -142,7 +152,14 @@ report_cat_vars <- function(data, dv, ..., var_names = NULL, level_names = NULL,
       N = round_(.data$N, 0), `*M (SD)*` = paste0(.data$`*M (SD)*`, " <sup>", .data$letters, "</sup>")
     ) %>%
     dplyr::select("group_var", "level", "N", "Share", "*M (SD)*")
-
+  } else {
+    descr_formatted <- descr %>%
+      purrr::map_dfr(rbind) %>%
+      dplyr::mutate(
+        N = round_(.data$N, 0)
+      ) %>%
+      dplyr::select("group_var", "level", "N", "Share")
+  }
   f <- function(x) {
     stats::setNames(lapply(
       names(x$`_data`),
@@ -165,6 +182,8 @@ report_cat_vars <- function(data, dv, ..., var_names = NULL, level_names = NULL,
 
   auto_notes <- list()
 
+  if (!(exists("no_dv") && no_dv == TRUE)) {
+    
   if (is.null(dv_name)) dv_name <- dplyr::as_label(dv)
 
   auto_notes %<>% c(glue::glue("*M* and *SD* are used to represent mean and \\
@@ -176,7 +195,7 @@ report_cat_vars <- function(data, dv, ..., var_names = NULL, level_names = NULL,
 
   auto_notes %<>% c(glue::glue("Within each variable, the means of groups with \\
                                different superscripts differ with *p* < .05 <br> {p_note}"))
-
+}
   notes <- c(auto_notes, notes)
 
   for (i in seq_along(notes)) {

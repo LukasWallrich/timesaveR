@@ -1,6 +1,6 @@
 #' Create overview over missing data in survey object
 #'
-#' This function creates a tibble that summarises missing data 
+#' This function creates a tibble that summarizes missing data 
 #' with survey weights for missing counts and proportions. (Apart from
 #' that, it recreates the `naniar::miss_var_summary()`
 #' output.)

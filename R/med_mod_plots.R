@@ -24,9 +24,9 @@
 #' @param Ms Character vector. Names of mediator variables
 #' @param data Dataframe with coefficients and significance values. See details.
 #' @param coef_offset Tibble with values to position mediators. If not
-#' provided, function will align mediators automatically, which is unlikely to
-#' provide a well-aligned path (except for cases when offset has been implemented
-#' for that number of mediators, currently 1 and 3). However, returned code can still
+#' provided, the function will align mediators automatically, which is unlikely to
+#' provide a well-aligned chart (except for cases when the offset has been explicitly 
+#' implemented for that number of mediators, currently 1 and 3). However, the returned code can still
 #' be edited. See timesaveR:::.coef_offset_3 for an example of an offset tibble.
 #' @param digits Number of digits for rounding
 #' @param filename If provided, graph will be saved as .svg file.
@@ -37,15 +37,25 @@
 #' @export
 #' @examples
 #' \dontrun{
-#' # Estimate mediation model
+#' # Estimate mediation model (usually with bootstraps > 1000!)
 #'
-#' res <- run_mediation(ess_health, fltdpr, health, dosprt, agea, bootstraps = 100)
+#' res <- run_mediation(ess_health, fltdpr, health, dosprt, agea, bootstraps = 50)
 #' 
 #' # Run plot command
-#' plot_mediation(
+#' plot <- plot_mediation(
 #'   IV = "Frequency of  <br /> feeling depressed",
-#'   DV = "Self-reported <br /> poor health", Ms = "Frequency of <br /> physical activity", data = res
+#'   DV = "Self-reported <br /> poor health", Ms = "Frequency of <br /> physical activity", 
+#'   data = res
 #' )
+#' 
+#' # Show the graph
+#' plot$graph
+#' 
+#' # Show the code 
+#' plot$code
+#' 
+#' # To create the graph again (e.g., after you edit its code)
+#' DiagrammeR::grViz(plot$code)
 #' }
 plot_mediation <- function(IV, DV, Ms, data, digits = 2, coef_offset = length(Ms), filename = NULL, ind_p_values = FALSE) {
   .check_req_packages(c("glue", "DiagrammeR"))
@@ -125,10 +135,6 @@ plot_mediation <- function(IV, DV, Ms, data, digits = 2, coef_offset = length(Ms
     }
   }
 
-
-
-
-
   code <- glue::glue("digraph  {{
 
             graph [layout = 'neato',
@@ -184,13 +190,47 @@ plot_mediation <- function(IV, DV, Ms, data, digits = 2, coef_offset = length(Ms
     graph <- code %>% DiagrammeR::grViz()
   }
   if (interactive()) print(graph)
-  .named_list(code, graph)
+  named_list(code, graph)
 }
 
 
 .unescape_html <- function(str) {
   purrr::map_chr(str, function(x) xml2::xml_text(xml2::read_html(paste0("<x>", x, "</x>"))))
 }
+
+
+#' Plot a moderated mediation model
+#' 
+#' This function helps to plot a moderated mediation model - with a single moderator
+#' and a single mediator. Labels for each path need to be specified manually. By default,
+#' covariates are only related to the outcome variable - if they are also used to estimate
+#' the mediator, the graph code needs to be adjusted manually.
+#'
+#' @param X The name of the predictor variable
+#' @param M The name of the mediator variable
+#' @param W The name of the moderator variable
+#' @param Y The name of the outcome variable
+#' @param CV The name of covariates
+#' @param mod_direct_path Logical. Should a direct path from X to Y be included?
+#' @param labels A list of labels for the paths. See the example for the required names.
+#' @param filename The filename to save the plot to (should end in .svg). When NULL, 
+#' the graph is not saved but simply returned.
+#' @return A named list with the code and the graph
+#' @examples
+#' plot <- plot_moderated_mediation(X = "Training", M = "Self-Efficacy", 
+#'   W = "Motivation", Y = "Performance", CV = "Age, Gender", 
+#'   mod_direct_path = TRUE, labels = list(a = "+", b = "+", c = "+", a_mod = "+", c_mod = "+"), filename = NULL)
+#' 
+#' # Show the graph
+#' plot$graph
+#' 
+#' # Show the code 
+#' plot$code
+#' 
+#' # To create the graph again (e.g., after you edit its code)
+#' DiagrammeR::grViz(plot$code)
+#' 
+#' @export
 
 
 plot_moderated_mediation <- function(X, M, W, Y, CV = NULL, mod_direct_path = TRUE, labels = list(a = "+", b = "+", c = "+", a_mod = "+", c_mod = "+"), filename = NULL) {
@@ -208,8 +248,6 @@ plot_moderated_mediation <- function(X, M, W, Y, CV = NULL, mod_direct_path = TR
   a_mod <- labels$a_mod
   c_mod <- labels$c_mod
 
-  p <- "BR"
-
   code <- glue::glue("digraph {{
 
         graph [layout = 'neato',
@@ -225,8 +263,6 @@ plot_moderated_mediation <- function(X, M, W, Y, CV = NULL, mod_direct_path = TR
         fillcolor = 'white',
         color = 'black',
         fontcolor = 'black']
-
-
 
         'X' [label = <{X}>, color = 'black', shape = 'rectangle', height = '0.5', width = '1.5', pos = '0,0!']
         'Y' [label = <{Y}>, color = 'black', shape = 'rectangle', height = '0.5', width = '1.5', pos = '5,0!']
@@ -256,8 +292,6 @@ plot_moderated_mediation <- function(X, M, W, Y, CV = NULL, mod_direct_path = TR
 
         {if(!is.null(CV)) 'CV->Y  [style=dashed]'}
 
-
-
         }}")
 
   graph <- code %>% DiagrammeR::grViz()
@@ -268,9 +302,11 @@ plot_moderated_mediation <- function(X, M, W, Y, CV = NULL, mod_direct_path = TR
     graph <- code %>% DiagrammeR::grViz()
   }
 
-  .named_list(code, graph)
+  named_list(code, graph)
 }
 
+
+# Save graph as an svg file, while dealing wiht special characters
 .grViz_and_save <- function(code, filename) {
   graph <- DiagrammeR::grViz(code)
   if (suppressWarnings(!all(lapply(c("DiagrammeRsvg"), requireNamespace, quietly = TRUE)))) {
@@ -297,14 +333,4 @@ plot_moderated_mediation <- function(X, M, W, Y, CV = NULL, mod_direct_path = TR
       writeLines(filename)
   }
   graph
-}
-
-
-
-.named_list <- function(...) {
-  out <- list(...)
-  names(out) <- match.call() %>%
-    as.list() %>%
-    .[-1]
-  out
 }

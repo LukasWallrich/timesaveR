@@ -1,14 +1,14 @@
 #' Set up analysis project folder and script files
 #'
-#' Set up simple folder structure and template files for analysis project.
+#' This sets up simple folder structure and template files for an analysis project. 
 #' 
-#' This template includes two helpers worth highlighting. The `take_note()`
+#' The template includes two helpers worth highlighting. The **`take_note()`**
 #' function allows to add character strings to a note file that is saved at
 #' the end of each script. Usage should follow the first example: 
 #' `take_note("Note created:", timestamp(quiet = TRUE))`. Note that this modifies
 #' `notes` in place, so the result should not be assigned.
 #' 
-#' Then there is the `0_run_all.R` file, which runs all analysis scripts in order
+#' Then there is the **`0_run_all.R`** file, which runs all analysis scripts in order
 #' and documents when this last happened. 
 #'
 #' @param folder Root folder of the project to be set up. Defaults to here::here()
@@ -21,7 +21,11 @@
 #' @source The structure is based on https://towardsdatascience.com/how-to-keep-your-research-projects-organized-part-1-folder-structure-10bd56034d3a, with some simplifications and additions.
 #' @export
 
-setup_analysis_project <- function(folder = here::here(), analyses = c("data_prep", "analyses", "presentation"), pipeline_name = "outputs", code_folder = FALSE, standard_packages = c("magrittr", "here", "dplyr"), github_packages = NULL) {
+setup_analysis_project <- function(folder = here::here(), analyses = c("data_prep", "analyses", "presentation"), 
+                                   pipeline_name = "outputs", code_folder = FALSE, 
+                                   standard_packages = c("magrittr", "here", "dplyr"), 
+                                   github_packages = NULL) {
+  
   pipeline_folder <- paste0("3_", pipeline_name)
   folders <- paste0(folder, "/", c("0_data", "1_tools", (if (code_folder) "2_code" else NULL), pipeline_folder))
 
@@ -34,11 +38,13 @@ setup_analysis_project <- function(folder = here::here(), analyses = c("data_pre
   files <- paste0(seq_along(analyses), "_", analyses, ".R")
   if (code_folder) files <- paste0("2_code/", files)
 
+  # Adds packages to code template
   code_template <- glue::glue(code_template)
 
   for (i in seq_along(analyses)) {
     filename <- analyses[i]
     previous_name <- paste0(analyses[i - 1], "")
+    # Adds file names to code_template
     code <- glue::glue(code_template)
     writeLines(code, file.path(folder, files[i]))
   }
@@ -164,18 +170,16 @@ add_package_snippets <- function() {
   added <- FALSE
 
   # if not on RStudio or RStudioServer exit
-  #
   if (!nzchar(Sys.getenv("RSTUDIO_USER_IDENTITY"))) {
+    warning("Code snippets are only implemented in RStudio - so cannot do anything here.")
     return(NULL)
   }
 
   # Name of files containing snippet code to copy
-  #
   pckgSnippetsFiles <- c("r.snippets", "rmd.snippets")
 
   # Name of files to copy into. Order has to be the same
   # as in 'pckgSnippetsFiles'
-  #
   rstudioSnippetsFiles <- c("r.snippets", "markdown.snippets")
 
   # Path to directory for RStudios user files depends on OS and RStudio version
@@ -202,21 +206,17 @@ add_package_snippets <- function() {
     }
 
     # load package snippets definitions
-    #
     pckgSnippetsFileContent <- readLines(pckgSnippetsFilesPath, warn = FALSE)
 
     # Extract names of package snippets
-    #
     pckgSnippetsFileDefinitions <- pckgSnippetsFileContent[grepl("^snippet (.*)", pckgSnippetsFileContent)]
 
 
     # Construct path for destination file
-    #
     rstudioSnippetsFilePath <- file.path(rstudioSnippetsPathBase, rstudioSnippetsFiles[i])
 
     # If targeted RStudios user file does not exist, raise error (otherwise we would 'remove')
     # the default snippets from the 'user file'
-    #
     if (!file.exists(rstudioSnippetsFilePath)) {
       stop(
         "'", rstudioSnippetsFilePath, "' does not exist yet\n.",
@@ -226,12 +226,10 @@ add_package_snippets <- function() {
     }
 
     # Extract 'names' of already existing snippets
-    #
     rstudioSnippetsFileContent <- readLines(rstudioSnippetsFilePath, warn = FALSE)
     rstudioSnippetDefinitions <- rstudioSnippetsFileContent[grepl("^snippet (.*)", rstudioSnippetsFileContent)]
 
     # replace two spaces with tab, ONLY at beginning of string
-    #
     pckgSnippetsFileContentSanitized <- gsub("(?:^ {2})|\\G {2}|\\G\t", "\t", pckgSnippetsFileContent, perl = TRUE)
 
     # find definitions appearing in packageSnippets but not in rstudioSnippets
@@ -247,7 +245,6 @@ add_package_snippets <- function() {
       next()
     }
 
-
     # Inform user about changes, ask to confirm action
     #
     if (interactive()) {
@@ -262,7 +259,7 @@ add_package_snippets <- function() {
           paste0(snippetsNotToCopy, collapse = ", "), ")"
         ))
       }
-      answer <- readline(prompt = "Do you want to procedd (y/n): ")
+      answer <- readline(prompt = "Do you want to proceed (y/n): ")
       if (substr(answer, 1, 1) == "n") {
         next()
       }

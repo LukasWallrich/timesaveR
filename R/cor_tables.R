@@ -82,7 +82,8 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
     if (!is.null(cor_matrix$var_renames)) {
       plots <- do.call(plot_distributions, c(list(data = data, var_names = cor_matrix$var_renames), plot_args))
     } else {
-      plots <- data %>% dplyr::select(dplyr::all_of(rownames(cor_matrix$cors))) %>% 
+      plots <- data %>%
+        dplyr::select(dplyr::all_of(rownames(cor_matrix$cors))) %>% 
         {do.call(plot_distributions, c(list(data = .), plot_args))}
     }
 
@@ -271,7 +272,6 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
 #' The performance of the full information maximum likelihood estimator in multiple regression models with missing data
 #' @export
 
-
 cor_matrix <- function(data,
                        var_names = NULL,
                        missing = c("pairwise", "listwise", "fiml"),
@@ -294,7 +294,12 @@ cor_matrix <- function(data,
     missing[1] == "fiml" ~ "fiml",
     TRUE ~ NA_character_
   )
-
+  
+  if (inherits(data, "resid_df")) {
+    if (adjust != "none") {
+      stop("p-value adjustment not implement for partial correlation - use adjust = 'none' or omit that argument.")
+  }
+}
   if (is.na(missing)) assert_choice(missing, c("pairwise", "listwise", "fiml"))
   if (!is.null(bootstrap) && missing != "fiml") stop('bootstrapping can only be used when missing = "fiml"')
 
@@ -427,6 +432,11 @@ cor_matrix <- function(data,
 
   cor_matrix$var_renames <- NULL
 
+  if (inherits(data, "resid_df")) {
+    # Adjust t-values based on df of n-3
+    cor_matrix$t.values <- sqrt(cor_matrix$n-3) * cor_matrix$cors / sqrt(1 - cor_matrix$cors^2)
+    cor_matrix$p.values <- pt(abs(cor_matrix$t.values), cor_matrix$n-3, lower.tail = FALSE) * 2
+  }
 
   if (exists("used_vars")) {
     cor_matrix$var_renames <- tibble::tibble(old = names(var_names[match(used_vars, var_names)]), new = var_names[match(used_vars, var_names)])
@@ -934,4 +944,3 @@ tidy.svy_cor_matrix <- function(x, both_directions = TRUE, ...) {
   }
   out
 }
-

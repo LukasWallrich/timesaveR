@@ -18,17 +18,21 @@ round_df <- function(df, digits = 2) {
 #' Format p-value in line with APA standard (no leading 0)
 #'
 #' Formats p-value in line with APA standard, returning it without leading 0 and
-#' as < .001 and > .99 when it is extremely small or large.
+#' as < .001 (or below the smallest value expressible with the given number of 
+#' significant digits) and > .99 when it is extremely small or large.
 #'
 #' @param p_value Numeric, or a vector of numbers
 #' @param digits Number of significant digits, defaults to 3
+#' @param equal_sign Logical. Should *p*-values be prefixed with `=` unless they
+#' are reported as `<` Defaults to TRUE, for use in text that reports result, 
+#' FALSE is particularly useful for tables. 
 #' @export
 
-fmt_p <- function(p_value, digits = 3) {
+fmt_p <- function(p_value, digits = 3, equal_sign = TRUE) {
   fmt <- paste0("%.", digits, "f")
   fmt_p <- function(x) {
-    paste0("= ", sprintf(fmt, x)) %>%
-      stringr::str_replace(" 0.", " .")
+    paste0(if(equal_sign == TRUE) "= " else "", sprintf(fmt, x)) %>%
+      stringr::str_replace("0.", ".")
   }
   exact <- !(p_value < 10^(-digits) | p_value > .99)
   exact[is.na(exact)] <- TRUE
@@ -88,14 +92,22 @@ fmt_cor <- function(cor_value, digits = 2) {
 #' @param lower Lower bound(s) of confidence interval(s). Numeric, or a vector of numbers
 #' @param upper Lower bound(s) of confidence interval(s). Numeric, or a vector of numbers
 #' @param digits Number of significant digits, defaults to 2
+#' @param drop_0 Logical. Should leading 0 be dropped, e.g., when reporting correlation coefficients. 
+#' Note that this only makes sense (and only works) when the values are between -1 and 1
+#' 
 #' @export
 
-fmt_ci <- function(lower, upper, digits = 2) {
+fmt_ci <- function(lower, upper, digits = 2, drop_0 = FALSE) {
   assert_numeric(lower)
   assert_numeric(upper)
   if (!(length(lower) == length(upper))) stop("lower and upper must have the same length.")
   assert_count(digits)
-  out <- paste0("[", round_(lower, digits), ", ", round_(upper, digits), "]")
+  if (drop_0) {
+    out <- paste0("[", fmt_cor(lower, digits), ", ", fmt_cor(upper, digits), "]")
+    
+  } else {
+    out <- paste0("[", round_(lower, digits), ", ", round_(upper, digits), "]")
+  }
   out[is.na(lower) | is.na(upper)] <- NA
   out
 }

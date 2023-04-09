@@ -5,7 +5,10 @@ doc
 Meta
 Notes.*
 docs
-man
+/man/*
+!/man/figures
+/man/figures/*
+!/man/figures/README*
 NAMESPACE
 .Rhistory
 .DS_Store

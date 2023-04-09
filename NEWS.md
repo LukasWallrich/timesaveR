@@ -1,21 +1,25 @@
-# timesaveR dev (towards 0.0.3)
+# timesaveR 0.0.3
 
 ## New capabilities
 
 * Added `run_mediation()` to estimate and `plot_mediation()` to visualize parallel mediation models.
 * Added `na_when()` to set values to NA based on logical conditions, and `na_ifs()` to replace multiple values with NA.
 * Added `make_scale_mi()` to estimate scale scores and Cronbach's alpha after multiple-imputation at the item level. According to [Gottschall, West & Enders (2012)](https://doi.org/10.1080/00273171.2012.640589), this is one of the best ways to deal with item-level missing data. If requested, the function can bootstrap confidence intervals, using the `future`-package for parallel computing.
+* Added `pcor_matrix()` to calculate partial correlation matrices after parcelling out *one* variable.
+* Added `run_and_format()` to run any code and return formatted code and output for sharing - in the style of `reprex::reprex()` but without creating a new session (intended for teaching or sharing code examples, rather than bug reporting).
 
 ## Enhancements
 
 * `make_scale()` now has a `proration_cutoff` argument to specify the maximum share of missing data ignored in each case. This offers a simple way to improve on casewise deletion for handling missing data, without getting scale scores based on an insufficient subset of items. [NB: This is a *breaking* change, earlier versions implicitly had a proration_cutoff of 1, returning scale scores if at least one item was present - which is indefensible when there is a lot of missing data.]
-* Add summary `text` to descriptives returned by `make_scale()` 
+* Added summary `text` to descriptives returned by `make_scale()` 
 * Enabled `report_lm_with_std()` to show R2 change for more than one pair of models
 * Added option to use `t.test()`-style formula notion in `pairwise_t_tests()` 
 * Allow automatic reverse-coding in `make_scales()`
 * `report_cor_table()` now ensures correct ordering of extra columns if `row_names` column is included
 * Added `tidy.svy_cor_matrix()` to tidy survey-weighted correlation matrices
 * Renamed `wtd_cor_matrix_mi()` to `cor_matrix_mi()` to reflect that weights are optional
+* Added output to README (by using README.Rmd) to make it more informative
+* `fmt_p()` gained a `equal_sign` argument that determines whether *p*-values that are reported precisely are prefixed with "= "
 
 ## Bug fixes
 * `report_polr_with_std()` works again after `broom::tidy.polr()` update broke it

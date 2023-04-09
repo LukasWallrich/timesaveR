@@ -47,6 +47,7 @@ rename_cat_variables <- function(data, var_names = NULL, level_names = NULL) {
 
 std_stars <- c(`&dagger;` = .1, `*` = 0.05, `**` = 0.01, `***` = 0.001)
 std_stars_pad <- c(`&nbsp;&nbsp;&nbsp;` = 1, `&dagger;&nbsp;&nbsp;` = .1, `*&nbsp;&nbsp;` = 0.05, `**&nbsp;` = 0.01, `***` = 0.001)
+
 # TODO - change padding so that coefficients are aligned
 
 
@@ -63,7 +64,7 @@ std_stars_pad <- c(`&nbsp;&nbsp;&nbsp;` = 1, `&dagger;&nbsp;&nbsp;` = .1, `*&nbs
 #'
 #' @encoding UTF-8
 #' @param p A *p*-value or (more commonly) a vector of *p*-values
-#' @param stars A character vector to change the significance symbols (see details in `sigstars`)
+#' @param stars A character vector to change the significance symbols (see details below)
 #' @param ns Logical. Should non-significant values be highlighted as "ns"?
 #' @param pad_html Should all results be padded right to the same width with HTML non-breaking spaces?
 #' @param return_NAs Logical. Should NAs be returned? If not, empty strings are returned instead.
@@ -620,7 +621,10 @@ add_class <- function(x, class_to_add = "exp") {
 
 run_and_format <- function (code = NULL) {
   
-  reprex:::reprex_impl(
+  reprex_internal <- get("reprex_impl", envir = asNamespace("reprex"),
+                         inherits = FALSE)
+  
+  reprex_internal(
     x_expr = substitute(code),
     input = NULL,
     wd = NULL,
@@ -639,3 +643,42 @@ run_and_format <- function (code = NULL) {
   )
   
 }
+
+#' Create a list with items named based on the names of variables passed to the function
+#' 
+#' Not infrequently, you might find yourself writing things like `list(var1 = var1, var2 = var2)`.
+#' This function makes this easier by creating a list with items named based on the variables 
+#' passed into it.
+#' 
+#' @param ... One or more variables to be included into a list. Note that you can pass values as 
+#' well, but they are then used as both the name and the value of the respective list item.
+#' @return A named list, with names taken from the variable names in the input
+#' @examples 
+#' name <- "Paul"
+#' age <- 10
+#' named_list(name, age)
+#' 
+#' # Note that this can be combined with named arguments
+#' named_list(name, age, place = "Berlin")
+#' 
+#' @export
+#' @keywords internal
+
+
+named_list <- function(...) {
+  out <- list(...)
+  new_names <- match.call() %>%
+    as.list() %>%
+    .[-1]
+  given_names <- names(new_names) 
+  if (!is.null(given_names)) {
+    new_names <- given_names %>% dplyr::na_if("") %>% 
+      dplyr::coalesce(as.character(new_names))
+  }
+  if (as.character(new_names[[1]]) == ".") {
+    warning("First list item will be named '.' - that is most likely because you used the %>% operator. To do that successfully, you usually need to name the corresponding argument, e.g., var1 %>% named_list(var1 = ., var2)")
+  }
+  names(out) <- new_names
+  out
+}
+

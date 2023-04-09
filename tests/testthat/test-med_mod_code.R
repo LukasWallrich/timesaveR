@@ -8,7 +8,7 @@ CV <- rnorm(100) + .2*M1 + .2*M2 + .2*M3 + .2*Y
 
 df <- data.frame(X = X, M1 = M1, M2 = M2, M3 = M3, Y = Y, CV = CV)
 
-res <- run_mediation(df, X, Y, c(M1, M2, M3), CV, bootstraps = 50)
+res <- run_mediation(df, X, Y, c(M1, M2, M3), CV, bootstraps = 50, seed = 987654321)
 
 test_that("parallel mediation works", {
   expect_data_frame(res, nrows = 11, ncols = 7)

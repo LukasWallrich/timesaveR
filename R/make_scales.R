@@ -53,9 +53,8 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
                        harmonize_ranges = NULL) {
   if (!all(scale_items %in% names(data))) stop("Not all scale_items can be found in the dataset. The following are missing: ", paste(setdiff(scale_items, names(data)), collapse = ", "), call. = FALSE)
 
-  if (data %>% dplyr::select(dplyr::any_of(scale_items)) %>% {
-    all(vapply(., FUN = checkmate::allMissing, FUN.VALUE = logical(1)))
-  }) {
+  if (data %>% dplyr::select(dplyr::any_of(scale_items)) %>% 
+      {all(vapply(., FUN = checkmate::allMissing, FUN.VALUE = logical(1)))}) {
     stop("All variables for scale ", scale_name, " only contain missing values.", call. = FALSE)
   }
 
@@ -72,7 +71,8 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
   
     if (is.null(harmonize_ranges[1]) || !is.logical(harmonize_ranges[1]) || harmonize_ranges[1]) {
     ranges <- scale_vals %>%
-      dplyr::summarise(dplyr::across(dplyr::everything(), range_)) %>% unlist()
+      dplyr::summarise(dplyr::across(dplyr::everything(), range_)) %>%
+      unlist()
     if (length(unique(ranges)) > 1) {
       if (is.null(harmonize_ranges)) {
         message("Not all items have the same range. This should be ok if respondents did not use the full range, but is likely a problem when the ranges offered were different. The observed ranges are ", glue::glue_collapse(unique(ranges), sep = ", ", last = " and "), ". If the ranges should be harmonized, rerun the function with harmonize_ranges = TRUE.")
@@ -94,8 +94,8 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
                 "The observed ranges are\n* ", glue::glue_collapse(paste(names(ranges), ranges, sep = ": "), sep = ",\n* ", last = " and\n* "), ".")
         
         rescale_range <- function(x) {
-          ((x - min(x, na.rm = TRUE))/(max(x, na.rm = TRUE) - min(x, na.rm = TRUE))) *
-            (max_val-min_val) + min_val
+          ((x - min(x, na.rm = TRUE)) / (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))) *
+            (max_val - min_val) + min_val
         }
         
         scale_vals %>% 
@@ -104,11 +104,16 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
     }
   }
 
-  l <- scale_vals %>% dplyr::summarise(dplyr::across(dplyr::everything(), ~length(unique(.x)))) %>% unlist()
-  if(any(l < 2)) warning("Some scale variables have zero variance. This is frequently a mistake and can lead to errors in this function: ", glue::glue_collapse(names(scale_vals)[l < 2], sep = ", ", last = " & "))
+  l <- scale_vals %>% 
+    dplyr::summarise(dplyr::across(dplyr::everything(), ~length(unique(.x)))) %>%
+    unlist()
+  
+  if (any(l < 2)) {
+    warning("Some scale variables have zero variance. This is frequently a mistake and can lead to errors in this function: ", glue::glue_collapse(names(scale_vals)[l < 2], sep = ", ", last = " & "))
+  }
   
   proration_cutoff <- proration_cutoff * ncol(scale_vals)
-  scale_vals[rowSums(is.na(scale_vals))>proration_cutoff,] <- NA
+  scale_vals[rowSums(is.na(scale_vals)) > proration_cutoff, ] <- NA
   
   if ((reverse != "spec")[1]) {
     check.keys <- reverse[1] != "none"
@@ -198,15 +203,31 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
   scores
 }
 
+#' Report a range as a formatted string
+#' 
+#' This function takes a numeric vector, calculates its range
+#' and returns this as a formatted string of the form
+#' `1.51 - 5.42`. Missing values are ignored.
+#' 
+#' @param x A numeric vector.
+#' @param digits The number of digits to round to.
+#' @param simplify If TRUE, returns a single value if the vector is constant.
+#' @noRd
+#' @examples
+#' range_(c(1:5))
+#' range_(c(1:5), digits = 0)
+#' range_(c(1, 1, 1), simplify = TRUE)
+#' range_(c(1:5, NA))
+
 range_ <- function(x, digits = 2, simplify = FALSE) {
   x <- c(x) #drop matrix dimensions
   if(simplify) {
-    if(length(stats::na.omit(unique(x))) == 1) return(round_(stats::na.omit(unique(x)), digits))
+    if (length(stats::na.omit(unique(x))) == 1) return(round_(stats::na.omit(unique(x)), digits))
   }
   glue::glue("{round_(min(x, na.rm = TRUE), digits)} - {round_(max(x, na.rm = TRUE), digits)}")
 }
 
-#' Create multiple scales by calculating item means and returns descriptives
+#' Create multiple scales by calculating item means and return descriptives
 #'
 #' This function creates multiple scales, returns descriptives and supports
 #' reverse-coding of items.
@@ -237,7 +258,7 @@ make_scales <- function(data, items, reversed = FALSE, two_items_reliability = c
     if (!is.null(reversed)) {
       scales_rev <- intersect(names(items), names(reversed))
       if (length(scales_rev) > 0) {
-        print(paste0(
+        message(paste0(
           "The following scales will be calculated with specified reverse coding: ",
           paste0(scales_rev, collapse = ", ")
         ))
@@ -255,7 +276,7 @@ make_scales <- function(data, items, reversed = FALSE, two_items_reliability = c
     scales_n_rev <- setdiff(names(items), names(reversed))
     
     if (length(scales_n_rev) > 0) {
-      print(paste0(
+      message(paste0(
         "The following scales will be calculated without reverse coding: ",
         paste0(scales_n_rev, collapse = ", ")
       ))
@@ -489,7 +510,7 @@ The following items were reverse coded (with min and max values): \\
 #' @param alpha_ci Should a confidence interval for Cronbach's alpha be returned? Note that this requires bootstrapping and thus makes the function much slower. TRUE corresponds to a 95% confidence interval, other widths can be specified as fractions, e.g., .9
 #' @param boot For pooling, the variance of Cronbach's alpha is bootstrapped. Set number of bootstrap resamples here.
 #' @param seed For pooling, the variance of Cronbach's alpha is bootstrapped. Set a seed to make this reproducible.
-#' @param parallel Should bootstrapping be conducted in paralell (using `parallel`-package)? Pass a number to select the number of cores - otherwise, the function will use all but one core.
+#' @param parallel Should bootstrapping be conducted in parallel (using `parallel`-package)? Pass a number to select the number of cores - otherwise, the function will use all but one core.
 #' @source The approach to pooling Cronbach's alpha is taken from Dion Groothof [on StackOverflow](https://stackoverflow.com/a/70817748/10581449). 
 #' The development of the function was motivated by [Gottschall, West & Enders (2012)](https://doi.org/10.1080/00273171.2012.640589) who showed 
 #' that multiple imputation at item level results in much higher statistical power than multiple imputation at scale level.
@@ -614,8 +635,11 @@ make_scale_mi <- function(data, scale_items, scale_name, proration_cutoff = 0, s
 
     
   if (full$descriptives$reversed != "") {
-    rev_details <- data %>% dplyr::select(dplyr::all_of(rev_code)) %>% tidyr::pivot_longer(dplyr::everything()) %>% 
-      dplyr::group_by(.data$name) %>% dplyr::summarise(min = min(.data$value, na.rm = TRUE), max = max(.data$value, na.rm = TRUE))
+    rev_details <- data %>% dplyr::select(dplyr::all_of(rev_code)) %>% 
+      tidyr::pivot_longer(dplyr::everything()) %>% 
+      dplyr::group_by(.data$name) %>% 
+      dplyr::summarise(min = min(.data$value, na.rm = TRUE), max = max(.data$value, na.rm = TRUE))
+    
     description_text <- glue::glue("{description_text}
                                    The following items were reverse-coded: {glue::glue_collapse(rev_details$name, sep = ', ', last = ' and ')}
                                    ")
@@ -655,23 +679,23 @@ make_scale_mi <- function(data, scale_items, scale_name, proration_cutoff = 0, s
 # Helper functions based on https://stackoverflow.com/a/70817748/10581449
 
 .cronbach_boot <- function(list_compl_data, boot = 1e4) {
-  n <- nrow(list_compl_data); p <- ncol(list_compl_data)
+  n <- nrow(list_compl_data)
+  p <- ncol(list_compl_data)
   total_variance <- stats::var(rowSums(list_compl_data))
   item_variance <- sum(apply(list_compl_data, 2, sd)^2)
-  alpha <- (p/(p - 1)) * (1 - (item_variance/total_variance))
+  alpha <- (p / (p - 1)) * (1 - (item_variance/total_variance))
   out <- list(alpha = alpha)
   boot_alpha <- numeric(boot)
     for (i in seq_len(boot)) {
       boot_dat <- list_compl_data[sample(seq_len(n), replace = TRUE), ]
       total_variance <- stats::var(rowSums(boot_dat))
       item_variance <- sum(apply(boot_dat, 2, sd)^2)
-      boot_alpha[i] <- (p/(p - 1)) * (1 - (item_variance/total_variance))
+      boot_alpha[i] <- (p / (p - 1)) * (1 - (item_variance/total_variance))
     }
     out$var <- stats::var(boot_alpha)
   
   return(out)
 }
-
 
 # pooled estimates
 pool_estimates <- function(x, ci = .95) {
