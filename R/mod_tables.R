@@ -70,7 +70,6 @@ if (!("lm" %in% class(mod_std[[1]]) || ("mira" %in% class(mod_std[[1]]) &&
     notes %<>% c("Given that dummy variables lose their interpretability when standardized (Fox, 2015), &beta; for dummy variables are semi-standardized, indicating the impact of that dummy on the standardized outcome variable.")
   }
 
-
   SEs <- list()
   CIs <- list()
   mods <- list()
@@ -177,7 +176,7 @@ if (!("lm" %in% class(mod_std[[1]]) || ("mira" %in% class(mod_std[[1]]) &&
     <td class="gt_row gt_left" rowspan="1" colspan="1"><em>F</em>-tests</td>'
 
   sums <- paste(purrr::map(Fs, function(x) {
-    glue::glue('<td class="gt_row gt_center" rowspan="1" colspan="2"> {gt:::md_to_html(x)}   </td>')
+    glue::glue('<td class="gt_row gt_center" rowspan="1" colspan="2"> {markdown::mark(x)}   </td>')
   }), collapse = " ")
 
   code %<>% paste(row, sums, "</tr>", collapse = "")
