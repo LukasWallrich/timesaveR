@@ -9,7 +9,7 @@ pcor_matrix(data, given, ...)
 \arguments{
 \item{data}{Dataframe. Only numeric variables are included into correlation matrix.}
 
-\item{given}{One or multiple variables in data. It/they will be parceled out from all other variables in data,
+\item{given}{A character vector with one or multiple variables in data. It/they will be parceled out from all other variables in data,
 before the correlation table is calculated.}
 
 \item{...}{
