@@ -2,14 +2,14 @@
 % Please edit documentation in R/pcor.R
 \name{pcor_matrix}
 \alias{pcor_matrix}
-\title{Calculates a partial correlation matrix controlling for one variable}
+\title{Calculates a partial correlation matrix controlling for one or more variables}
 \usage{
 pcor_matrix(data, given, ...)
 }
 \arguments{
 \item{data}{Dataframe. Only numeric variables are included into correlation matrix.}
 
-\item{given}{A variable in data. It will be removed from all other variables in data,
+\item{given}{One or multiple variables in data. It/they will be parceled out from all other variables in data,
 before the correlation table is calculated.}
 
 \item{...}{
@@ -30,6 +30,6 @@ intervals can be bootstrapped. If you want to do that, pass the number of desire
   }}
 }
 \description{
-This returns a matrix aligned with the \code{cor_matrix()} function after parcelling
-out the effect of \emph{one} other variable.
+This returns a matrix aligned with the \code{cor_matrix()} function after parceling
+out the effect of one or more other variables.
 }
