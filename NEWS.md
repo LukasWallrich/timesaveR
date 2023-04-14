@@ -5,7 +5,7 @@
 * Added `run_mediation()` to estimate and `plot_mediation()` to visualize parallel mediation models.
 * Added `na_when()` to set values to NA based on logical conditions, and `na_ifs()` to replace multiple values with NA.
 * Added `make_scale_mi()` to estimate scale scores and Cronbach's alpha after multiple-imputation at the item level. According to [Gottschall, West & Enders (2012)](https://doi.org/10.1080/00273171.2012.640589), this is one of the best ways to deal with item-level missing data. If requested, the function can bootstrap confidence intervals, using the `future`-package for parallel computing.
-* Added `pcor_matrix()` to calculate partial correlation matrices after parcelling out *one* variable.
+* Added `pcor_matrix()` to calculate partial correlation matrices after parceling out one or several variable.
 * Added `run_and_format()` to run any code and return formatted code and output for sharing - in the style of `reprex::reprex()` but without creating a new session (intended for teaching or sharing code examples, rather than bug reporting).
 
 ## Enhancements

@@ -1,6 +1,5 @@
 ---
 title: "Getting started with timesaveR"
-author: "Lukas Wallrich"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Getting started with timesaveR}
