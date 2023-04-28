@@ -176,7 +176,7 @@ if (!("lm" %in% class(mod_std[[1]]) || ("mira" %in% class(mod_std[[1]]) &&
     <td class="gt_row gt_left" rowspan="1" colspan="1"><em>F</em>-tests</td>'
 
   sums <- paste(purrr::map(Fs, function(x) {
-    glue::glue('<td class="gt_row gt_center" rowspan="1" colspan="2"> {markdown::mark(x)}   </td>')
+    glue::glue('<td class="gt_row gt_center" rowspan="1" colspan="2"> {markdown::mark(I(x))}   </td>')
   }), collapse = " ")
 
   code %<>% paste(row, sums, "</tr>", collapse = "")
@@ -214,8 +214,8 @@ if (!("lm" %in% class(mod_std[[1]]) || ("mira" %in% class(mod_std[[1]]) &&
     }
     
     code %<>% paste(rows, collapse = "")
-    }
-
+  }
+  
   temp_file <- tempfile()
   tab %>%
     htmltools::as.tags() %>%
