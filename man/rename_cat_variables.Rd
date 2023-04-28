@@ -14,7 +14,8 @@ rename_cat_variables(data, var_names = NULL, level_names = NULL)
 \item{level_names}{A tibble containing old \code{var} names and \code{level_old} and \code{level_new} names. If NULL, only variables are renamed.}
 }
 \value{
-The dataframe or list of dataframes passed to data, with variables and/or levels renamed
+The dataframe or list of dataframes passed to data, with variables and/or levels renamed.
+Any variables where levels are renamed will be converted to factors.
 }
 \description{
 Renaming categorical variables and their levels, for instance for summary tables, can be fiddly. This
