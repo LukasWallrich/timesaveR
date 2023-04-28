@@ -160,7 +160,7 @@ run_mediation <- function(data, X, Y, Ms, CVs = NULL, standardized_all = TRUE,
   })
 
   bs <- bs %>% char_mutate(paste0("total = cdash + ", paste0("indirect__", M_letter, collapse = " + "))) %>% 
-    dplyr::rename(direct = .data$cdash)
+    dplyr::rename(direct = "cdash")
 
   res <- bs %>%
     t() %>%

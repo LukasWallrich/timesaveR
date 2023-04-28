@@ -219,7 +219,9 @@ plot_mediation <- function(IV, DV, Ms, data, digits = 2, coef_offset = length(Ms
 #' @examples
 #' plot <- plot_moderated_mediation(X = "Training", M = "Self-Efficacy", 
 #'   W = "Motivation", Y = "Performance", CV = "Age, Gender", 
-#'   mod_direct_path = TRUE, labels = list(a = "+", b = "+", c = "+", a_mod = "+", c_mod = "+"), filename = NULL)
+#'   mod_direct_path = TRUE, labels = list(a = "+", b = "+", c = "+", 
+#'                                         a_mod = "+", c_mod = "+"), 
+#'                                         filename = NULL)
 #' 
 #' # Show the graph
 #' plot$graph

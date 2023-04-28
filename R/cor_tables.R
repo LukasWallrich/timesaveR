@@ -389,9 +389,9 @@ cor_matrix <- function(data,
           ci.lower = stats::quantile(.data$coef, (1 - conf_level) / 2), ci.upper = stats::quantile(.data$coef, 1 - (1 - conf_level) / 2), se = sd(.data$coef),
           .groups = "drop"
         ) %>%
-        dplyr::rename(est = .data$M)
+        dplyr::rename(est = "M")
     } else {
-      res <- lavaan::standardizedsolution(mod) %>% dplyr::filter(.data$rhs != .data$lhs) %>% dplyr::rename(est = .data$est.std)
+      res <- lavaan::standardizedsolution(mod) %>% dplyr::filter(.data$rhs != .data$lhs) %>% dplyr::rename(est = "est.std")
     }
     m <- matrix(nrow = length(vars_used), ncol = length(vars_used)) %>%
       magrittr::set_rownames(vars_used) %>%
@@ -435,7 +435,7 @@ cor_matrix <- function(data,
   if (inherits(data, "resid_df")) {
     # Adjust t-values based on df of n-3
     cor_matrix$t.values <- sqrt(cor_matrix$n-3) * cor_matrix$cors / sqrt(1 - cor_matrix$cors^2)
-    cor_matrix$p.values <- pt(abs(cor_matrix$t.values), cor_matrix$n-3, lower.tail = FALSE) * 2
+    cor_matrix$p.values <- stats::pt(abs(cor_matrix$t.values), cor_matrix$n-3, lower.tail = FALSE) * 2
   }
 
   if (exists("used_vars")) {
@@ -884,11 +884,12 @@ tidy.cor_matrix <- function(x, both_directions = TRUE, ...) {
     res
   }) %>% 
     purrr::reduce(dplyr::left_join, by = c("column1", "column2")) %>%
-    dplyr::rename(estimate = .data$cors, conf.high = .data$ci.high, conf.low = .data$ci.low, statistic = .data$t.values, std.error = .data$std.err, p.value = .data$p.values)
-
+    dplyr::rename(estimate = "cors", conf.high = "ci.high", conf.low = "ci.low", 
+                  statistic = "t.values", std.error = "std.err", p.value = "p.values")
+  
   if (both_directions) {
     out <- out %>%
-      dplyr::rename(column2 = .data$column1, column1 = .data$column2) %>%
+      dplyr::rename(column2 = "column1", column1 = "column2") %>%
       dplyr::bind_rows(out)
   }
   out
@@ -935,11 +936,11 @@ tidy.svy_cor_matrix <- function(x, both_directions = TRUE, ...) {
     res
   }) %>% 
     purrr::reduce(dplyr::left_join, by = c("column1", "column2")) %>%
-    dplyr::rename(estimate = .data$cors, statistic = .data$t.values, std.error = .data$std.err, p.value = .data$p.values)
+    dplyr::rename(estimate = "cors", statistic = "t.values", std.error = "std.err", p.value = "p.values")
   
   if (both_directions) {
     out <- out %>%
-      dplyr::rename(column2 = .data$column1, column1 = .data$column2) %>%
+      dplyr::rename(column2 = "column1", column1 = "column2") %>%
       dplyr::bind_rows(out)
   }
   out

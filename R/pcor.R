@@ -15,7 +15,7 @@ pcor_matrix <- function(data, given, ...) {
   
   for (v in setdiff(names(data), given)) {
     formula <- formula(paste(v, "~", paste(given, collapse = " + ")))
-    data[[v]] <- residuals(lm(formula, data))
+    data[[v]] <- stats::residuals(lm(formula, data))
   }
   
   data %<>% dplyr::select(-dplyr::all_of(given))
