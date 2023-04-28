@@ -19,4 +19,11 @@ test_that("statistical number formatting works", {
     fmt_ci(c(-1, NA, 1.234, 2), c(1, 0, 1.889, NA)),
     c("[-1.00, 1.00]", NA, "[1.23, 1.89]", NA)
   )
+  expect_error(
+    fmt_ci(c(-.1, 2), c(.3, 3), drop_0 = TRUE)
+  )
+  expect_equal(
+    fmt_ci(c(-.1, .5), c(.3, .8), drop_0 = TRUE),
+    c("[-.10, .30]", "[.50, .80]")
+  )
 })

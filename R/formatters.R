@@ -100,9 +100,13 @@ fmt_cor <- function(cor_value, digits = 2) {
 fmt_ci <- function(lower, upper, digits = 2, drop_0 = FALSE) {
   assert_numeric(lower)
   assert_numeric(upper)
+  if (any(lower > upper)) stop("All values in lower must be smaller than the corresponding values in upper.")
   if (!(length(lower) == length(upper))) stop("lower and upper must have the same length.")
   assert_count(digits)
   if (drop_0) {
+    if (!(test_numeric(lower, lower = -(1-5/10^(digits+1)), upper = (1-5/10^(digits+1))) & test_numeric(upper, lower = -(1-5/10^(digits+1)), upper = (1-5/10^(digits+1))))) {
+      stop("drop_0 can only be TRUE if both lower and upper do not contain any values greater than 1 (or lower than -1), or values that would be rounded to +/-1 with the given digits.")
+    }
     out <- paste0("[", fmt_cor(lower, digits), ", ", fmt_cor(upper, digits), "]")
     
   } else {

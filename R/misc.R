@@ -8,7 +8,8 @@
 #' @param var_names A tibble containing `old` and `new` names for the variables. If NULL, only levels are renamed.
 #' @param level_names A tibble containing old `var` names and `level_old` and `level_new` names. If NULL, only variables are renamed.
 #'
-#' @return The dataframe or list of dataframes passed to data, with variables and/or levels renamed
+#' @return The dataframe or list of dataframes passed to data, with variables and/or levels renamed. 
+#' Any variables where levels are renamed will be converted to factors.
 #' @export
 
 rename_cat_variables <- function(data, var_names = NULL, level_names = NULL) {
@@ -19,11 +20,14 @@ rename_cat_variables <- function(data, var_names = NULL, level_names = NULL) {
     drop_list <- TRUE
   }  
 
+  
   if (!is.null(level_names)) {
     level_names_lst <- split(level_names, level_names$var)
 
     relevel <- function(data, var, levels_old, levels_new) {
       var <- var[1]
+      #Convert to allow to rename numeric values here
+      levels_old <- as.character(levels_old)    
       names(levels_old) <- levels_new
       data <- data %>% dplyr::mutate(!!var := forcats::fct_recode(as.factor(!!rlang::sym(var)), !!!levels_old))
       data
@@ -241,11 +245,12 @@ scale_blank <- function(x, center = TRUE, scale = TRUE) {
 #' @param x The tibble/dataframe to be converted into tribble code
 #' @param show Logical. Print code (otherwise, returned - print with `cat()` to get linebreaks etc)
 #' @param digits Number of digits to round numeric columns to.
+#' @param to_clip Should code for vector be copied into clipboard? Defaults to TRUE in interactive use, but only works when `clipr` package is installed
 #' @examples
-#' to_tribble(mtcars, show = TRUE)
+#' to_tribble(mtcars[1:5, 1:3], show = TRUE)
 #' @export
 
-to_tribble <- function(x, show = FALSE, digits = 5) {
+to_tribble <- function(x, show = FALSE, digits = 5, to_clip = interactive()) {
   assert_data_frame(x)
   no_cols <- ncol(x)
   x %<>% dplyr::mutate_if(is.factor, as.character)
@@ -278,6 +283,14 @@ to_tribble <- function(x, show = FALSE, digits = 5) {
     substr(1, nchar(.) - 1) %>%
     paste0("\n)\n")
 
+  if (to_clip) {
+    if (!requireNamespace("clipr", quietly = TRUE)) {
+      warning("clipr package is needed to write to clipboard, but is not available.")
+    } else {
+      clipr::write_clip(code)
+    }
+  }
+  
   if (show) {
     cat(code)
     return(invisible(code))
@@ -330,8 +343,10 @@ get_rename_tribbles <- function(data, ..., show = TRUE, which = c("both", "vars"
 
   out <- list()
   if (which[1] %in% c("both", "vars")) {
-    vars_tribble <- tibble::tibble(old = vars_chr, new = vars_chr %>% stringr::str_replace_all(stringr::fixed("_"), " ") %>% stringr::str_to_title()) %>% to_tribble(show = show)
-    out <- c(out, rename_vars = vars_tribble)
+    vars_tribble <- tibble::tibble(old = vars_chr, 
+                                   new = vars_chr %>% stringr::str_replace_all(stringr::fixed("_"), " ") %>% stringr::str_to_title()) %>% 
+      to_tribble()
+    out <- c(out, rename_vars = paste("var_names <- ", vars_tribble))
   }
   if (which[1] %in% c("both", "levels")) {
     get_levels <- function(x, data) {
@@ -349,13 +364,14 @@ get_rename_tribbles <- function(data, ..., show = TRUE, which = c("both", "vars"
       levels_tribble <- purrr::lmap(levels_list, function(x) purrr::map(x, mt, names(x))) %>%
         purrr::map_dfr(rbind) %>%
         tibble::as_tibble() %>%
-        to_tribble(show = show)
-      out <- c(out, rename_levels = levels_tribble)
+        to_tribble()
+      out <- c(out, rename_levels = paste("level_names <- ", levels_tribble))
     }
   }
 
   if (show) {
-  invisible(out)
+    purrr::walk(out, cat)
+    invisible(out)
   } else {
     out
   }
@@ -465,7 +481,7 @@ line_to_vector <- function(x = NULL, strings = TRUE, separators = c("top-level",
       x <- clipr::read_clip()
     }
   }
-  assert_character(x)
+  assert_atomic_vector(x)
   
   if (separators[1] == "all") {
     x <- strsplit(x, " |\\n|\\t") %>% unlist()
@@ -620,6 +636,8 @@ add_class <- function(x, class_to_add = "exp") {
 
 
 run_and_format <- function (code = NULL) {
+  
+  .check_req_packages("reprex")
   
   reprex_internal <- get("reprex_impl", envir = asNamespace("reprex"),
                          inherits = FALSE)

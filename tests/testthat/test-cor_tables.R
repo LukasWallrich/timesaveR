@@ -3,14 +3,15 @@ test_that("cor_matrix works", {
                cor(mtcars$mpg, mtcars$cyl))
 })
 
-ess_survey <- srvyr::as_survey(ess_health,
-                        weights = pweight)
+ess_survey <- srvyr::as_survey(ess_health %>% dplyr::select("agea", "health", "dosprt", "pweight"),
+                               weights = pweight)
 
 test_that("svy_cor_matrix works", {
   set.seed(1234)
   expect_equal(svy_cor_matrix(ess_survey, c(health = "Health", agea = "Age"))[[1]][1,2], 
                0.27805754)
 })
+
 
 # Create Dataset with missing data
 library(mice)
@@ -34,6 +35,7 @@ test_that("cor_matrix_mi works", {
                -0.19071925)
 })
 
+
 # Create Dataset with missing data
 library(mice)
 library(dplyr)
@@ -47,4 +49,9 @@ out <- cor_matrix(ess_health, missing = "fiml")
 test_that("cor_matrix works with fiml", {
   expect_equal(out$cors[2,1], -0.19917584)
 })
-  
+
+out <- cor_matrix(ess_health, missing = "fiml", bootstrap = 10)
+
+test_that("cor_matrix works with bootstrapping", {
+  expect_equal(out$cors[2,1], -0.18976554)
+})  

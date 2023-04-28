@@ -13,3 +13,17 @@ test_that("expected tibble format", {
 test_that("reject conf_level", {
   expect_error(tidy(x, conf_level == .9))
 })
+
+ess_survey <- srvyr::as_survey(ess_health %>% dplyr::select("agea", "health", "dosprt", "pweight"),
+                               weights = pweight)
+
+set.seed(1234)
+out <- svy_cor_matrix(ess_survey, c(health = "Health", agea = "Age"))
+tidy_mat <- tidy(out)
+
+test_that("svy_cor_matrix can be tidied", {
+  check_tibble(tidy_mat, any.missing = FALSE)
+  expect_true(all(c("column1", "column2", "estimate", "std.error", "p.value", "statistic") %in% names(tidy_mat)), label = "Test of column names")
+  expect_equal(nrow(tidy_mat), 2) 
+  expect_equal(nrow(tidy(out, both_directions = FALSE)), 1)
+})
