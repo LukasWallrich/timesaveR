@@ -29,7 +29,7 @@ jobs:
           needs: check
 
       - name: Document
-        run: Rscript -e 'devtools::build_readme(); roxygen2::roxygenise()'
+        run: Rscript -e 'roxygen2::roxygenise(); devtools::build_readme()'
         
       - name: commit
         run: |
