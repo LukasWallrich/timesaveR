@@ -59,8 +59,11 @@ also returned as an attribute, access it with \code{attr(res, "lavaan_code")}.
 # Might the link between depression and self-reported health be partly explained
 # by reductions in physical activity level, when holding age constant?
  
+ set.seed(4321)
  res <- run_mediation(ess_health, fltdpr, health, dosprt, agea, bootstraps = 50) 
-
+ # Note that high number of bootstraps fails - in that case, CIs might not be reliable - 
+ # this is likely due to the limited range of the variables here
+ 
  res
  
  attr(res, "CV_coefficients")
