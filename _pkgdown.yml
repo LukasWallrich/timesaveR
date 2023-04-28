@@ -35,6 +35,7 @@ reference:
 - contents:
   - run_mediation
   - plot_mediation
+  - plot_moderated_mediation
 - title: Make and assess scales
   desc: |
     Psychologists often use multiple items to measure a construct. These functions create scale scores and assess reliability (internal consistency)
