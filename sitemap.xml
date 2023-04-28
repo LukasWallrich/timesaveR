@@ -130,6 +130,9 @@
     <loc>https://lukaswallrich.github.io/timesaveR/reference/na_when.html</loc>
   </url>
   <url>
+    <loc>https://lukaswallrich.github.io/timesaveR/reference/named_list.html</loc>
+  </url>
+  <url>
     <loc>https://lukaswallrich.github.io/timesaveR/reference/package-deprecated.html</loc>
   </url>
   <url>
@@ -142,10 +145,16 @@
     <loc>https://lukaswallrich.github.io/timesaveR/reference/pairwise_t_tests.html</loc>
   </url>
   <url>
+    <loc>https://lukaswallrich.github.io/timesaveR/reference/pcor_matrix.html</loc>
+  </url>
+  <url>
     <loc>https://lukaswallrich.github.io/timesaveR/reference/plot_distributions.html</loc>
   </url>
   <url>
     <loc>https://lukaswallrich.github.io/timesaveR/reference/plot_mediation.html</loc>
+  </url>
+  <url>
+    <loc>https://lukaswallrich.github.io/timesaveR/reference/plot_moderated_mediation.html</loc>
   </url>
   <url>
     <loc>https://lukaswallrich.github.io/timesaveR/reference/polr_std.html</loc>

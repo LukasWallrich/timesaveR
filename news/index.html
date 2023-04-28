@@ -61,6 +61,45 @@
     </div>
 
     <div class="section level2">
+<h2 class="page-header" data-toc-text="0.0.3" id="timesaver-003">timesaveR 0.0.3<a class="anchor" aria-label="anchor" href="#timesaver-003"></a></h2>
+<div class="section level3">
+<h3 id="new-capabilities-0-0-3">New capabilities<a class="anchor" aria-label="anchor" href="#new-capabilities-0-0-3"></a></h3>
+<ul><li>Added <code><a href="../reference/run_mediation.html">run_mediation()</a></code> to estimate and <code><a href="../reference/plot_mediation.html">plot_mediation()</a></code> to visualize parallel mediation models.</li>
+<li>Added <code><a href="../reference/na_when.html">na_when()</a></code> to set values to NA based on logical conditions, and <code><a href="../reference/na_ifs.html">na_ifs()</a></code> to replace multiple values with NA.</li>
+<li>Added <code><a href="../reference/make_scale_mi.html">make_scale_mi()</a></code> to estimate scale scores and Cronbach’s alpha after multiple-imputation at the item level. According to <a href="https://doi.org/10.1080/00273171.2012.640589" class="external-link">Gottschall, West &amp; Enders (2012)</a>, this is one of the best ways to deal with item-level missing data. If requested, the function can bootstrap confidence intervals, using the <code>future</code>-package for parallel computing.</li>
+<li>Added <code><a href="../reference/pcor_matrix.html">pcor_matrix()</a></code> to calculate partial correlation matrices after parceling out one or several variable.</li>
+<li>Added <code><a href="../reference/run_and_format.html">run_and_format()</a></code> to run any code and return formatted code and output for sharing - in the style of <code><a href="https://reprex.tidyverse.org/reference/reprex.html" class="external-link">reprex::reprex()</a></code> but without creating a new session (intended for teaching or sharing code examples, rather than bug reporting).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="enhancements-0-0-3">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-0-0-3"></a></h3>
+<ul><li>
+<code><a href="../reference/make_scale.html">make_scale()</a></code> now has a <code>proration_cutoff</code> argument to specify the maximum share of missing data ignored in each case. This offers a simple way to improve on casewise deletion for handling missing data, without getting scale scores based on an insufficient subset of items. [NB: This is a <em>breaking</em> change, earlier versions implicitly had a proration_cutoff of 1, returning scale scores if at least one item was present - which is indefensible when there is a lot of missing data.]</li>
+<li>Added summary <code>text</code> to descriptives returned by <code><a href="../reference/make_scale.html">make_scale()</a></code>
+</li>
+<li>Enabled <code><a href="../reference/report_lm_with_std.html">report_lm_with_std()</a></code> to show R2 change for more than one pair of models</li>
+<li>Added option to use <code><a href="https://rdrr.io/r/stats/t.test.html" class="external-link">t.test()</a></code>-style formula notion in <code><a href="../reference/pairwise_t_tests.html">pairwise_t_tests()</a></code>
+</li>
+<li>Allow automatic reverse-coding in <code><a href="../reference/make_scales.html">make_scales()</a></code>
+</li>
+<li>
+<code><a href="../reference/report_cor_table.html">report_cor_table()</a></code> now ensures correct ordering of extra columns if <code>row_names</code> column is included</li>
+<li>Added <code><a href="../reference/tidy.svy_cor_matrix.html">tidy.svy_cor_matrix()</a></code> to tidy survey-weighted correlation matrices</li>
+<li>Renamed <code><a href="../reference/package-deprecated.html">wtd_cor_matrix_mi()</a></code> to <code><a href="../reference/cor_matrix_mi.html">cor_matrix_mi()</a></code> to reflect that weights are optional</li>
+<li>Added output to README (by using README.Rmd) to make it more informative</li>
+<li>
+<code><a href="../reference/fmt_p.html">fmt_p()</a></code> gained a <code>equal_sign</code> argument that determines whether <em>p</em>-values that are reported precisely are prefixed with “=”</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-0-0-3">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-0-3"></a></h3>
+<ul><li>
+<code><a href="../reference/report_polr_with_std.html">report_polr_with_std()</a></code> works again after <code><a href="https://broom.tidymodels.org/reference/tidy.polr.html" class="external-link">broom::tidy.polr()</a></code> update broke it</li>
+<li>
+<code><a href="../reference/fmt_p.html">fmt_p()</a></code>now supports greater numbers of significant digits properly</li>
+<li>
+<code><a href="../reference/make_scales.html">make_scales()</a></code> now correctly reacts to <code>print_desc</code> argument</li>
+</ul></div>
+</div>
+    <div class="section level2">
 <h2 class="page-header" data-toc-text="0.0.2" id="timesaver-002">timesaveR 0.0.2<a class="anchor" aria-label="anchor" href="#timesaver-002"></a></h2>
 <div class="section level3">
 <h3 id="new-capabilities-0-0-2">New capabilities<a class="anchor" aria-label="anchor" href="#new-capabilities-0-0-2"></a></h3>

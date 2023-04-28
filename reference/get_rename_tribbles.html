@@ -120,7 +120,7 @@ unless the max_levels argument is increased.</p>
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">get_rename_tribbles</span><span class="op">(</span><span class="va">iris</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> tibble::tribble(</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> var_names &lt;-  tibble::tribble(</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ~old,            ~new,            </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    "Sepal.Length",  "Sepal.length", </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    "Sepal.Width",   "Sepal.width",  </span>
@@ -128,7 +128,7 @@ unless the max_levels argument is increased.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    "Petal.Width",   "Petal.width",  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    "Species",       "Species"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> )</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> tibble::tribble(</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> level_names &lt;-  tibble::tribble(</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ~var,       ~level_old,    ~level_new,    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    "Species",  "setosa",      "Setosa",     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    "Species",  "versicolor",  "Versicolor", </span>

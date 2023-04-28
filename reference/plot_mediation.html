@@ -106,9 +106,9 @@ based on the format returned by <code>run_moderation()</code></p>
 
 <dt>coef_offset</dt>
 <dd><p>Tibble with values to position mediators. If not
-provided, function will align mediators automatically, which is unlikely to
-provide a well-aligned path (except for cases when offset has been implemented
-for that number of mediators, currently 1 and 3). However, returned code can still
+provided, the function will align mediators automatically, which is unlikely to
+provide a well-aligned chart (except for cases when the offset has been explicitly
+implemented for that number of mediators, currently 1 and 3). However, the returned code can still
 be edited. See timesaveR:::.coef_offset_3 for an example of an offset tibble.</p></dd>
 
 
@@ -132,15 +132,25 @@ intervals that do not include zero are bolded</p></dd>
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="co"># Estimate mediation model</span></span></span>
+<span class="r-in"><span><span class="co"># Estimate mediation model (usually with bootstraps &gt; 1000!)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="run_mediation.html">run_mediation</a></span><span class="op">(</span><span class="va">ess_health</span>, <span class="va">fltdpr</span>, <span class="va">health</span>, <span class="va">dosprt</span>, <span class="va">agea</span>, bootstraps <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="run_mediation.html">run_mediation</a></span><span class="op">(</span><span class="va">ess_health</span>, <span class="va">fltdpr</span>, <span class="va">health</span>, <span class="va">dosprt</span>, <span class="va">agea</span>, bootstraps <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Run plot command</span></span></span>
-<span class="r-in"><span><span class="fu">plot_mediation</span><span class="op">(</span></span></span>
+<span class="r-in"><span><span class="va">plot</span> <span class="op">&lt;-</span> <span class="fu">plot_mediation</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  IV <span class="op">=</span> <span class="st">"Frequency of  &lt;br /&gt; feeling depressed"</span>,</span></span>
-<span class="r-in"><span>  DV <span class="op">=</span> <span class="st">"Self-reported &lt;br /&gt; poor health"</span>, Ms <span class="op">=</span> <span class="st">"Frequency of &lt;br /&gt; physical activity"</span>, data <span class="op">=</span> <span class="va">res</span></span></span>
+<span class="r-in"><span>  DV <span class="op">=</span> <span class="st">"Self-reported &lt;br /&gt; poor health"</span>, Ms <span class="op">=</span> <span class="st">"Frequency of &lt;br /&gt; physical activity"</span>, </span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">res</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Show the graph</span></span></span>
+<span class="r-in"><span><span class="va">plot</span><span class="op">$</span><span class="va">graph</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Show the code </span></span></span>
+<span class="r-in"><span><span class="va">plot</span><span class="op">$</span><span class="va">code</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># To create the graph again (e.g., after you edit its code)</span></span></span>
+<span class="r-in"><span><span class="fu">DiagrammeR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DiagrammeR/man/grViz.html" class="external-link">grViz</a></span><span class="op">(</span><span class="va">plot</span><span class="op">$</span><span class="va">code</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>

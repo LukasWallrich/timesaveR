@@ -68,7 +68,7 @@ placing them in between square brackets</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fmt_ci</span><span class="op">(</span><span class="va">lower</span>, <span class="va">upper</span>, digits <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fmt_ci</span><span class="op">(</span><span class="va">lower</span>, <span class="va">upper</span>, digits <span class="op">=</span> <span class="fl">2</span>, drop_0 <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -83,6 +83,11 @@ placing them in between square brackets</p>
 
 <dt>digits</dt>
 <dd><p>Number of significant digits, defaults to 2</p></dd>
+
+
+<dt>drop_0</dt>
+<dd><p>Logical. Should leading 0 be dropped, e.g., when reporting correlation coefficients.
+Note that this only makes sense (and only works) when the values are between -1 and 1</p></dd>
 
 </dl></div>
 

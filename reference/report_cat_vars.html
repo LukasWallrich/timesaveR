@@ -102,7 +102,8 @@ each level and the significance of pairwise comparisons between these means.</p>
 
 <dt>dv</dt>
 <dd><p>The continuous dependent variable to be presented alongside the
-levels of categorical variables</p></dd>
+levels of categorical variables. Set to NULL to just show the distribution of
+the categorical variables.</p></dd>
 
 
 <dt>...</dt>
@@ -183,14 +184,26 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;/head&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;body&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;div id="cfvyqdotiw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;"&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;style&gt;html {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   font-family: times, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;div id="idyrbhxfxm" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;"&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;style&gt;#idyrbhxfxm table {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   font-family: times, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   -webkit-font-smoothing: antialiased;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   -moz-osx-font-smoothing: grayscale;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_table {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm thead, #idyrbhxfxm tbody, #idyrbhxfxm tfoot, #idyrbhxfxm tr, #idyrbhxfxm td, #idyrbhxfxm th {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-style: none;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm p {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   margin: 0;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   padding: 0;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_table {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   display: table;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-collapse: collapse;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   line-height: normal;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   margin-left: auto;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   margin-right: auto;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
@@ -213,24 +226,12 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-left-color: #D3D3D3;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_heading {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   text-align: center;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-color: #FFFFFF;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   border-left-style: none;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   border-left-width: 1px;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   border-left-color: #D3D3D3;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-style: none;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-width: 1px;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-color: #D3D3D3;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_caption {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_caption {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 4px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-bottom: 4px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_title {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_title {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 12px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-weight: initial;</span>
@@ -242,25 +243,37 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-width: 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_subtitle {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_subtitle {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 12px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-weight: initial;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 0;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   padding-bottom: 6px;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 3px;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   padding-bottom: 5px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-left: 5px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 5px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-color: #FFFFFF;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-width: 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_bottom_border {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_heading {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   text-align: center;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-color: #FFFFFF;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-left-style: none;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-left-width: 1px;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-left-color: #D3D3D3;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-style: none;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-width: 1px;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-color: #D3D3D3;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_bottom_border {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-style: solid;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-width: 2px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-color: #000000;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_col_headings {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_col_headings {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-style: none;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-width: 2px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-color: #D3D3D3;</span>
@@ -275,7 +288,7 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-color: #D3D3D3;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_col_heading {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_col_heading {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 100%;</span>
@@ -295,7 +308,7 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   overflow-x: hidden;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_column_spanner_outer {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_column_spanner_outer {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 100%;</span>
@@ -307,15 +320,15 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 4px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_column_spanner_outer:first-child {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_column_spanner_outer:first-child {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-left: 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_column_spanner_outer:last-child {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_column_spanner_outer:last-child {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_column_spanner {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_column_spanner {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-style: solid;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-width: 1px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-color: #000000;</span>
@@ -327,7 +340,11 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   width: 100%;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_group_heading {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_spanner_row {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-style: hidden;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_group_heading {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-bottom: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-left: 5px;</span>
@@ -353,7 +370,7 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-align: left;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_empty_group_heading {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_empty_group_heading {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding: 0.5px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
@@ -368,15 +385,15 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   vertical-align: middle;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_from_md &gt; :first-child {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_from_md &gt; :first-child {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   margin-top: 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_from_md &gt; :last-child {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_from_md &gt; :last-child {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   margin-bottom: 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_row {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_row {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-bottom: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-left: 5px;</span>
@@ -395,7 +412,7 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   overflow-x: hidden;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_stub {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_stub {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 100%;</span>
@@ -408,7 +425,7 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 5px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_stub_row_group {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_stub_row_group {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 100%;</span>
@@ -422,11 +439,15 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   vertical-align: top;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_row_group_first td {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_row_group_first td {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-width: 2px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_summary_row {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_row_group_first th {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-width: 2px;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_summary_row {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-transform: inherit;</span>
@@ -436,16 +457,16 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 5px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_first_summary_row {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_first_summary_row {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-style: none;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-color: #D3D3D3;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_first_summary_row.thick {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_first_summary_row.thick {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-width: 2px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_last_summary_row {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_last_summary_row {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-bottom: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-left: 5px;</span>
@@ -455,7 +476,7 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-color: #D3D3D3;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_grand_summary_row {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_grand_summary_row {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-transform: inherit;</span>
@@ -465,7 +486,7 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 5px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_first_grand_summary_row {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_first_grand_summary_row {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-bottom: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-left: 5px;</span>
@@ -475,11 +496,21 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-color: #D3D3D3;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_striped {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_last_grand_summary_row_top {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 8px;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   padding-bottom: 8px;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   padding-left: 5px;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 5px;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-style: none;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-width: 6px;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-color: #D3D3D3;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_striped {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: rgba(128, 128, 128, 0.05);</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_table_body {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_table_body {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-style: solid;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-width: 1px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-color: #000000;</span>
@@ -488,7 +519,7 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-color: #000000;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_footnotes {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_footnotes {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-style: none;</span>
@@ -502,30 +533,8 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-color: #D3D3D3;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_footnote {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_footnote {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   margin: 0px;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 90%;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   padding-left: 4px;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 4px;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   padding-left: 5px;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 5px;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_sourcenotes {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-style: none;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-width: 2px;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-color: #D3D3D3;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   border-left-style: none;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   border-left-width: 2px;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   border-left-color: #D3D3D3;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-style: none;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-width: 2px;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-color: #D3D3D3;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_sourcenote {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 90%;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 4px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-bottom: 4px;</span>
@@ -533,71 +542,92 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 5px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_left {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_sourcenotes {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-style: none;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-width: 2px;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-color: #D3D3D3;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-left-style: none;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-left-width: 2px;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-left-color: #D3D3D3;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-style: none;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-width: 2px;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-color: #D3D3D3;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_sourcenote {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 90%;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 4px;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   padding-bottom: 4px;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   padding-left: 5px;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 5px;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_left {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-align: left;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_center {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_center {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-align: center;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_right {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_right {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-align: right;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-variant-numeric: tabular-nums;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_font_normal {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_font_normal {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-weight: normal;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_font_bold {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_font_bold {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-weight: bold;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_font_italic {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_font_italic {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-style: italic;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_super {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_super {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 65%;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_footnote_marks {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   font-style: italic;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   font-weight: normal;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_footnote_marks {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 75%;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   vertical-align: 0.4em;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   position: initial;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_asterisk {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_asterisk {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 100%;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   vertical-align: 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_indent_1 {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_indent_1 {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-indent: 5px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_indent_2 {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_indent_2 {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-indent: 10px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_indent_3 {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_indent_3 {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-indent: 15px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_indent_4 {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_indent_4 {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-indent: 20px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #cfvyqdotiw .gt_indent_5 {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #idyrbhxfxm .gt_indent_5 {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-indent: 25px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;/style&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;table class="gt_table"&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;thead class="gt_col_headings"&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;tr&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false"&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;thead&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;tr class="gt_col_headings"&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       &lt;th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id=""&gt;&lt;/th&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       &lt;th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="N"&gt;N&lt;/th&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       &lt;th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Share"&gt;Share&lt;/th&gt;</span>
@@ -647,14 +677,26 @@ the tag should be added to.</p></dd>
 
 
 
-<meta charset="utf-8"><style>body{background-color:white;}</style><div id="cfvyqdotiw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-  <style>html {
-  font-family: times, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+<meta charset="utf-8"><style>body{background-color:white;}</style><div id="idyrbhxfxm" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+  <style>#idyrbhxfxm table {
+  font-family: times, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-#cfvyqdotiw .gt_table {
+#idyrbhxfxm thead, #idyrbhxfxm tbody, #idyrbhxfxm tfoot, #idyrbhxfxm tr, #idyrbhxfxm td, #idyrbhxfxm th {
+  border-style: none;
+}
+
+#idyrbhxfxm p {
+  margin: 0;
+  padding: 0;
+}
+
+#idyrbhxfxm .gt_table {
   display: table;
   border-collapse: collapse;
+  line-height: normal;
   margin-left: auto;
   margin-right: auto;
   color: #333333;
@@ -677,24 +719,12 @@ the tag should be added to.</p></dd>
   border-left-color: #D3D3D3;
 }
 
-#cfvyqdotiw .gt_heading {
-  background-color: #FFFFFF;
-  text-align: center;
-  border-bottom-color: #FFFFFF;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#cfvyqdotiw .gt_caption {
+#idyrbhxfxm .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#cfvyqdotiw .gt_title {
+#idyrbhxfxm .gt_title {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -706,25 +736,37 @@ the tag should be added to.</p></dd>
   border-bottom-width: 0;
 }
 
-#cfvyqdotiw .gt_subtitle {
+#idyrbhxfxm .gt_subtitle {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
-  padding-top: 0;
-  padding-bottom: 6px;
+  padding-top: 3px;
+  padding-bottom: 5px;
   padding-left: 5px;
   padding-right: 5px;
   border-top-color: #FFFFFF;
   border-top-width: 0;
 }
 
-#cfvyqdotiw .gt_bottom_border {
+#idyrbhxfxm .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#idyrbhxfxm .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #000000;
 }
 
-#cfvyqdotiw .gt_col_headings {
+#idyrbhxfxm .gt_col_headings {
   border-top-style: none;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -739,7 +781,7 @@ the tag should be added to.</p></dd>
   border-right-color: #D3D3D3;
 }
 
-#cfvyqdotiw .gt_col_heading {
+#idyrbhxfxm .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -759,7 +801,7 @@ the tag should be added to.</p></dd>
   overflow-x: hidden;
 }
 
-#cfvyqdotiw .gt_column_spanner_outer {
+#idyrbhxfxm .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -771,15 +813,15 @@ the tag should be added to.</p></dd>
   padding-right: 4px;
 }
 
-#cfvyqdotiw .gt_column_spanner_outer:first-child {
+#idyrbhxfxm .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#cfvyqdotiw .gt_column_spanner_outer:last-child {
+#idyrbhxfxm .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#cfvyqdotiw .gt_column_spanner {
+#idyrbhxfxm .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 1px;
   border-bottom-color: #000000;
@@ -791,7 +833,11 @@ the tag should be added to.</p></dd>
   width: 100%;
 }
 
-#cfvyqdotiw .gt_group_heading {
+#idyrbhxfxm .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#idyrbhxfxm .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -817,7 +863,7 @@ the tag should be added to.</p></dd>
   text-align: left;
 }
 
-#cfvyqdotiw .gt_empty_group_heading {
+#idyrbhxfxm .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -832,15 +878,15 @@ the tag should be added to.</p></dd>
   vertical-align: middle;
 }
 
-#cfvyqdotiw .gt_from_md > :first-child {
+#idyrbhxfxm .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#cfvyqdotiw .gt_from_md > :last-child {
+#idyrbhxfxm .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#cfvyqdotiw .gt_row {
+#idyrbhxfxm .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -859,7 +905,7 @@ the tag should be added to.</p></dd>
   overflow-x: hidden;
 }
 
-#cfvyqdotiw .gt_stub {
+#idyrbhxfxm .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -872,7 +918,7 @@ the tag should be added to.</p></dd>
   padding-right: 5px;
 }
 
-#cfvyqdotiw .gt_stub_row_group {
+#idyrbhxfxm .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -886,11 +932,15 @@ the tag should be added to.</p></dd>
   vertical-align: top;
 }
 
-#cfvyqdotiw .gt_row_group_first td {
+#idyrbhxfxm .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#cfvyqdotiw .gt_summary_row {
+#idyrbhxfxm .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#idyrbhxfxm .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -900,16 +950,16 @@ the tag should be added to.</p></dd>
   padding-right: 5px;
 }
 
-#cfvyqdotiw .gt_first_summary_row {
+#idyrbhxfxm .gt_first_summary_row {
   border-top-style: none;
   border-top-color: #D3D3D3;
 }
 
-#cfvyqdotiw .gt_first_summary_row.thick {
+#idyrbhxfxm .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#cfvyqdotiw .gt_last_summary_row {
+#idyrbhxfxm .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -919,7 +969,7 @@ the tag should be added to.</p></dd>
   border-bottom-color: #D3D3D3;
 }
 
-#cfvyqdotiw .gt_grand_summary_row {
+#idyrbhxfxm .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -929,7 +979,7 @@ the tag should be added to.</p></dd>
   padding-right: 5px;
 }
 
-#cfvyqdotiw .gt_first_grand_summary_row {
+#idyrbhxfxm .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -939,11 +989,21 @@ the tag should be added to.</p></dd>
   border-top-color: #D3D3D3;
 }
 
-#cfvyqdotiw .gt_striped {
+#idyrbhxfxm .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: none;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#idyrbhxfxm .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#cfvyqdotiw .gt_table_body {
+#idyrbhxfxm .gt_table_body {
   border-top-style: solid;
   border-top-width: 1px;
   border-top-color: #000000;
@@ -952,7 +1012,7 @@ the tag should be added to.</p></dd>
   border-bottom-color: #000000;
 }
 
-#cfvyqdotiw .gt_footnotes {
+#idyrbhxfxm .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -966,30 +1026,8 @@ the tag should be added to.</p></dd>
   border-right-color: #D3D3D3;
 }
 
-#cfvyqdotiw .gt_footnote {
+#idyrbhxfxm .gt_footnote {
   margin: 0px;
-  font-size: 90%;
-  padding-left: 4px;
-  padding-right: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#cfvyqdotiw .gt_sourcenotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#cfvyqdotiw .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -997,67 +1035,88 @@ the tag should be added to.</p></dd>
   padding-right: 5px;
 }
 
-#cfvyqdotiw .gt_left {
+#idyrbhxfxm .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#idyrbhxfxm .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#idyrbhxfxm .gt_left {
   text-align: left;
 }
 
-#cfvyqdotiw .gt_center {
+#idyrbhxfxm .gt_center {
   text-align: center;
 }
 
-#cfvyqdotiw .gt_right {
+#idyrbhxfxm .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#cfvyqdotiw .gt_font_normal {
+#idyrbhxfxm .gt_font_normal {
   font-weight: normal;
 }
 
-#cfvyqdotiw .gt_font_bold {
+#idyrbhxfxm .gt_font_bold {
   font-weight: bold;
 }
 
-#cfvyqdotiw .gt_font_italic {
+#idyrbhxfxm .gt_font_italic {
   font-style: italic;
 }
 
-#cfvyqdotiw .gt_super {
+#idyrbhxfxm .gt_super {
   font-size: 65%;
 }
 
-#cfvyqdotiw .gt_footnote_marks {
-  font-style: italic;
-  font-weight: normal;
+#idyrbhxfxm .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
+  position: initial;
 }
 
-#cfvyqdotiw .gt_asterisk {
+#idyrbhxfxm .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#cfvyqdotiw .gt_indent_1 {
+#idyrbhxfxm .gt_indent_1 {
   text-indent: 5px;
 }
 
-#cfvyqdotiw .gt_indent_2 {
+#idyrbhxfxm .gt_indent_2 {
   text-indent: 10px;
 }
 
-#cfvyqdotiw .gt_indent_3 {
+#idyrbhxfxm .gt_indent_3 {
   text-indent: 15px;
 }
 
-#cfvyqdotiw .gt_indent_4 {
+#idyrbhxfxm .gt_indent_4 {
   text-indent: 20px;
 }
 
-#cfvyqdotiw .gt_indent_5 {
+#idyrbhxfxm .gt_indent_5 {
   text-indent: 25px;
 }
-</style><table class="table gt_table"><thead class="gt_col_headings"><tr><th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id=""></th>
+</style><table class="table gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false"><thead><tr class="gt_col_headings"><th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id=""></th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="N">N</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Share">Share</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="&lt;em&gt;M (SD)&lt;/em&gt;"><em>M (SD)</em></th>
@@ -1115,14 +1174,26 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;/head&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;body&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;div id="jvryjkxgor" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;"&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;style&gt;html {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   font-family: times, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;div id="vivagdqlho" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;"&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;style&gt;#vivagdqlho table {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   font-family: times, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   -webkit-font-smoothing: antialiased;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   -moz-osx-font-smoothing: grayscale;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_table {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho thead, #vivagdqlho tbody, #vivagdqlho tfoot, #vivagdqlho tr, #vivagdqlho td, #vivagdqlho th {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-style: none;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho p {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   margin: 0;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   padding: 0;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_table {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   display: table;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-collapse: collapse;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   line-height: normal;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   margin-left: auto;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   margin-right: auto;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
@@ -1145,24 +1216,12 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-left-color: #D3D3D3;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_heading {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   text-align: center;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-color: #FFFFFF;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   border-left-style: none;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   border-left-width: 1px;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   border-left-color: #D3D3D3;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-style: none;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-width: 1px;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-color: #D3D3D3;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_caption {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_caption {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 4px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-bottom: 4px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_title {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_title {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 12px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-weight: initial;</span>
@@ -1174,25 +1233,37 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-width: 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_subtitle {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_subtitle {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 12px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-weight: initial;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 0;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   padding-bottom: 6px;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 3px;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   padding-bottom: 5px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-left: 5px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 5px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-color: #FFFFFF;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-width: 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_bottom_border {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_heading {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   text-align: center;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-color: #FFFFFF;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-left-style: none;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-left-width: 1px;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-left-color: #D3D3D3;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-style: none;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-width: 1px;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-color: #D3D3D3;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_bottom_border {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-style: solid;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-width: 2px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-color: #000000;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_col_headings {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_col_headings {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-style: none;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-width: 2px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-color: #D3D3D3;</span>
@@ -1207,7 +1278,7 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-color: #D3D3D3;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_col_heading {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_col_heading {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 100%;</span>
@@ -1227,7 +1298,7 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   overflow-x: hidden;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_column_spanner_outer {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_column_spanner_outer {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 100%;</span>
@@ -1239,15 +1310,15 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 4px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_column_spanner_outer:first-child {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_column_spanner_outer:first-child {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-left: 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_column_spanner_outer:last-child {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_column_spanner_outer:last-child {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_column_spanner {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_column_spanner {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-style: solid;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-width: 1px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-color: #000000;</span>
@@ -1259,7 +1330,11 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   width: 100%;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_group_heading {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_spanner_row {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-style: hidden;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_group_heading {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-bottom: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-left: 5px;</span>
@@ -1285,7 +1360,7 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-align: left;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_empty_group_heading {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_empty_group_heading {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding: 0.5px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
@@ -1300,15 +1375,15 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   vertical-align: middle;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_from_md &gt; :first-child {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_from_md &gt; :first-child {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   margin-top: 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_from_md &gt; :last-child {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_from_md &gt; :last-child {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   margin-bottom: 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_row {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_row {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-bottom: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-left: 5px;</span>
@@ -1327,7 +1402,7 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   overflow-x: hidden;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_stub {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_stub {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 100%;</span>
@@ -1340,7 +1415,7 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 5px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_stub_row_group {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_stub_row_group {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 100%;</span>
@@ -1354,11 +1429,15 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   vertical-align: top;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_row_group_first td {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_row_group_first td {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-width: 2px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_summary_row {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_row_group_first th {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-width: 2px;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_summary_row {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-transform: inherit;</span>
@@ -1368,16 +1447,16 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 5px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_first_summary_row {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_first_summary_row {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-style: none;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-color: #D3D3D3;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_first_summary_row.thick {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_first_summary_row.thick {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-width: 2px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_last_summary_row {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_last_summary_row {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-bottom: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-left: 5px;</span>
@@ -1387,7 +1466,7 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-color: #D3D3D3;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_grand_summary_row {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_grand_summary_row {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-transform: inherit;</span>
@@ -1397,7 +1476,7 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 5px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_first_grand_summary_row {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_first_grand_summary_row {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-bottom: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-left: 5px;</span>
@@ -1407,11 +1486,21 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-color: #D3D3D3;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_striped {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_last_grand_summary_row_top {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 8px;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   padding-bottom: 8px;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   padding-left: 5px;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 5px;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-style: none;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-width: 6px;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-color: #D3D3D3;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_striped {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: rgba(128, 128, 128, 0.05);</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_table_body {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_table_body {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-style: solid;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-width: 1px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-color: #000000;</span>
@@ -1420,7 +1509,7 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-color: #000000;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_footnotes {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_footnotes {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-style: none;</span>
@@ -1434,30 +1523,8 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-color: #D3D3D3;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_footnote {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_footnote {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   margin: 0px;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 90%;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   padding-left: 4px;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 4px;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   padding-left: 5px;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 5px;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_sourcenotes {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-style: none;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-width: 2px;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-color: #D3D3D3;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   border-left-style: none;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   border-left-width: 2px;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   border-left-color: #D3D3D3;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-style: none;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-width: 2px;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-color: #D3D3D3;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_sourcenote {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 90%;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 4px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-bottom: 4px;</span>
@@ -1465,71 +1532,92 @@ the tag should be added to.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 5px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_left {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_sourcenotes {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-style: none;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-width: 2px;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-color: #D3D3D3;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-left-style: none;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-left-width: 2px;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-left-color: #D3D3D3;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-style: none;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-width: 2px;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-color: #D3D3D3;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_sourcenote {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 90%;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 4px;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   padding-bottom: 4px;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   padding-left: 5px;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 5px;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_left {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-align: left;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_center {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_center {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-align: center;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_right {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_right {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-align: right;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-variant-numeric: tabular-nums;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_font_normal {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_font_normal {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-weight: normal;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_font_bold {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_font_bold {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-weight: bold;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_font_italic {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_font_italic {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-style: italic;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_super {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_super {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 65%;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_footnote_marks {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   font-style: italic;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   font-weight: normal;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_footnote_marks {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 75%;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   vertical-align: 0.4em;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   position: initial;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_asterisk {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_asterisk {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 100%;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   vertical-align: 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_indent_1 {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_indent_1 {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-indent: 5px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_indent_2 {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_indent_2 {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-indent: 10px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_indent_3 {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_indent_3 {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-indent: 15px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_indent_4 {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_indent_4 {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-indent: 20px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #jvryjkxgor .gt_indent_5 {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #vivagdqlho .gt_indent_5 {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-indent: 25px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;/style&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;table class="gt_table"&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;thead class="gt_col_headings"&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;tr&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false"&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;thead&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;tr class="gt_col_headings"&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       &lt;th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id=""&gt;&lt;/th&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       &lt;th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="N"&gt;N&lt;/th&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       &lt;th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Share"&gt;Share&lt;/th&gt;</span>
@@ -1596,14 +1684,26 @@ the tag should be added to.</p></dd>
 
 
 
-<meta charset="utf-8"><style>body{background-color:white;}</style><div id="jvryjkxgor" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-  <style>html {
-  font-family: times, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+<meta charset="utf-8"><style>body{background-color:white;}</style><div id="vivagdqlho" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+  <style>#vivagdqlho table {
+  font-family: times, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-#jvryjkxgor .gt_table {
+#vivagdqlho thead, #vivagdqlho tbody, #vivagdqlho tfoot, #vivagdqlho tr, #vivagdqlho td, #vivagdqlho th {
+  border-style: none;
+}
+
+#vivagdqlho p {
+  margin: 0;
+  padding: 0;
+}
+
+#vivagdqlho .gt_table {
   display: table;
   border-collapse: collapse;
+  line-height: normal;
   margin-left: auto;
   margin-right: auto;
   color: #333333;
@@ -1626,24 +1726,12 @@ the tag should be added to.</p></dd>
   border-left-color: #D3D3D3;
 }
 
-#jvryjkxgor .gt_heading {
-  background-color: #FFFFFF;
-  text-align: center;
-  border-bottom-color: #FFFFFF;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#jvryjkxgor .gt_caption {
+#vivagdqlho .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#jvryjkxgor .gt_title {
+#vivagdqlho .gt_title {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -1655,25 +1743,37 @@ the tag should be added to.</p></dd>
   border-bottom-width: 0;
 }
 
-#jvryjkxgor .gt_subtitle {
+#vivagdqlho .gt_subtitle {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
-  padding-top: 0;
-  padding-bottom: 6px;
+  padding-top: 3px;
+  padding-bottom: 5px;
   padding-left: 5px;
   padding-right: 5px;
   border-top-color: #FFFFFF;
   border-top-width: 0;
 }
 
-#jvryjkxgor .gt_bottom_border {
+#vivagdqlho .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#vivagdqlho .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #000000;
 }
 
-#jvryjkxgor .gt_col_headings {
+#vivagdqlho .gt_col_headings {
   border-top-style: none;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1688,7 +1788,7 @@ the tag should be added to.</p></dd>
   border-right-color: #D3D3D3;
 }
 
-#jvryjkxgor .gt_col_heading {
+#vivagdqlho .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1708,7 +1808,7 @@ the tag should be added to.</p></dd>
   overflow-x: hidden;
 }
 
-#jvryjkxgor .gt_column_spanner_outer {
+#vivagdqlho .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1720,15 +1820,15 @@ the tag should be added to.</p></dd>
   padding-right: 4px;
 }
 
-#jvryjkxgor .gt_column_spanner_outer:first-child {
+#vivagdqlho .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#jvryjkxgor .gt_column_spanner_outer:last-child {
+#vivagdqlho .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#jvryjkxgor .gt_column_spanner {
+#vivagdqlho .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 1px;
   border-bottom-color: #000000;
@@ -1740,7 +1840,11 @@ the tag should be added to.</p></dd>
   width: 100%;
 }
 
-#jvryjkxgor .gt_group_heading {
+#vivagdqlho .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#vivagdqlho .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1766,7 +1870,7 @@ the tag should be added to.</p></dd>
   text-align: left;
 }
 
-#jvryjkxgor .gt_empty_group_heading {
+#vivagdqlho .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1781,15 +1885,15 @@ the tag should be added to.</p></dd>
   vertical-align: middle;
 }
 
-#jvryjkxgor .gt_from_md > :first-child {
+#vivagdqlho .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#jvryjkxgor .gt_from_md > :last-child {
+#vivagdqlho .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#jvryjkxgor .gt_row {
+#vivagdqlho .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1808,7 +1912,7 @@ the tag should be added to.</p></dd>
   overflow-x: hidden;
 }
 
-#jvryjkxgor .gt_stub {
+#vivagdqlho .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1821,7 +1925,7 @@ the tag should be added to.</p></dd>
   padding-right: 5px;
 }
 
-#jvryjkxgor .gt_stub_row_group {
+#vivagdqlho .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1835,11 +1939,15 @@ the tag should be added to.</p></dd>
   vertical-align: top;
 }
 
-#jvryjkxgor .gt_row_group_first td {
+#vivagdqlho .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#jvryjkxgor .gt_summary_row {
+#vivagdqlho .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#vivagdqlho .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1849,16 +1957,16 @@ the tag should be added to.</p></dd>
   padding-right: 5px;
 }
 
-#jvryjkxgor .gt_first_summary_row {
+#vivagdqlho .gt_first_summary_row {
   border-top-style: none;
   border-top-color: #D3D3D3;
 }
 
-#jvryjkxgor .gt_first_summary_row.thick {
+#vivagdqlho .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#jvryjkxgor .gt_last_summary_row {
+#vivagdqlho .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1868,7 +1976,7 @@ the tag should be added to.</p></dd>
   border-bottom-color: #D3D3D3;
 }
 
-#jvryjkxgor .gt_grand_summary_row {
+#vivagdqlho .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1878,7 +1986,7 @@ the tag should be added to.</p></dd>
   padding-right: 5px;
 }
 
-#jvryjkxgor .gt_first_grand_summary_row {
+#vivagdqlho .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1888,11 +1996,21 @@ the tag should be added to.</p></dd>
   border-top-color: #D3D3D3;
 }
 
-#jvryjkxgor .gt_striped {
+#vivagdqlho .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: none;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#vivagdqlho .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#jvryjkxgor .gt_table_body {
+#vivagdqlho .gt_table_body {
   border-top-style: solid;
   border-top-width: 1px;
   border-top-color: #000000;
@@ -1901,7 +2019,7 @@ the tag should be added to.</p></dd>
   border-bottom-color: #000000;
 }
 
-#jvryjkxgor .gt_footnotes {
+#vivagdqlho .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1915,30 +2033,8 @@ the tag should be added to.</p></dd>
   border-right-color: #D3D3D3;
 }
 
-#jvryjkxgor .gt_footnote {
+#vivagdqlho .gt_footnote {
   margin: 0px;
-  font-size: 90%;
-  padding-left: 4px;
-  padding-right: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#jvryjkxgor .gt_sourcenotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#jvryjkxgor .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1946,67 +2042,88 @@ the tag should be added to.</p></dd>
   padding-right: 5px;
 }
 
-#jvryjkxgor .gt_left {
+#vivagdqlho .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#vivagdqlho .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vivagdqlho .gt_left {
   text-align: left;
 }
 
-#jvryjkxgor .gt_center {
+#vivagdqlho .gt_center {
   text-align: center;
 }
 
-#jvryjkxgor .gt_right {
+#vivagdqlho .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#jvryjkxgor .gt_font_normal {
+#vivagdqlho .gt_font_normal {
   font-weight: normal;
 }
 
-#jvryjkxgor .gt_font_bold {
+#vivagdqlho .gt_font_bold {
   font-weight: bold;
 }
 
-#jvryjkxgor .gt_font_italic {
+#vivagdqlho .gt_font_italic {
   font-style: italic;
 }
 
-#jvryjkxgor .gt_super {
+#vivagdqlho .gt_super {
   font-size: 65%;
 }
 
-#jvryjkxgor .gt_footnote_marks {
-  font-style: italic;
-  font-weight: normal;
+#vivagdqlho .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
+  position: initial;
 }
 
-#jvryjkxgor .gt_asterisk {
+#vivagdqlho .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#jvryjkxgor .gt_indent_1 {
+#vivagdqlho .gt_indent_1 {
   text-indent: 5px;
 }
 
-#jvryjkxgor .gt_indent_2 {
+#vivagdqlho .gt_indent_2 {
   text-indent: 10px;
 }
 
-#jvryjkxgor .gt_indent_3 {
+#vivagdqlho .gt_indent_3 {
   text-indent: 15px;
 }
 
-#jvryjkxgor .gt_indent_4 {
+#vivagdqlho .gt_indent_4 {
   text-indent: 20px;
 }
 
-#jvryjkxgor .gt_indent_5 {
+#vivagdqlho .gt_indent_5 {
   text-indent: 25px;
 }
-</style><table class="table gt_table"><thead class="gt_col_headings"><tr><th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id=""></th>
+</style><table class="table gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false"><thead><tr class="gt_col_headings"><th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id=""></th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="N">N</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Share">Share</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="&lt;em&gt;M (SD)&lt;/em&gt;"><em>M (SD)</em></th>
