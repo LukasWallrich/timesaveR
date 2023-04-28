@@ -45,7 +45,9 @@ the mediator, the graph code needs to be adjusted manually.
 \examples{
 plot <- plot_moderated_mediation(X = "Training", M = "Self-Efficacy", 
   W = "Motivation", Y = "Performance", CV = "Age, Gender", 
-  mod_direct_path = TRUE, labels = list(a = "+", b = "+", c = "+", a_mod = "+", c_mod = "+"), filename = NULL)
+  mod_direct_path = TRUE, labels = list(a = "+", b = "+", c = "+", 
+                                        a_mod = "+", c_mod = "+"), 
+                                        filename = NULL)
 
 # Show the graph
 plot$graph
