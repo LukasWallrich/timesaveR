@@ -28,8 +28,11 @@
 #' # Might the link between depression and self-reported health be partly explained
 #' # by reductions in physical activity level, when holding age constant?
 #'  
+#'  set.seed(4321)
 #'  res <- run_mediation(ess_health, fltdpr, health, dosprt, agea, bootstraps = 50) 
-#' 
+#'  # Note that high number of bootstraps fails - in that case, CIs might not be reliable - 
+#'  # this is likely due to the limited range of the variables here
+#'  
 #'  res
 #'  
 #'  attr(res, "CV_coefficients")
@@ -42,6 +45,11 @@ run_mediation <- function(data, X, Y, Ms, CVs = NULL, standardized_all = TRUE,
 
   .check_req_packages(c("lavaan"))
 
+  if (packageVersion("lavaan") > "0.6.12") {
+    message('Due to a bug in lavaan, run_mediation might not currently be stable - see https://github.com/yrosseel/lavaan/issues/275.
+            Specify missing = "listwise" or estimator = "ML" as a workaround')
+  }
+  
   args <- as.list(match.call(sys.function(1), sys.call(1), expand.dots = TRUE))[-1]
   if ("conf.level" %in% names(args)) {
     stop("The confidence level needs to be specified as conf_level, NOT conf.level")
@@ -123,12 +131,12 @@ run_mediation <- function(data, X, Y, Ms, CVs = NULL, standardized_all = TRUE,
   lavaansem <- function(...) {
     lavaan::sem(...)
   }
-
-
   fit <- do.call(lavaansem, dots)
 
   bs <- lavaan::bootstrapLavaan(fit, R = bootstraps, FUN = "coef", parallel = "snow") %>%
-    data.frame()
+    data.frame() %>% 
+    # Drop unsuccessful bootstraps
+    tidyr::drop_na()
 
   bs_CVs <- bs %>% 
     dplyr::select(dplyr::matches(paste0(paste0("\\.", CVs_string), collapse = "|")), -dplyr::matches("\\.\\.")) %>%
