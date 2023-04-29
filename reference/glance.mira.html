@@ -67,13 +67,17 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for mira</span></span>
-<span><span class="fu"><a href="https://generics.r-lib.org/reference/glance.html" class="external-link">glance</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://generics.r-lib.org/reference/glance.html" class="external-link">glance</a></span><span class="op">(</span><span class="va">x</span>, adj_R2 <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>An object with multiply-imputed models from <code>mice</code> (class: <code>mira</code>)</p></dd>
+
+
+<dt>adj_R2</dt>
+<dd><p>Should an adjusted R2 be returned as well? Only applicable if x contains <code>lm</code>-models</p></dd>
 
 
 <dt>...</dt>
