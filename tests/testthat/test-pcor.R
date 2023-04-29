@@ -1,7 +1,7 @@
 
 
 test_that("pcor_matrix works", {
-  expect_warning(out <- pcor_matrix(ess_health, given = c("agea", "gndr"), 
+  expect_warning(out <- pcor_matrix(timesaveR::ess_health, given = c("agea", "gndr"), 
               var_names = c("health" = "Health", "weight" = "Weight", "dosprt" = "Sport")) %>% tidy(both_directions = FALSE))
   check_tibble(out, any.missing = FALSE)
   expect_true(all(c("column1", "column2", "estimate", "std.error", "p.value", "conf.low", "conf.high", "n", "statistic") %in% names(out)), label = "Test of column names")

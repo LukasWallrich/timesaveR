@@ -31,7 +31,7 @@ test_that("scales works", {
 library(mice)
 library(dplyr)
 set.seed(300688)
-ess_health <- timesaveR::ess_health %>% sample_n(100) %>% select(cgtsmke, dosprt, health)
+ess_health <- timesaveR::ess_health %>% sample_n(100) %>% dplyr::select(cgtsmke, dosprt, health)
 add_missing <- function(x) {x[!rbinom(length(x), 1, .9)] <- NA; x}
 ess_health <- ess_health %>% mutate(across(everything(), add_missing))
 

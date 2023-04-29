@@ -87,8 +87,8 @@ test_that("get_rename_tribbles works", {
 test_that("NA helper works", {
   expect_equal(na_share(c(1,2,3,NA), 1), .2)
   expect_equal(na_ifs(LETTERS, c("A", "D"))[1:4], c(NA, "B", "C", NA))
-  expect_equal(na_when(x, x < 0, x > 2), c(NA, NA, NA, 0, 1, 2, NA))
   x <- -3:3
+  expect_equal(na_when(x, x < 0, x > 2), c(NA, NA, NA, 0, 1, 2, NA))
   expect_equal(na_when(x, x < 0, x %% 2 == 1, operator = "&"), c(NA, -2, NA, 0, 1, 2, 3))
 })
 

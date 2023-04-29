@@ -100,7 +100,7 @@ fmt_cor <- function(cor_value, digits = 2) {
 fmt_ci <- function(lower, upper, digits = 2, drop_0 = FALSE) {
   assert_numeric(lower)
   assert_numeric(upper)
-  if (any(lower > upper)) stop("All values in lower must be smaller than the corresponding values in upper.")
+  if (!any(lower > upper) %in% c(NA, FALSE)) stop("All values in lower must be smaller than the corresponding values in upper.")
   if (!(length(lower) == length(upper))) stop("lower and upper must have the same length.")
   assert_count(digits)
   if (drop_0) {

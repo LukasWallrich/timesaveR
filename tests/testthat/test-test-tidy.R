@@ -14,7 +14,7 @@ test_that("reject conf_level", {
   expect_error(tidy(x, conf_level == .9))
 })
 
-ess_survey <- srvyr::as_survey(ess_health %>% dplyr::select("agea", "health", "dosprt", "pweight"),
+ess_survey <- srvyr::as_survey(timesaveR::ess_health %>% dplyr::select("agea", "health", "dosprt", "pweight"),
                                weights = pweight)
 
 set.seed(1234)

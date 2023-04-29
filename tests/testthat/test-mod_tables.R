@@ -12,7 +12,7 @@ mod2 <- with(imp, lm_std(bmi ~ age))
 
 tab <- report_lm_with_std(mod1, mod2)
 
-test_that("mira accepted", {
+test_that("mira accepted by report_lm_with_std", {
   expect_equal(tab$gt_tab$`_data`$Model1[1], "29.78 (2.59)***")
 })
 

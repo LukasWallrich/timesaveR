@@ -449,7 +449,7 @@ get_pairwise_letters <- function(tests,
   }
 
   dat_letters %<>% dplyr::select(-dplyr::matches("^\\.")) %>%
-    tidyr::unite("letters", -.data$dat_level, sep = "", remove = FALSE, na.rm = TRUE) %>%
+    tidyr::unite("letters", -"dat_level", sep = "", remove = FALSE, na.rm = TRUE) %>%
     dplyr::rename(level = "dat_level")
 
   return(tibble::as_tibble(dat_letters))

@@ -100,7 +100,7 @@ if (!("lm" %in% class(mod_std[[1]]) || ("mira" %in% class(mod_std[[1]]) &&
     mods[[i * 2]] <- mod_std[[i]]
     stat_list[[i * 2]] <- CIs[[i]]
   }
-
+  
   names(mods) <- paste0("Model", seq_len(length(mods)))
 
   col_labels <- rep(list(gt::md("*<center>B (SE)</center>*"), gt::md("*<center>&beta; [95% CI]</center>*")), times = length(mod)) %>% stats::setNames(names(mods))
@@ -147,11 +147,10 @@ if (!("lm" %in% class(mod_std[[1]]) || ("mira" %in% class(mod_std[[1]]) &&
 
   code <- character()
 
-
   row <- '<tr style="border-top-style: solid; border-top-width: 2px;">
     <td class="gt_row gt_left" rowspan="1" colspan="1">  <em>N     </td>'
 
-  Ns <- purrr::map(mod, ~broom::glance(.x)["nobs"])
+  Ns <- purrr::map(mod, ~broom::glance(.x, adj_R2 = FALSE)["nobs"])
   
   sums <- paste(purrr::map(Ns, function(x) {
     glue::glue('<td class="gt_row gt_center" rowspan="1" colspan="2"> {x$nobs}   </td>')
@@ -162,7 +161,7 @@ if (!("lm" %in% class(mod_std[[1]]) || ("mira" %in% class(mod_std[[1]]) &&
   row <- '<tr>
     <td class="gt_row gt_left" rowspan="1" colspan="1">  <em>R<sup>2</sup>     </td>'
 
-  R2s <- purrr::map(mod, ~broom::glance(.x)["r.squared"])
+  R2s <- purrr::map(mod, ~broom::glance(.x, adj_R2 = FALSE)["r.squared"])
   
   sums <- paste(purrr::map(R2s, function(x) {
     glue::glue('<td class="gt_row gt_center" rowspan="1" colspan="2"> {fmt_cor(as.numeric(x$r.squared))}   </td>')
@@ -503,6 +502,7 @@ tidy.mira <- function(x, conf.int = TRUE, conf.level = .95, ...) {
 #' Note that the `mice` authors prefer to tidy `mipo` rather than `mira` objects and have now included `tidy.mipo` and `glance.mipo` into their package. The `mira` functions here are mostly retained for compatibility with my earlier code.
 #'
 #' @param x An object with multiply-imputed models from `mice` (class: `mira`)
+#' @param adj_R2 Should an adjusted R2 be returned as well? Only applicable if x contains `lm`-models
 #' @param ... extra arguments (not used)
 #' @return a tibble with one row
 #'
@@ -521,12 +521,14 @@ tidy.mira <- function(x, conf.int = TRUE, conf.level = .95, ...) {
 #' @export
 #' @method glance mira
 
-glance.mira <- function(x, ...) {
+glance.mira <- function(x, adj_R2 = TRUE, ...) {
   out <- tibble::tibble("nimp" = length(x$analyses))
   out$nobs <- tryCatch(stats::nobs(x$analyses[[1]]), error = function(e) NULL)
   if (class(x$analyses[[1]])[1] == "lm") {
     out$r.squared <- mice::pool.r.squared(x, adjusted = FALSE)[1]
-    out$adj.r.squared <- mice::pool.r.squared(x, adjusted = TRUE)[1]
+    if (adj_R2) {
+      out$adj.r.squared <- mice::pool.r.squared(x, adjusted = TRUE)[1]
+    }
   }
   return(out)
 }
