@@ -18,9 +18,6 @@ before the correlation table is calculated.}
     \item{\code{var_names}}{A named character vector with new variable names or a tibble as provided by \code{\link[=get_rename_tribbles]{get_rename_tribbles()}}
 for variables. If NULL, then the variables are not renamed. If names are provided, only the variables included here are retained.
 This is most helpful when the results are passed to some print function, such as \code{\link[=report_cor_table]{report_cor_table()}}}
-    \item{\code{missing}}{How should missing data be dealt with? Options are "pairwise" deletion, "listwise" deletion or "fiml" for full
-information maximum likelihood estimation of the correlation table. Note that if you use "fiml", this will also be applied to
-the estimation of means and standard deviations.}
     \item{\code{conf_level}}{Confidence level to use for confidence intervals, defaults to .95}
     \item{\code{bootstrap}}{When using FIML estimation (with missing = "fiml"), significance tests and confidence
 intervals can be bootstrapped. If you want to do that, pass the number of desired bootstrap resamples
@@ -31,5 +28,15 @@ intervals can be bootstrapped. If you want to do that, pass the number of desire
 }
 \description{
 This returns a matrix aligned with the \code{cor_matrix()} function after parceling
-out the effect of one or more other variables.
+out the effect of one or more other variables. This function requires complete data;
+incomplete cases are dropped with a warning.
+}
+\examples{
+
+# One might want to estimate correlations between health and possible predictors in the ESS
+# after parceling out / controling for key demographic attributes:
+pcor_matrix(ess_health, given = c("agea", "gndr"), 
+   var_names = c("health" = "Health", "weight" = "Weight", "dosprt" = "Sport")) \%>\% 
+   tidy(both_directions = FALSE)
+
 }

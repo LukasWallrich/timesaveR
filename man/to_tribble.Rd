@@ -4,7 +4,7 @@
 \alias{to_tribble}
 \title{Convert a tibble/dataframe to tribble code}
 \usage{
-to_tribble(x, show = FALSE, digits = 5)
+to_tribble(x, show = FALSE, digits = 5, to_clip = interactive())
 }
 \arguments{
 \item{x}{The tibble/dataframe to be converted into tribble code}
@@ -12,6 +12,8 @@ to_tribble(x, show = FALSE, digits = 5)
 \item{show}{Logical. Print code (otherwise, returned - print with \code{cat()} to get linebreaks etc)}
 
 \item{digits}{Number of digits to round numeric columns to.}
+
+\item{to_clip}{Should code for vector be copied into clipboard? Defaults to TRUE in interactive use, but only works when \code{clipr} package is installed}
 }
 \description{
 Tribbles are an easy way to legibly input data, and therefore helpful for teaching
@@ -20,5 +22,5 @@ a tibble and returns code that can recreate it. Note that this function converts
 "NA" to NA and converts factors to characters to retain the levels.
 }
 \examples{
-to_tribble(mtcars, show = TRUE)
+to_tribble(mtcars[1:5, 1:3], show = TRUE)
 }
