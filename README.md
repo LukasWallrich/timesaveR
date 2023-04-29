@@ -8,6 +8,7 @@
 [![R-CMD-check](https://github.com/LukasWallrich/timesaveR/workflows/R-CMD-check/badge.svg)](https://github.com/LukasWallrich/timesaveR/actions)
 [![Codecov test
 coverage](https://codecov.io/gh/LukasWallrich/timesaveR/branch/master/graph/badge.svg)](https://app.codecov.io/gh/LukasWallrich/timesaveR?branch=master)
+[![Lifecycle:Maturing](https://img.shields.io/badge/Lifecycle-Maturing-007EC6)](https://github.com/LukasWallrich/timesaveR)
 <!-- badges: end -->
 
 This package aims to speed up research projects in social psychology
