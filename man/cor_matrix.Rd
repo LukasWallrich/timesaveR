@@ -15,7 +15,8 @@ cor_matrix(
   conf_level = 0.95,
   method = c("pearson", "spearman", "kendall"),
   adjust = "none",
-  bootstrap = NULL
+  bootstrap = NULL,
+  seed = NULL
 )
 }
 \arguments{
@@ -38,6 +39,8 @@ the estimation of means and standard deviations.}
 \item{bootstrap}{When using FIML estimation (with missing = "fiml"), significance tests and confidence
 intervals can be bootstrapped. If you want to do that, pass the number of desired bootstrap resamples
 (e.g., 5000) to this parameter, but beware that this can take a while.}
+
+\item{seed}{Pass an integer to set the seed for bootstrapping and thus make this reproducible}
 }
 \value{
 A list including the correlation matrix, p-values, standard errors, t-values, pairwise number of observations, confidence intervals, descriptives and (if var_names was provided) a tibble with old and new variable names
