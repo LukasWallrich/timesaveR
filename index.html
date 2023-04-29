@@ -5,8 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Functions to Accelerate (Academic) Data Analysis and
-    Reporting • timesaveR</title>
+<title>Functions to Accelerate (Academic) Data Analysis and Reporting • timesaveR</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="apple-touch-icon.png">
@@ -18,14 +17,13 @@
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="Functions to Accelerate (Academic) Data Analysis and
-    Reporting">
-<meta property="og:description" content="Functions and templates in this package facilitate
-    common tasks in the course of most research projects in social
-    psychology and related fields. These include creating scales,
-    reporting descriptive statistics, correlations and distributions,
-    reporting linear regression models with standardized coefficients and
-    F-change comparisons, as well as plotting mediation models.">
+<script src="pkgdown.js"></script><meta property="og:title" content="Functions to Accelerate (Academic) Data Analysis and Reporting">
+<meta property="og:description" content="Functions and templates in this package facilitate common
+    tasks in the course of most research projects in social psychology and
+    related fields. These include creating scales, reporting descriptive
+    statistics, correlations and distributions, reporting linear
+    regression models with standardized coefficients and F-change
+    comparisons, as well as plotting mediation models.">
 <meta property="og:image" content="https://lukaswallrich.github.io/timesaveR/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -195,23 +193,23 @@
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ess_health</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">agea</span>, <span class="va">health</span>, <span class="va">depression</span>, <span class="va">healthy_eating</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>    <span class="fu"><a href="reference/cor_matrix.html">cor_matrix</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="reference/report_cor_table.html">report_cor_table</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div id="codfqivukn" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#codfqivukn table {
+<div id="rswoebcgeq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#rswoebcgeq table {
   font-family: times, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#codfqivukn thead, #codfqivukn tbody, #codfqivukn tfoot, #codfqivukn tr, #codfqivukn td, #codfqivukn th {
+#rswoebcgeq thead, #rswoebcgeq tbody, #rswoebcgeq tfoot, #rswoebcgeq tr, #rswoebcgeq td, #rswoebcgeq th {
   border-style: none;
 }
 
-#codfqivukn p {
+#rswoebcgeq p {
   margin: 0;
   padding: 0;
 }
 
-#codfqivukn .gt_table {
+#rswoebcgeq .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -237,12 +235,12 @@
   border-left-color: #D3D3D3;
 }
 
-#codfqivukn .gt_caption {
+#rswoebcgeq .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#codfqivukn .gt_title {
+#rswoebcgeq .gt_title {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -254,7 +252,7 @@
   border-bottom-width: 0;
 }
 
-#codfqivukn .gt_subtitle {
+#rswoebcgeq .gt_subtitle {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -266,7 +264,7 @@
   border-top-width: 0;
 }
 
-#codfqivukn .gt_heading {
+#rswoebcgeq .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -278,13 +276,13 @@
   border-right-color: #D3D3D3;
 }
 
-#codfqivukn .gt_bottom_border {
+#rswoebcgeq .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #000000;
 }
 
-#codfqivukn .gt_col_headings {
+#rswoebcgeq .gt_col_headings {
   border-top-style: none;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -299,7 +297,7 @@
   border-right-color: #D3D3D3;
 }
 
-#codfqivukn .gt_col_heading {
+#rswoebcgeq .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -319,7 +317,7 @@
   overflow-x: hidden;
 }
 
-#codfqivukn .gt_column_spanner_outer {
+#rswoebcgeq .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -331,15 +329,15 @@
   padding-right: 4px;
 }
 
-#codfqivukn .gt_column_spanner_outer:first-child {
+#rswoebcgeq .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#codfqivukn .gt_column_spanner_outer:last-child {
+#rswoebcgeq .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#codfqivukn .gt_column_spanner {
+#rswoebcgeq .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 1px;
   border-bottom-color: #000000;
@@ -351,11 +349,11 @@
   width: 100%;
 }
 
-#codfqivukn .gt_spanner_row {
+#rswoebcgeq .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#codfqivukn .gt_group_heading {
+#rswoebcgeq .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -381,7 +379,7 @@
   text-align: left;
 }
 
-#codfqivukn .gt_empty_group_heading {
+#rswoebcgeq .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -396,15 +394,15 @@
   vertical-align: middle;
 }
 
-#codfqivukn .gt_from_md > :first-child {
+#rswoebcgeq .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#codfqivukn .gt_from_md > :last-child {
+#rswoebcgeq .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#codfqivukn .gt_row {
+#rswoebcgeq .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -423,7 +421,7 @@
   overflow-x: hidden;
 }
 
-#codfqivukn .gt_stub {
+#rswoebcgeq .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -436,7 +434,7 @@
   padding-right: 5px;
 }
 
-#codfqivukn .gt_stub_row_group {
+#rswoebcgeq .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -450,15 +448,15 @@
   vertical-align: top;
 }
 
-#codfqivukn .gt_row_group_first td {
+#rswoebcgeq .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#codfqivukn .gt_row_group_first th {
+#rswoebcgeq .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#codfqivukn .gt_summary_row {
+#rswoebcgeq .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -468,16 +466,16 @@
   padding-right: 5px;
 }
 
-#codfqivukn .gt_first_summary_row {
+#rswoebcgeq .gt_first_summary_row {
   border-top-style: none;
   border-top-color: #D3D3D3;
 }
 
-#codfqivukn .gt_first_summary_row.thick {
+#rswoebcgeq .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#codfqivukn .gt_last_summary_row {
+#rswoebcgeq .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -487,7 +485,7 @@
   border-bottom-color: #D3D3D3;
 }
 
-#codfqivukn .gt_grand_summary_row {
+#rswoebcgeq .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -497,7 +495,7 @@
   padding-right: 5px;
 }
 
-#codfqivukn .gt_first_grand_summary_row {
+#rswoebcgeq .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -507,7 +505,7 @@
   border-top-color: #D3D3D3;
 }
 
-#codfqivukn .gt_last_grand_summary_row_top {
+#rswoebcgeq .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -517,11 +515,11 @@
   border-bottom-color: #D3D3D3;
 }
 
-#codfqivukn .gt_striped {
+#rswoebcgeq .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#codfqivukn .gt_table_body {
+#rswoebcgeq .gt_table_body {
   border-top-style: solid;
   border-top-width: 1px;
   border-top-color: #000000;
@@ -530,7 +528,7 @@
   border-bottom-color: #000000;
 }
 
-#codfqivukn .gt_footnotes {
+#rswoebcgeq .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -544,7 +542,7 @@
   border-right-color: #D3D3D3;
 }
 
-#codfqivukn .gt_footnote {
+#rswoebcgeq .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -553,7 +551,7 @@
   padding-right: 5px;
 }
 
-#codfqivukn .gt_sourcenotes {
+#rswoebcgeq .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -567,7 +565,7 @@
   border-right-color: #D3D3D3;
 }
 
-#codfqivukn .gt_sourcenote {
+#rswoebcgeq .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -575,63 +573,63 @@
   padding-right: 5px;
 }
 
-#codfqivukn .gt_left {
+#rswoebcgeq .gt_left {
   text-align: left;
 }
 
-#codfqivukn .gt_center {
+#rswoebcgeq .gt_center {
   text-align: center;
 }
 
-#codfqivukn .gt_right {
+#rswoebcgeq .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#codfqivukn .gt_font_normal {
+#rswoebcgeq .gt_font_normal {
   font-weight: normal;
 }
 
-#codfqivukn .gt_font_bold {
+#rswoebcgeq .gt_font_bold {
   font-weight: bold;
 }
 
-#codfqivukn .gt_font_italic {
+#rswoebcgeq .gt_font_italic {
   font-style: italic;
 }
 
-#codfqivukn .gt_super {
+#rswoebcgeq .gt_super {
   font-size: 65%;
 }
 
-#codfqivukn .gt_footnote_marks {
+#rswoebcgeq .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#codfqivukn .gt_asterisk {
+#rswoebcgeq .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#codfqivukn .gt_indent_1 {
+#rswoebcgeq .gt_indent_1 {
   text-indent: 5px;
 }
 
-#codfqivukn .gt_indent_2 {
+#rswoebcgeq .gt_indent_2 {
   text-indent: 10px;
 }
 
-#codfqivukn .gt_indent_3 {
+#rswoebcgeq .gt_indent_3 {
   text-indent: 15px;
 }
 
-#codfqivukn .gt_indent_4 {
+#rswoebcgeq .gt_indent_4 {
   text-indent: 20px;
 }
 
-#codfqivukn .gt_indent_5 {
+#rswoebcgeq .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -817,23 +815,23 @@ healthy_eating
 “agea”, “Age”,<br>
 “health”, “Poor health”, “depression”, “Depression”, “healthy_eating”, “Healthy eating”, )</p>
 #A rename tibble or vector automatically only selects the variables included into it ess_health %&gt;% cor_matrix(var_names = var_renames) %&gt;% report_cor_table()
-<div id="fhahhqxktv" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#fhahhqxktv table {
+<div id="bpsgcqvfgq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#bpsgcqvfgq table {
   font-family: times, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#fhahhqxktv thead, #fhahhqxktv tbody, #fhahhqxktv tfoot, #fhahhqxktv tr, #fhahhqxktv td, #fhahhqxktv th {
+#bpsgcqvfgq thead, #bpsgcqvfgq tbody, #bpsgcqvfgq tfoot, #bpsgcqvfgq tr, #bpsgcqvfgq td, #bpsgcqvfgq th {
   border-style: none;
 }
 
-#fhahhqxktv p {
+#bpsgcqvfgq p {
   margin: 0;
   padding: 0;
 }
 
-#fhahhqxktv .gt_table {
+#bpsgcqvfgq .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -859,12 +857,12 @@ healthy_eating
   border-left-color: #D3D3D3;
 }
 
-#fhahhqxktv .gt_caption {
+#bpsgcqvfgq .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#fhahhqxktv .gt_title {
+#bpsgcqvfgq .gt_title {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -876,7 +874,7 @@ healthy_eating
   border-bottom-width: 0;
 }
 
-#fhahhqxktv .gt_subtitle {
+#bpsgcqvfgq .gt_subtitle {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -888,7 +886,7 @@ healthy_eating
   border-top-width: 0;
 }
 
-#fhahhqxktv .gt_heading {
+#bpsgcqvfgq .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -900,13 +898,13 @@ healthy_eating
   border-right-color: #D3D3D3;
 }
 
-#fhahhqxktv .gt_bottom_border {
+#bpsgcqvfgq .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #000000;
 }
 
-#fhahhqxktv .gt_col_headings {
+#bpsgcqvfgq .gt_col_headings {
   border-top-style: none;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -921,7 +919,7 @@ healthy_eating
   border-right-color: #D3D3D3;
 }
 
-#fhahhqxktv .gt_col_heading {
+#bpsgcqvfgq .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -941,7 +939,7 @@ healthy_eating
   overflow-x: hidden;
 }
 
-#fhahhqxktv .gt_column_spanner_outer {
+#bpsgcqvfgq .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -953,15 +951,15 @@ healthy_eating
   padding-right: 4px;
 }
 
-#fhahhqxktv .gt_column_spanner_outer:first-child {
+#bpsgcqvfgq .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#fhahhqxktv .gt_column_spanner_outer:last-child {
+#bpsgcqvfgq .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#fhahhqxktv .gt_column_spanner {
+#bpsgcqvfgq .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 1px;
   border-bottom-color: #000000;
@@ -973,11 +971,11 @@ healthy_eating
   width: 100%;
 }
 
-#fhahhqxktv .gt_spanner_row {
+#bpsgcqvfgq .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#fhahhqxktv .gt_group_heading {
+#bpsgcqvfgq .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1003,7 +1001,7 @@ healthy_eating
   text-align: left;
 }
 
-#fhahhqxktv .gt_empty_group_heading {
+#bpsgcqvfgq .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1018,15 +1016,15 @@ healthy_eating
   vertical-align: middle;
 }
 
-#fhahhqxktv .gt_from_md > :first-child {
+#bpsgcqvfgq .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#fhahhqxktv .gt_from_md > :last-child {
+#bpsgcqvfgq .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#fhahhqxktv .gt_row {
+#bpsgcqvfgq .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1045,7 +1043,7 @@ healthy_eating
   overflow-x: hidden;
 }
 
-#fhahhqxktv .gt_stub {
+#bpsgcqvfgq .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1058,7 +1056,7 @@ healthy_eating
   padding-right: 5px;
 }
 
-#fhahhqxktv .gt_stub_row_group {
+#bpsgcqvfgq .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1072,15 +1070,15 @@ healthy_eating
   vertical-align: top;
 }
 
-#fhahhqxktv .gt_row_group_first td {
+#bpsgcqvfgq .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#fhahhqxktv .gt_row_group_first th {
+#bpsgcqvfgq .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#fhahhqxktv .gt_summary_row {
+#bpsgcqvfgq .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1090,16 +1088,16 @@ healthy_eating
   padding-right: 5px;
 }
 
-#fhahhqxktv .gt_first_summary_row {
+#bpsgcqvfgq .gt_first_summary_row {
   border-top-style: none;
   border-top-color: #D3D3D3;
 }
 
-#fhahhqxktv .gt_first_summary_row.thick {
+#bpsgcqvfgq .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#fhahhqxktv .gt_last_summary_row {
+#bpsgcqvfgq .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1109,7 +1107,7 @@ healthy_eating
   border-bottom-color: #D3D3D3;
 }
 
-#fhahhqxktv .gt_grand_summary_row {
+#bpsgcqvfgq .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1119,7 +1117,7 @@ healthy_eating
   padding-right: 5px;
 }
 
-#fhahhqxktv .gt_first_grand_summary_row {
+#bpsgcqvfgq .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1129,7 +1127,7 @@ healthy_eating
   border-top-color: #D3D3D3;
 }
 
-#fhahhqxktv .gt_last_grand_summary_row_top {
+#bpsgcqvfgq .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1139,11 +1137,11 @@ healthy_eating
   border-bottom-color: #D3D3D3;
 }
 
-#fhahhqxktv .gt_striped {
+#bpsgcqvfgq .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#fhahhqxktv .gt_table_body {
+#bpsgcqvfgq .gt_table_body {
   border-top-style: solid;
   border-top-width: 1px;
   border-top-color: #000000;
@@ -1152,7 +1150,7 @@ healthy_eating
   border-bottom-color: #000000;
 }
 
-#fhahhqxktv .gt_footnotes {
+#bpsgcqvfgq .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1166,7 +1164,7 @@ healthy_eating
   border-right-color: #D3D3D3;
 }
 
-#fhahhqxktv .gt_footnote {
+#bpsgcqvfgq .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1175,7 +1173,7 @@ healthy_eating
   padding-right: 5px;
 }
 
-#fhahhqxktv .gt_sourcenotes {
+#bpsgcqvfgq .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1189,7 +1187,7 @@ healthy_eating
   border-right-color: #D3D3D3;
 }
 
-#fhahhqxktv .gt_sourcenote {
+#bpsgcqvfgq .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1197,63 +1195,63 @@ healthy_eating
   padding-right: 5px;
 }
 
-#fhahhqxktv .gt_left {
+#bpsgcqvfgq .gt_left {
   text-align: left;
 }
 
-#fhahhqxktv .gt_center {
+#bpsgcqvfgq .gt_center {
   text-align: center;
 }
 
-#fhahhqxktv .gt_right {
+#bpsgcqvfgq .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#fhahhqxktv .gt_font_normal {
+#bpsgcqvfgq .gt_font_normal {
   font-weight: normal;
 }
 
-#fhahhqxktv .gt_font_bold {
+#bpsgcqvfgq .gt_font_bold {
   font-weight: bold;
 }
 
-#fhahhqxktv .gt_font_italic {
+#bpsgcqvfgq .gt_font_italic {
   font-style: italic;
 }
 
-#fhahhqxktv .gt_super {
+#bpsgcqvfgq .gt_super {
   font-size: 65%;
 }
 
-#fhahhqxktv .gt_footnote_marks {
+#bpsgcqvfgq .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#fhahhqxktv .gt_asterisk {
+#bpsgcqvfgq .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#fhahhqxktv .gt_indent_1 {
+#bpsgcqvfgq .gt_indent_1 {
   text-indent: 5px;
 }
 
-#fhahhqxktv .gt_indent_2 {
+#bpsgcqvfgq .gt_indent_2 {
   text-indent: 10px;
 }
 
-#fhahhqxktv .gt_indent_3 {
+#bpsgcqvfgq .gt_indent_3 {
   text-indent: 15px;
 }
 
-#fhahhqxktv .gt_indent_4 {
+#bpsgcqvfgq .gt_indent_4 {
   text-indent: 20px;
 }
 
-#fhahhqxktv .gt_indent_5 {
+#bpsgcqvfgq .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -1436,23 +1434,23 @@ Healthy eating
 </table>
 </div>
 #Often, it is also interesting to include variable distributions ess_health %&gt;% cor_matrix(var_names = var_renames) %&gt;% report_cor_table(add_distributions = TRUE, data = ess_health)
-<div id="lzthihnzah" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#lzthihnzah table {
+<div id="chkglnnrro" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#chkglnnrro table {
   font-family: times, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#lzthihnzah thead, #lzthihnzah tbody, #lzthihnzah tfoot, #lzthihnzah tr, #lzthihnzah td, #lzthihnzah th {
+#chkglnnrro thead, #chkglnnrro tbody, #chkglnnrro tfoot, #chkglnnrro tr, #chkglnnrro td, #chkglnnrro th {
   border-style: none;
 }
 
-#lzthihnzah p {
+#chkglnnrro p {
   margin: 0;
   padding: 0;
 }
 
-#lzthihnzah .gt_table {
+#chkglnnrro .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1478,12 +1476,12 @@ Healthy eating
   border-left-color: #D3D3D3;
 }
 
-#lzthihnzah .gt_caption {
+#chkglnnrro .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#lzthihnzah .gt_title {
+#chkglnnrro .gt_title {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -1495,7 +1493,7 @@ Healthy eating
   border-bottom-width: 0;
 }
 
-#lzthihnzah .gt_subtitle {
+#chkglnnrro .gt_subtitle {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -1507,7 +1505,7 @@ Healthy eating
   border-top-width: 0;
 }
 
-#lzthihnzah .gt_heading {
+#chkglnnrro .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1519,13 +1517,13 @@ Healthy eating
   border-right-color: #D3D3D3;
 }
 
-#lzthihnzah .gt_bottom_border {
+#chkglnnrro .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #000000;
 }
 
-#lzthihnzah .gt_col_headings {
+#chkglnnrro .gt_col_headings {
   border-top-style: none;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1540,7 +1538,7 @@ Healthy eating
   border-right-color: #D3D3D3;
 }
 
-#lzthihnzah .gt_col_heading {
+#chkglnnrro .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1560,7 +1558,7 @@ Healthy eating
   overflow-x: hidden;
 }
 
-#lzthihnzah .gt_column_spanner_outer {
+#chkglnnrro .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1572,15 +1570,15 @@ Healthy eating
   padding-right: 4px;
 }
 
-#lzthihnzah .gt_column_spanner_outer:first-child {
+#chkglnnrro .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#lzthihnzah .gt_column_spanner_outer:last-child {
+#chkglnnrro .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#lzthihnzah .gt_column_spanner {
+#chkglnnrro .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 1px;
   border-bottom-color: #000000;
@@ -1592,11 +1590,11 @@ Healthy eating
   width: 100%;
 }
 
-#lzthihnzah .gt_spanner_row {
+#chkglnnrro .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#lzthihnzah .gt_group_heading {
+#chkglnnrro .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1622,7 +1620,7 @@ Healthy eating
   text-align: left;
 }
 
-#lzthihnzah .gt_empty_group_heading {
+#chkglnnrro .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1637,15 +1635,15 @@ Healthy eating
   vertical-align: middle;
 }
 
-#lzthihnzah .gt_from_md > :first-child {
+#chkglnnrro .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#lzthihnzah .gt_from_md > :last-child {
+#chkglnnrro .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#lzthihnzah .gt_row {
+#chkglnnrro .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1664,7 +1662,7 @@ Healthy eating
   overflow-x: hidden;
 }
 
-#lzthihnzah .gt_stub {
+#chkglnnrro .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1677,7 +1675,7 @@ Healthy eating
   padding-right: 5px;
 }
 
-#lzthihnzah .gt_stub_row_group {
+#chkglnnrro .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1691,15 +1689,15 @@ Healthy eating
   vertical-align: top;
 }
 
-#lzthihnzah .gt_row_group_first td {
+#chkglnnrro .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#lzthihnzah .gt_row_group_first th {
+#chkglnnrro .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#lzthihnzah .gt_summary_row {
+#chkglnnrro .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1709,16 +1707,16 @@ Healthy eating
   padding-right: 5px;
 }
 
-#lzthihnzah .gt_first_summary_row {
+#chkglnnrro .gt_first_summary_row {
   border-top-style: none;
   border-top-color: #D3D3D3;
 }
 
-#lzthihnzah .gt_first_summary_row.thick {
+#chkglnnrro .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#lzthihnzah .gt_last_summary_row {
+#chkglnnrro .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1728,7 +1726,7 @@ Healthy eating
   border-bottom-color: #D3D3D3;
 }
 
-#lzthihnzah .gt_grand_summary_row {
+#chkglnnrro .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1738,7 +1736,7 @@ Healthy eating
   padding-right: 5px;
 }
 
-#lzthihnzah .gt_first_grand_summary_row {
+#chkglnnrro .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1748,7 +1746,7 @@ Healthy eating
   border-top-color: #D3D3D3;
 }
 
-#lzthihnzah .gt_last_grand_summary_row_top {
+#chkglnnrro .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1758,11 +1756,11 @@ Healthy eating
   border-bottom-color: #D3D3D3;
 }
 
-#lzthihnzah .gt_striped {
+#chkglnnrro .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#lzthihnzah .gt_table_body {
+#chkglnnrro .gt_table_body {
   border-top-style: solid;
   border-top-width: 1px;
   border-top-color: #000000;
@@ -1771,7 +1769,7 @@ Healthy eating
   border-bottom-color: #000000;
 }
 
-#lzthihnzah .gt_footnotes {
+#chkglnnrro .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1785,7 +1783,7 @@ Healthy eating
   border-right-color: #D3D3D3;
 }
 
-#lzthihnzah .gt_footnote {
+#chkglnnrro .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1794,7 +1792,7 @@ Healthy eating
   padding-right: 5px;
 }
 
-#lzthihnzah .gt_sourcenotes {
+#chkglnnrro .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1808,7 +1806,7 @@ Healthy eating
   border-right-color: #D3D3D3;
 }
 
-#lzthihnzah .gt_sourcenote {
+#chkglnnrro .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1816,63 +1814,63 @@ Healthy eating
   padding-right: 5px;
 }
 
-#lzthihnzah .gt_left {
+#chkglnnrro .gt_left {
   text-align: left;
 }
 
-#lzthihnzah .gt_center {
+#chkglnnrro .gt_center {
   text-align: center;
 }
 
-#lzthihnzah .gt_right {
+#chkglnnrro .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#lzthihnzah .gt_font_normal {
+#chkglnnrro .gt_font_normal {
   font-weight: normal;
 }
 
-#lzthihnzah .gt_font_bold {
+#chkglnnrro .gt_font_bold {
   font-weight: bold;
 }
 
-#lzthihnzah .gt_font_italic {
+#chkglnnrro .gt_font_italic {
   font-style: italic;
 }
 
-#lzthihnzah .gt_super {
+#chkglnnrro .gt_super {
   font-size: 65%;
 }
 
-#lzthihnzah .gt_footnote_marks {
+#chkglnnrro .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#lzthihnzah .gt_asterisk {
+#chkglnnrro .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#lzthihnzah .gt_indent_1 {
+#chkglnnrro .gt_indent_1 {
   text-indent: 5px;
 }
 
-#lzthihnzah .gt_indent_2 {
+#chkglnnrro .gt_indent_2 {
   text-indent: 10px;
 }
 
-#lzthihnzah .gt_indent_3 {
+#chkglnnrro .gt_indent_3 {
   text-indent: 15px;
 }
 
-#lzthihnzah .gt_indent_4 {
+#chkglnnrro .gt_indent_4 {
   text-indent: 20px;
 }
 
-#lzthihnzah .gt_indent_5 {
+#chkglnnrro .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -2099,23 +2097,23 @@ Healthy eating
 
 <meta charset="utf-8">
 <style>body{background-color:white;}</style>
-<div id="bwjdqxqles" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#bwjdqxqles table {
+<div id="sspkthwbao" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#sspkthwbao table {
   font-family: times, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#bwjdqxqles thead, #bwjdqxqles tbody, #bwjdqxqles tfoot, #bwjdqxqles tr, #bwjdqxqles td, #bwjdqxqles th {
+#sspkthwbao thead, #sspkthwbao tbody, #sspkthwbao tfoot, #sspkthwbao tr, #sspkthwbao td, #sspkthwbao th {
   border-style: none;
 }
 
-#bwjdqxqles p {
+#sspkthwbao p {
   margin: 0;
   padding: 0;
 }
 
-#bwjdqxqles .gt_table {
+#sspkthwbao .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -2141,12 +2139,12 @@ Healthy eating
   border-left-color: #D3D3D3;
 }
 
-#bwjdqxqles .gt_caption {
+#sspkthwbao .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#bwjdqxqles .gt_title {
+#sspkthwbao .gt_title {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -2158,7 +2156,7 @@ Healthy eating
   border-bottom-width: 0;
 }
 
-#bwjdqxqles .gt_subtitle {
+#sspkthwbao .gt_subtitle {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -2170,7 +2168,7 @@ Healthy eating
   border-top-width: 0;
 }
 
-#bwjdqxqles .gt_heading {
+#sspkthwbao .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2182,13 +2180,13 @@ Healthy eating
   border-right-color: #D3D3D3;
 }
 
-#bwjdqxqles .gt_bottom_border {
+#sspkthwbao .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #000000;
 }
 
-#bwjdqxqles .gt_col_headings {
+#sspkthwbao .gt_col_headings {
   border-top-style: none;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2203,7 +2201,7 @@ Healthy eating
   border-right-color: #D3D3D3;
 }
 
-#bwjdqxqles .gt_col_heading {
+#sspkthwbao .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2223,7 +2221,7 @@ Healthy eating
   overflow-x: hidden;
 }
 
-#bwjdqxqles .gt_column_spanner_outer {
+#sspkthwbao .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2235,15 +2233,15 @@ Healthy eating
   padding-right: 4px;
 }
 
-#bwjdqxqles .gt_column_spanner_outer:first-child {
+#sspkthwbao .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#bwjdqxqles .gt_column_spanner_outer:last-child {
+#sspkthwbao .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#bwjdqxqles .gt_column_spanner {
+#sspkthwbao .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 1px;
   border-bottom-color: #000000;
@@ -2255,11 +2253,11 @@ Healthy eating
   width: 100%;
 }
 
-#bwjdqxqles .gt_spanner_row {
+#sspkthwbao .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#bwjdqxqles .gt_group_heading {
+#sspkthwbao .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2285,7 +2283,7 @@ Healthy eating
   text-align: left;
 }
 
-#bwjdqxqles .gt_empty_group_heading {
+#sspkthwbao .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2300,15 +2298,15 @@ Healthy eating
   vertical-align: middle;
 }
 
-#bwjdqxqles .gt_from_md > :first-child {
+#sspkthwbao .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#bwjdqxqles .gt_from_md > :last-child {
+#sspkthwbao .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#bwjdqxqles .gt_row {
+#sspkthwbao .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2327,7 +2325,7 @@ Healthy eating
   overflow-x: hidden;
 }
 
-#bwjdqxqles .gt_stub {
+#sspkthwbao .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2340,7 +2338,7 @@ Healthy eating
   padding-right: 5px;
 }
 
-#bwjdqxqles .gt_stub_row_group {
+#sspkthwbao .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2354,15 +2352,15 @@ Healthy eating
   vertical-align: top;
 }
 
-#bwjdqxqles .gt_row_group_first td {
+#sspkthwbao .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#bwjdqxqles .gt_row_group_first th {
+#sspkthwbao .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#bwjdqxqles .gt_summary_row {
+#sspkthwbao .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2372,16 +2370,16 @@ Healthy eating
   padding-right: 5px;
 }
 
-#bwjdqxqles .gt_first_summary_row {
+#sspkthwbao .gt_first_summary_row {
   border-top-style: none;
   border-top-color: #D3D3D3;
 }
 
-#bwjdqxqles .gt_first_summary_row.thick {
+#sspkthwbao .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#bwjdqxqles .gt_last_summary_row {
+#sspkthwbao .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2391,7 +2389,7 @@ Healthy eating
   border-bottom-color: #D3D3D3;
 }
 
-#bwjdqxqles .gt_grand_summary_row {
+#sspkthwbao .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2401,7 +2399,7 @@ Healthy eating
   padding-right: 5px;
 }
 
-#bwjdqxqles .gt_first_grand_summary_row {
+#sspkthwbao .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2411,7 +2409,7 @@ Healthy eating
   border-top-color: #D3D3D3;
 }
 
-#bwjdqxqles .gt_last_grand_summary_row_top {
+#sspkthwbao .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2421,11 +2419,11 @@ Healthy eating
   border-bottom-color: #D3D3D3;
 }
 
-#bwjdqxqles .gt_striped {
+#sspkthwbao .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#bwjdqxqles .gt_table_body {
+#sspkthwbao .gt_table_body {
   border-top-style: solid;
   border-top-width: 1px;
   border-top-color: #000000;
@@ -2434,7 +2432,7 @@ Healthy eating
   border-bottom-color: #000000;
 }
 
-#bwjdqxqles .gt_footnotes {
+#sspkthwbao .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2448,7 +2446,7 @@ Healthy eating
   border-right-color: #D3D3D3;
 }
 
-#bwjdqxqles .gt_footnote {
+#sspkthwbao .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -2457,7 +2455,7 @@ Healthy eating
   padding-right: 5px;
 }
 
-#bwjdqxqles .gt_sourcenotes {
+#sspkthwbao .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2471,7 +2469,7 @@ Healthy eating
   border-right-color: #D3D3D3;
 }
 
-#bwjdqxqles .gt_sourcenote {
+#sspkthwbao .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2479,63 +2477,63 @@ Healthy eating
   padding-right: 5px;
 }
 
-#bwjdqxqles .gt_left {
+#sspkthwbao .gt_left {
   text-align: left;
 }
 
-#bwjdqxqles .gt_center {
+#sspkthwbao .gt_center {
   text-align: center;
 }
 
-#bwjdqxqles .gt_right {
+#sspkthwbao .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#bwjdqxqles .gt_font_normal {
+#sspkthwbao .gt_font_normal {
   font-weight: normal;
 }
 
-#bwjdqxqles .gt_font_bold {
+#sspkthwbao .gt_font_bold {
   font-weight: bold;
 }
 
-#bwjdqxqles .gt_font_italic {
+#sspkthwbao .gt_font_italic {
   font-style: italic;
 }
 
-#bwjdqxqles .gt_super {
+#sspkthwbao .gt_super {
   font-size: 65%;
 }
 
-#bwjdqxqles .gt_footnote_marks {
+#sspkthwbao .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#bwjdqxqles .gt_asterisk {
+#sspkthwbao .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#bwjdqxqles .gt_indent_1 {
+#sspkthwbao .gt_indent_1 {
   text-indent: 5px;
 }
 
-#bwjdqxqles .gt_indent_2 {
+#sspkthwbao .gt_indent_2 {
   text-indent: 10px;
 }
 
-#bwjdqxqles .gt_indent_3 {
+#sspkthwbao .gt_indent_3 {
   text-indent: 15px;
 }
 
-#bwjdqxqles .gt_indent_4 {
+#sspkthwbao .gt_indent_4 {
   text-indent: 20px;
 }
 
-#bwjdqxqles .gt_indent_5 {
+#sspkthwbao .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -2725,23 +2723,23 @@ Within each variable, the means of groups with different superscripts differ wit
 
 <meta charset="utf-8">
 <style>body{background-color:white;}</style>
-<div id="yaocdhewov" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#yaocdhewov table {
+<div id="jzbfrhtqic" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#jzbfrhtqic table {
   font-family: times, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#yaocdhewov thead, #yaocdhewov tbody, #yaocdhewov tfoot, #yaocdhewov tr, #yaocdhewov td, #yaocdhewov th {
+#jzbfrhtqic thead, #jzbfrhtqic tbody, #jzbfrhtqic tfoot, #jzbfrhtqic tr, #jzbfrhtqic td, #jzbfrhtqic th {
   border-style: none;
 }
 
-#yaocdhewov p {
+#jzbfrhtqic p {
   margin: 0;
   padding: 0;
 }
 
-#yaocdhewov .gt_table {
+#jzbfrhtqic .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -2767,12 +2765,12 @@ Within each variable, the means of groups with different superscripts differ wit
   border-left-color: #D3D3D3;
 }
 
-#yaocdhewov .gt_caption {
+#jzbfrhtqic .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#yaocdhewov .gt_title {
+#jzbfrhtqic .gt_title {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -2784,7 +2782,7 @@ Within each variable, the means of groups with different superscripts differ wit
   border-bottom-width: 0;
 }
 
-#yaocdhewov .gt_subtitle {
+#jzbfrhtqic .gt_subtitle {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -2796,7 +2794,7 @@ Within each variable, the means of groups with different superscripts differ wit
   border-top-width: 0;
 }
 
-#yaocdhewov .gt_heading {
+#jzbfrhtqic .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2808,13 +2806,13 @@ Within each variable, the means of groups with different superscripts differ wit
   border-right-color: #D3D3D3;
 }
 
-#yaocdhewov .gt_bottom_border {
+#jzbfrhtqic .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #000000;
 }
 
-#yaocdhewov .gt_col_headings {
+#jzbfrhtqic .gt_col_headings {
   border-top-style: none;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2829,7 +2827,7 @@ Within each variable, the means of groups with different superscripts differ wit
   border-right-color: #D3D3D3;
 }
 
-#yaocdhewov .gt_col_heading {
+#jzbfrhtqic .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2849,7 +2847,7 @@ Within each variable, the means of groups with different superscripts differ wit
   overflow-x: hidden;
 }
 
-#yaocdhewov .gt_column_spanner_outer {
+#jzbfrhtqic .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2861,15 +2859,15 @@ Within each variable, the means of groups with different superscripts differ wit
   padding-right: 4px;
 }
 
-#yaocdhewov .gt_column_spanner_outer:first-child {
+#jzbfrhtqic .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#yaocdhewov .gt_column_spanner_outer:last-child {
+#jzbfrhtqic .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#yaocdhewov .gt_column_spanner {
+#jzbfrhtqic .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 1px;
   border-bottom-color: #000000;
@@ -2881,11 +2879,11 @@ Within each variable, the means of groups with different superscripts differ wit
   width: 100%;
 }
 
-#yaocdhewov .gt_spanner_row {
+#jzbfrhtqic .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#yaocdhewov .gt_group_heading {
+#jzbfrhtqic .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2911,7 +2909,7 @@ Within each variable, the means of groups with different superscripts differ wit
   text-align: left;
 }
 
-#yaocdhewov .gt_empty_group_heading {
+#jzbfrhtqic .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2926,15 +2924,15 @@ Within each variable, the means of groups with different superscripts differ wit
   vertical-align: middle;
 }
 
-#yaocdhewov .gt_from_md > :first-child {
+#jzbfrhtqic .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#yaocdhewov .gt_from_md > :last-child {
+#jzbfrhtqic .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#yaocdhewov .gt_row {
+#jzbfrhtqic .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2953,7 +2951,7 @@ Within each variable, the means of groups with different superscripts differ wit
   overflow-x: hidden;
 }
 
-#yaocdhewov .gt_stub {
+#jzbfrhtqic .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2966,7 +2964,7 @@ Within each variable, the means of groups with different superscripts differ wit
   padding-right: 5px;
 }
 
-#yaocdhewov .gt_stub_row_group {
+#jzbfrhtqic .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2980,15 +2978,15 @@ Within each variable, the means of groups with different superscripts differ wit
   vertical-align: top;
 }
 
-#yaocdhewov .gt_row_group_first td {
+#jzbfrhtqic .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#yaocdhewov .gt_row_group_first th {
+#jzbfrhtqic .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#yaocdhewov .gt_summary_row {
+#jzbfrhtqic .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2998,16 +2996,16 @@ Within each variable, the means of groups with different superscripts differ wit
   padding-right: 5px;
 }
 
-#yaocdhewov .gt_first_summary_row {
+#jzbfrhtqic .gt_first_summary_row {
   border-top-style: none;
   border-top-color: #D3D3D3;
 }
 
-#yaocdhewov .gt_first_summary_row.thick {
+#jzbfrhtqic .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#yaocdhewov .gt_last_summary_row {
+#jzbfrhtqic .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3017,7 +3015,7 @@ Within each variable, the means of groups with different superscripts differ wit
   border-bottom-color: #D3D3D3;
 }
 
-#yaocdhewov .gt_grand_summary_row {
+#jzbfrhtqic .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3027,7 +3025,7 @@ Within each variable, the means of groups with different superscripts differ wit
   padding-right: 5px;
 }
 
-#yaocdhewov .gt_first_grand_summary_row {
+#jzbfrhtqic .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3037,7 +3035,7 @@ Within each variable, the means of groups with different superscripts differ wit
   border-top-color: #D3D3D3;
 }
 
-#yaocdhewov .gt_last_grand_summary_row_top {
+#jzbfrhtqic .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3047,11 +3045,11 @@ Within each variable, the means of groups with different superscripts differ wit
   border-bottom-color: #D3D3D3;
 }
 
-#yaocdhewov .gt_striped {
+#jzbfrhtqic .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#yaocdhewov .gt_table_body {
+#jzbfrhtqic .gt_table_body {
   border-top-style: solid;
   border-top-width: 1px;
   border-top-color: #000000;
@@ -3060,7 +3058,7 @@ Within each variable, the means of groups with different superscripts differ wit
   border-bottom-color: #000000;
 }
 
-#yaocdhewov .gt_footnotes {
+#jzbfrhtqic .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3074,7 +3072,7 @@ Within each variable, the means of groups with different superscripts differ wit
   border-right-color: #D3D3D3;
 }
 
-#yaocdhewov .gt_footnote {
+#jzbfrhtqic .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -3083,7 +3081,7 @@ Within each variable, the means of groups with different superscripts differ wit
   padding-right: 5px;
 }
 
-#yaocdhewov .gt_sourcenotes {
+#jzbfrhtqic .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3097,7 +3095,7 @@ Within each variable, the means of groups with different superscripts differ wit
   border-right-color: #D3D3D3;
 }
 
-#yaocdhewov .gt_sourcenote {
+#jzbfrhtqic .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -3105,63 +3103,63 @@ Within each variable, the means of groups with different superscripts differ wit
   padding-right: 5px;
 }
 
-#yaocdhewov .gt_left {
+#jzbfrhtqic .gt_left {
   text-align: left;
 }
 
-#yaocdhewov .gt_center {
+#jzbfrhtqic .gt_center {
   text-align: center;
 }
 
-#yaocdhewov .gt_right {
+#jzbfrhtqic .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#yaocdhewov .gt_font_normal {
+#jzbfrhtqic .gt_font_normal {
   font-weight: normal;
 }
 
-#yaocdhewov .gt_font_bold {
+#jzbfrhtqic .gt_font_bold {
   font-weight: bold;
 }
 
-#yaocdhewov .gt_font_italic {
+#jzbfrhtqic .gt_font_italic {
   font-style: italic;
 }
 
-#yaocdhewov .gt_super {
+#jzbfrhtqic .gt_super {
   font-size: 65%;
 }
 
-#yaocdhewov .gt_footnote_marks {
+#jzbfrhtqic .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#yaocdhewov .gt_asterisk {
+#jzbfrhtqic .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#yaocdhewov .gt_indent_1 {
+#jzbfrhtqic .gt_indent_1 {
   text-indent: 5px;
 }
 
-#yaocdhewov .gt_indent_2 {
+#jzbfrhtqic .gt_indent_2 {
   text-indent: 10px;
 }
 
-#yaocdhewov .gt_indent_3 {
+#jzbfrhtqic .gt_indent_3 {
   text-indent: 15px;
 }
 
-#yaocdhewov .gt_indent_4 {
+#jzbfrhtqic .gt_indent_4 {
   text-indent: 20px;
 }
 
-#yaocdhewov .gt_indent_5 {
+#jzbfrhtqic .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -3386,23 +3384,23 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
 
 <meta charset="utf-8">
 <style>body{background-color:white;}</style>
-<div id="otwwqdjabv" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#otwwqdjabv table {
+<div id="ieufgnugdc" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ieufgnugdc table {
   font-family: times, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#otwwqdjabv thead, #otwwqdjabv tbody, #otwwqdjabv tfoot, #otwwqdjabv tr, #otwwqdjabv td, #otwwqdjabv th {
+#ieufgnugdc thead, #ieufgnugdc tbody, #ieufgnugdc tfoot, #ieufgnugdc tr, #ieufgnugdc td, #ieufgnugdc th {
   border-style: none;
 }
 
-#otwwqdjabv p {
+#ieufgnugdc p {
   margin: 0;
   padding: 0;
 }
 
-#otwwqdjabv .gt_table {
+#ieufgnugdc .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -3428,12 +3426,12 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-left-color: #D3D3D3;
 }
 
-#otwwqdjabv .gt_caption {
+#ieufgnugdc .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#otwwqdjabv .gt_title {
+#ieufgnugdc .gt_title {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -3445,7 +3443,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-bottom-width: 0;
 }
 
-#otwwqdjabv .gt_subtitle {
+#ieufgnugdc .gt_subtitle {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -3457,7 +3455,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-top-width: 0;
 }
 
-#otwwqdjabv .gt_heading {
+#ieufgnugdc .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -3469,13 +3467,13 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-right-color: #D3D3D3;
 }
 
-#otwwqdjabv .gt_bottom_border {
+#ieufgnugdc .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #000000;
 }
 
-#otwwqdjabv .gt_col_headings {
+#ieufgnugdc .gt_col_headings {
   border-top-style: none;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3490,7 +3488,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-right-color: #D3D3D3;
 }
 
-#otwwqdjabv .gt_col_heading {
+#ieufgnugdc .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3510,7 +3508,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   overflow-x: hidden;
 }
 
-#otwwqdjabv .gt_column_spanner_outer {
+#ieufgnugdc .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3522,15 +3520,15 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 4px;
 }
 
-#otwwqdjabv .gt_column_spanner_outer:first-child {
+#ieufgnugdc .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#otwwqdjabv .gt_column_spanner_outer:last-child {
+#ieufgnugdc .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#otwwqdjabv .gt_column_spanner {
+#ieufgnugdc .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 1px;
   border-bottom-color: #000000;
@@ -3542,11 +3540,11 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   width: 100%;
 }
 
-#otwwqdjabv .gt_spanner_row {
+#ieufgnugdc .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#otwwqdjabv .gt_group_heading {
+#ieufgnugdc .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3572,7 +3570,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   text-align: left;
 }
 
-#otwwqdjabv .gt_empty_group_heading {
+#ieufgnugdc .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3587,15 +3585,15 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   vertical-align: middle;
 }
 
-#otwwqdjabv .gt_from_md > :first-child {
+#ieufgnugdc .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#otwwqdjabv .gt_from_md > :last-child {
+#ieufgnugdc .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#otwwqdjabv .gt_row {
+#ieufgnugdc .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3614,7 +3612,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   overflow-x: hidden;
 }
 
-#otwwqdjabv .gt_stub {
+#ieufgnugdc .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3627,7 +3625,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 5px;
 }
 
-#otwwqdjabv .gt_stub_row_group {
+#ieufgnugdc .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3641,15 +3639,15 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   vertical-align: top;
 }
 
-#otwwqdjabv .gt_row_group_first td {
+#ieufgnugdc .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#otwwqdjabv .gt_row_group_first th {
+#ieufgnugdc .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#otwwqdjabv .gt_summary_row {
+#ieufgnugdc .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3659,16 +3657,16 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 5px;
 }
 
-#otwwqdjabv .gt_first_summary_row {
+#ieufgnugdc .gt_first_summary_row {
   border-top-style: none;
   border-top-color: #D3D3D3;
 }
 
-#otwwqdjabv .gt_first_summary_row.thick {
+#ieufgnugdc .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#otwwqdjabv .gt_last_summary_row {
+#ieufgnugdc .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3678,7 +3676,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-bottom-color: #D3D3D3;
 }
 
-#otwwqdjabv .gt_grand_summary_row {
+#ieufgnugdc .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3688,7 +3686,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 5px;
 }
 
-#otwwqdjabv .gt_first_grand_summary_row {
+#ieufgnugdc .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3698,7 +3696,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-top-color: #D3D3D3;
 }
 
-#otwwqdjabv .gt_last_grand_summary_row_top {
+#ieufgnugdc .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3708,11 +3706,11 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-bottom-color: #D3D3D3;
 }
 
-#otwwqdjabv .gt_striped {
+#ieufgnugdc .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#otwwqdjabv .gt_table_body {
+#ieufgnugdc .gt_table_body {
   border-top-style: solid;
   border-top-width: 1px;
   border-top-color: #000000;
@@ -3721,7 +3719,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-bottom-color: #000000;
 }
 
-#otwwqdjabv .gt_footnotes {
+#ieufgnugdc .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3735,7 +3733,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-right-color: #D3D3D3;
 }
 
-#otwwqdjabv .gt_footnote {
+#ieufgnugdc .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -3744,7 +3742,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 5px;
 }
 
-#otwwqdjabv .gt_sourcenotes {
+#ieufgnugdc .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3758,7 +3756,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-right-color: #D3D3D3;
 }
 
-#otwwqdjabv .gt_sourcenote {
+#ieufgnugdc .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -3766,63 +3764,63 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 5px;
 }
 
-#otwwqdjabv .gt_left {
+#ieufgnugdc .gt_left {
   text-align: left;
 }
 
-#otwwqdjabv .gt_center {
+#ieufgnugdc .gt_center {
   text-align: center;
 }
 
-#otwwqdjabv .gt_right {
+#ieufgnugdc .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#otwwqdjabv .gt_font_normal {
+#ieufgnugdc .gt_font_normal {
   font-weight: normal;
 }
 
-#otwwqdjabv .gt_font_bold {
+#ieufgnugdc .gt_font_bold {
   font-weight: bold;
 }
 
-#otwwqdjabv .gt_font_italic {
+#ieufgnugdc .gt_font_italic {
   font-style: italic;
 }
 
-#otwwqdjabv .gt_super {
+#ieufgnugdc .gt_super {
   font-size: 65%;
 }
 
-#otwwqdjabv .gt_footnote_marks {
+#ieufgnugdc .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#otwwqdjabv .gt_asterisk {
+#ieufgnugdc .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#otwwqdjabv .gt_indent_1 {
+#ieufgnugdc .gt_indent_1 {
   text-indent: 5px;
 }
 
-#otwwqdjabv .gt_indent_2 {
+#ieufgnugdc .gt_indent_2 {
   text-indent: 10px;
 }
 
-#otwwqdjabv .gt_indent_3 {
+#ieufgnugdc .gt_indent_3 {
   text-indent: 15px;
 }
 
-#otwwqdjabv .gt_indent_4 {
+#ieufgnugdc .gt_indent_4 {
   text-indent: 20px;
 }
 
-#otwwqdjabv .gt_indent_5 {
+#ieufgnugdc .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -4066,23 +4064,23 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
 
 <meta charset="utf-8">
 <style>body{background-color:white;}</style>
-<div id="pcfwgmmjjh" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#pcfwgmmjjh table {
+<div id="pblcrfrjbg" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#pblcrfrjbg table {
   font-family: times, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#pcfwgmmjjh thead, #pcfwgmmjjh tbody, #pcfwgmmjjh tfoot, #pcfwgmmjjh tr, #pcfwgmmjjh td, #pcfwgmmjjh th {
+#pblcrfrjbg thead, #pblcrfrjbg tbody, #pblcrfrjbg tfoot, #pblcrfrjbg tr, #pblcrfrjbg td, #pblcrfrjbg th {
   border-style: none;
 }
 
-#pcfwgmmjjh p {
+#pblcrfrjbg p {
   margin: 0;
   padding: 0;
 }
 
-#pcfwgmmjjh .gt_table {
+#pblcrfrjbg .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -4108,12 +4106,12 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-left-color: #D3D3D3;
 }
 
-#pcfwgmmjjh .gt_caption {
+#pblcrfrjbg .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#pcfwgmmjjh .gt_title {
+#pblcrfrjbg .gt_title {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -4125,7 +4123,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-bottom-width: 0;
 }
 
-#pcfwgmmjjh .gt_subtitle {
+#pblcrfrjbg .gt_subtitle {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -4137,7 +4135,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-top-width: 0;
 }
 
-#pcfwgmmjjh .gt_heading {
+#pblcrfrjbg .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -4149,13 +4147,13 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-right-color: #D3D3D3;
 }
 
-#pcfwgmmjjh .gt_bottom_border {
+#pblcrfrjbg .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #000000;
 }
 
-#pcfwgmmjjh .gt_col_headings {
+#pblcrfrjbg .gt_col_headings {
   border-top-style: none;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -4170,7 +4168,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-right-color: #D3D3D3;
 }
 
-#pcfwgmmjjh .gt_col_heading {
+#pblcrfrjbg .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4190,7 +4188,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   overflow-x: hidden;
 }
 
-#pcfwgmmjjh .gt_column_spanner_outer {
+#pblcrfrjbg .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4202,15 +4200,15 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 4px;
 }
 
-#pcfwgmmjjh .gt_column_spanner_outer:first-child {
+#pblcrfrjbg .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#pcfwgmmjjh .gt_column_spanner_outer:last-child {
+#pblcrfrjbg .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#pcfwgmmjjh .gt_column_spanner {
+#pblcrfrjbg .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 1px;
   border-bottom-color: #000000;
@@ -4222,11 +4220,11 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   width: 100%;
 }
 
-#pcfwgmmjjh .gt_spanner_row {
+#pblcrfrjbg .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#pcfwgmmjjh .gt_group_heading {
+#pblcrfrjbg .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4252,7 +4250,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   text-align: left;
 }
 
-#pcfwgmmjjh .gt_empty_group_heading {
+#pblcrfrjbg .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -4267,15 +4265,15 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   vertical-align: middle;
 }
 
-#pcfwgmmjjh .gt_from_md > :first-child {
+#pblcrfrjbg .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#pcfwgmmjjh .gt_from_md > :last-child {
+#pblcrfrjbg .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#pcfwgmmjjh .gt_row {
+#pblcrfrjbg .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4294,7 +4292,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   overflow-x: hidden;
 }
 
-#pcfwgmmjjh .gt_stub {
+#pblcrfrjbg .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4307,7 +4305,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 5px;
 }
 
-#pcfwgmmjjh .gt_stub_row_group {
+#pblcrfrjbg .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4321,15 +4319,15 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   vertical-align: top;
 }
 
-#pcfwgmmjjh .gt_row_group_first td {
+#pblcrfrjbg .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#pcfwgmmjjh .gt_row_group_first th {
+#pblcrfrjbg .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#pcfwgmmjjh .gt_summary_row {
+#pblcrfrjbg .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -4339,16 +4337,16 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 5px;
 }
 
-#pcfwgmmjjh .gt_first_summary_row {
+#pblcrfrjbg .gt_first_summary_row {
   border-top-style: none;
   border-top-color: #D3D3D3;
 }
 
-#pcfwgmmjjh .gt_first_summary_row.thick {
+#pblcrfrjbg .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#pcfwgmmjjh .gt_last_summary_row {
+#pblcrfrjbg .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4358,7 +4356,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-bottom-color: #D3D3D3;
 }
 
-#pcfwgmmjjh .gt_grand_summary_row {
+#pblcrfrjbg .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -4368,7 +4366,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 5px;
 }
 
-#pcfwgmmjjh .gt_first_grand_summary_row {
+#pblcrfrjbg .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4378,7 +4376,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-top-color: #D3D3D3;
 }
 
-#pcfwgmmjjh .gt_last_grand_summary_row_top {
+#pblcrfrjbg .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4388,11 +4386,11 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-bottom-color: #D3D3D3;
 }
 
-#pcfwgmmjjh .gt_striped {
+#pblcrfrjbg .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#pcfwgmmjjh .gt_table_body {
+#pblcrfrjbg .gt_table_body {
   border-top-style: solid;
   border-top-width: 1px;
   border-top-color: #000000;
@@ -4401,7 +4399,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-bottom-color: #000000;
 }
 
-#pcfwgmmjjh .gt_footnotes {
+#pblcrfrjbg .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -4415,7 +4413,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-right-color: #D3D3D3;
 }
 
-#pcfwgmmjjh .gt_footnote {
+#pblcrfrjbg .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -4424,7 +4422,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 5px;
 }
 
-#pcfwgmmjjh .gt_sourcenotes {
+#pblcrfrjbg .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -4438,7 +4436,7 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   border-right-color: #D3D3D3;
 }
 
-#pcfwgmmjjh .gt_sourcenote {
+#pblcrfrjbg .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -4446,63 +4444,63 @@ Given that dummy variables lose their interpretability when standardized (Fox, 2
   padding-right: 5px;
 }
 
-#pcfwgmmjjh .gt_left {
+#pblcrfrjbg .gt_left {
   text-align: left;
 }
 
-#pcfwgmmjjh .gt_center {
+#pblcrfrjbg .gt_center {
   text-align: center;
 }
 
-#pcfwgmmjjh .gt_right {
+#pblcrfrjbg .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#pcfwgmmjjh .gt_font_normal {
+#pblcrfrjbg .gt_font_normal {
   font-weight: normal;
 }
 
-#pcfwgmmjjh .gt_font_bold {
+#pblcrfrjbg .gt_font_bold {
   font-weight: bold;
 }
 
-#pcfwgmmjjh .gt_font_italic {
+#pblcrfrjbg .gt_font_italic {
   font-style: italic;
 }
 
-#pcfwgmmjjh .gt_super {
+#pblcrfrjbg .gt_super {
   font-size: 65%;
 }
 
-#pcfwgmmjjh .gt_footnote_marks {
+#pblcrfrjbg .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#pcfwgmmjjh .gt_asterisk {
+#pblcrfrjbg .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#pcfwgmmjjh .gt_indent_1 {
+#pblcrfrjbg .gt_indent_1 {
   text-indent: 5px;
 }
 
-#pcfwgmmjjh .gt_indent_2 {
+#pblcrfrjbg .gt_indent_2 {
   text-indent: 10px;
 }
 
-#pcfwgmmjjh .gt_indent_3 {
+#pblcrfrjbg .gt_indent_3 {
   text-indent: 15px;
 }
 
-#pcfwgmmjjh .gt_indent_4 {
+#pblcrfrjbg .gt_indent_4 {
   text-indent: 20px;
 }
 
-#pcfwgmmjjh .gt_indent_5 {
+#pblcrfrjbg .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
