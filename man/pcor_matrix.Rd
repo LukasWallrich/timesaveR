@@ -22,6 +22,7 @@ This is most helpful when the results are passed to some print function, such as
     \item{\code{bootstrap}}{When using FIML estimation (with missing = "fiml"), significance tests and confidence
 intervals can be bootstrapped. If you want to do that, pass the number of desired bootstrap resamples
 (e.g., 5000) to this parameter, but beware that this can take a while.}
+    \item{\code{seed}}{Pass an integer to set the seed for bootstrapping and thus make this reproducible}
     \item{\code{method}}{method="pearson" is the default value.  The alternatives to be passed to cor are "spearman" and "kendall".  These last two are much slower, particularly for big data sets. }
     \item{\code{adjust}}{What adjustment for multiple tests should be used? ("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"). See \code{\link{p.adjust}} for details about why to use "holm" rather than "bonferroni"). }
   }}
