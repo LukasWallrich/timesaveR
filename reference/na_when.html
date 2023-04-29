@@ -100,7 +100,7 @@ even though the latter might be the more intuitive name.</p>
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">ess_health</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span></span>
+<span class="r-in"><span><span class="va">ess_health</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> </span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>eisced <span class="op">=</span> <span class="fu">na_when</span><span class="op">(</span><span class="va">eisced</span>, <span class="va">cntry</span> <span class="op">==</span> <span class="st">"DE"</span>, <span class="va">agea</span> <span class="op">&lt;</span> <span class="fl">21</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 7,226 × 23</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    cntry  gndr  agea eisced pweight pspwght health height weight icbrnct etfruit</span>
@@ -120,7 +120,7 @@ even though the latter might be the more intuitive name.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   alcfreq &lt;dbl&gt;, fltdpr &lt;dbl&gt;, flteeff &lt;dbl&gt;, slprl &lt;dbl&gt;, wrhpp &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   fltlnl &lt;dbl&gt;, enjlf &lt;dbl&gt;, fltsd &lt;dbl&gt;, cldgng &lt;dbl&gt;</span></span>
 <span class="r-in"><span>    </span></span>
-<span class="r-in"><span><span class="va">mtcars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span></span>
+<span class="r-in"><span><span class="va">mtcars</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> </span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>carb <span class="op">=</span> <span class="fu">na_when</span><span class="op">(</span><span class="va">carb</span>, <span class="va">cyl</span> <span class="op">&gt;</span> <span class="fl">6</span>, <span class="va">mpg</span> <span class="op">&lt;</span> <span class="fl">19</span>, operator <span class="op">=</span> <span class="st">"&amp;"</span><span class="op">)</span><span class="op">)</span>     </span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                      mpg cyl  disp  hp drat    wt  qsec vs am gear carb</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4</span>

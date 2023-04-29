@@ -98,6 +98,9 @@ This is most helpful when the results are passed to some print function, such as
 intervals can be bootstrapped. If you want to do that, pass the number of desired bootstrap resamples
 (e.g., 5000) to this parameter, but beware that this can take a while.</p></dd>
 
+    <dt><code>seed</code></dt>
+<dd><p>Pass an integer to set the seed for bootstrapping and thus make this reproducible</p></dd>
+
     <dt><code>method</code></dt>
 <dd><p>method="pearson" is the default value.  The alternatives to be passed to cor are "spearman" and "kendall".  These last two are much slower, particularly for big data sets.</p></dd>
 
@@ -115,7 +118,7 @@ intervals can be bootstrapped. If you want to do that, pass the number of desire
 <span class="r-in"><span><span class="co"># One might want to estimate correlations between health and possible predictors in the ESS</span></span></span>
 <span class="r-in"><span><span class="co"># after parceling out / controling for key demographic attributes:</span></span></span>
 <span class="r-in"><span><span class="fu">pcor_matrix</span><span class="op">(</span><span class="va">ess_health</span>, given <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"agea"</span>, <span class="st">"gndr"</span><span class="op">)</span>, </span></span>
-<span class="r-in"><span>   var_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"health"</span> <span class="op">=</span> <span class="st">"Health"</span>, <span class="st">"weight"</span> <span class="op">=</span> <span class="st">"Weight"</span>, <span class="st">"dosprt"</span> <span class="op">=</span> <span class="st">"Sport"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span></span>
+<span class="r-in"><span>   var_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"health"</span> <span class="op">=</span> <span class="st">"Health"</span>, <span class="st">"weight"</span> <span class="op">=</span> <span class="st">"Weight"</span>, <span class="st">"dosprt"</span> <span class="op">=</span> <span class="st">"Sport"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> </span></span>
 <span class="r-in"><span>   <span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html" class="external-link">tidy</a></span><span class="op">(</span>both_directions <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Dropped 276 rows with missing data.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 9</span></span>
