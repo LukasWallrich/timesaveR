@@ -40,7 +40,7 @@ test_that("cor_matrix_mi works", {
 library(mice)
 library(dplyr)
 set.seed(300688)
-ess_health <- timesaveR::ess_health %>% sample_n(100) %>% select(cgtsmke, dosprt, health)
+ess_health <- timesaveR::ess_health %>% sample_n(100) %>% dplyr::select(cgtsmke, dosprt, health)
 add_missing <- function(x) {x[!rbinom(length(x), 1, .9)] <- NA; x}
 ess_health <- ess_health %>% mutate(across(c(everything()), add_missing))
 
@@ -50,8 +50,8 @@ test_that("cor_matrix works with fiml", {
   expect_equal(out$cors[2,1], -0.19917584)
 })
 
-out <- cor_matrix(ess_health, missing = "fiml", bootstrap = 10)
+out <- cor_matrix(ess_health, missing = "fiml", bootstrap = 10, seed = 12345)
 
 test_that("cor_matrix works with bootstrapping", {
-  expect_equal(out$cors[2,1], -0.18976554)
+  expect_equal(out$cors[2,1], -0.23253694)
 })  

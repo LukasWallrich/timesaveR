@@ -1,18 +1,14 @@
 Package: timesaveR
-Title: Functions to Accelerate (Academic) Data Analysis and
-    Reporting
+Title: Functions to Accelerate (Academic) Data Analysis and Reporting
 Version: 0.0.2.9002
 Authors@R: 
-    person(given = "Lukas",
-           family = "Wallrich",
-           role = c("aut", "cre"),
-           email = "lukas.wallrich@gmail.com")
-Description: Functions and templates in this package facilitate
-    common tasks in the course of most research projects in social
-    psychology and related fields. These include creating scales,
-    reporting descriptive statistics, correlations and distributions,
-    reporting linear regression models with standardized coefficients and
-    F-change comparisons, as well as plotting mediation models.
+    person("Lukas", "Wallrich", , "lukas.wallrich@gmail.com", role = c("aut", "cre"))
+Description: Functions and templates in this package facilitate common
+    tasks in the course of most research projects in social psychology and
+    related fields. These include creating scales, reporting descriptive
+    statistics, correlations and distributions, reporting linear
+    regression models with standardized coefficients and F-change
+    comparisons, as well as plotting mediation models.
 License: GPL (>= 3)
 URL: https://lukaswallrich.github.io/timesaveR/
 BugReports: https://github.com/LukasWallrich/timesaveR/issues
@@ -28,6 +24,7 @@ Imports:
     glue,
     here,
     magrittr,
+    Matrix,
     psych,
     purrr,
     rlang (>= 0.1.2),
@@ -36,12 +33,14 @@ Imports:
     stringr,
     tibble,
     tidyr,
-    tidyselect,
-    Matrix
+    tidyselect
 Suggests:
+    car,
     clipr,
     DiagrammeR,
     DiagrammeRsvg,
+    future,
+    future.apply,
     gt,
     htmltools,
     jtools,
@@ -55,23 +54,21 @@ Suggests:
     modelsummary,
     pscl,
     readr,
+    reprex,
     rmarkdown,
     rstudioapi,
     rsvg,
     spelling,
     srvyr,
     survey,
-    weights,
     testthat (>= 3.0.0),
-    xml2,
-    reprex,
-    future.apply,
-    future
+    weights,
+    xml2
 VignetteBuilder: 
     knitr
 Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-US
 LazyData: true
-RoxygenNote: 7.2.1
 Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.1

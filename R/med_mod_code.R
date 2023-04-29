@@ -45,7 +45,7 @@ run_mediation <- function(data, X, Y, Ms, CVs = NULL, standardized_all = TRUE,
 
   .check_req_packages(c("lavaan"))
 
-  if (packageVersion("lavaan") > "0.6.12") {
+  if (utils::packageVersion("lavaan") > "0.6.12") {
     message('Due to a bug in lavaan, run_mediation might not currently be stable - see https://github.com/yrosseel/lavaan/issues/275.
             Specify missing = "listwise" or estimator = "ML" as a workaround')
   }

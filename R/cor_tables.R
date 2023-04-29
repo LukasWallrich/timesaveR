@@ -265,6 +265,7 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
 #' @param bootstrap When using FIML estimation (with missing = "fiml"), significance tests and confidence
 #' intervals can be bootstrapped. If you want to do that, pass the number of desired bootstrap resamples
 #' (e.g., 5000) to this parameter, but beware that this can take a while.
+#' @param seed Pass an integer to set the seed for bootstrapping and thus make this reproducible
 #' @return A list including the correlation matrix, p-values, standard errors, t-values, pairwise number of observations, confidence intervals, descriptives and (if var_names was provided) a tibble with old and new variable names
 #' @source Adapted from
 #'  http://www.sthda.com/english/wiki/elegant-correlation-table-using-xtable-r-package
@@ -278,7 +279,10 @@ cor_matrix <- function(data,
                        conf_level = .95,
                        method = c("pearson", "spearman", "kendall"),
                        adjust = "none",
-                       bootstrap = NULL) {
+                       bootstrap = NULL,
+                       seed = NULL) {
+  
+  set.seed(seed)
   
   data %<>% dplyr::select_if(is.numeric)
   all_missing <- data %>% dplyr::summarise(dplyr::across(dplyr::everything(), ~all(is.na(.x)))) %>% unlist()
@@ -382,7 +386,7 @@ cor_matrix <- function(data,
         tidyr::drop_na() %>% 
         tibble::rownames_to_column("rowid") %>%
         tidyr::separate(.data$rowid, c("rhs", "lhs"), sep = "~~") %>%
-        tidyr::gather(-.data$lhs, -.data$rhs, key = "rep", value = "coef") %>%
+        tidyr::gather(-"lhs", -"rhs", key = "rep", value = "coef") %>%
         dplyr::group_by(.data$lhs, .data$rhs) %>%
         dplyr::summarise(
           M = mean(.data$coef),
