@@ -4,10 +4,12 @@
 \alias{glance.mira}
 \title{Glance a multiple imputation \code{mice} pooled object}
 \usage{
-\method{glance}{mira}(x, ...)
+\method{glance}{mira}(x, adj_R2 = TRUE, ...)
 }
 \arguments{
 \item{x}{An object with multiply-imputed models from \code{mice} (class: \code{mira})}
+
+\item{adj_R2}{Should an adjusted R2 be returned as well? Only applicable if x contains \code{lm}-models}
 
 \item{...}{extra arguments (not used)}
 }
