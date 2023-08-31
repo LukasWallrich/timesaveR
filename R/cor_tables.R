@@ -379,11 +379,14 @@ cor_matrix <- function(data,
         res$est %>% magrittr::set_names(paste0(res$lhs, "~~", res$rhs))
       }
       
-      res <- lavaan::bootstrapLavaan(mod, R = bootstrap, FUN = extract_correlations) %>%
+      res <- lavaan::bootstrapLavaan(mod, R = bootstrap, FUN = extract_correlations) 
+
+      # Drop NAs from bootstraps that did not converge
+      res <- res[!rowSums(is.na(res)) == ncol(res),]
+      
+      res <- res %>%
         t() %>%
         data.frame() %>%
-        # Drop NAs from bootstraps that did not converge
-        tidyr::drop_na() %>% 
         tibble::rownames_to_column("rowid") %>%
         tidyr::separate(.data$rowid, c("rhs", "lhs"), sep = "~~") %>%
         tidyr::gather(-"lhs", -"rhs", key = "rep", value = "coef") %>%

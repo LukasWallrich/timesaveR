@@ -25,6 +25,7 @@
 * `report_polr_with_std()` works again after `broom::tidy.polr()` update broke it
 * `fmt_p()`now supports greater numbers of significant digits properly
 * `make_scales()` now correctly reacts to `print_desc` argument
+* `cor_matrix()` now works robustly with `missing = "fiml"` even when some bootstraps do not converge
 
 # timesaveR 0.0.2
 
