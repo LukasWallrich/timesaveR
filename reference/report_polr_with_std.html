@@ -21,7 +21,7 @@ side-by-side. Several pairs of such models can be compared side-by-side."><meta 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9003</span>
       </span>
     </div>
 
@@ -154,7 +154,7 @@ stating that dummy variables were not scaled in standardization. If you approach
 
 
 <dt>...</dt>
-<dd><p>Arguments passed on to <code><a href="https://vincentarelbundock.github.io/modelsummary/reference/modelsummary.html" class="external-link">modelsummary::modelsummary</a></code></p><dl><dt><code>output</code></dt>
+<dd><p>Arguments passed on to <code><a href="https://modelsummary.com/reference/modelsummary.html" class="external-link">modelsummary::modelsummary</a></code></p><dl><dt><code>output</code></dt>
 <dd><p>filename or object type (character string)</p><ul><li><p>Supported filename extensions: .docx, .html, .tex, .md, .txt, .csv, .xlsx, .png, .jpg</p></li>
 <li><p>Supported object types: "default", "html", "markdown", "latex", "latex_tabular", "data.frame", "gt", "kableExtra", "huxtable", "flextable", "DT", "jupyter". The "modelsummary_list" value produces a lightweight object which can be saved and fed back to the <code>modelsummary</code> function.</p></li>
 <li><p>The "default" output format can be set to "kableExtra", "gt", "flextable", "huxtable", "DT", or "markdown"</p><ul><li><p>If the user does not choose a default value, the packages listed above are tried in sequence.</p></li>
@@ -238,8 +238,8 @@ Examples section below.</p></dd>
 
     <dt><code>gof_map</code></dt>
 <dd><p>rename, reorder, and omit goodness-of-fit statistics and other
-model information. This argument accepts 4 types of values:</p><ul><li><p>NULL (default): the <code><a href="https://vincentarelbundock.github.io/modelsummary/reference/gof_map.html" class="external-link">modelsummary::gof_map</a></code> dictionary is used for formatting, and all unknown statistic are included.</p></li>
-<li><p>character vector: "all", "none", or a vector of statistics such as <code>c("rmse", "nobs", "r.squared")</code>. Elements correspond to colnames in the data.frame produced by <code>get_gof(model)</code>. The <code><a href="https://vincentarelbundock.github.io/modelsummary/reference/gof_map.html" class="external-link">modelsummary::gof_map</a></code> default dictionary is used to format and rename statistics.</p></li>
+model information. This argument accepts 4 types of values:</p><ul><li><p>NULL (default): the <code><a href="https://modelsummary.com/reference/gof_map.html" class="external-link">modelsummary::gof_map</a></code> dictionary is used for formatting, and all unknown statistic are included.</p></li>
+<li><p>character vector: "all", "none", or a vector of statistics such as <code>c("rmse", "nobs", "r.squared")</code>. Elements correspond to colnames in the data.frame produced by <code>get_gof(model)</code>. The <code><a href="https://modelsummary.com/reference/gof_map.html" class="external-link">modelsummary::gof_map</a></code> default dictionary is used to format and rename statistics.</p></li>
 <li><p>NA: excludes all statistics from the bottom part of the table.</p></li>
 <li><p>data.frame with 3 columns named "raw", "clean", "fmt". Unknown statistics are omitted. See the 'Examples' section below.</p></li>
 <li><p>list of lists, each of which includes 3 elements named "raw", "clean", "fmt". Unknown statistics are omitted. See the 'Examples section below'.</p></li>
@@ -316,23 +316,23 @@ prevent the file from compiling/displaying. This setting does not affect caption
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;/head&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;body&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;div id="zpmsjmdyxr" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;"&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;style&gt;#zpmsjmdyxr table {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;div id="wgqpioseut" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;"&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;style&gt;#wgqpioseut table {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-family: times, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   -webkit-font-smoothing: antialiased;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   -moz-osx-font-smoothing: grayscale;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr thead, #zpmsjmdyxr tbody, #zpmsjmdyxr tfoot, #zpmsjmdyxr tr, #zpmsjmdyxr td, #zpmsjmdyxr th {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut thead, #wgqpioseut tbody, #wgqpioseut tfoot, #wgqpioseut tr, #wgqpioseut td, #wgqpioseut th {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-style: none;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr p {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut p {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   margin: 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding: 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_table {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_table {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   display: table;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-collapse: collapse;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   line-height: normal;</span>
@@ -358,12 +358,12 @@ prevent the file from compiling/displaying. This setting does not affect caption
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-left-color: #D3D3D3;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_caption {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_caption {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 4px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-bottom: 4px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_title {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_title {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 12px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-weight: initial;</span>
@@ -375,7 +375,7 @@ prevent the file from compiling/displaying. This setting does not affect caption
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-width: 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_subtitle {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_subtitle {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 12px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-weight: initial;</span>
@@ -387,7 +387,7 @@ prevent the file from compiling/displaying. This setting does not affect caption
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-width: 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_heading {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_heading {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-align: center;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-color: #FFFFFF;</span>
@@ -399,13 +399,13 @@ prevent the file from compiling/displaying. This setting does not affect caption
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-color: #D3D3D3;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_bottom_border {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_bottom_border {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-style: solid;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-width: 2px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-color: #000000;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_col_headings {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_col_headings {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-style: none;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-width: 2px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-color: #D3D3D3;</span>
@@ -420,7 +420,7 @@ prevent the file from compiling/displaying. This setting does not affect caption
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-color: #D3D3D3;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_col_heading {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_col_heading {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 100%;</span>
@@ -440,7 +440,7 @@ prevent the file from compiling/displaying. This setting does not affect caption
 <span class="r-out co"><span class="r-pr">#&gt;</span>   overflow-x: hidden;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_column_spanner_outer {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_column_spanner_outer {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 100%;</span>
@@ -452,15 +452,15 @@ prevent the file from compiling/displaying. This setting does not affect caption
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 4px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_column_spanner_outer:first-child {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_column_spanner_outer:first-child {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-left: 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_column_spanner_outer:last-child {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_column_spanner_outer:last-child {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_column_spanner {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_column_spanner {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-style: solid;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-width: 1px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-color: #000000;</span>
@@ -472,11 +472,11 @@ prevent the file from compiling/displaying. This setting does not affect caption
 <span class="r-out co"><span class="r-pr">#&gt;</span>   width: 100%;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_spanner_row {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_spanner_row {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-style: hidden;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_group_heading {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_group_heading {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-bottom: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-left: 5px;</span>
@@ -502,7 +502,7 @@ prevent the file from compiling/displaying. This setting does not affect caption
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-align: left;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_empty_group_heading {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_empty_group_heading {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding: 0.5px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
@@ -517,15 +517,15 @@ prevent the file from compiling/displaying. This setting does not affect caption
 <span class="r-out co"><span class="r-pr">#&gt;</span>   vertical-align: middle;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_from_md &gt; :first-child {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_from_md &gt; :first-child {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   margin-top: 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_from_md &gt; :last-child {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_from_md &gt; :last-child {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   margin-bottom: 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_row {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_row {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-bottom: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-left: 5px;</span>
@@ -544,7 +544,7 @@ prevent the file from compiling/displaying. This setting does not affect caption
 <span class="r-out co"><span class="r-pr">#&gt;</span>   overflow-x: hidden;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_stub {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_stub {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 100%;</span>
@@ -557,7 +557,7 @@ prevent the file from compiling/displaying. This setting does not affect caption
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 5px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_stub_row_group {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_stub_row_group {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 100%;</span>
@@ -571,15 +571,15 @@ prevent the file from compiling/displaying. This setting does not affect caption
 <span class="r-out co"><span class="r-pr">#&gt;</span>   vertical-align: top;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_row_group_first td {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_row_group_first td {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-width: 2px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_row_group_first th {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_row_group_first th {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-width: 2px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_summary_row {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_summary_row {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-transform: inherit;</span>
@@ -589,16 +589,16 @@ prevent the file from compiling/displaying. This setting does not affect caption
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 5px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_first_summary_row {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_first_summary_row {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-style: none;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-color: #D3D3D3;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_first_summary_row.thick {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_first_summary_row.thick {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-width: 2px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_last_summary_row {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_last_summary_row {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-bottom: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-left: 5px;</span>
@@ -608,7 +608,7 @@ prevent the file from compiling/displaying. This setting does not affect caption
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-color: #D3D3D3;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_grand_summary_row {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_grand_summary_row {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-transform: inherit;</span>
@@ -618,7 +618,7 @@ prevent the file from compiling/displaying. This setting does not affect caption
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 5px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_first_grand_summary_row {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_first_grand_summary_row {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-bottom: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-left: 5px;</span>
@@ -628,7 +628,7 @@ prevent the file from compiling/displaying. This setting does not affect caption
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-color: #D3D3D3;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_last_grand_summary_row_top {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_last_grand_summary_row_top {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-bottom: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-left: 5px;</span>
@@ -638,11 +638,11 @@ prevent the file from compiling/displaying. This setting does not affect caption
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-color: #D3D3D3;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_striped {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_striped {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: rgba(128, 128, 128, 0.05);</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_table_body {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_table_body {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-style: solid;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-width: 1px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-color: #000000;</span>
@@ -651,7 +651,7 @@ prevent the file from compiling/displaying. This setting does not affect caption
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-color: #000000;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_footnotes {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_footnotes {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-style: none;</span>
@@ -665,7 +665,7 @@ prevent the file from compiling/displaying. This setting does not affect caption
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-color: #D3D3D3;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_footnote {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_footnote {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   margin: 0px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 90%;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 4px;</span>
@@ -674,7 +674,7 @@ prevent the file from compiling/displaying. This setting does not affect caption
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 5px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_sourcenotes {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_sourcenotes {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-style: none;</span>
@@ -688,7 +688,7 @@ prevent the file from compiling/displaying. This setting does not affect caption
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-color: #D3D3D3;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_sourcenote {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_sourcenote {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 90%;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 4px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-bottom: 4px;</span>
@@ -696,63 +696,63 @@ prevent the file from compiling/displaying. This setting does not affect caption
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 5px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_left {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_left {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-align: left;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_center {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_center {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-align: center;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_right {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_right {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-align: right;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-variant-numeric: tabular-nums;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_font_normal {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_font_normal {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-weight: normal;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_font_bold {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_font_bold {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-weight: bold;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_font_italic {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_font_italic {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-style: italic;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_super {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_super {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 65%;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_footnote_marks {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_footnote_marks {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 75%;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   vertical-align: 0.4em;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   position: initial;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_asterisk {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_asterisk {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 100%;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   vertical-align: 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_indent_1 {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_indent_1 {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-indent: 5px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_indent_2 {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_indent_2 {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-indent: 10px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_indent_3 {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_indent_3 {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-indent: 15px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_indent_4 {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_indent_4 {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-indent: 20px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #zpmsjmdyxr .gt_indent_5 {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #wgqpioseut .gt_indent_5 {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-indent: 25px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;/style&gt;</span>
@@ -804,23 +804,23 @@ prevent the file from compiling/displaying. This setting does not affect caption
 
 
 
-<meta charset="utf-8"><style>body{background-color:white;}</style><div id="zpmsjmdyxr" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-  <style>#zpmsjmdyxr table {
+<meta charset="utf-8"><style>body{background-color:white;}</style><div id="wgqpioseut" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+  <style>#wgqpioseut table {
   font-family: times, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#zpmsjmdyxr thead, #zpmsjmdyxr tbody, #zpmsjmdyxr tfoot, #zpmsjmdyxr tr, #zpmsjmdyxr td, #zpmsjmdyxr th {
+#wgqpioseut thead, #wgqpioseut tbody, #wgqpioseut tfoot, #wgqpioseut tr, #wgqpioseut td, #wgqpioseut th {
   border-style: none;
 }
 
-#zpmsjmdyxr p {
+#wgqpioseut p {
   margin: 0;
   padding: 0;
 }
 
-#zpmsjmdyxr .gt_table {
+#wgqpioseut .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -846,12 +846,12 @@ prevent the file from compiling/displaying. This setting does not affect caption
   border-left-color: #D3D3D3;
 }
 
-#zpmsjmdyxr .gt_caption {
+#wgqpioseut .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#zpmsjmdyxr .gt_title {
+#wgqpioseut .gt_title {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -863,7 +863,7 @@ prevent the file from compiling/displaying. This setting does not affect caption
   border-bottom-width: 0;
 }
 
-#zpmsjmdyxr .gt_subtitle {
+#wgqpioseut .gt_subtitle {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -875,7 +875,7 @@ prevent the file from compiling/displaying. This setting does not affect caption
   border-top-width: 0;
 }
 
-#zpmsjmdyxr .gt_heading {
+#wgqpioseut .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -887,13 +887,13 @@ prevent the file from compiling/displaying. This setting does not affect caption
   border-right-color: #D3D3D3;
 }
 
-#zpmsjmdyxr .gt_bottom_border {
+#wgqpioseut .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #000000;
 }
 
-#zpmsjmdyxr .gt_col_headings {
+#wgqpioseut .gt_col_headings {
   border-top-style: none;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -908,7 +908,7 @@ prevent the file from compiling/displaying. This setting does not affect caption
   border-right-color: #D3D3D3;
 }
 
-#zpmsjmdyxr .gt_col_heading {
+#wgqpioseut .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -928,7 +928,7 @@ prevent the file from compiling/displaying. This setting does not affect caption
   overflow-x: hidden;
 }
 
-#zpmsjmdyxr .gt_column_spanner_outer {
+#wgqpioseut .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -940,15 +940,15 @@ prevent the file from compiling/displaying. This setting does not affect caption
   padding-right: 4px;
 }
 
-#zpmsjmdyxr .gt_column_spanner_outer:first-child {
+#wgqpioseut .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#zpmsjmdyxr .gt_column_spanner_outer:last-child {
+#wgqpioseut .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#zpmsjmdyxr .gt_column_spanner {
+#wgqpioseut .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 1px;
   border-bottom-color: #000000;
@@ -960,11 +960,11 @@ prevent the file from compiling/displaying. This setting does not affect caption
   width: 100%;
 }
 
-#zpmsjmdyxr .gt_spanner_row {
+#wgqpioseut .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#zpmsjmdyxr .gt_group_heading {
+#wgqpioseut .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -990,7 +990,7 @@ prevent the file from compiling/displaying. This setting does not affect caption
   text-align: left;
 }
 
-#zpmsjmdyxr .gt_empty_group_heading {
+#wgqpioseut .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1005,15 +1005,15 @@ prevent the file from compiling/displaying. This setting does not affect caption
   vertical-align: middle;
 }
 
-#zpmsjmdyxr .gt_from_md > :first-child {
+#wgqpioseut .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#zpmsjmdyxr .gt_from_md > :last-child {
+#wgqpioseut .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#zpmsjmdyxr .gt_row {
+#wgqpioseut .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1032,7 +1032,7 @@ prevent the file from compiling/displaying. This setting does not affect caption
   overflow-x: hidden;
 }
 
-#zpmsjmdyxr .gt_stub {
+#wgqpioseut .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1045,7 +1045,7 @@ prevent the file from compiling/displaying. This setting does not affect caption
   padding-right: 5px;
 }
 
-#zpmsjmdyxr .gt_stub_row_group {
+#wgqpioseut .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1059,15 +1059,15 @@ prevent the file from compiling/displaying. This setting does not affect caption
   vertical-align: top;
 }
 
-#zpmsjmdyxr .gt_row_group_first td {
+#wgqpioseut .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#zpmsjmdyxr .gt_row_group_first th {
+#wgqpioseut .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#zpmsjmdyxr .gt_summary_row {
+#wgqpioseut .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1077,16 +1077,16 @@ prevent the file from compiling/displaying. This setting does not affect caption
   padding-right: 5px;
 }
 
-#zpmsjmdyxr .gt_first_summary_row {
+#wgqpioseut .gt_first_summary_row {
   border-top-style: none;
   border-top-color: #D3D3D3;
 }
 
-#zpmsjmdyxr .gt_first_summary_row.thick {
+#wgqpioseut .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#zpmsjmdyxr .gt_last_summary_row {
+#wgqpioseut .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1096,7 +1096,7 @@ prevent the file from compiling/displaying. This setting does not affect caption
   border-bottom-color: #D3D3D3;
 }
 
-#zpmsjmdyxr .gt_grand_summary_row {
+#wgqpioseut .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1106,7 +1106,7 @@ prevent the file from compiling/displaying. This setting does not affect caption
   padding-right: 5px;
 }
 
-#zpmsjmdyxr .gt_first_grand_summary_row {
+#wgqpioseut .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1116,7 +1116,7 @@ prevent the file from compiling/displaying. This setting does not affect caption
   border-top-color: #D3D3D3;
 }
 
-#zpmsjmdyxr .gt_last_grand_summary_row_top {
+#wgqpioseut .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1126,11 +1126,11 @@ prevent the file from compiling/displaying. This setting does not affect caption
   border-bottom-color: #D3D3D3;
 }
 
-#zpmsjmdyxr .gt_striped {
+#wgqpioseut .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#zpmsjmdyxr .gt_table_body {
+#wgqpioseut .gt_table_body {
   border-top-style: solid;
   border-top-width: 1px;
   border-top-color: #000000;
@@ -1139,7 +1139,7 @@ prevent the file from compiling/displaying. This setting does not affect caption
   border-bottom-color: #000000;
 }
 
-#zpmsjmdyxr .gt_footnotes {
+#wgqpioseut .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1153,7 +1153,7 @@ prevent the file from compiling/displaying. This setting does not affect caption
   border-right-color: #D3D3D3;
 }
 
-#zpmsjmdyxr .gt_footnote {
+#wgqpioseut .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1162,7 +1162,7 @@ prevent the file from compiling/displaying. This setting does not affect caption
   padding-right: 5px;
 }
 
-#zpmsjmdyxr .gt_sourcenotes {
+#wgqpioseut .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1176,7 +1176,7 @@ prevent the file from compiling/displaying. This setting does not affect caption
   border-right-color: #D3D3D3;
 }
 
-#zpmsjmdyxr .gt_sourcenote {
+#wgqpioseut .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1184,63 +1184,63 @@ prevent the file from compiling/displaying. This setting does not affect caption
   padding-right: 5px;
 }
 
-#zpmsjmdyxr .gt_left {
+#wgqpioseut .gt_left {
   text-align: left;
 }
 
-#zpmsjmdyxr .gt_center {
+#wgqpioseut .gt_center {
   text-align: center;
 }
 
-#zpmsjmdyxr .gt_right {
+#wgqpioseut .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#zpmsjmdyxr .gt_font_normal {
+#wgqpioseut .gt_font_normal {
   font-weight: normal;
 }
 
-#zpmsjmdyxr .gt_font_bold {
+#wgqpioseut .gt_font_bold {
   font-weight: bold;
 }
 
-#zpmsjmdyxr .gt_font_italic {
+#wgqpioseut .gt_font_italic {
   font-style: italic;
 }
 
-#zpmsjmdyxr .gt_super {
+#wgqpioseut .gt_super {
   font-size: 65%;
 }
 
-#zpmsjmdyxr .gt_footnote_marks {
+#wgqpioseut .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#zpmsjmdyxr .gt_asterisk {
+#wgqpioseut .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#zpmsjmdyxr .gt_indent_1 {
+#wgqpioseut .gt_indent_1 {
   text-indent: 5px;
 }
 
-#zpmsjmdyxr .gt_indent_2 {
+#wgqpioseut .gt_indent_2 {
   text-indent: 10px;
 }
 
-#zpmsjmdyxr .gt_indent_3 {
+#wgqpioseut .gt_indent_3 {
   text-indent: 15px;
 }
 
-#zpmsjmdyxr .gt_indent_4 {
+#wgqpioseut .gt_indent_4 {
   text-indent: 20px;
 }
 
-#zpmsjmdyxr .gt_indent_5 {
+#wgqpioseut .gt_indent_5 {
   text-indent: 25px;
 }
 </style><table class="table gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false"><thead><tr class="gt_col_headings"><th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id=""></th>
