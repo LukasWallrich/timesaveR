@@ -74,7 +74,8 @@ and returns the results and effect sizes in a tidy dataframe. Beware: It will au
 <span>  groups <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  p.adjust.method <span class="op">=</span> <span class="va">p.adjust.methods</span>,</span>
 <span>  conf_level <span class="op">=</span> <span class="fl">0.95</span>,</span>
-<span>  var_equal <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  var_equal <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  na.rm <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -106,6 +107,10 @@ and returns the results and effect sizes in a tidy dataframe. Beware: It will au
 <dd><p>a logical variable indicating whether to treat the two variances as being equal. If TRUE then the pooled
 variance is used to estimate the variance otherwise the Welch (or Satterthwaite)
 approximation to the degrees of freedom is used.</p></dd>
+
+
+<dt id="arg-na-rm">na.rm<a class="anchor" aria-label="anchor" href="#arg-na-rm"></a></dt>
+<dd><p>Logical. Should missing values be removed. If NULL, they are removed with a warning.</p></dd>
 
 </dl></div>
     <div id="value">

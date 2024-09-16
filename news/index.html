@@ -69,8 +69,8 @@
 <li>Added <code><a href="../reference/make_scale_mi.html">make_scale_mi()</a></code> to estimate scale scores and Cronbach’s alpha after multiple-imputation at the item level. According to <a href="https://doi.org/10.1080/00273171.2012.640589" class="external-link">Gottschall, West &amp; Enders (2012)</a>, this is one of the best ways to deal with item-level missing data. If requested, the function can bootstrap confidence intervals, using the <code>future</code>-package for parallel computing.</li>
 <li>Added <code><a href="../reference/pcor_matrix.html">pcor_matrix()</a></code> to calculate partial correlation matrices after parceling out one or several variable.</li>
 <li>Added <code><a href="../reference/run_and_format.html">run_and_format()</a></code> to run any code and return formatted code and output for sharing - in the style of <code><a href="https://reprex.tidyverse.org/reference/reprex.html" class="external-link">reprex::reprex()</a></code> but without creating a new session (intended for teaching or sharing code examples, rather than bug reporting).</li>
-<li>Added <code>paste_()</code> that mimics <code><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste()</a></code> but removes <code>NA</code>-values</li>
-<li>Added <code>dupl_items()</code> that returns (unique) duplicated items from vector, removing need for subsetting with <code><a href="https://rdrr.io/r/base/duplicated.html" class="external-link">duplicated()</a></code>
+<li>Added <code><a href="../reference/paste_.html">paste_()</a></code> that mimics <code><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste()</a></code> but removes <code>NA</code>-values</li>
+<li>Added <code><a href="../reference/dupl_items.html">dupl_items()</a></code> that returns (unique) duplicated items from vector, removing need for subsetting with <code><a href="https://rdrr.io/r/base/duplicated.html" class="external-link">duplicated()</a></code>
 </li>
 </ul></div>
 <div class="section level3">
@@ -93,6 +93,8 @@
 <code><a href="../reference/fmt_p.html">fmt_p()</a></code> gained a <code>equal_sign</code> argument that determines whether <em>p</em>-values that are reported precisely are prefixed with “=”</li>
 <li>
 <code><a href="../reference/dump_to_clip.html">dump_to_clip()</a></code> now accepts objects passed directly, or through the pipe (<a href="https://github.com/LukasWallrich/timesaveR/issues/5" class="external-link">#5</a>)</li>
+<li>
+<code><a href="../reference/line_to_vector.html">line_to_vector()</a></code> now automatically returns numeric vectors when only numbers are passed, and has gained an option to retain NA values for blank entries</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-0-0-3">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-0-3"></a></h3>
