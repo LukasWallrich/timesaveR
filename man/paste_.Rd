@@ -21,7 +21,10 @@ This function behaves like base::paste(), but replaces any NA elements with an e
 It also supports vector recycling and accepts the 'sep' and 'collapse' arguments.
 }
 \examples{
-paste_("hello", NA, "you") # returns "hello you"
-paste_(c("hello", "world"), c(NA, "everyone"), c("you", NA)) # returns c("hello you", "world everyone")
+paste_("hello", NA, "you") 
+# returns "hello you"
+
+paste_(c("hello", "world"), c(NA, "everyone"), c("you", NA)) 
+# returns c("hello you", "world everyone")
 
 }
