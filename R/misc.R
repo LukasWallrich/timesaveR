@@ -493,14 +493,15 @@ dump_to_clip <- function(x) {
 #' and end of each element of the vector.
 #'
 #' @param x Character string of desired vector items, separated by spaces, tabs or linebreaks. If NULL, it will be read from the clipboard.
-#' @param strings Should vector items be considered as strings, i.e. quoted.
+#' @param strings Should vector items be considered as strings, i.e. quoted. Defaults to treating them as string, unless all are numbers.
 #' @param separators Which separator should x be split by. This defaults to the "top-level" found in x, i.e., newlines, if there are any, and otherwise tabs or spaces. Can also be "all".
 #' @param to_clip Should code for vector be copied into clipboard? Defaults to TRUE in interactive use, but only works when `clipr` package is installed
 #' @param return Should code or a vector be returned? Defaults to code
+#' @param keep_blank_as_na By default, empty values are omitted. Set this to keep them as NA.
 #' @examples
 #' line_to_vector("a b c", strings = TRUE)
 #'
-#' line_to_vector("1 2 3", st = FALSE, return = "vector")
+#' line_to_vector("1 2 3", return = "vector") # Returned as numeric vector
 #'
 #' line_to_vector("Hello World!
 #'                 How are the bananas today?
@@ -509,52 +510,85 @@ dump_to_clip <- function(x) {
 #' weekend <- line_to_vector("Friday Saturday Sunday", return = "vector")
 #' @export
 
-line_to_vector <- function(x = NULL, strings = TRUE, separators = c("top-level", "all"), to_clip = interactive(), return = c("code", "vector")) {
+line_to_vector <- function(x = NULL, strings = NULL, separators = c("top-level", "all"), 
+                           to_clip = interactive(), return = c("code", "vector"), keep_blank_as_na = FALSE) {
+  
   assert_choice(separators[1], c("all", "top-level"))
   assert_choice(return[1], c("code", "vector"))
-
+  
   if (is.null(x)) {
     if (!requireNamespace("clipr", quietly = TRUE)) {
-      warning("clipr package is needed to read from the clipboard, but is not available. Please specify 'x' or install the package.")
+      stop("The 'clipr' package is required to read from the clipboard, but is not available. Please specify 'x' or install the package.")
     } else {
       x <- clipr::read_clip()
+      if(is.null(x)) return(NULL)
     }
   }
+  
+  # Ensure x is atomic vector and not NULL
   assert_atomic_vector(x)
   
+  # Handle blank clipboard content
+  if (all(x == "")) {
+    stop("Clipboard content is empty or inappropriate. Please provide valid content.")
+  }
+  
+  # Handle separators
   if (separators[1] == "all") {
-    x <- strsplit(x, " |\\n|\\t") %>% unlist()
+    x <- strsplit(x, "[ ,\\n\\t]") %>% unlist()
   } else {
-      if (!length(x) > 1) { #Otherwise, multiple lines have been read
+    if (length(x) == 1) { # Handle single-line content
       sep <- dplyr::case_when(
         stringr::str_detect(x, "\\n") ~ "\\n",
         stringr::str_detect(x, "\\t") ~ "\\t",
+        stringr::str_detect(x, ",") ~ ",",   # Add comma as a valid separator
         TRUE ~ " "
       )
       x <- strsplit(x, sep) %>% unlist()
-      }
     }
-  x <- x[!x == ""]
-  if (strings) {
-    x <- stringr::str_trim(x)
-    out <- paste0('c("', paste0(x, collapse = '", "'), '")')
-  } else {
-    out <- paste0("c(", paste0(x, collapse = ", "), ")")
   }
-  if (length(x) == 1) message("No separators found - returning single item.")
+  
+  # Trim whitespace
+  x <- stringr::str_trim(x)
+  
+  # Handle blank entries, with option to keep as NA
+  if (keep_blank_as_na) {
+    x[x == ""] <- NA
+  } else {
+    x <- x[!x == ""]
+  }
+  
+  if (is.null(strings)) strings <- any(stringr::str_detect(x, "^-?\\d+\\.?\\d*$") == FALSE)
+  
+  # Prepare output
+  if (strings) {
+    x <- gsub('"', '\\\\\\"', x)
+    out <- paste0('c("', paste(x, collapse = '", "'), '")')
+  } else {
+    out <- paste0("c(", paste(x, collapse = ", "), ")")
+  }
+  
+  # If no separators found and only one item
+  if (length(x) == 1) {
+    message("No separators found - returning single item.")
+  }
+  
+  # Copy to clipboard if requested
   if (to_clip) {
     if (!requireNamespace("clipr", quietly = TRUE)) {
-      warning("clipr package is needed to write to clipboard, but is not available.")
+      warning("The 'clipr' package is required to write to clipboard, but is not available.")
     } else {
       clipr::write_clip(out)
     }
   }
+  
+  # Return vector or code
   if (return[1] == "vector") {
     return(eval(parse(text = out)))
   }
-  out
+  
+  return(out)
 }
-
 l2v <- line_to_vector
 
 #' Calculate share of NA-values in vector

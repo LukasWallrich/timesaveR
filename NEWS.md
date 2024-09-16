@@ -23,6 +23,7 @@
 * Added output to README (by using README.Rmd) to make it more informative
 * `fmt_p()` gained a `equal_sign` argument that determines whether *p*-values that are reported precisely are prefixed with "= "
 * `dump_to_clip()` now accepts objects passed directly, or through the pipe (#5)
+* `line_to_vector()` now automatically returns numeric vectors when only numbers are passed, and has gained an option to retain NA values for blank entries
 
 ## Bug fixes
 * `report_polr_with_std()` works again after `broom::tidy.polr()` update broke it
