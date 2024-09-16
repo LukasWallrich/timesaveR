@@ -463,6 +463,7 @@ get_pairwise_letters <- function(tests,
 #' @param data A dataframe containing the outcome and grouping variable
 #' @param outcome The outcome variable in dataframe, or a formula of the form `outcome ~ group`. If a formula is provided, the group needs to be empty.
 #' @param groups The grouping variable (each distinct value will be treated as a level)
+#' @param na.rm Logical. Should missing values be removed. If NULL, they are removed with a warning.
 #' @param p.adjust.method The method to adjust p-values for multiple comparison (see [stats::p.adjust()])
 #' @param conf_level confidence level of the interval.
 #' @param var_equal a logical variable indicating whether to treat the two variances as being equal. If TRUE then the pooled
@@ -476,35 +477,86 @@ get_pairwise_letters <- function(tests,
 #' }
 #' @export
 
-pairwise_t_tests <- function(data, outcome, groups = NULL, p.adjust.method = p.adjust.methods, conf_level = .95, var_equal = FALSE) {
+pairwise_t_tests <- function(data, outcome, groups = NULL, p.adjust.method = p.adjust.methods, 
+                             conf_level = .95, var_equal = FALSE, na.rm = NULL) {
+  
   if (is.character(rlang::enexpr(outcome))) {
     warning("Outcome and groups should be provided as raw variable names, not a string, as shown in the examples.")
     outcome <- rlang::sym(outcome)
     groups <- rlang::sym(groups)
   }
   
+  # Check if the data is a data frame
+  assert_data_frame(data, min.rows = 2, any.missing = TRUE)
+  
+  # If outcome is a formula, groups should not be specified separately
   if (missing(groups)) {
-    if (!inherits(outcome, "formula")) stop("If groups are not specified separately, the outcome argument must be a formula of the form `outcome ~ group`")
+    assert_formula(outcome)
     groups <- as.character(outcome[[3]])
     if (length(groups) > 1) stop("If formula notation is used, only one grouping variable should be provided on the RHS")
     groups <- rlang::sym(groups)
     outcome <- rlang::sym(as.character(outcome[[2]]))
+  } else {
+    # Check if outcome and groups are column names in the data frame
+    assert_choice(as.character(rlang::enexpr(outcome)), colnames(data))
+    assert_choice(as.character(rlang::enexpr(groups)), colnames(data))
+  }
+  
+  assert_logical(na.rm, null.ok = TRUE)
+  # Handle missing values in the grouping variable (na.rm)
+  group_values <- dplyr::pull(data, {{ groups }})
+  outcome_values <- dplyr::pull(data, {{ outcome }})
+  
+  if (any(is.na(group_values)) | any(is.na(outcome_values))) {
+    if (is.null(na.rm) || na.rm) {
+      if(is.null(na.rm)) {
+        n_removed <- sum(is.na(group_values) | is.na(outcome_values))
+        warning("Missing values found in the grouping or outcome variables. ",
+        n_removed,
+        " case", if (n_removed > 1) "s " else " ", "will be removed.")
+      }
+      data <- data %>% dplyr::filter(!is.na({{ groups }}))
+    } else {
+      stop("Missing values found in the grouping or outcome variables. Set `na.rm = TRUE` to remove them.")
     }
-
-  pairs <- data %>%
-    dplyr::select({{ groups }}) %>%
-    dplyr::pull() %>%
-    unique() %>%
-    as.character() %>%
-    utils::combn(2) %>%
-    split(col(.))
-
+  }
+  
+  # Check if the grouping variable has more than one unique value
+  unique_groups <- unique(dplyr::pull(data, {{ groups }}))
+  if (length(unique_groups) < 2) {
+    stop("The grouping variable must have at least two unique values for pairwise comparisons.")
+  }
+  
+  # Handle mixed data types (numeric and character)
+  if (!is.factor(group_values)) {
+    if (!is.character(group_values) && is.null(attr(group_values, "labels"))) {
+    warning("The grouping variable is not a factor. It will be converted to a factor.")
+    } 
+    
+    if (is.numeric(group_values) && is.null(attr(group_values, "labels"))) {
+      haven_available <- suppressWarnings(requireNamespace("haven", quietly = TRUE))
+      if (haven_available) {
+        data <- data %>% dplyr::mutate({{ groups }} := haven::as_factor({{ groups }}))
+      } else {
+        warning("The grouping variable is a labelled numeric, but haven package is not available. It will be converted to factor, but the group labels might be lost.")
+        data <- data %>% dplyr::mutate({{ groups }} := as.factor({{ groups }}))
+      }
+    } else {
+    
+    data <- data %>% dplyr::mutate({{ groups }} := as.factor({{ groups }}))
+    }
+  }
+  
+  # Generate pairs for t-tests
+  pairs <- utils::combn(levels(dplyr::pull(data, {{ groups }})), 2, simplify = FALSE)
+  
   fmla <- as.formula(paste(dplyr::as_label(rlang::enexpr(outcome)), "~", dplyr::as_label(rlang::enexpr(groups))))
-
+  
+  # Perform pairwise t-tests
   out <- purrr::map_df(pairs, function(x) {
-    dat <- dplyr::filter(data, {{ groups }} %in% x)
-    out <- stats::t.test(fmla, dat,
-                  var.equal = var_equal, conf.level = conf_level,  na.action = "na.omit") %>% broom::tidy()
+    dat <- dplyr::filter(data, {{ groups }} %in% !! x)
+    out <- stats::t.test(fmla, dat, var.equal = var_equal, conf.level = conf_level, na.action = "na.omit") %>% 
+      broom::tidy()
     desc <- dat %>%
       dplyr::arrange(dplyr::desc({{ groups }} == x[1])) %>%
       dplyr::group_by({{ groups }}) %>%
@@ -515,16 +567,18 @@ pairwise_t_tests <- function(data, outcome, groups = NULL, p.adjust.method = p.a
                     conf_low = "conf.low", conf_high = "conf.high", t_value = "statistic", 
                     df = "parameter", p_value = "p.value", "cohens_d", test = "method")
   })
-
-  out$p_value %<>% stats::p.adjust(p.adjust.method)
+  
+  # Adjust p-values
+  out$p_value <- stats::p.adjust(out$p_value, method = p.adjust.method)
   out$p_value_adjust <- p.adjust.method[1]
-
+  
   out$group_var <- dplyr::as_label(rlang::enexpr(groups))
 
   out$apa <- paste0("t(", round(out$df), ") = ", round_(out$t_value, 2), ", p ", fmt_p(out$p_value), ", d = ", round_(out$cohens_d, 2))
 
   tibble::tibble(out)
 }
+
 
 #' polr() with standardised continuous variables
 #'

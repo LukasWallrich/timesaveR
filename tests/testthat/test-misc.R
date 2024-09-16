@@ -99,3 +99,16 @@ test_that("named_list works", {
   expect_equal(named_list(name, age)$age, 10)
   expect_warning(name %>% named_list(age))
 })
+
+test_that("paste_ function works as expected", {
+  expect_equal(paste_("hello", NA, "you"), "hello you")
+  expect_equal(paste_("", NA, "you"), "you")
+  expect_equal(paste_(NA, NA, NA), "")
+  expect_equal(paste_(c("hello", "world"), c(NA, "everyone"), c("you", NA)), c("hello you", "world everyone"))
+  expect_equal(paste_(1, 2, NA, 4), "1 2 4")
+  expect_equal(paste_("", "", ""), "")
+  expect_equal(paste_(c("hello", NA, "world"), collapse = ", "), "hello, world")
+  expect_equal(paste_("hello", NA, "world", sep = "-"), "hello-world")
+  expect_equal(paste_("hello", c(NA, "world")), c("hello", "hello world"))
+  expect_equal(paste_(), "")
+})

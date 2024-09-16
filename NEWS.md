@@ -3,10 +3,12 @@
 ## New capabilities
 
 * Added `run_mediation()` to estimate and `plot_mediation()` to visualize parallel mediation models.
-* Added `na_when()` to set values to NA based on logical conditions, and `na_ifs()` to replace multiple values with NA.
+* Added `na_when()` to set values to NA based on logical conditions, and `na_ifs()` to replace multiple values with NA (naming choice guided by existing dplyr::na_if function)
 * Added `make_scale_mi()` to estimate scale scores and Cronbach's alpha after multiple-imputation at the item level. According to [Gottschall, West & Enders (2012)](https://doi.org/10.1080/00273171.2012.640589), this is one of the best ways to deal with item-level missing data. If requested, the function can bootstrap confidence intervals, using the `future`-package for parallel computing.
 * Added `pcor_matrix()` to calculate partial correlation matrices after parceling out one or several variable.
 * Added `run_and_format()` to run any code and return formatted code and output for sharing - in the style of `reprex::reprex()` but without creating a new session (intended for teaching or sharing code examples, rather than bug reporting).
+* Added `paste_()` that mimics `paste()` but removes `NA`-values
+* Added `dupl_items()` that returns (unique) duplicated items from vector, removing need for subsetting with `duplicated()`
 
 ## Enhancements
 
@@ -23,7 +25,9 @@
 
 ## Bug fixes
 * `report_polr_with_std()` works again after `broom::tidy.polr()` update broke it
-* `fmt_p()`now supports greater numbers of significant digits properly
+* `fmt_p()` now supports greater numbers of significant digits properly
+* `fmt_p()` now checks argument types, so that it does not return misleading results when characters are passed (#10)
+* `pairwise_t_tests()` can now deal with missing data and labelled arguments (#9)
 * `make_scales()` now correctly reacts to `print_desc` argument
 * `cor_matrix()` now works robustly with `missing = "fiml"` even when some bootstraps do not converge
 
