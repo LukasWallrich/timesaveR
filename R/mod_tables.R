@@ -555,11 +555,12 @@ tidy.tsR_std <- function(x, ...) {
 #'
 #' @param gt_table A gt-table
 #' @param fmt_labels_md Should row and column labels be formatted with markdown/HTML (Defaults to TRUE)
+#' @param row_group_background Background color for row groups. Set to NULL to remove this highlight.
 #' @source Created by Philip Parker, https://gist.github.com/pdparker/1b61b6d36d09cb295bf286a931990159. Slightly expanded here.
 #' @export
 
 
-gt_apa_style <- function(gt_table, fmt_labels_md = TRUE) {
+gt_apa_style <- function(gt_table, fmt_labels_md = TRUE, row_group_background = "#E0E0E0") {
   out <- gt_table %>%
     gt::opt_table_lines(extent = "none") %>%
     gt::tab_options(
@@ -581,7 +582,21 @@ gt_apa_style <- function(gt_table, fmt_labels_md = TRUE) {
       column_labels.border.bottom.style = "solid",
       column_labels.border.bottom.width = 1
     ) %>%
-    gt::opt_table_font(font = "times")
+    gt::opt_table_font(font = "times") %>%
+    gt::tab_style(
+      style = list(
+        gt::cell_text(weight = "bold")
+      ),
+      locations = gt::cells_row_groups(groups = everything())
+    )
+  
+  if (!is.null(row_group_background)) {
+    out <- out %>%
+      gt::tab_style(
+        style = gt::cell_fill(color = row_group_background),
+        locations = gt::cells_row_groups(groups = everything())
+      )
+  }
 
   if (fmt_labels_md) out <- fmt_labels_md(out)
   out
