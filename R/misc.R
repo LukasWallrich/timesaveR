@@ -430,15 +430,54 @@ clip_excel <- function(data, row_names = FALSE, col_names = TRUE, ...) {
 #' It then copies this code to the clipboard. This can be used to quickly copy (small) objects between R sessions,
 #' for instance during package development and testing, or - of course - to paste the dump code into a forum post.
 #'
-#' @param objects A character vector containing the names of one or more objects in the current session.
+#' @param x An object to dump to the clipboard, or a character vector of object names. 
+#' To enable the use in pipelines, objects that are passed directly will be named `dumped_object`
+#' in the resulting code.
+#'  
+#' @examples
+#' if (interactive()) {
+#'   outcome <- "mpg"
+#'   mod <- lm(mpg ~ wt, mtcars)
+#'   mod %>% dump_to_clip() # will be named dumped_object
+#'   dump_to_clip(c("outcome", "mod")) # will retain variable names
+#' }
+#' 
 #' @export
 
-dump_to_clip <- function(objects) {
+dump_to_clip <- function(x) {
   .check_req_packages("clipr")
-
   if (!interactive()) stop("Clipboard access only supported in interactive sessions")
-  if (!is.character(objects)) stop("'objects' need to be a character vector with the names of one or more R objects")
-  utils::capture.output(dump(objects, file = "")) %>% clipr::write_clip()
+  
+  if (!is.character(x)) {
+    dumped_object <- x
+    
+    # Dump the object to clipboard
+    utils::capture.output(dump("dumped_object", file = stdout())) %>%
+      clipr::write_clip()
+    
+  } else {
+    existing_objects <- sapply(x, exists, envir = .GlobalEnv)
+    
+    if (all(existing_objects)) {
+      # If all objects exist, dump them by name
+      utils::capture.output(dump(x, file = stdout())) %>%
+        clipr::write_clip()
+      
+    } else {
+      if (any(existing_objects)) {
+        message("Some but not all elements of `x` exist in the global environment. Thus, I am unsure whether you mean",
+                " to dump a character vector, or a set of objects. I will dump the character vector. If you want to ",
+                "dump objects, ensure that all exist or remove the missing one(s) from the vector: ", paste0(x[!existing_objects], collapse = ", "), 
+                ".")
+      }
+      
+      dumped_object <- x
+      
+      # Dump the object to clipboard
+      utils::capture.output(dump("dumped_object", file = stdout())) %>%
+        clipr::write_clip()
+    }
+  }  
 }
 
 #' Turn line of items separated by whitespace into vector or code for c()
@@ -698,5 +737,76 @@ named_list <- function(...) {
   }
   names(out) <- new_names
   out
+}
+
+#' Paste arguments while ignoring NAs
+#'
+#' This function behaves like base::paste(), but replaces any NA elements with an empty string.
+#' It also supports vector recycling and accepts the 'sep' and 'collapse' arguments.
+#'
+#' @param ... The arguments to be concatenated. These can be vectors.
+#' @param sep The string that separates the concatenated elements. Defaults to a single space.
+#' @param collapse An optional string to separate the results. NULL by default, which means no separation.
+#'
+#' @return A character vector of concatenated strings.
+#' @examples
+#' paste_("hello", NA, "you") # returns "hello you"
+#' paste_(c("hello", "world"), c(NA, "everyone"), c("you", NA)) # returns c("hello you", "world everyone")
+#'
+#' @export
+
+paste_ <- function(..., sep = " ", collapse = NULL) {
+  args <- list(...)
+  
+  if (length(args) == 0) {
+    return(ifelse(is.null(collapse), "", collapse))
+  }
+  
+  # Convert all arguments to character vectors and replace NAs with ""
+  args <- lapply(args, function(x) ifelse(is.na(x), "", as.character(x)))
+  
+  # Find the maximum length among the arguments
+  max_length <- max(sapply(args, length))
+  
+  # Ensure all arguments are of the same length by repeating them as needed
+  args <- lapply(args, function(x) rep(x, length.out = max_length))
+  
+  # Concatenate corresponding elements from each list element
+  result <- apply(do.call(cbind, args), 1, function(row) {
+    output <- paste(row[row != ""], collapse = sep)
+    if (output == "") return("")
+    output
+  })
+  
+  # Apply collapse if needed
+  if (!is.null(collapse)) {
+    result <- paste(result[result != ""], collapse = collapse)
+  }
+  
+  return(result)
+}
+
+#' Get duplicated items from a vector
+#'
+#' This function takes a numeric or character vector and returns a vector of the 
+#' unique elements that appear more than once - so a simple shortcut for 
+#' `unique(x[duplicated(x)])` that is particularly friendly in pipes
+#'
+#' @param x A numeric or character vector from which to identify duplicate elements.
+#'
+#' @return A vector containing unique elements that are duplicated in the original vector. 
+#' Returns an empty vector if there are no duplicates.
+#'
+#' @examples
+#' dupl_items(c(1, 2, 3, 3, 4, 5, 5, 5))
+#' # Output: 3 5
+#' dupl_items(c(1, 2, 3, 4))
+#' # Output: numeric(0)
+#' 
+#' @export
+
+dupl_items <- function(x) {
+  duplicated_elements <- x[duplicated(x)]
+  unique(duplicated_elements)
 }
 

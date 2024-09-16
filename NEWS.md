@@ -22,6 +22,7 @@
 * Renamed `wtd_cor_matrix_mi()` to `cor_matrix_mi()` to reflect that weights are optional
 * Added output to README (by using README.Rmd) to make it more informative
 * `fmt_p()` gained a `equal_sign` argument that determines whether *p*-values that are reported precisely are prefixed with "= "
+* `dump_to_clip()` now accepts objects passed directly, or through the pipe (#5)
 
 ## Bug fixes
 * `report_polr_with_std()` works again after `broom::tidy.polr()` update broke it
