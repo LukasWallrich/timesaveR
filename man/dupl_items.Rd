@@ -25,3 +25,4 @@ dupl_items(c(1, 2, 3, 4))
 # Output: numeric(0)
 
 }
+\keyword{internal}
