@@ -29,6 +29,15 @@ round_df <- function(df, digits = 2) {
 #' @export
 
 fmt_p <- function(p_value, digits = 3, equal_sign = TRUE) {
+  
+  assert_numeric(p_value)
+  assert_integerish(digits)
+  assert_logical(equal_sign)
+  
+  if (!is.numeric(p_value)) {
+    stop("p_value input must be numeric.")
+  }
+  
   fmt <- paste0("%.", digits, "f")
   fmt_p <- function(x) {
     paste0(if(equal_sign == TRUE) "= " else "", sprintf(fmt, x)) %>%
