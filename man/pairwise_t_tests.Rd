@@ -10,7 +10,8 @@ pairwise_t_tests(
   groups = NULL,
   p.adjust.method = p.adjust.methods,
   conf_level = 0.95,
-  var_equal = FALSE
+  var_equal = FALSE,
+  na.rm = NULL
 )
 }
 \arguments{
@@ -27,6 +28,8 @@ pairwise_t_tests(
 \item{var_equal}{a logical variable indicating whether to treat the two variances as being equal. If TRUE then the pooled
 variance is used to estimate the variance otherwise the Welch (or Satterthwaite)
 approximation to the degrees of freedom is used.}
+
+\item{na.rm}{Logical. Should missing values be removed. If NULL, they are removed with a warning.}
 }
 \value{
 A tibble containing the results of the t-tests with one test per row, including a column (\code{apa}) formatted for reporting

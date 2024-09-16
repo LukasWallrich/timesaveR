@@ -2,8 +2,8 @@
 % Please edit documentation in R/timesaveR.R
 \docType{package}
 \name{timesaveR}
-\alias{timesaveR}
 \alias{timesaveR-package}
+\alias{timesaveR}
 \title{Functions to Accelerate (Academic) Data Analysis and Reporting}
 \description{
 Functions and templates in this package facilitate common tasks

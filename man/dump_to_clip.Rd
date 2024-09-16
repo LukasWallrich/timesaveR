@@ -4,13 +4,24 @@
 \alias{dump_to_clip}
 \title{Dump objects to clipboard (to transfer them between R sessions)}
 \usage{
-dump_to_clip(objects)
+dump_to_clip(x)
 }
 \arguments{
-\item{objects}{A character vector containing the names of one or more objects in the current session.}
+\item{x}{An object to dump to the clipboard, or a character vector of object names.
+To enable the use in pipelines, objects that are passed directly will be named \code{dumped_object}
+in the resulting code.}
 }
 \description{
 This function calls dump on one or several R objects, which creates code that recreates them from the console.
 It then copies this code to the clipboard. This can be used to quickly copy (small) objects between R sessions,
 for instance during package development and testing, or - of course - to paste the dump code into a forum post.
+}
+\examples{
+if (interactive()) {
+  outcome <- "mpg"
+  mod <- lm(mpg ~ wt, mtcars)
+  mod \%>\% dump_to_clip() # will be named dumped_object
+  dump_to_clip(c("outcome", "mod")) # will retain variable names
+}
+
 }
