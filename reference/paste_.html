@@ -94,10 +94,13 @@ It also supports vector recycling and accepts the 'sep' and 'collapse' arguments
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">paste_</span><span class="op">(</span><span class="st">"hello"</span>, <span class="cn">NA</span>, <span class="st">"you"</span><span class="op">)</span> <span class="co"># returns "hello you"</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">paste_</span><span class="op">(</span><span class="st">"hello"</span>, <span class="cn">NA</span>, <span class="st">"you"</span><span class="op">)</span> </span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "hello you"</span>
-<span class="r-in"><span><span class="fu">paste_</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"hello"</span>, <span class="st">"world"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="st">"everyone"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"you"</span>, <span class="cn">NA</span><span class="op">)</span><span class="op">)</span> <span class="co"># returns c("hello you", "world everyone")</span></span></span>
+<span class="r-in"><span><span class="co"># returns "hello you"</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">paste_</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"hello"</span>, <span class="st">"world"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="st">"everyone"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"you"</span>, <span class="cn">NA</span><span class="op">)</span><span class="op">)</span> </span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "hello you"      "world everyone"</span>
+<span class="r-in"><span><span class="co"># returns c("hello you", "world everyone")</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
