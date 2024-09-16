@@ -7,12 +7,14 @@
 Created by Philip Parker, https://gist.github.com/pdparker/1b61b6d36d09cb295bf286a931990159. Slightly expanded here.
 }
 \usage{
-gt_apa_style(gt_table, fmt_labels_md = TRUE)
+gt_apa_style(gt_table, fmt_labels_md = TRUE, row_group_background = "#E0E0E0")
 }
 \arguments{
 \item{gt_table}{A gt-table}
 
 \item{fmt_labels_md}{Should row and column labels be formatted with markdown/HTML (Defaults to TRUE)}
+
+\item{row_group_background}{Background color for row groups. Set to NULL to remove this highlight.}
 }
 \description{
 This function takes a \code{gt} table object and changes font-type, borders etc
