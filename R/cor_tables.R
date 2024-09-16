@@ -640,7 +640,18 @@ cor_matrix_mi <- function(data, weights = NULL, var_names = NULL) {
     message(glue::glue_collapse(all_missing, sep = ", ", last = " and "), " only have missing values. Therefore, they are dropped from the correlation table.")
     data <- data %>% dplyr::select(-dplyr::all_of(all_missing))
   }
-    
+  
+  l <- data %>% 
+    dplyr::summarise(dplyr::across(dplyr::everything(), ~length(unique(.x)))) %>%
+    unlist()
+  
+  l[".imp"] <- 2 # Avoid removal of id column
+  
+  if (any(l < 2)) {
+    warning("Some variables only have a single value, and thus no variance. They will be dropped from the correlation table: ", glue::glue_collapse(names(data)[l < 2], sep = ", ", last = " & "))
+    data <- data %>% dplyr::select(-dplyr::all_of(names(data)[l < 2]))
+  }
+  
   if (is.data.frame(var_names)) {
     assert_names(names(var_names), must.include = c("old", "new"))
     var_names <- var_names$new %>% magrittr::set_names(var_names$old)
@@ -662,6 +673,8 @@ cor_matrix_mi <- function(data, weights = NULL, var_names = NULL) {
   variables <- names(mi_list[[1]])
   variables <- variables[-1]
   ct <- length(variables)
+  
+  if (ct < 2) stop("The data needs to contain at least two numeric columns that have more than 1 distinct value.")
 
   data <- NULL
   for (i in seq_len(ct - 1)) {
