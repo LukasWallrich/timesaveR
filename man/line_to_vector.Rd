@@ -6,22 +6,25 @@
 \usage{
 line_to_vector(
   x = NULL,
-  strings = TRUE,
+  strings = NULL,
   separators = c("top-level", "all"),
   to_clip = interactive(),
-  return = c("code", "vector")
+  return = c("code", "vector"),
+  keep_blank_as_na = FALSE
 )
 }
 \arguments{
 \item{x}{Character string of desired vector items, separated by spaces, tabs or linebreaks. If NULL, it will be read from the clipboard.}
 
-\item{strings}{Should vector items be considered as strings, i.e. quoted.}
+\item{strings}{Should vector items be considered as strings, i.e. quoted. Defaults to treating them as string, unless all are numbers.}
 
 \item{separators}{Which separator should x be split by. This defaults to the "top-level" found in x, i.e., newlines, if there are any, and otherwise tabs or spaces. Can also be "all".}
 
 \item{to_clip}{Should code for vector be copied into clipboard? Defaults to TRUE in interactive use, but only works when \code{clipr} package is installed}
 
 \item{return}{Should code or a vector be returned? Defaults to code}
+
+\item{keep_blank_as_na}{By default, empty values are omitted. Set this to keep them as NA.}
 }
 \description{
 This takes a line of items separated by spaces, tabs or newlines and returns a c()
@@ -38,7 +41,7 @@ and end of each element of the vector.
 \examples{
 line_to_vector("a b c", strings = TRUE)
 
-line_to_vector("1 2 3", st = FALSE, return = "vector")
+line_to_vector("1 2 3", return = "vector") # Returned as numeric vector
 
 line_to_vector("Hello World!
                 How are the bananas today?
