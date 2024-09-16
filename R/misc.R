@@ -838,6 +838,7 @@ paste_ <- function(..., sep = " ", collapse = NULL) {
 #' # Output: numeric(0)
 #' 
 #' @export
+#' @keywords internal
 
 dupl_items <- function(x) {
   duplicated_elements <- x[duplicated(x)]
