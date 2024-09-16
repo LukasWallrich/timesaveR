@@ -534,9 +534,9 @@ pairwise_t_tests <- function(data, outcome, groups = NULL, p.adjust.method = p.a
     } 
     
     if (is.numeric(group_values) && is.null(attr(group_values, "labels"))) {
-      haven_available <- suppressWarnings(requireNamespace("haven", quietly = TRUE))
+      haven_available <- "haven" %in% rownames(installed.packages())
       if (haven_available) {
-        as_factor <- getNamespace("haven")$as_factor
+        as_factor <- getNamespace("haven")$as_factor.labelled
         data <- data %>% dplyr::mutate({{ groups }} := as_factor({{ groups }}))
       } else {
         warning("The grouping variable is a labelled numeric, but haven package is not available. It will be converted to factor, but the group labels might be lost.")

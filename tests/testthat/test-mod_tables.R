@@ -1,7 +1,7 @@
 
 library(gt)
 library(timesaveR)
-config_modelsummary(startup_message = FALSE)
+modelsummary::config_modelsummary(startup_message = FALSE)
 library(modelsummary)
 library(mice)
 
