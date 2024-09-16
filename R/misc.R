@@ -784,8 +784,11 @@ named_list <- function(...) {
 #'
 #' @return A character vector of concatenated strings.
 #' @examples
-#' paste_("hello", NA, "you") # returns "hello you"
-#' paste_(c("hello", "world"), c(NA, "everyone"), c("you", NA)) # returns c("hello you", "world everyone")
+#' paste_("hello", NA, "you") 
+#' # returns "hello you"
+#' 
+#' paste_(c("hello", "world"), c(NA, "everyone"), c("you", NA)) 
+#' # returns c("hello you", "world everyone")
 #'
 #' @export
 

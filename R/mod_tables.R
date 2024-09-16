@@ -587,14 +587,14 @@ gt_apa_style <- function(gt_table, fmt_labels_md = TRUE, row_group_background = 
       style = list(
         gt::cell_text(weight = "bold")
       ),
-      locations = gt::cells_row_groups(groups = everything())
+      locations = gt::cells_row_groups(groups = gt::everything())
     )
   
   if (!is.null(row_group_background)) {
     out <- out %>%
       gt::tab_style(
         style = gt::cell_fill(color = row_group_background),
-        locations = gt::cells_row_groups(groups = everything())
+        locations = gt::cells_row_groups(groups = gt::everything())
       )
   }
 
