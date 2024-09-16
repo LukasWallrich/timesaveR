@@ -43,7 +43,7 @@ report_polr_with_std(
 \item \code{fmt = fmt_decimal(digits = 2, pdigits = 3)}: Decimal digits for estimate and p values
 \item \code{fmt = fmt_sprintf("\%.3f")}: See \code{?sprintf}
 \item \code{fmt = fmt_term("(Intercept)" = 1, "X" = 2)}: Format terms differently
-\item \code{fmt = fmt_statistic("estimate" = 1, "r.sqared" = 6)}: Format statistics differently.
+\item \code{fmt = fmt_statistic("estimate" = 1, "r.squared" = 6)}: Format statistics differently.
 \item \code{fmt = fmt_identity()}: unformatted raw values
 }
 \item string:
@@ -71,8 +71,8 @@ stating that dummy variables were not scaled in standardization. If you approach
     \item{\code{output}}{filename or object type (character string)
 \itemize{
 \item Supported filename extensions: .docx, .html, .tex, .md, .txt, .csv, .xlsx, .png, .jpg
-\item Supported object types: "default", "html", "markdown", "latex", "latex_tabular", "data.frame", "gt", "kableExtra", "huxtable", "flextable", "DT", "jupyter". The "modelsummary_list" value produces a lightweight object which can be saved and fed back to the \code{modelsummary} function.
-\item The "default" output format can be set to "kableExtra", "gt", "flextable", "huxtable", "DT", or "markdown"
+\item Supported object types: "default", "html", "markdown", "latex", "latex_tabular", "typst", "data.frame", "tinytable", "gt", "kableExtra", "huxtable", "flextable", "DT", "jupyter". The "modelsummary_list" value produces a lightweight object which can be saved and fed back to the \code{modelsummary} function.
+\item The "default" output format can be set to "tinytable", "kableExtra", "gt", "flextable", "huxtable", "DT", or "markdown"
 \itemize{
 \item If the user does not choose a default value, the packages listed above are tried in sequence.
 \item Session-specific configuration: \code{options("modelsummary_factory_default" = "gt")}
@@ -94,7 +94,7 @@ argument accepts six types of input (see the 'Details' and 'Examples'
 sections below):
 \itemize{
 \item NULL returns the default uncertainty estimates of the model object
-\item string, vector, or (named) list of strings. "iid", "classical", and "constant" are aliases for \code{NULL}, which returns the model's default uncertainty estimates. The strings "HC", "HC0", "HC1" (alias: "stata"), "HC2", "HC3" (alias: "robust"), "HC4", "HC4m", "HC5", "HAC", "NeweyWest", "Andrews", "panel-corrected", "outer-product", and "weave" use variance-covariance matrices computed using functions from the \code{sandwich} package, or equivalent method. The behavior of those functions can (and sometimes \emph{must}) be altered by passing arguments to \code{sandwich} directly from \code{modelsummary} through the ellipsis (\code{...}), but it is safer to define your own custom functions as described in the next bullet.
+\item string, vector, or (named) list of strings. "iid", "classical", and "constant" are aliases for \code{NULL}, which returns the model's default uncertainty estimates. The strings "HC", "HC0", "HC1" (alias: "stata"), "HC2", "HC3" (alias: "robust"), "HC4", "HC4m", "HC5", "HAC", "NeweyWest", "Andrews", "panel-corrected", "outer-product", and "weave" use variance-covariance matrices computed using functions from the \code{sandwich} package, or equivalent method. "BS", "bootstrap", "residual", "mammen", "webb", "xy", "wild" use the \code{sandwich::vcovBS()}. The behavior of those functions can (and sometimes \emph{must}) be altered by passing arguments to \code{sandwich} directly from \code{modelsummary} through the ellipsis (\code{...}), but it is safer to define your own custom functions as described in the next bullet.
 \item function or (named) list of functions which return variance-covariance matrices with row and column names equal to the names of your coefficient estimates (e.g., \code{stats::vcov}, \code{sandwich::vcovHC}, \code{function(x) vcovPC(x, cluster="country")}).
 \item formula or (named) list of formulas with the cluster variable(s) on the right-hand side (e.g., ~clusterid).
 \item named list of \code{length(models)} variance-covariance matrices with row and column names equal to the names of your coefficient estimates.
@@ -116,8 +116,10 @@ statistics are exponentiated, and the \code{std.error} is transformed to
 \item \code{term : response + statistic ~ model}: term and group id in a single column
 \item \code{term ~ response}
 }
-\item String: "rbind" or "rcollapse" to bind rows of two or more regression tables to create "panels" or "stacks" of regression models.
+\item String: "cbind", "rbind", "rcollapse"
 \itemize{
+\item "cbind": side-by-side models with autmoatic spanning column headers to group models (\code{tinytable} only feature).
+\item "rbind" or "rcollapse": "panels" or "stacks" of regression models.
 \item the \code{models} argument must be a (potentially named) nested list of models.
 }
 \itemize{
@@ -162,7 +164,7 @@ model information. This argument accepts 4 types of values:
 \item NULL (default): the \code{modelsummary::gof_map} dictionary is used for formatting, and all unknown statistic are included.
 \item character vector: "all", "none", or a vector of statistics such as \code{c("rmse", "nobs", "r.squared")}. Elements correspond to colnames in the data.frame produced by \code{get_gof(model)}. The \code{modelsummary::gof_map} default dictionary is used to format and rename statistics.
 \item NA: excludes all statistics from the bottom part of the table.
-\item data.frame with 3 columns named "raw", "clean", "fmt". Unknown statistics are omitted. See the 'Examples' section below.
+\item data.frame with 3 columns named "raw", "clean", "fmt". Unknown statistics are omitted. See the 'Examples' section below. The \code{fmt} column in this data frame only accepts integers. For more flexibility, use a list of lists, as described in the next bullet.
 \item list of lists, each of which includes 3 elements named "raw", "clean", "fmt". Unknown statistics are omitted. See the 'Examples section below'.
 }}
     \item{\code{gof_omit}}{string regular expression (perl-compatible) used to determine which statistics to omit from the bottom section of the table. A "negative lookahead" can be used to specify which statistics to \emph{keep} in the table. Examples:
@@ -171,6 +173,7 @@ model information. This argument accepts 4 types of values:
 \item \code{"BIC|AIC"}: omit statistics matching the "AIC" or "BIC" substrings.
 \item \code{"^(?!.*IC)"}: keep statistics matching the "IC" substring.
 }}
+    \item{\code{gof_function}}{function which accepts a model object in the \code{model} argument and returns a 1-row \code{data.frame} with one custom goodness-of-fit statistic per column.}
     \item{\code{group_map}}{named or unnamed character vector. Subset, rename, and
 reorder coefficient groups specified a grouping variable specified in the
 \code{shape} argument formula. This argument behaves like \code{coef_map}.}
@@ -188,16 +191,11 @@ the table (e.g., \code{align = "lcc"}).  Valid characters: l, c, r, d.
 \item "l": left-aligned column
 \item "c": centered column
 \item "r": right-aligned column
-\item "d": dot-aligned column. For LaTeX/PDF output, this option requires at least version 3.0.25 of the siunitx LaTeX package. These commands must appear in the LaTeX preamble (they are added automatically when compiling Rmarkdown documents to PDF):
-\itemize{
-\item \verb{\\usepackage{booktabs}}
-\item \verb{\\usepackage{siunitx}}
-\item \verb{\\newcolumntype{d}{S[ input-open-uncertainty=, input-close-uncertainty=, parse-numbers = false, table-align-text-pre=false, table-align-text-post=false ]}}
-}
+\item "d": dot-aligned column. For LaTeX/PDF output, this option requires at least version 3.0.25 of the siunitx LaTeX package. See the LaTeX preamble help section below for commands to insert in your LaTeX preamble.
 }}
-    \item{\code{title}}{string}
+    \item{\code{title}}{string. Cross-reference labels should be added with Quarto or Rmarkdown chunk options when applicable. When saving standalone LaTeX files, users can add a label such as \verb{\\\\label{tab:mytable}} directly to the title string, while also specifying \code{escape=FALSE}.}
     \item{\code{escape}}{boolean TRUE escapes or substitutes LaTeX/HTML characters which could
-prevent the file from compiling/displaying. This setting does not affect captions or notes.}
+prevent the file from compiling/displaying. \code{TRUE} escapes all cells, captions, and notes. Users can have more fine-grained control by setting \code{escape=FALSE} and using an external command such as: \code{modelsummary(model, "latex") |> tinytable::format_tt(tab, j=1:5, escape=TRUE)}}
   }}
 }
 \description{
