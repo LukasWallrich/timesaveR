@@ -73,13 +73,11 @@ test_that(".clean_names works", {
     c("hello_world", "how_are_you", "never_BEEN_better"))
 })
 
-t1 <- pairwise_t_tests(mtcars, wt, cyl)
-t2 <- pairwise_t_tests(mtcars, wt ~ cyl)
-t3 <- pairwise_t_tests(tibble(x = 1:10, y = rep(c("a", "b"), 5)), x ~ y)
-
 test_that("pairwise t-test works", {
+  expect_warning(t1 <- pairwise_t_tests(mtcars, wt, cyl)) # As cyl is not a factor
+  expect_warning(t2 <- pairwise_t_tests(mtcars, wt ~ cyl)) # As cyl is not a factor
   expect_equal(t1, t2)
-  expect_equal(t1$t_value, c(-3.80952793, -3.62123044, -6.44497389))
-  expect_equal(t3$t_value, -.5)
+  expect_equal(t1$t_value, c(-3.80952793,  -6.44497389, -3.62123044))
+  expect_equal(pairwise_t_tests(data.frame(x = 1:10, y = rep(c("a", "b"), 5)), x ~ y)$t_value, -.5)
 })
                 
