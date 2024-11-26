@@ -2,7 +2,8 @@
 % Please edit documentation in R/misc.R
 \name{line_to_vector}
 \alias{line_to_vector}
-\title{Turn line of items separated by whitespace into vector or code for c()}
+\alias{l2v}
+\title{Turn a Line of Items into a Vector or c() Code}
 \usage{
 line_to_vector(
   x = NULL,
@@ -12,40 +13,67 @@ line_to_vector(
   return = c("code", "vector"),
   keep_blank_as_na = FALSE
 )
+
+l2v(
+  x = NULL,
+  strings = NULL,
+  separators = c("top-level", "all"),
+  to_clip = interactive(),
+  return = c("code", "vector"),
+  keep_blank_as_na = FALSE
+)
 }
 \arguments{
-\item{x}{Character string of desired vector items, separated by spaces, tabs or linebreaks. If NULL, it will be read from the clipboard.}
+\item{x}{Character string of desired vector items, separated by spaces, tabs,
+or line breaks. If \code{NULL}, the function will attempt to read from the clipboard.}
 
-\item{strings}{Should vector items be considered as strings, i.e. quoted. Defaults to treating them as string, unless all are numbers.}
+\item{strings}{Logical or \code{NULL}. Determines whether vector items should be
+treated as strings (i.e., quoted). Defaults to \code{TRUE} unless all items are numeric.}
 
-\item{separators}{Which separator should x be split by. This defaults to the "top-level" found in x, i.e., newlines, if there are any, and otherwise tabs or spaces. Can also be "all".}
+\item{separators}{Character string indicating which separator should be used
+to split \code{x}. Defaults to the highest-level separator found in \code{x} (i.e.,
+newlines if present). Can also be \code{"all"} to split by all supported separators
+(i.e. spaces: \code{" "}, commas: \code{","}, tabs: \code{"\\t"}, newlines: \code{"\\n"}).}
 
-\item{to_clip}{Should code for vector be copied into clipboard? Defaults to TRUE in interactive use, but only works when \code{clipr} package is installed}
+\item{to_clip}{Logical. Indicates whether the generated code for the vector
+should be copied to the clipboard. Defaults to \code{TRUE} in interactive sessions.
+Requires the \code{clipr} package to be installed.}
 
-\item{return}{Should code or a vector be returned? Defaults to code}
+\item{keep_blank_as_na}{Logical. If \code{TRUE}, empty values are kept as \code{NA}.
+If \code{FALSE} (default), empty values are omitted from the resulting vector.}
 
-\item{keep_blank_as_na}{By default, empty values are omitted. Set this to keep them as NA.}
+\item{return_type}{Character string specifying the type of return value.
+Choose \code{"code"} to return the \code{c()} command as a string or \code{"vector"} to
+return the actual R vector. Defaults to \code{"code"}. Abbreviated values like
+\code{"c"} or \code{"v"} are accepted.}
+}
+\value{
+A character string representing the \code{c()} command or the actual R
+vector, depending on the \code{return_type} parameter.
 }
 \description{
-This takes a line of items separated by spaces, tabs or newlines and returns a c()
-vector command - with the items quoted or not - or a vector created by that command. By default, the line
-is read from the clipboard and a character vector returned, and only the highest-level
-separator present in x is used to split. Note that this makes it possible to copy values
-in most spreadsheet programs such as Excel and use this function to pull them
-from the clipboard and turn them into code that creates a vector.
+This function takes a line of items separated by spaces, tabs, or newlines and
+returns either a \code{c()} vector command (with items quoted or not) or the vector
+created by that command. By default, the line is read from the clipboard and
+a character vector is returned. The function uses only the highest-level
+separator present in \code{x} unless specified otherwise. This functionality is
+particularly useful for copying values from spreadsheet programs like Excel
+(or from R console output) and converting them into R vectors seamlessly.
 }
 \details{
-If x is not split by spaces, stringr::str_trim() is used to trim whitespace from the start
-and end of each element of the vector.
+If \code{x} is not split by spaces, \code{stringr::str_trim()} is used to trim
+whitespace from the start and end of each element of the vector.
 }
 \examples{
+
 line_to_vector("a b c", strings = TRUE)
+# c("a", "b", "c")
 
-line_to_vector("1 2 3", return = "vector") # Returned as numeric vector
 
-line_to_vector("Hello World!
-                How are the bananas today?
-                Thanks for being here.")
+line_to_vector("1 2 3", return_type = "vector")
+# [1] 1 2 3
 
-weekend <- line_to_vector("Friday Saturday Sunday", return = "vector")
+# Can abbreviate return argument
+# [1] "Friday"   "Saturday" "Sunday"
+
 }
