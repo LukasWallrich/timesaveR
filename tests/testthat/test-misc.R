@@ -21,8 +21,65 @@ test_that("line_to_vector works", {
     c("really", "freezing")
   )
   expect_equal(
-    line_to_vector("1 2 3", string = FALSE),
+    line_to_vector("1 2 3", strings = FALSE),
     "c(1, 2, 3)"
+  )
+  expect_equal(
+    line_to_vector("1 2 3", strings = TRUE),
+    'c("1", "2", "3")'
+  )
+  expect_equal(
+    line_to_vector("1 2 3", return = "v"),
+    c(1, 2, 3)
+  )
+})
+
+
+test_that("Function handles different separators", {
+  expect_equal(
+    line_to_vector("0 a,b\nc\td", separators = "all", return = "vector"),
+    c("0", "a", "b", "c", "d")
+  )
+  expect_equal(
+    line_to_vector("a,b\nc\td", separators = "top-level", return = "vector"),
+    c("a,b", "c\td")
+  )
+  expect_equal(
+    line_to_vector("a,b\nc\td", separators = c(",", "\t"), return = "vector"),
+    c("a", "b\nc", "d")
+  )
+})
+
+
+test_that("Function handles keep_blank_as_na correctly", {
+  expect_equal(
+    line_to_vector("a  b   c", keep_blank_as_na = TRUE, separators = "all", return = "vector"),
+    c("a", NA, "b", NA, NA, "c")
+  )
+  expect_equal(
+    line_to_vector("a  b   c", keep_blank_as_na = FALSE, separators = "all", return = "vector"),
+    c("a", "b", "c")
+  )
+})
+
+
+
+test_that("Function stops with appropriate error when separators are invalid", {
+  expect_error(
+    line_to_vector("a b c", separators = "invalid_separator"),
+  )
+})
+
+
+
+test_that("Function handles commas and spaces together correctly", {
+  expect_equal(
+    line_to_vector("a,b,c", return = "vector"),
+    c("a", "b", "c")
+  )
+  expect_equal(
+    line_to_vector("a, b, c", return = "vector"),
+    c("a", "b", "c")
   )
 })
 

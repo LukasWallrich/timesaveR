@@ -480,41 +480,63 @@ dump_to_clip <- function(x) {
   }  
 }
 
-#' Turn line of items separated by whitespace into vector or code for c()
+#' Turn a Line of Items into a Vector or c() Code
 #'
-#' This takes a line of items separated by spaces, tabs or newlines and returns a c()
-#' vector command - with the items quoted or not - or a vector created by that command. By default, the line
-#' is read from the clipboard and a character vector returned, and only the highest-level
-#' separator present in x is used to split. Note that this makes it possible to copy values
-#' in most spreadsheet programs such as Excel and use this function to pull them
-#' from the clipboard and turn them into code that creates a vector.
+#' This function takes a line of items separated by spaces, tabs, or newlines and 
+#' returns either a `c()` vector command (with items quoted or not) or the vector 
+#' created by that command. By default, the line is read from the clipboard and 
+#' a character vector is returned. The function uses only the highest-level 
+#' separator present in `x` unless specified otherwise. This functionality is 
+#' particularly useful for copying values from spreadsheet programs like Excel 
+#' (or from R console output) and converting them into R vectors seamlessly.
 #'
-#' If x is not split by spaces, stringr::str_trim() is used to trim whitespace from the start
-#' and end of each element of the vector.
+#' If `x` is not split by spaces, `stringr::str_trim()` is used to trim 
+#' whitespace from the start and end of each element of the vector.
 #'
-#' @param x Character string of desired vector items, separated by spaces, tabs or linebreaks. If NULL, it will be read from the clipboard.
-#' @param strings Should vector items be considered as strings, i.e. quoted. Defaults to treating them as string, unless all are numbers.
-#' @param separators Which separator should x be split by. This defaults to the "top-level" found in x, i.e., newlines, if there are any, and otherwise tabs or spaces. Can also be "all".
-#' @param to_clip Should code for vector be copied into clipboard? Defaults to TRUE in interactive use, but only works when `clipr` package is installed
-#' @param return Should code or a vector be returned? Defaults to code
-#' @param keep_blank_as_na By default, empty values are omitted. Set this to keep them as NA.
+#' @param x Character string of desired vector items, separated by spaces, tabs, 
+#' or line breaks. If `NULL`, the function will attempt to read from the clipboard.
+#' @param strings Logical or `NULL`. Determines whether vector items should be 
+#' treated as strings (i.e., quoted). Defaults to `TRUE` unless all items are numeric.
+#' @param separators Character string indicating which separator should be used 
+#' to split `x`. Defaults to the highest-level separator found in `x` (i.e., 
+#' newlines if present). Can also be `"all"` to split by all supported separators 
+#' (i.e. spaces: `" "`, commas: `","`, tabs: `"\t"`, newlines: `"\n"`).
+#' @param to_clip Logical. Indicates whether the generated code for the vector 
+#' should be copied to the clipboard. Defaults to `TRUE` in interactive sessions. 
+#' Requires the `clipr` package to be installed.
+#' @param return_type Character string specifying the type of return value. 
+#' Choose `"code"` to return the `c()` command as a string or `"vector"` to 
+#' return the actual R vector. Defaults to `"code"`. Abbreviated values like 
+#' `"c"` or `"v"` are accepted.
+#' @param keep_blank_as_na Logical. If `TRUE`, empty values are kept as `NA`. 
+#' If `FALSE` (default), empty values are omitted from the resulting vector.
+#'
+#' @return A character string representing the `c()` command or the actual R 
+#' vector, depending on the `return_type` parameter.
+#'
 #' @examples
+#' 
 #' line_to_vector("a b c", strings = TRUE)
+#' # c("a", "b", "c")
+#' 
+#' 
+#' line_to_vector("1 2 3", return_type = "vector")
+#' # [1] 1 2 3
+#' 
+#' # Can abbreviate return argument
+# line_to_vector("Friday Saturday Sunday", return_type = "v")
+#' # [1] "Friday"   "Saturday" "Sunday"
 #'
-#' line_to_vector("1 2 3", return = "vector") # Returned as numeric vector
-#'
-#' line_to_vector("Hello World!
-#'                 How are the bananas today?
-#'                 Thanks for being here.")
-#'
-#' weekend <- line_to_vector("Friday Saturday Sunday", return = "vector")
 #' @export
+
 
 line_to_vector <- function(x = NULL, strings = NULL, separators = c("top-level", "all"), 
                            to_clip = interactive(), return = c("code", "vector"), keep_blank_as_na = FALSE) {
   
-  assert_choice(separators[1], c("all", "top-level"))
-  assert_choice(return[1], c("code", "vector"))
+  matchArg(return, c("code", "vector"), several.ok = TRUE, .var.name = "return")
+  matchArg(separators, c("top-level", "all", " ", ",", "\t", "\n"), several.ok = TRUE,  .var.name = "separators")
+  
+  return <- return[1]
   
   if (is.null(x)) {
     if (!requireNamespace("clipr", quietly = TRUE)) {
@@ -535,9 +557,8 @@ line_to_vector <- function(x = NULL, strings = NULL, separators = c("top-level",
   
   # Handle separators
   if (separators[1] == "all") {
-    x <- strsplit(x, "[ ,\\n\\t]") %>% unlist()
-  } else {
-    if (length(x) == 1) { # Handle single-line content
+    x <- strsplit(x, "[ ,\n\t]") %>% unlist()
+  } else if (separators[1] == "top-level") {
       sep <- dplyr::case_when(
         stringr::str_detect(x, "\\n") ~ "\\n",
         stringr::str_detect(x, "\\t") ~ "\\t",
@@ -545,7 +566,8 @@ line_to_vector <- function(x = NULL, strings = NULL, separators = c("top-level",
         TRUE ~ " "
       )
       x <- strsplit(x, sep) %>% unlist()
-    }
+    } else {
+      x <- strsplit("a,b\nc\td", paste0("[", paste(separators, collapse = ""), "]")) %>% unlist()
   }
   
   # Trim whitespace
@@ -562,8 +584,20 @@ line_to_vector <- function(x = NULL, strings = NULL, separators = c("top-level",
   
   # Prepare output
   if (strings) {
-    x <- gsub('"', '\\\\\\"', x)
-    out <- paste0('c("', paste(x, collapse = '", "'), '")')
+    quote_element <- function(el) {
+      # To ensure NA is not returned as literal "NA"
+      if (is.na(el)) {
+        "NA"
+      } else {
+        # Escape existing double quotes
+        el_escaped <- gsub('"', '\\\\"', el)
+        paste0('"', el_escaped, '"')
+      }
+    }
+    
+    quoted_x <- sapply(x, quote_element)
+    
+    out <- paste0("c(", paste(quoted_x, collapse = ", "), ")")
   } else {
     out <- paste0("c(", paste(x, collapse = ", "), ")")
   }
@@ -589,6 +623,9 @@ line_to_vector <- function(x = NULL, strings = NULL, separators = c("top-level",
   
   return(out)
 }
+
+#' @rdname line_to_vector
+#' @export
 l2v <- line_to_vector
 
 #' Calculate share of NA-values in vector
