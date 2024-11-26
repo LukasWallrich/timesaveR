@@ -18,7 +18,7 @@ package). The results can then be plotted with plot_mediation()."><meta property
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9004</span>
       </span>
     </div>
 
@@ -160,18 +160,18 @@ also returned as an attribute, access it with <code>attr(res, "lavaan_code")</co
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 7</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   type     mediator     est      se pvalue ci.lower ci.upper</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> a        dosprt   -<span style="color: #BB0000;">0.082</span><span style="color: #BB0000; text-decoration: underline;">2</span> 0.012<span style="text-decoration: underline;">0</span>       0 -<span style="color: #BB0000;">0.105</span>    -<span style="color: #BB0000;">0.054</span><span style="color: #BB0000; text-decoration: underline;">8</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> b        dosprt   -<span style="color: #BB0000;">0.147</span>  0.012<span style="text-decoration: underline;">5</span>       0 -<span style="color: #BB0000;">0.174</span>    -<span style="color: #BB0000;">0.128</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> direct   <span style="color: #BB0000;">NA</span>        0.283  0.011<span style="text-decoration: underline;">3</span>       0  0.262     0.302 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> indirect dosprt    0.012<span style="text-decoration: underline;">1</span> 0.002<span style="text-decoration: underline;">01</span>      0  0.007<span style="text-decoration: underline;">73</span>   0.016<span style="text-decoration: underline;">3</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> total    <span style="color: #BB0000;">NA</span>        0.295  0.011<span style="text-decoration: underline;">0</span>       0  0.275     0.314 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> a        dosprt   -<span style="color: #BB0000;">0.086</span><span style="color: #BB0000; text-decoration: underline;">4</span> 0.012<span style="text-decoration: underline;">2</span>       0 -<span style="color: #BB0000;">0.111</span>    -<span style="color: #BB0000;">0.067</span><span style="color: #BB0000; text-decoration: underline;">6</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> b        dosprt   -<span style="color: #BB0000;">0.148</span>  0.011<span style="text-decoration: underline;">0</span>       0 -<span style="color: #BB0000;">0.166</span>    -<span style="color: #BB0000;">0.130</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> direct   <span style="color: #BB0000;">NA</span>        0.283  0.013<span style="text-decoration: underline;">1</span>       0  0.258     0.309 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> indirect dosprt    0.012<span style="text-decoration: underline;">8</span> 0.002<span style="text-decoration: underline;">23</span>      0  0.009<span style="text-decoration: underline;">12</span>   0.017<span style="text-decoration: underline;">3</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> total    <span style="color: #BB0000;">NA</span>        0.295  0.013<span style="text-decoration: underline;">2</span>       0  0.272     0.325 </span>
 <span class="r-in"><span> </span></span>
 <span class="r-in"><span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">res</span>, <span class="st">"CV_coefficients"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 7</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   DV          CV        est     se pvalue ci.lower ci.upper</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> dosprt.agea <span style="color: #BB0000;">NA</span>    -<span style="color: #BB0000;">0.036</span><span style="color: #BB0000; text-decoration: underline;">5</span> 0.011<span style="text-decoration: underline;">2</span>      0  -<span style="color: #BB0000;">0.057</span><span style="color: #BB0000; text-decoration: underline;">0</span>  -<span style="color: #BB0000;">0.017</span><span style="color: #BB0000; text-decoration: underline;">1</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> health.agea <span style="color: #BB0000;">NA</span>     0.281  0.010<span style="text-decoration: underline;">8</span>      0   0.264    0.308 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> dosprt.agea <span style="color: #BB0000;">NA</span>    -<span style="color: #BB0000;">0.039</span><span style="color: #BB0000; text-decoration: underline;">6</span> 0.012<span style="text-decoration: underline;">7</span>      0  -<span style="color: #BB0000;">0.066</span><span style="color: #BB0000; text-decoration: underline;">8</span>  -<span style="color: #BB0000;">0.019</span><span style="color: #BB0000; text-decoration: underline;">7</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> health.agea <span style="color: #BB0000;">NA</span>     0.278  0.010<span style="text-decoration: underline;">2</span>      0   0.260    0.299 </span>
 <span class="r-in"><span> </span></span>
 <span class="r-in"><span><span class="co"># NB: bootstraps = 50 only set to reduce running time - should be 1000+</span></span></span>
 </code></pre></div>
@@ -188,7 +188,7 @@ also returned as an attribute, access it with <code>attr(res, "lavaan_code")</co
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer></div>
