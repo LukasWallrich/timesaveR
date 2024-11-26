@@ -533,10 +533,8 @@ dump_to_clip <- function(x) {
 line_to_vector <- function(x = NULL, strings = NULL, separators = c("top-level", "all"), 
                            to_clip = interactive(), return = c("code", "vector"), keep_blank_as_na = FALSE) {
   
-  matchArg(return, c("code", "vector"), several.ok = TRUE, .var.name = "return")
-  matchArg(separators, c("top-level", "all", " ", ",", "\t", "\n"), several.ok = TRUE,  .var.name = "separators")
-  
-  return <- return[1]
+  return <- matchArg(return, c("code", "vector"), several.ok = TRUE, .var.name = "return")
+  separators <- matchArg(separators, c("top-level", "all", " ", ",", "\t", "\n"), several.ok = TRUE,  .var.name = "separators")
   
   if (is.null(x)) {
     if (!requireNamespace("clipr", quietly = TRUE)) {
