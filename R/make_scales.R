@@ -422,7 +422,7 @@ svy_make_scale <- function(data, scale_items, scale_name,
     cli::cli_abort("Scales need to have at least two items specified in `scale_items`")
   }
   
-  if (!is.null(reverse_items) && !reverse[1] == "spec") {
+  if (!is.null(reverse_items) && reverse[1] != "spec") {
     cli::cli_abort('reverse_items should only be specified together with reverse = "spec"')
   }
   
