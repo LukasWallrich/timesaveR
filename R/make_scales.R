@@ -408,7 +408,7 @@ spearman_brown <- function(data, items, name = "", SB_only = FALSE) {
 #' @export
 
 
-svy_make_scale <- function(data, scale_items, scale_name, 
+svy_make_scale <- function(data, items, scale_name, 
                            reverse = c("none", "spec"), reverse_items = NULL,
                            two_items_reliability = c("spearman_brown", "cronbachs_alpha", "r"),
                            r_key = NULL, proration_cutoff = .4,
@@ -433,20 +433,20 @@ svy_make_scale <- function(data, scale_items, scale_name,
   }
   
   # Validate parameters aligned with make_scale
-  if (!all(scale_items %in% names(data$variables))) {
-    cli::cli_abort("Not all scale_items can be found in the survey data. The following are missing: {paste(setdiff(scale_items, names(data$variables)), collapse = ', ')}")
+  if (!all(items %in% names(data$variables))) {
+    cli::cli_abort("Not all items can be found in the survey data. The following are missing: {paste(setdiff(items, names(data$variables)), collapse = ', ')}")
   }
   
-  if (length(scale_items) < 2) {
-    cli::cli_abort("Scales need to have at least two items specified in `scale_items`")
+  if (length(items) < 2) {
+    cli::cli_abort("Scales need to have at least two items specified in {.arg items}")
   }
   
   if (!is.null(reverse_items) && reverse[1] != "spec") {
-    cli::cli_abort('reverse_items should only be specified together with reverse = "spec"')
+    cli::cli_abort('{.arg reverse_items} should only be specified together with {.arg reverse} = "spec"')
   }
   
   if (reverse[1] == "auto") {
-    cli::cli_abort('Automatic reverse coding ("auto") is not supported for survey objects. Use reverse = "spec" with reverse_items.')
+    cli::cli_abort('Automatic reverse coding ("auto") is not supported for survey objects. Use {.arg reverse} = "spec" with {.arg reverse_items}.')
   }
 
   if (!scale_title == scale_name) {
