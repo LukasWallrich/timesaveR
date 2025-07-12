@@ -1,178 +1,202 @@
 #' Create a correlation table with summary statistics in APA style
 #'
-#' This function, creates (and optionally saves) a correlation table with
+#' This function creates (and optionally saves) a correlation table with
 #' summary statistics. It accepts correlation matrices from various functions
-#' in this package as its first argument
+#' in this package as its first argument.
 #'
 #' @param cor_matrix A correlation matrix, for example returned from
-#' [cor_matrix()], [svy_cor_matrix()], or [cor_matrix_mi()]
-#' @param ci Method to create CI - default is to use any given in the cor_matrix,
-#' and otherwise to compute them using z-transformations. The simple SE method
-#' should not be used, but is provided for compatibility.
+#' [cor_matrix()], [svy_cor_matrix()], or [cor_matrix_mi()].
+#' @param ci Method to create confidence intervals. Options are "given" (use any given in the cor_matrix),
+#' "z_transform" (compute 95%-intervals using z-transformations), or "simple_SE" (compute 
+#' 95%-intervals using standard errors). The simple SE method should not be used, but is provided for compatibility.
 #' @param n Number of observations to calculate confidence intervals - only
-#' needed if cor_matrix does not contain degrees of freedom (df) or numbers of observations (n) and confidence
-#' intervals are to be calculated using z-transformations
-#' @param add_distributions Add graphs showing variable distributions?
+#' needed if cor_matrix does not contain degrees of freedom (`df`) or numbers of observations (`n`) and confidence
+#' intervals are to be calculated using z-transformations.
+#' @param add_distributions Logical. Add graphs showing variable distributions?
+#' @param data Original data, only needed if `add_distributions = TRUE`.
+#' @param filename The file name to create on disk. Include '.html' extension to
+#' best preserve formatting (see `gt::gtsave` for details).
 #' @inheritDotParams plot_distributions -var_names
-#' @param data Original data, only needed if `add_distribution = TRUE`
 #' @param notes List of additional notes to show under the table.
-#' @param filename the file name to create on disk. Include '.html' extension to
-#' best preserve formatting (see gt::gtsave for details)
 #' @inheritParams sigstars
 #' @param add_title Should title be added to table? Set to TRUE for default
-#' title or to character for custom title
+#' title or provide a character string for custom title.
 #' @param extras Tibble of additional columns to be added after the descriptives column -
-#'  needs to be sorted in the same order as the `desc` element in the cor_matrix unless 
-#'  there is a `row_names` column. If there is, this will be used to match it to the `desc` rows.
-#' @param apa_style Logical, should APA-style formatting be applied
+#' needs to be sorted in the same order as the `desc` element in the `cor_matrix` unless 
+#' there is a `row_names` column. If there is, this will be used to match it to the `desc` rows.
+#' @param apa_style Logical, should APA-style formatting be applied.
+#' @return A `gt` table that can be further formatted with `gt`-functions.
 #' @source Based on the apaTables `apa.cor.table()` function, but adapted to
 #' accept weighted correlation matrices and work with the `gt` package instead. Code
 #' for calculation of confidence intervals adapted from
 #' https://medium.com/@shandou/how-to-compute-confidence-interval-for-pearsons-r-a-brief-guide-951445b9cb2d`
-#' @return A table that can be printed in the RStudio console to be shown in the
-#' viewer. Unless it is to be post-processed with further `gt` functions, it should
-#' usually be saved by passing a filename argument.
+#' @examples
+#' cor_matrix(iris) %>% report_cor_table()
+#' 
+#' cor_matrix(iris) %>% report_cor_table(add_distributions = TRUE, data = iris, add_title = "Iris correlations and distributions")
+#' 
 #' @export
+
 
 report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_SE"),
                              n = NULL, add_distributions = FALSE, data = NULL,
                              filename = NULL, notes = list(NULL), stars = NULL,
                              add_title = FALSE, extras = NULL, apa_style = TRUE, ...) {
+
   .check_req_packages("gt")
-
-
-  if (add_title) {
-    add_title <- "Means, standard deviations, and correlations with confidence intervals"
+  
+  ci <- match.arg(ci)
+  
+  if (!is.list(cor_matrix)) {
+    stop("'cor_matrix' must be a list, typically returned by 'cor_matrix()' or similar functions.", call. = FALSE)
   }
-
-  assert_data_frame(extras, null.ok = TRUE)
-
-  if (add_distributions && is.null(data)) {
-    stop("If add_distributions = TRUE, data needs to be provided.", call. = FALSE)
+  required_elements <- c("cors", "p.values", "std.err", "desc")
+  missing_elements <- setdiff(required_elements, names(cor_matrix))
+  if (length(missing_elements) > 0) {
+    stop("The 'cor_matrix' is missing required element(s): ", paste(missing_elements, collapse = ", "), call. = FALSE)
   }
   
-  if (add_distributions && "survey.design" %in% class(data)) {
-    stop("Presently, distributions cannot be shown for weighted survey data. ",
-         "Set add_distributions to FALSE", call. = FALSE)
+  if (!is.logical(add_distributions)) {
+    stop("'add_distributions' must be a logical value.", call. = FALSE)
   }
-
+  if (add_distributions && is.null(data)) {
+    stop("If 'add_distributions = TRUE', 'data' needs to be provided.", call. = FALSE)
+  }
+  if (add_distributions && inherits(data, "survey.design")) {
+    stop("Distributions cannot be shown for weighted survey data at this time. Set 'add_distributions' to FALSE.", call. = FALSE)
+  }
+  
+  if (!is.null(extras) && !is.data.frame(extras)) {
+    stop("'extras' must be a data frame or NULL.", call. = FALSE)
+  }
+  
+  if (!is.null(stars) && (!is.numeric(stars) || is.null(names(stars)))) {
+    stop("'sigstars' must be a named numeric vector.", call. = FALSE)
+  }
+  
+  if (isTRUE(add_title)) {
+    add_title <- "Means, standard deviations, and correlations with confidence intervals"
+  } else if (!isFALSE(add_title) && !is.character(add_title)) {
+    stop("'add_title' must be TRUE, FALSE, or a character string.", call. = FALSE)
+  }
+  
+  if (!is.null(extras)) {
+    if ("row_names" %in% names(extras)) {
+      # Use 'row_names' to align 'extras' with variables
+      extras <- cor_matrix$desc %>% 
+        dplyr::select(var) %>%
+        dplyr::left_join(extras, by = c("var" = "row_names")) %>%
+        dplyr::select(-var)
+    } else {
+      if (nrow(extras) != nrow(cor_matrix$desc)) {
+        stop("The number of rows in 'extras' does not match the number of variables in 'cor_matrix'. 
+             Provide a 'row_names' column in 'extras' to align the data.", call. = FALSE)
+      } else {
+        warning("The 'extras' data frame does not have a 'row_names' column. Variables will be aligned by row order,
+                which may not be correct. Provide a 'row_names' column to align by variable names.", call. = FALSE)
+      }
+    }
+  }
+  
+  # Prepare plot arguments from '...'
   plot_args <- list(...)
   if ("plot_theme" %in% names(plot_args)) {
     plot_args$plot_theme <- ggplot2::theme(axis.text.x = ggplot2::element_text(size = 40)) + plot_args$plot_theme
   } else {
     plot_args$plot_theme <- ggplot2::theme(axis.text.x = ggplot2::element_text(size = 40))
   }
-
-  #Sort extras or warn
   
-  if (!is.null(extras)) {
-    if (!"row_names" %in% names(extras)) {
-      warning("The ordering of the 'extras' argument cannot be checked unless a `row_names` column is included. Ensure that it matches 'desc' in the correlation matrix or include such a column.") 
-      
-    } else {
-      extras <- extras %>% 
-        dplyr::left_join(cor_matrix$desc %>% dplyr::select("var"), ., by = c("var" = "row_names")) %>%
-        dplyr::select(-"var")
-    }
-    
-    }
-  
-
+  # Handle distributions
   if (add_distributions) {
     if (!is.null(cor_matrix$var_renames)) {
       plots <- do.call(plot_distributions, c(list(data = data, var_names = cor_matrix$var_renames), plot_args))
     } else {
-      plots <- data %>%
-        dplyr::select(dplyr::all_of(rownames(cor_matrix$cors))) %>% 
-        {do.call(plot_distributions, c(list(data = .), plot_args))}
+      vars_to_plot <- rownames(cor_matrix$cors)
+      plots <- do.call(plot_distributions, c(list(data = data %>% dplyr::select(dplyr::all_of(vars_to_plot))), plot_args))
     }
-
+    
     if (is.null(extras)) {
       extras <- tibble::tibble(Distributions = seq_len(nrow(cor_matrix$cors)))
     } else {
       extras <- cbind(tibble::tibble(Distributions = seq_len(nrow(cor_matrix$cors))), extras)
     }
   }
-  df_col <- dim(cor_matrix[[1]])[2]
+  
+  # Initialize variables
+  df_col <- ncol(cor_matrix$cors)
   number_variables <- df_col
   number_columns <- df_col - 1
   output_cor <- matrix(" ", number_variables, number_columns)
   output_ci <- matrix(" ", number_variables, number_columns)
-  output_descriptives <- matrix(
-    " ", number_variables,
-    1
-  )
-  output_variable_names <- paste(as.character(seq_len(number_variables)),
-    ". ", rownames(cor_matrix[[1]]),
-    sep = ""
-  )
+  output_descriptives <- matrix(" ", number_variables, 1)
+  output_variable_names <- paste(seq_len(number_variables),
+                                 ". ", rownames(cor_matrix$cors),
+                                 sep = "")
   
-  if (!is.null(cor_matrix[["ci.low"]]) && ci[1] == "given") {
-    get_cor.ci.low <- function(cor_matrix, cor.r, cor.se, i, j, df) {
-      if (!is.null(cor_matrix[["ci.low"]])) {
-        return(cor_matrix[["ci.low"]][i, j])
+  # Prepare confidence interval functions
+  if (ci == "given") {
+    if (!is.null(cor_matrix$ci.low) && !is.null(cor_matrix$ci.high)) {
+      get_cor_ci_low <- function(i, j) {
+        cor_matrix$ci.low[i, j]
       }
-    }
-
-    get_cor.ci.high <- function(cor_matrix, cor.r, cor.se, i, j, df) {
-      if (!is.null(cor_matrix[["ci.high"]])) {
-        return(cor_matrix[["ci.high"]][i, j])
+      get_cor_ci_high <- function(i, j) {
+        cor_matrix$ci.high[i, j]
       }
+    } else {
+      stop("ci = 'given' but 'ci.low' and 'ci.high' are not available in 'cor_matrix'.", call. = FALSE)
     }
-  } else if ("z_transform" %in% ci && (!is.null(cor_matrix[["df"]]) || !is.null(cor_matrix[["n"]])) && is.null(n)) {
-    get_cor.ci.low <- function(cor_matrix, cor.r, cor.se, i, j, df) {
-      z_prime <- .5 * log((1 + cor.r) / (1 - cor.r))
-      n <- df + 1
-      CI_low <- z_prime - 1.96 * 1 / sqrt(n - 3)
-      tanh(CI_low)
+  } else if (ci == "z_transform") {
+    if (is.null(cor_matrix$df) && is.null(cor_matrix$n) && is.null(n)) {
+      stop("Cannot compute z-transform confidence intervals because 'df' and 'n' in 'cor_matrix', and the 'n' argument are all NULL. 
+           Provide 'n' or ensure 'cor_matrix' contains 'df' or 'n'.", call. = FALSE)
     }
-
-    get_cor.ci.high <- function(cor_matrix, cor.r, cor.se, i, j, df) {
-      z_prime <- .5 * log((1 + cor.r) / (1 - cor.r))
-      n <- df + 1
-      CI_low <- z_prime + 1.96 * 1 / sqrt(n - 3)
-      tanh(CI_low)
-    }
-
-    if (is.null(cor_matrix[["df"]])) {
-      cor_matrix$df <- cor_matrix$cors
+    if (is.null(cor_matrix$df)) {
       if (!is.null(cor_matrix$n)) {
-        cor_matrix$df[] <- cor_matrix$n - 1
+        cor_matrix$df <- cor_matrix$n - 1
       } else {
-      cor_matrix$df[] <- n - 1
+        cor_matrix$df <- matrix(n - 1, nrow = nrow(cor_matrix$cors), ncol = ncol(cor_matrix$cors))
       }
     }
-  } else {
-    message("Confidence intervals are calculated based on correlation
-            coefficient +/- 2 SE. This is generally not recommended!")
-    if ("z_transform" %in% ci && (is.null(cor_matrix[["df"]]) && is.null(n))) {
-      message("This is because n is not provided and cor_matrix does not contain df. Change either to enable z-transformed confidence intervals.")
+    get_cor_ci_low <- function(i, j) {
+      cor.r <- cor_matrix$cors[i, j]
+      df <- cor_matrix$df[i, j]
+      z_prime <- 0.5 * log((1 + cor.r) / (1 - cor.r))
+      n_eff <- df + 1
+      CI_low <- z_prime - 1.96 / sqrt(n_eff - 3)
+      tanh(CI_low)
     }
-
-    get_cor.ci.low <- function(cor_matrix, cor.r, cor.se, i, j, df) {
-      cor.r - 2 * cor.se
+    get_cor_ci_high <- function(i, j) {
+      cor.r <- cor_matrix$cors[i, j]
+      df <- cor_matrix$df[i, j]
+      z_prime <- 0.5 * log((1 + cor.r) / (1 - cor.r))
+      n_eff <- df + 1
+      CI_high <- z_prime + 1.96 / sqrt(n_eff - 3)
+      tanh(CI_high)
     }
-
-    get_cor.ci.high <- function(cor_matrix, cor.r, cor.se, i, j, df) {
-      cor.r + 2 * cor.se
+  } else if (ci == "simple_SE") {
+    warning("Confidence intervals are calculated based on correlation coefficient +/- 1.96 SE. This is generally not recommended.", call. = FALSE)
+    get_cor_ci_low <- function(i, j) {
+      cor_matrix$cors[i, j] - 2 * cor_matrix$std.err[i, j]
+    }
+    get_cor_ci_high <- function(i, j) {
+      cor_matrix$cors[i, j] + 2 * cor_matrix$std.err[i, j]
     }
   }
-
-
-
+  
+  # Build the table data
   for (i in seq_len(number_variables)) {
     output_descriptives[i, 1] <- paste0(
       sprintf("%.2f", cor_matrix$desc[i, 2]),
       " (", sprintf("%.2f", cor_matrix$desc[i, 3]), ")"
     )
     for (j in seq_len(number_variables)) {
-      if ((j < i)) {
+      if (j < i) {
         cor.r <- cor_matrix$cors[i, j]
         cor.p <- cor_matrix$p.values[i, j]
         cor.se <- cor_matrix$std.err[i, j]
-        cor.df <- cor_matrix$df[i, j]
-        cor.ci.low <- get_cor.ci.low(cor_matrix, cor.r, cor.se, i, j, cor.df)
-        cor.ci.high <- get_cor.ci.high(cor_matrix, cor.r, cor.se, i, j, cor.df)
+        cor.df <- if (!is.null(cor_matrix$df)) cor_matrix$df[i, j] else NULL
+        cor.ci.low <- get_cor_ci_low(i, j)
+        cor.ci.high <- get_cor_ci_high(i, j)
         output_cor[i, j] <- paste(fmt_cor(cor.r), sigstars(cor.p, stars))
         output_ci[i, j] <- paste0(
           '<span style="font-size:80%">',
@@ -182,62 +206,77 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
       }
     }
   }
-
+  
+  # Combine correlation values and confidence intervals
   cor_cells <- paste(output_cor, output_ci, sep = "<br />")
   dim(cor_cells) <- dim(output_cor)
-
+  
+  # Construct the table cells
   if (is.null(extras)) {
     cells <- cbind(
-      matrix(output_variable_names, ncol = 1),
-      output_descriptives, cor_cells
+      Variable = output_variable_names,
+      desc = output_descriptives,
+      cor_cells
     )
   } else {
     cells <- cbind(
-      matrix(output_variable_names, ncol = 1),
-      output_descriptives, extras, cor_cells,
+      Variable = output_variable_names,
+      desc = output_descriptives,
+      extras,
+      cor_cells,
       stringsAsFactors = FALSE
     )
   }
-
-
-  colnames(cells) <- c("Variable", "desc", colnames(extras), seq_len(length(output_variable_names) - 1))
-
+  
+  if (is.null(extras)) {
+    colnames(cells) <- c("Variable", "desc", seq_len(number_columns))
+  } else {
+    colnames(cells) <- c("Variable", "desc", names(extras), seq_len(number_columns))
+  }
+  
   cells_df <- tibble::as_tibble(cells)
-
+  
   tab <- cells_df %>%
     gt::gt() %>%
     gt::fmt_markdown(columns = gt::everything())
-
+  
   if (apa_style) tab <- tab %>% gt_apa_style()
-
-  if (add_distributions) tab <- gt_add_plots(tab, plots, 3)
-
-  notes %<>% c("*M* and *SD* are used to represent mean and standard deviation, respectively. Values in square brackets indicate the 95% confidence interval for each correlation.")
-
-  notes %<>% c(.make_stars_note())
-
-  notes <- Filter(Negate(is.null), notes)
-  for (i in seq_along(notes)) {
-    tab <- tab %>% gt::tab_source_note(gt::md(notes[[i]]))
+  
+  if (add_distributions) {
+    if (length(plots) != nrow(cells_df)) {
+      stop("The number of plots does not match the number of variables in the table.", call. = FALSE)
+    }
+    distribution_column <- which(names(cells_df) == "Distributions")
+    tab <- gt_add_plots(tab, plots, distribution_column)
   }
-
+  
+  # Add notes
+  notes <- ifelse(ci == "given", # When CI-width is unknown
+                  c(notes, "*M* and *SD* are used to represent mean and standard deviation, respectively. 
+                             Values in square brackets indicate the confidence interval for each correlation."),
+                  c(notes, "*M* and *SD* are used to represent mean and standard deviation, respectively. 
+                             Values in square brackets indicate the 95% confidence interval for each correlation."))
+  
+  notes <- c(notes, .make_stars_note(stars))
+  notes <- Filter(Negate(is.null), notes)
+  for (note in notes) {
+    tab <- tab %>% gt::tab_source_note(gt::md(note))
+  }
+  
   if (is.character(add_title)) {
     tab <- tab %>% gt::tab_header(
       title = add_title
     )
   }
-
+  
   tab <- tab %>% gt::cols_label(desc = gt::md("*M (SD)*"))
-  # TK - add md formatting to extras column titles
-
+  
   if (!is.null(filename)) {
     gt::gtsave(tab, filename)
   } else {
     return(tab)
   }
 }
-
-
 
 #' Calculate correlation matrix with significance tests and descriptives
 #'
@@ -772,6 +811,7 @@ cor_matrix_mi <- function(data, weights = NULL, var_names = NULL) {
 #'
 plot_distributions <- function(data, var_names = NULL, plot_type = c("auto", "histogram", "density"), hist_align_y = FALSE, plot_theme = NULL) {
   data %<>% dplyr::select_if(is.numeric)
+  if (ncol(data) == 0) stop("No numeric columns found - check your input.", call. = FALSE)
   if (is.data.frame(var_names)) {
     assert_names(names(var_names), must.include = c("old", "new"))
     var_names <- var_names$new %>% magrittr::set_names(var_names$old)
@@ -853,6 +893,9 @@ plot_distributions <- function(data, var_names = NULL, plot_type = c("auto", "hi
 #' }
 #'
 gt_add_plots <- function(gt_table, plots, col_index) {
+  if (length(plots) != nrow(gt_table$`_data`)) {
+    warning("The number of plots should usually match the number of rows in the table - check alignment.")
+  }
   purrr::walk(seq_along(plots), function(x) {
     gt_table <<- gt::text_transform(gt_table, gt::cells_body(col_index, x), fn = function(y) {
       plots[[x]] %>%

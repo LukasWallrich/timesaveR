@@ -1,8 +1,3 @@
-
-.onAttach <- function(libname, pkgname) {
-  packageStartupMessage("Note re timesaveR: Many functions in this package are alpha-versions - please treat results with care and report bugs and desired features.")
-}
-
 #' Functions to Accelerate (Academic) Data Analysis and Reporting
 #'
 #' Functions and templates in this package facilitate common tasks
@@ -16,6 +11,16 @@
 
 "_PACKAGE"
 
+## usethis namespace: start
+## usethis namespace: end
+NULL
+
+.onAttach <- function(libname, pkgname) {
+  packageStartupMessage("Note re timesaveR: Many functions in this package are alpha-versions - please treat results with care and report bugs and desired features.")
+}
+
+
+
 globalVariables(".")
 
 #' @importFrom magrittr %<>%
@@ -23,6 +28,7 @@ globalVariables(".")
 #' @importFrom rlang :=
 #' @importFrom stats as.formula cor.test sd t.test lm p.adjust.methods quantile coef
 #' @importFrom here here
+#' @importFrom lifecycle deprecated
 #' @importFrom utils getFromNamespace
 #' @import checkmate
 #' @importFrom generics tidy
@@ -39,7 +45,7 @@ generics::glance
     if (!interactive()) {
       stop(note, "Some required packages are not installed. Make sure you have
                these packages: ", paste0(x[!res], collapse = ", "),
-        call. = FALSE
+           call. = FALSE
       )
     }
     op <- options("warn")
@@ -47,14 +53,14 @@ generics::glance
     options(warn = 1)
     warning(note, "The following packages are required for this function but
                    cannot be loaded: ", paste0(x[!res], collapse = ", "),
-      call. = FALSE)
+            call. = FALSE)
     choice <- readline(prompt = "Should I try to install these packages? (Y/N)")
     if (choice %in% c("Y", "y")) {
       utils::install.packages(x[!res])
       res <- suppressWarnings(lapply(x, requireNamespace, quietly = TRUE)) %>% unlist()
       if (!all(res)) {
         stop("Not all packages could be installed successfully. The following could still not be loaded: ", paste0(x[!res], collapse = ", "),
-          call. = FALSE
+             call. = FALSE
         )
       }
       return(TRUE)
