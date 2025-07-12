@@ -19,8 +19,8 @@
 #' based on the format returned by `run_moderation()`
 #'
 #' @encoding UTF-8
-#' @param IV Character. Name of predictor
-#' @param DV Character. Name of dependent variable
+#' @param X Character. Name of predictor
+#' @param Y Character. Name of dependent variable
 #' @param Ms Character vector. Names of mediator variables
 #' @param data Dataframe with coefficients and significance values. See details.
 #' @param coef_offset Tibble with values to position mediators. If not
@@ -33,6 +33,8 @@
 #' @param ind_p_values Should significance stars be shown for indirect effects,
 #' based on pvalues passed in data? If FALSE, indirect effects with confidence
 #' intervals that do not include zero are bolded
+#' @param IV `r lifecycle::badge("deprecated")` Use the `X` argument instead
+#' @param DV `r lifecycle::badge("deprecated")` Use the `Y` argument instead
 #' @return A list of a the graph and the associated code.
 #' @export
 #' @examples
@@ -43,8 +45,8 @@
 #' 
 #' # Run plot command
 #' plot <- plot_mediation(
-#'   IV = "Frequency of  <br /> feeling depressed",
-#'   DV = "Self-reported <br /> poor health", Ms = "Frequency of <br /> physical activity", 
+#'   X = "Frequency of  <br /> feeling depressed",
+#'   Y = "Self-reported <br /> poor health", Ms = "Frequency of <br /> physical activity", 
 #'   data = res
 #' )
 #' 
@@ -57,7 +59,18 @@
 #' # To create the graph again (e.g., after you edit its code)
 #' DiagrammeR::grViz(plot$code)
 #' }
-plot_mediation <- function(IV, DV, Ms, data, digits = 2, coef_offset = length(Ms), filename = NULL, ind_p_values = FALSE) {
+plot_mediation <- function(X, Y, Ms, data, digits = 2, coef_offset = length(Ms), filename = NULL, ind_p_values = FALSE, IV = deprecated(), DV = deprecated()) {
+  
+  if (lifecycle::is_present(DV)) {
+    lifecycle::deprecate_warn("0.0.3", "make_scale(DV)", "make_scale(Y)")
+    Y <- DV
+  }
+  
+  if (lifecycle::is_present(IV)) {
+    lifecycle::deprecate_warn("0.0.3", "make_scale(IV)", "make_scale(X)")
+    X <- IV
+  }
+  
   .check_req_packages(c("glue", "DiagrammeR"))
 
   checkmate::assert_numeric(data$est, any.missing = FALSE)
@@ -151,8 +164,8 @@ plot_mediation <- function(IV, DV, Ms, data, digits = 2, coef_offset = length(Ms
 
 
 
-            'x' [label = <{IV}>, color = 'black', shape = 'rectangle', height = '0.5', width = '1.5', pos = '0,0!']
-            'y' [label = <{DV}>, color = 'black', shape = 'rectangle', height = '0.5', width = '1.5', pos = '5,0!']
+            'x' [label = <{X}>, color = 'black', shape = 'rectangle', height = '0.5', width = '1.5', pos = '0,0!']
+            'y' [label = <{Y}>, color = 'black', shape = 'rectangle', height = '0.5', width = '1.5', pos = '5,0!']
                  {purrr::map2(Ms, paste0('M', 1:length(Ms)), function(x,y) paste0('\\'', y, '\\' [label = <', x, '<br />', pos$est[pos$obj == y], ' ', pos$ci[pos$obj == y], '>,
                  color = \\'black\\', shape = \\'rectangle\\', height = \\'0.5\\', width = \\'1.5\\',
                  pos = \\'', pos$h[pos$obj == y], ',',  pos$v[pos$obj == y], '!\\']')) %>% glue::glue_collapse(sep = '\\n')}

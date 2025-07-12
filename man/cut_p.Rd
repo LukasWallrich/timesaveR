@@ -12,8 +12,8 @@ cut_p(x, p, ties.method = "random", fct_levels = NULL, verbose = TRUE)
 \item{p}{The proportion of cases to be allocated to each category, in
 ascending order. Should add up to one, otherwise, it will be scaled accordingly}
 
-\item{ties.method}{Currently accepts only "random" - could be expanded in the
-future, though it is unclear what a better method would be}
+\item{ties.method}{Method for handling ties when ranking. Accepts "random"
+(ties allocated randomly) or "in_order" (ties allocated in order of appearance).}
 
 \item{fct_levels}{Character vector with names for levels. If it is NULL, the
 groups will be labeled with their number and the cut-points employed.}
@@ -30,10 +30,11 @@ other helper functions exist to cut variables into groups of the same size
 or width. This function cuts a continuous variable into given proportions.
 }
 \details{
-Ties within the continuous variable are allocated randomly - so this function
-should not be used if there are many ties. The number of observations per
-group is rounded up for even-numbered levels (second, fourth, etc) and
-rounded down for others (expect for the last level that is used to balance).
+When there are ties in the data that span group boundaries, this function
+provides two methods for allocation: "random" (ties are allocated randomly)
+and "in_order" (ties are allocated in the order they appear). The number of
+observations per group is rounded up for even-numbered levels (second, fourth, etc)
+and rounded down for others (except for the last level that is used to balance).
 For large numbers of observations, the distribution will be very close to
 what is desired, for very small numbers of observations, it should be checked.
 }

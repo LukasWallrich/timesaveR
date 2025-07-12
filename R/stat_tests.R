@@ -151,33 +151,63 @@ svy_pairwise_t_test <- function(data, dv, iv, cats, p.adjust = "holm", ...) {
 #' This runs lm() after standardising all continuous variables, while leaving
 #' factors intact.
 #'
-#' In the model call, the weights variable will always be called `.weights`. This might
-#' pose a problem when you update the model later on, for  the moment the only workaround
+#' Beware when using weights and calculating standardized coefficients. In line with
+#' other implementations, this function scales the variables without taking the weights
+#' into account - but that means that coefficients represent the estimated change in SD of Y
+#' per SD of X *in the sample* and explicitly *not* in the population. Weighted scaling might
+#' be more appropriate, yet is not implemented here (and does not appear to be commonly used).
+#' Also, in the model call, the weights variable will always be called `.weights`. This might
+#' pose a problem when you update the model later on, for the moment the only workaround
 #' is to rename the weights variable accordingly (or to fix it and contribute a PR on
 #' Github).
 #'
 #' @inheritParams stats::lm
-#' @inheritDotParams stats::lm -data -subset
+#' @param ... Additional arguments passed to `lm()`. Note that `subset` cannot be used here and should be applied to `data` beforehand.
 #' @references See (Fox, 2015) for an argument why dummy variables should never
 #' be standardised. If you want to run a model with all variables standardised,
 #' one option is `QuantPsyc::lm.beta()`
-#' @examples 
-#' lm_std(Sepal.Length ~ Sepal.Width + Species, iris)
-#' @export
+#' @return An `lm` object with standardized coefficients.
+#' @examples
+#' # Basic usage with mtcars dataset
+#' lm_std(mpg ~ cyl + disp, data = mtcars)
+#'
+#' # Using weights
+#' mtcars$wt_sample <- runif(nrow(mtcars), 1, 3)
+#' lm_std(mpg ~ cyl + disp, data = mtcars, weights = wt_sample)
+#'
+#' # Handling variables with few levels
+#' mtcars$am_factor <- factor(mtcars$am)
+#' lm_std(mpg ~ cyl + disp + am_factor, data = mtcars)
 
-lm_std <- function(formula, data = NULL, weights = NULL, ...) {
-  if (any(stringr::str_detect(as.character(formula), "factor\\("))) cli::cli_abort("Functions in the formula are applied after standardising - thus factor() needs to be used before lm_std() is called")
-
+lm_std <- function(formula, data = NULL, weights = NULL, weighted_standardize = FALSE, ...) {
+  if (any(stringr::str_detect(as.character(formula), "factor\\("))) {
+    cli::cli_abort("Functions in the formula are applied after standardising - thus factor() needs to be used before lm_std() is called")
+  }
+  
+  if (!is.null(weights) && is.logical(weighted_standardize) && isFALSE(weighted_standardize)) {
+    cli::cli_warn(
+      c(
+        "Standardised coefficients from a model with weights are now returned based on unweighted standardisation of the variables.",
+        "i" = "While that is common (and thus the default), it is unclear whether it is appropriate.",
+        "i" = "Check ?lm_std, and consider changing weighted_standardize.",
+        "i" = "This is displayed once per session when using weighted_standardize = FALSE.",
+        "i" = "Use weighted_standardize = 'no' to use unweighted standardisation and omit the warning."
+      ),
+      .frequency = "once"
+    )
+  }
+  
   vars <- all.vars(formula)
-
   extras <- list(...)
-
-    if ("subset" %in% names(extras)) cli::cli_abort("Cannot subset in this function as that would happen after standardisation - please subset first.")
+  
+  if ("subset" %in% names(extras)) {
+    cli::cli_abort("Cannot subset in this function as that would happen after standardisation - please subset first.")
+  }
   
   if (is.null(data)) {
     data <- NULL
     for (i in seq_along(vars)) {
-      #Odd extraction to work with with() call environments
+      # Odd extraction to work with with() call environments
       x <- get(vars[i], pos = parent.frame())
       data <- dplyr::bind_cols(data, tibble::tibble(!!vars[i] := x))
     }
@@ -189,38 +219,42 @@ lm_std <- function(formula, data = NULL, weights = NULL, ...) {
     
     if (!rlang::quo_is_null(weights)) {
       if (rlang::as_label(weights) %in% names(data)) {
-        data <- dplyr::rename(data, .weights = !!weights) 
+        data <- dplyr::rename(data, .weights = !!weights)
       } else {
-          data$.weights <- rlang::eval_tidy(weights)
+        data$.weights <- rlang::eval_tidy(weights)
       }
       data <- data[c(vars, ".weights")]
     } else {
       data <- data[vars]
     }
-    }
-  
+  }
   
   vars_num <- vars[purrr::map_lgl(data, is.numeric)]
   vars_num <- vars_num[!is.na(vars_num)]
   
   vars_dummies <- vars_num[purrr::map_lgl(vars_num, ~ dplyr::n_distinct(data[[.x]]) < 3)]
-
-  if (length(vars_dummies) > 0) cli::cli_warn("The following variables have less than three distinct values but are of type numeric: {paste0(vars_dummies, collapse = ', ')}. Check whether they should not be factors instead. As it stands, they are standardised, which is typically not recommended.")
-
+  
+  if (length(vars_dummies) > 0) {
+    cli::cli_warn("The following variables have fewer than three distinct values but are of type numeric: {vars_dummies}. Check whether they should not be factors instead. As it stands, they are standardised, which is typically not recommended.")
+  }
+  
   data %<>% dplyr::mutate(dplyr::across(dplyr::all_of(vars_num), scale_blank))
-
+  
   formula <- Reduce(paste, deparse(formula))
-
+  
   if (!rlang::quo_is_null(weights)) {
     mod <- eval(parse(text = glue::glue("lm({formula}, data = data, weights = .weights, ...)")))
   } else {
     mod <- eval(parse(text = glue::glue("lm({formula}, data = data, ...)")))
   }
   
-  mod$call_fmt <- c(sys.call(), "Note: DV and continuous IVs were standardised")
-  class(mod) <- c("tsR_std", class(mod))
+  attr(mod, "standardized") <- TRUE
+  class(mod) <- c("lm_std", class(mod))
   mod
 }
+
+
+
 
 #' t-test() on multiply-imputed data (accepts survey weights)
 #'

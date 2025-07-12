@@ -4,7 +4,13 @@ test_that("significance stars work", {
 
 test_that("significance stars can be padded", {
   expect_equal(sigstars(c(0, .001, .01, .05, .1, 2), pad_html = TRUE), 
-               c("***", "**&nbsp;", "*&nbsp;&nbsp;", "†&nbsp;&nbsp;", "&nbsp;&nbsp;&nbsp;", "&nbsp;&nbsp;&nbsp;"))
+               c("***", "**&nbsp;", "*&nbsp;&nbsp;", "&dagger;&nbsp;&nbsp;", "&nbsp;&nbsp;&nbsp;", "&nbsp;&nbsp;&nbsp;"))
+})
+
+test_that("significance stars padding with ns values", {
+  result <- sigstars(c(0, .1, 2), pad_html = TRUE, ns = TRUE)
+  expect_true(all(stringr::str_detect(result, "&nbsp;") | result == "***"))
+  expect_true(stringr::str_detect(result[3], "ns"))
 })
 
 
@@ -89,6 +95,18 @@ x <- cut_p(iris$Sepal.Length, p = c(.25, .50, .25), fct_levels = c("short", "mid
 test_that("cut_p works", {
   expect_equal(levels(x), c("short", "middling", "long"))
   expect_equal(prop.table(table(x))[2], .5, ignore_attr = TRUE)
+})
+
+test_that("cut_p works with different tie methods", {
+  set.seed(123)
+  x_random <- cut_p(c(1, 1, 2, 2, 3), p = c(.4, .6), ties.method = "random", verbose = FALSE)
+  expect_equal(length(levels(x_random)), 2)
+  
+  set.seed(123)
+  x_in_order <- cut_p(c(1, 1, 2, 2, 3), p = c(.4, .6), ties.method = "in_order", verbose = FALSE)
+  expect_equal(length(levels(x_in_order)), 2)
+  
+  expect_error(cut_p(c(1, 2, 3), p = c(.5, .5), ties.method = "invalid"))
 })
 
 rn1 <- rename_cat_variables(mtcars, 
