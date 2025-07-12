@@ -179,8 +179,8 @@ responses in that call.</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">agea</span>, <span class="va">health</span>, <span class="va">depression</span>, <span class="va">healthy_eating</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/svy_cor_matrix.html">svy_cor_matrix</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/report_cor_table.html">report_cor_table</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="http://gdfe.co/srvyr/reference/survey_tally.html" class="external-link">survey_tally</a></span><span class="op">(</span><span class="va">ess_survey</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Confidence intervals are calculated based on correlation</span></span>
-<span><span class="co">#&gt;             coefficient +/- 2 SE. This is generally not recommended!</span></span></code></pre></div>
+<span><span class="co">#&gt; Confidence intervals are calculated based on correlation coefficient +/- 2 SE.</span></span>
+<span><span class="co">#&gt; This is generally not recommended!</span></span></code></pre></div>
 <div id="ybmelgqxpz" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#ybmelgqxpz table {
   font-family: times, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -709,8 +709,8 @@ helper function creates most of the code.</p>
 <span><span class="co"># are included in the correlation table</span></span>
 <span><span class="va">ess_survey</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/svy_cor_matrix.html">svy_cor_matrix</a></span><span class="op">(</span>var_names <span class="op">=</span> <span class="va">var_renames</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/report_cor_table.html">report_cor_table</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="http://gdfe.co/srvyr/reference/survey_tally.html" class="external-link">survey_tally</a></span><span class="op">(</span><span class="va">ess_survey</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Confidence intervals are calculated based on correlation</span></span>
-<span><span class="co">#&gt;             coefficient +/- 2 SE. This is generally not recommended!</span></span></code></pre></div>
+<span><span class="co">#&gt; Confidence intervals are calculated based on correlation coefficient +/- 2 SE.</span></span>
+<span><span class="co">#&gt; This is generally not recommended!</span></span></code></pre></div>
 <div id="vfmtahixtr" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#vfmtahixtr table {
   font-family: times, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';

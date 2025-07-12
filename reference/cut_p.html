@@ -118,10 +118,8 @@ what is desired, for very small numbers of observations, it should be checked.</
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">cut_p</span><span class="op">(</span><span class="va">iris</span><span class="op">$</span><span class="va">Sepal.Length</span>, p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.25</span>, <span class="fl">.50</span>, <span class="fl">.25</span><span class="op">)</span>, fct_levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"short"</span>, <span class="st">"middling"</span>, <span class="st">"long"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Factor levels were assigned as follows:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Group 1 (4.3 to 5.1): short</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Group 2 (5.1 to 6.4): middling</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Group 3 (6.4 to 7.9): long</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Factor levels were assigned as follows: Group 1 (4.3 to 5.1): short Group 2</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> (5.1 to 6.4): middling Group 3 (6.4 to 7.9): long</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [1] middling short    short    short    short    middling short    short   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [9] short    short    middling short    short    short    middling middling</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [17] middling short    middling short    middling short    short    middling</span>
