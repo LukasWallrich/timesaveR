@@ -162,9 +162,9 @@ sigstars <- function(p, stars = NULL, pad_html = FALSE, ns = FALSE, return_NAs =
 #' @export
 
 cut_p <- function(x, p, ties.method = "random", fct_levels = NULL, verbose = TRUE) {
-  if (!ties.method == "random") stop('Currently, only "random" is accepted as ties.method.', call. = FALSE)
+  if (ties.method != "random") cli::cli_abort('Currently, only "random" is accepted as ties.method.')
   if (sum(p) != 1) {
-    message("p should be probabilities that add up to 1 - will be scaled accordingly")
+    cli::cli_inform("p should be probabilities that add up to 1 - will be scaled accordingly")
     p <- p / sum(p)
   }
 
@@ -188,10 +188,10 @@ cut_p <- function(x, p, ties.method = "random", fct_levels = NULL, verbose = TRU
 
   if (!is.null(fct_levels)) {
     if (!length(fct_levels) == length(p)) {
-      stop("Arguments fct_levels and p need to have same length", call. = FALSE)
+      cli::cli_abort("Arguments fct_levels and p need to have same length")
     }
     if (verbose) {
-      message("Factor levels were assigned as follows:\n", paste(levels(out), fct_levels, sep = ": ", collapse = "\n"))
+      cli::cli_inform("Factor levels were assigned as follows:\n{paste(levels(out), fct_levels, sep = ': ', collapse = '\n')}")
     }
     levels(out) <- fct_levels
   }
@@ -200,7 +200,7 @@ cut_p <- function(x, p, ties.method = "random", fct_levels = NULL, verbose = TRU
   xNA <- factor(xNA)
   if (!is.null(fct_levels)) {
     if (!length(fct_levels) == length(p)) {
-      stop("Arguments fct_levels and p need to have same length", call. = FALSE)
+      cli::cli_abort("Arguments fct_levels and p need to have same length")
     }
     levels(xNA) <- fct_levels
   }
@@ -261,7 +261,7 @@ to_tribble <- function(x, show = FALSE, digits = 5, to_clip = interactive()) {
     purrr::map_int(x, ~ max(nchar(.x, keepNA = FALSE))),
     purrr::map_int(names(x), ~ nchar(.x))
   )
-  if (sum(lengths) + no_cols * 3 > 80) message("Some entries are too long for the tibble code to be well formatted")
+  if (sum(lengths) + no_cols * 3 > 80) cli::cli_inform("Some entries are too long for the tibble code to be well formatted")
   vars <- names(x)
 
 
@@ -285,7 +285,7 @@ to_tribble <- function(x, show = FALSE, digits = 5, to_clip = interactive()) {
 
   if (to_clip) {
     if (!requireNamespace("clipr", quietly = TRUE)) {
-      warning("clipr package is needed to write to clipboard, but is not available.")
+      cli::cli_warn("clipr package is needed to write to clipboard, but is not available.")
     } else {
       clipr::write_clip(code)
     }
@@ -333,10 +333,7 @@ get_rename_tribbles <- function(data, ..., show = TRUE, which = c("both", "vars"
   vars <- rlang::enquos(...)
   if (length(vars) == 0) {
     vars_chr <- names(data)
-    if (length(vars_chr) > max_levels) stop("No variables were specified for renaming.",
-                                            " Would usually include all, but when there are more than",
-                                            " specified in max_levels, that seems excessive. Please ",
-                                            "specify variables or increase that number.")
+    if (length(vars_chr) > max_levels) cli::cli_abort("No variables were specified for renaming. Would usually include all, but when there are more than specified in max_levels, that seems excessive. Please specify variables or increase that number.")
   } else {
     vars_chr <- purrr::map_chr(vars, dplyr::as_label)
   }
@@ -399,7 +396,7 @@ get_rename_tribbles <- function(data, ..., show = TRUE, which = c("both", "vars"
 
 get_coef_rename_tribble <- function(mod, show = TRUE) {
   coefs <- try(stats::coef(mod), silent = TRUE)
-  if (inherits(coefs, "try-error")) stop("coef() could not extract coefficients from mod argument.")
+  if (inherits(coefs, "try-error")) cli::cli_abort("coef() could not extract coefficients from mod argument.")
   coefs <- names(coefs)
   assert_logical(show)
 
@@ -446,7 +443,7 @@ clip_excel <- function(data, row_names = FALSE, col_names = TRUE, ...) {
 
 dump_to_clip <- function(x) {
   .check_req_packages("clipr")
-  if (!interactive()) stop("Clipboard access only supported in interactive sessions")
+  if (!interactive()) cli::cli_abort("Clipboard access only supported in interactive sessions")
   
   if (!is.character(x)) {
     dumped_object <- x
@@ -465,10 +462,7 @@ dump_to_clip <- function(x) {
       
     } else {
       if (any(existing_objects)) {
-        message("Some but not all elements of `x` exist in the global environment. Thus, I am unsure whether you mean",
-                " to dump a character vector, or a set of objects. I will dump the character vector. If you want to ",
-                "dump objects, ensure that all exist or remove the missing one(s) from the vector: ", paste0(x[!existing_objects], collapse = ", "), 
-                ".")
+        cli::cli_inform("Some but not all elements of `x` exist in the global environment. Thus, I am unsure whether you mean to dump a character vector, or a set of objects. I will dump the character vector. If you want to dump objects, ensure that all exist or remove the missing one(s) from the vector: {paste0(x[!existing_objects], collapse = ', ')}.")
       }
       
       dumped_object <- x
@@ -538,7 +532,7 @@ line_to_vector <- function(x = NULL, strings = NULL, separators = c("top-level",
   
   if (is.null(x)) {
     if (!requireNamespace("clipr", quietly = TRUE)) {
-      stop("The 'clipr' package is required to read from the clipboard, but is not available. Please specify 'x' or install the package.")
+      cli::cli_abort("The 'clipr' package is required to read from the clipboard, but is not available. Please specify 'x' or install the package.")
     } else {
       x <- clipr::read_clip()
       if(is.null(x)) return(NULL)
@@ -550,7 +544,7 @@ line_to_vector <- function(x = NULL, strings = NULL, separators = c("top-level",
   
   # Handle blank clipboard content
   if (all(x == "")) {
-    stop("Clipboard content is empty or inappropriate. Please provide valid content.")
+    cli::cli_abort("Clipboard content is empty or inappropriate. Please provide valid content.")
   }
   
   # Handle separators
@@ -602,13 +596,13 @@ line_to_vector <- function(x = NULL, strings = NULL, separators = c("top-level",
   
   # If no separators found and only one item
   if (length(x) == 1) {
-    message("No separators found - returning single item.")
+    cli::cli_inform("No separators found - returning single item.")
   }
   
   # Copy to clipboard if requested
   if (to_clip) {
     if (!requireNamespace("clipr", quietly = TRUE)) {
-      warning("The 'clipr' package is required to write to clipboard, but is not available.")
+      cli::cli_warn("The 'clipr' package is required to write to clipboard, but is not available.")
     } else {
       clipr::write_clip(out)
     }
@@ -802,7 +796,7 @@ named_list <- function(...) {
       dplyr::coalesce(as.character(new_names))
   }
   if (as.character(new_names[[1]]) == ".") {
-    warning("First list item will be named '.' - that is most likely because you used the %>% operator. To do that successfully, you usually need to name the corresponding argument, e.g., var1 %>% named_list(var1 = ., var2)")
+    cli::cli_warn("First list item will be named '.' - that is most likely because you used the %>% operator. To do that successfully, you usually need to name the corresponding argument, e.g., var1 %>% named_list(var1 = ., var2)")
   }
   names(out) <- new_names
   out

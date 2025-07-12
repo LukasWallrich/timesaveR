@@ -1,6 +1,6 @@
 
 .onAttach <- function(libname, pkgname) {
-  packageStartupMessage("Note re timesaveR: Many functions in this package are alpha-versions - please treat results with care and report bugs and desired features.")
+  cli::cli_inform("Note re timesaveR: Many functions in this package are alpha-versions - please treat results with care and report bugs and desired features.")
 }
 
 #' Functions to Accelerate (Academic) Data Analysis and Reporting
@@ -37,29 +37,31 @@ generics::glance
   res <- suppressWarnings(lapply(x, requireNamespace, quietly = TRUE)) %>% unlist()
   if (!all(res)) {
     if (!interactive()) {
-      stop(note, "Some required packages are not installed. Make sure you have
-               these packages: ", paste0(x[!res], collapse = ", "),
-        call. = FALSE
-      )
+      cli::cli_abort(c(
+        "{note}Some required packages are not installed.",
+        "Make sure you have these packages: {paste0(x[!res], collapse = ', ')}"
+      ))
     }
     op <- options("warn")
     on.exit(options(op))
     options(warn = 1)
-    warning(note, "The following packages are required for this function but
-                   cannot be loaded: ", paste0(x[!res], collapse = ", "),
-      call. = FALSE)
+    cli::cli_warn(c(
+      "{note}The following packages are required for this function but cannot be loaded:",
+      "{paste0(x[!res], collapse = ', ')}"
+    ))
     choice <- readline(prompt = "Should I try to install these packages? (Y/N)")
     if (choice %in% c("Y", "y")) {
       utils::install.packages(x[!res])
       res <- suppressWarnings(lapply(x, requireNamespace, quietly = TRUE)) %>% unlist()
       if (!all(res)) {
-        stop("Not all packages could be installed successfully. The following could still not be loaded: ", paste0(x[!res], collapse = ", "),
-          call. = FALSE
-        )
+        cli::cli_abort(c(
+          "Not all packages could be installed successfully.",
+          "The following could still not be loaded: {paste0(x[!res], collapse = ', ')}"
+        ))
       }
       return(TRUE)
     }
-    stop("Cannot proceed without these packages.", call. = FALSE)
+    cli::cli_abort("Cannot proceed without these packages.")
   }
 }
 

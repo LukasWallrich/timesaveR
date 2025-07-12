@@ -35,13 +35,13 @@ pcor_matrix <- function(data, given, ...) {
   }
   
   if (!is.null(args$missing)) {
-   stop("`missing` argument cannot be set - pcor_matrix only supports listwise deletion.") 
+   cli::cli_abort("`missing` argument cannot be set - pcor_matrix only supports listwise deletion.") 
   }
   
   if (anyMissing(data)) {
     full <- nrow(data)
     data <- data %>% tidyr::drop_na()
-    warning("Dropped ", full - nrow(data), " rows with missing data.")
+    cli::cli_warn("Dropped {full - nrow(data)} rows with missing data.")
   }
   
   for (v in setdiff(names(data), given)) {

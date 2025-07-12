@@ -51,18 +51,18 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
                        proration_cutoff = .4,
                        print_hist = TRUE, print_desc = TRUE, return_list = FALSE,
                        harmonize_ranges = NULL) {
-  if (!all(scale_items %in% names(data))) stop("Not all scale_items can be found in the dataset. The following are missing: ", paste(setdiff(scale_items, names(data)), collapse = ", "), call. = FALSE)
+  if (!all(scale_items %in% names(data))) cli::cli_abort("Not all scale_items can be found in the dataset. The following are missing: {paste(setdiff(scale_items, names(data)), collapse = ', ')}")
 
   if (data %>% dplyr::select(dplyr::any_of(scale_items)) %>% 
       {all(vapply(., FUN = checkmate::allMissing, FUN.VALUE = logical(1)))}) {
-    stop("All variables for scale ", scale_name, " only contain missing values.", call. = FALSE)
+    cli::cli_abort("All variables for scale {scale_name} only contain missing values.")
   }
 
-  if (length(scale_items) < 2) stop("Scales need to have at least two items specified in `scale_items`")
+  if (length(scale_items) < 2) cli::cli_abort("Scales need to have at least two items specified in `scale_items`")
   
   assert_choice(reverse[1], c("auto", "none", "spec"))
 
-  if (!is.null(reverse_items) && !reverse[1] == "spec") stop('reverse_items should only be specified together with reverse = "spec"')
+  if (!is.null(reverse_items) && !reverse[1] == "spec") cli::cli_abort('reverse_items should only be specified together with reverse = "spec"')
 
     if (is.null(r_key)) r_key <- 0
   scale_vals <- data %>%
@@ -75,10 +75,10 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
       unlist()
     if (length(unique(ranges)) > 1) {
       if (is.null(harmonize_ranges)) {
-        message("Not all items have the same range. This should be ok if respondents did not use the full range, but is likely a problem when the ranges offered were different. The observed ranges are ", glue::glue_collapse(unique(ranges), sep = ", ", last = " and "), ". If the ranges should be harmonized, rerun the function with harmonize_ranges = TRUE.")
+        cli::cli_inform("Not all items have the same range. This should be ok if respondents did not use the full range, but is likely a problem when the ranges offered were different. The observed ranges are {glue::glue_collapse(unique(ranges), sep = ', ', last = ' and ')}. If the ranges should be harmonized, rerun the function with harmonize_ranges = TRUE.")
       } else {
         if (!is.logical(harmonize_ranges[1])) {
-          if (length(harmonize_ranges) != 2) stop("If harmonise scale is not NULL or logical, it needs to consist of exactly two items specifying the min and max value")
+          if (length(harmonize_ranges) != 2) cli::cli_abort("If harmonise scale is not NULL or logical, it needs to consist of exactly two items specifying the min and max value")
           min_val <- harmonize_ranges[1]
           max_val <- harmonize_ranges[2]
         } else {
@@ -88,10 +88,7 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
           min_val <- x[[1, 1]]
           max_val <- x[[1, 2]]
         }
-        message("Not all items have the same range. They will be rescaled to the range from ", min_val, " to ", max_val,
-                ". Note that this is not valid if any of the items did not have responses that covered the entire possible range. ",
-                "If that is the case, you should rescale before calling the function and set harmonize_ranges = FALSE. ",
-                "The observed ranges are\n* ", glue::glue_collapse(paste(names(ranges), ranges, sep = ": "), sep = ",\n* ", last = " and\n* "), ".")
+        cli::cli_inform("Not all items have the same range. They will be rescaled to the range from {min_val} to {max_val}. Note that this is not valid if any of the items did not have responses that covered the entire possible range. If that is the case, you should rescale before calling the function and set harmonize_ranges = FALSE. The observed ranges are:\n* {glue::glue_collapse(paste(names(ranges), ranges, sep = ': '), sep = ',\n* ', last = ' and\n* ')}.")
         
         rescale_range <- function(x) {
           ((x - min(x, na.rm = TRUE)) / (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))) *
@@ -109,7 +106,7 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
     unlist()
   
   if (any(l < 2)) {
-    warning("Some scale variables have zero variance. This is frequently a mistake and can lead to errors in this function: ", glue::glue_collapse(names(scale_vals)[l < 2], sep = ", ", last = " & "))
+    cli::cli_warn("Some scale variables have zero variance. This is frequently a mistake and can lead to errors in this function: {glue::glue_collapse(names(scale_vals)[l < 2], sep = ', ', last = ' & ')}")
   }
   
   proration_cutoff <- proration_cutoff * ncol(scale_vals)
@@ -249,7 +246,7 @@ make_scales <- function(data, items, reversed = FALSE, two_items_reliability = c
                           "spearman_brown",
                           "cronbachs_alpha", "r"
                         ), print_desc = FALSE,  ...) {
-  if (!all(unlist(items) %in% names(data))) stop("Not all items can be found in the dataset. The following are missing: ", paste(setdiff(unlist(items), names(data)), collapse = ", "), call. = FALSE)
+  if (!all(unlist(items) %in% names(data))) cli::cli_abort("Not all items can be found in the dataset. The following are missing: {paste(setdiff(unlist(items), names(data)), collapse = ', ')}")
 
   assert_choice(two_items_reliability[1], c("spearman_brown", "cronbachs_alpha", "r"))
 
@@ -258,10 +255,7 @@ make_scales <- function(data, items, reversed = FALSE, two_items_reliability = c
     if (!is.null(reversed)) {
       scales_rev <- intersect(names(items), names(reversed))
       if (length(scales_rev) > 0) {
-        message(paste0(
-          "The following scales will be calculated with specified reverse coding: ",
-          paste0(scales_rev, collapse = ", ")
-        ))
+        cli::cli_inform("The following scales will be calculated with specified reverse coding: {paste0(scales_rev, collapse = ', ')}")
         scales_rev_values <- purrr::pmap(list(
           scale_items = items[scales_rev], scale_name = scales_rev,
           reverse_items = reversed[scales_rev]
@@ -270,16 +264,13 @@ make_scales <- function(data, items, reversed = FALSE, two_items_reliability = c
         reverse = "spec", two_items_reliability, print_desc = print_desc, ...
         ) %>% purrr::transpose()
       } else {
-        stop("Reverse list and variable lists cannot be matched - check that they have same names")
+        cli::cli_abort("Reverse list and variable lists cannot be matched - check that they have same names")
       }
     }
     scales_n_rev <- setdiff(names(items), names(reversed))
     
     if (length(scales_n_rev) > 0) {
-      message(paste0(
-        "The following scales will be calculated without reverse coding: ",
-        paste0(scales_n_rev, collapse = ", ")
-      ))
+      cli::cli_inform("The following scales will be calculated without reverse coding: {paste0(scales_n_rev, collapse = ', ')}")
       
     scales_n_rev_values <- purrr::map2(items[scales_n_rev], scales_n_rev, make_scale,
                                          data = data,
@@ -309,7 +300,7 @@ make_scales <- function(data, items, reversed = FALSE, two_items_reliability = c
   } else if (exists("scales_n_rev_values")) {
     data.frame(scales_n_rev_values$scores)
   } else {
-    stop("No scales created - check inputs")
+    cli::cli_abort("No scales created - check inputs")
   }
 
   descript <- if (exists("scales_n_rev_values") && exists("scales_rev_values")) {
@@ -319,7 +310,7 @@ make_scales <- function(data, items, reversed = FALSE, two_items_reliability = c
   } else if (exists("scales_n_rev_values")) {
     scales_n_rev_values$descriptives
   } else {
-    stop("No scales created - check inputs")
+    cli::cli_abort("No scales created - check inputs")
   }
   
   descriptives <- purrr::map2_dfr(descript, names(descript), function(descr, scale) {
@@ -535,7 +526,7 @@ make_scale_mi <- function(data, scale_items, scale_name, proration_cutoff = 0, s
   if (!alpha_ci) {
     args <- as.list(match.call(sys.function(1), sys.call(1), expand.dots = FALSE))[-1]
     if ("boot" %in% names(args) || "parallel" %in% names(args)) {
-      message("Note: boot and parallel arguments are ignored if alpha_ci = FALSE. In that case, no bootstrapping is needed.")
+      cli::cli_inform("Note: boot and parallel arguments are ignored if alpha_ci = FALSE. In that case, no bootstrapping is needed.")
     }
     boot <- 1
     parallel <- FALSE
@@ -545,17 +536,17 @@ make_scale_mi <- function(data, scale_items, scale_name, proration_cutoff = 0, s
   
   if(alpha_ci) assert_numeric(alpha_ci, lower = 0, upper = 1)
   
-  if (!".imp"  %in% names(data)) stop("data should contain multiple imputations, indicated by an `.imp` variable (see mice::complete() with action = 'long'")
+  if (!".imp"  %in% names(data)) cli::cli_abort("data should contain multiple imputations, indicated by an `.imp` variable (see mice::complete() with action = 'long')")
 
   extras <- rlang::list2(...)
   
   if ("print_hist" %in% names(extras) && extras$print_hist == TRUE) {
-    warning("Cannot print histograms for multiply imputed data. Argument is ignored")
+    cli::cli_warn("Cannot print histograms for multiply imputed data. Argument is ignored")
     extras$print_hist <- NULL
   }
 
   if ("two_items_reliability" %in% names(extras) && extras$two_items_reliability  != "cron_alpha") {
-    warning("Cannot pool estimates for Spearman-Brown reliability or correlation yet - Cronbach's alpha is returned")
+    cli::cli_warn("Cannot pool estimates for Spearman-Brown reliability or correlation yet - Cronbach's alpha is returned")
     extras$two_items_reliability <- NULL
   }
 
@@ -585,8 +576,7 @@ make_scale_mi <- function(data, scale_items, scale_name, proration_cutoff = 0, s
   boot_alpha <- rep(list(NA), m)
   
   if (!rlang::is_installed(c("future", "future.apply"))) {
-    message("make_scale_mi() can only be parallelised when the future and future.apply packages",
-            " are installed. They are not, so setting parallel = FALSE")
+    cli::cli_inform("make_scale_mi() can only be parallelised when the future and future.apply packages are installed. They are not, so setting parallel = FALSE")
     parallel <- FALSE
   }
   
@@ -596,14 +586,14 @@ make_scale_mi <- function(data, scale_items, scale_name, proration_cutoff = 0, s
     sub <- data[data$.imp == i, ] %>% dplyr::select(dplyr::all_of(scale_items))
     boot_alpha[[i]] <- .cronbach_boot(sub, boot = boot)
   } } else {
-    if (boot < 1000) message("Note: You requested a rather low number of bootstraps (", boot, ") with parallel computing (`parallel` argument). parallel = FALSE would probably be faster.")
-    if (nrow(data)/(m+1)) message("Note: You requested parallel computing (`parallel` argument) for a rather small sample size (", nrow(data)/(m+1), "). parallel = FALSE might be faster.")
+    if (boot < 1000) cli::cli_inform("Note: You requested a rather low number of bootstraps ({boot}) with parallel computing (`parallel` argument). parallel = FALSE would probably be faster.")
+    if (nrow(data)/(m+1) < 100) cli::cli_inform("Note: You requested parallel computing (`parallel` argument) for a rather small sample size ({nrow(data)/(m+1)}). parallel = FALSE might be faster.")
     
     det_cores <- parallel::detectCores()
     if (parallel == TRUE) {
       parallel <- det_cores - 1
     } else if (parallel > det_cores) {
-      warning(parallel, " cores requested, while only ", det_cores, "are available. Therefore, `parallel`-argument is reset to ", det_cores, ".")
+      cli::cli_warn("{parallel} cores requested, while only {det_cores} are available. Therefore, `parallel`-argument is reset to {det_cores}.")
       parallel <- det_cores
     }
     
@@ -686,12 +676,22 @@ make_scale_mi <- function(data, scale_items, scale_name, proration_cutoff = 0, s
   alpha <- (p / (p - 1)) * (1 - (item_variance/total_variance))
   out <- list(alpha = alpha)
   boot_alpha <- numeric(boot)
+  
+  if (boot > 1000) {
+    cli::cli_progress_bar("Computing Cronbach's alpha", total = boot)
+  }
     for (i in seq_len(boot)) {
       boot_dat <- list_compl_data[sample(seq_len(n), replace = TRUE), ]
       total_variance <- stats::var(rowSums(boot_dat))
       item_variance <- sum(apply(boot_dat, 2, sd)^2)
       boot_alpha[i] <- (p / (p - 1)) * (1 - (item_variance/total_variance))
+      if (boot > 1000) {
+        cli::cli_progress_update()
+      }
     }
+  if (boot > 1000) {
+    cli::cli_progress_done()
+  }
     out$var <- stats::var(boot_alpha)
   
   return(out)

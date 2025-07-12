@@ -17,6 +17,7 @@ Depends:
 Imports: 
     broom,
     checkmate,
+    cli,
     dplyr,
     forcats,
     generics,
