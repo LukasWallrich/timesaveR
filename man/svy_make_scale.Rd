@@ -8,11 +8,17 @@ svy_make_scale(
   data,
   scale_items,
   scale_name,
+  reverse = c("none", "spec"),
+  reverse_items = NULL,
+  two_items_reliability = c("spearman_brown", "cronbachs_alpha", "r"),
+  r_key = NULL,
+  proration_cutoff = 0.4,
   print_hist = TRUE,
   print_desc = TRUE,
+  return_list = FALSE,
+  harmonize_ranges = NULL,
   scale_title = scale_name,
-  reversed = NULL,
-  r_key = NULL
+  reversed = NULL
 )
 }
 \arguments{
@@ -23,18 +29,37 @@ svy_make_scale(
 
 \item{scale_name}{Character. The name of the variable the scale should be saved as}
 
-\item{print_hist}{Logical. Should histograms of the scale and its items be printed.}
+\item{reverse}{Should scale items be reverse coded? One of "none" - no items reversed,
+or "spec" - items specific in \code{reverse_items} are reversed. Note: "auto" is not
+supported for survey objects.}
 
-\item{print_desc}{Logical. Should descriptive statistics for the scale be printed.}
+\item{reverse_items}{Character vector with names of scale items to be reversed
+(must be subset of scale_items). Used when reverse = "spec".}
 
-\item{scale_title}{Character. Name of scale for printing. Defaults to scale_name}
-
-\item{reversed}{(optional) A characters vector containing the items that should be reverse-coded (
-subset of scale_items)}
+\item{two_items_reliability}{How should the reliability of two-item scales be
+reported? "spearman_brown" is the recommended default, but "cronbachs_alpha"
+and Pearson's "r" are also supported.}
 
 \item{r_key}{(optional) Numeric. Set to the possible maximum value of the scale
 if the whole scale should be reversed, or to -1 to reverse the scale based on
 the observed maximum}
+
+\item{proration_cutoff}{Scales scores are only calculated for cases with at most this share of missing data.}
+
+\item{print_hist}{Logical. Should histograms of the scale and its items be printed.}
+
+\item{print_desc}{Logical. Should descriptive statistics for the scale be printed.}
+
+\item{return_list}{Logical. Should only scale values be returned, or survey object with scale added?}
+
+\item{harmonize_ranges}{Should items that have different ranges be rescaled? Default is \emph{not} to do it but issue a
+message to flag this potential issue - set to FALSE to suppress that message. If TRUE, items are rescaled to match the first
+item given. Alternatively pass a vector (c(min, max)) to specify the desired range.}
+
+\item{scale_title}{Character. Name of scale for printing. Defaults to scale_name}
+
+\item{reversed}{(deprecated) Use reverse_items instead. A characters vector containing the items that should be reverse-coded (
+subset of scale_items)}
 }
 \value{
 The survey object with the scale added as an additional variable.
