@@ -587,7 +587,7 @@ make_scale_mi <- function(data, scale_items, scale_name, proration_cutoff = 0, s
     boot_alpha[[i]] <- .cronbach_boot(sub, boot = boot)
   } } else {
     if (boot < 1000) cli::cli_inform("Note: You requested a rather low number of bootstraps ({boot}) with parallel computing (`parallel` argument). parallel = FALSE would probably be faster.")
-    if (nrow(data)/(m+1)) cli::cli_inform("Note: You requested parallel computing (`parallel` argument) for a rather small sample size ({nrow(data)/(m+1)}). parallel = FALSE might be faster.")
+    if (nrow(data)/(m+1) < 100) cli::cli_inform("Note: You requested parallel computing (`parallel` argument) for a rather small sample size ({nrow(data)/(m+1)}). parallel = FALSE might be faster.")
     
     det_cores <- parallel::detectCores()
     if (parallel == TRUE) {
