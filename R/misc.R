@@ -162,7 +162,7 @@ sigstars <- function(p, stars = NULL, pad_html = FALSE, ns = FALSE, return_NAs =
 #' @export
 
 cut_p <- function(x, p, ties.method = "random", fct_levels = NULL, verbose = TRUE) {
-  if (!ties.method == "random") cli::cli_abort('Currently, only "random" is accepted as ties.method.')
+  if (ties.method != "random") cli::cli_abort('Currently, only "random" is accepted as ties.method.')
   if (sum(p) != 1) {
     cli::cli_inform("p should be probabilities that add up to 1 - will be scaled accordingly")
     p <- p / sum(p)
