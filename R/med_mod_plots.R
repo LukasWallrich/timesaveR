@@ -129,9 +129,7 @@ plot_mediation <- function(X, Y, Ms, data, digits = 2, coef_offset = length(Ms),
 
   if (!is.null(coef_offset)) {
     if (!(coef_offset %in% c(1, 3) || (tibble::is_tibble(coef_offset) && nrow(coef_offset) == length(Ms) * 2))) {
-      warning("Valid coef_offset tibble is not provided and automatic alignment of coefficients is
-                                                                                                        not yet implemented for this number of mediators - you will likely need to either provide a valid
-                                                                                                        coef_offset tibble or edit the returned grViz code manually")
+      cli::cli_warn("Valid coef_offset tibble is not provided and automatic alignment of coefficients is not yet implemented for this number of mediators - you will likely need to either provide a valid coef_offset tibble or edit the returned grViz code manually")
       coef_offset <- NULL
     } else if (coef_offset == 3) {
       coef_offset <- .coef_offset_3
@@ -325,12 +323,12 @@ plot_moderated_mediation <- function(X, M, W, Y, CV = NULL, mod_direct_path = TR
 .grViz_and_save <- function(code, filename) {
   graph <- DiagrammeR::grViz(code)
   if (suppressWarnings(!all(lapply(c("DiagrammeRsvg"), requireNamespace, quietly = TRUE)))) {
-    warning("To save the diagramme, you need the DiagrammeRsvg package. File not saved.")
+    cli::cli_warn("To save the diagramme, you need the {.pkg DiagrammeRsvg} package. File not saved.")
     return(graph)
   } else {
     ext <- stringr::str_sub(filename, -3)
     if (!(ext == "svg")) {
-      warning("File extension should be svg. Adding '.svg' added to filename provided.")
+      cli::cli_warn("File extension should be svg. Adding {.file .svg} added to filename provided.")
       filename <- paste0(filename, ".svg")
     }
 

@@ -14,9 +14,9 @@
 report_anova <- function(x) {
 
     if (is.null(attributes(x)$heading)) 
-  stop("This type of comparison is not yet supported by this function. You are welcome to request its addition or propose an implementation.")      
+  cli::cli_abort("This type of comparison is not yet supported by this function. You are welcome to request its addition or propose an implementation.")      
 
-  if (nrow(x) != 2) stop("Currently, report_anova only supports comparisons between two models - so x should have two rows.")
+  if (nrow(x) != 2) cli::cli_abort("Currently, {.fn report_anova} only supports comparisons between two models - so {.arg x} should have two rows.")
 
   # Likely from anova() of two lm() models
   if (stringr::str_detect(attributes(x)$heading[1], "Analysis of Variance Table")) {
@@ -33,6 +33,6 @@ report_anova <- function(x) {
     return(glue::glue("<em>&chi;</em><sup>2</sup>({x$`Df diff`[2]}) = {x$`Chisq diff`[2] %>% round_(2)}, <em>p</em> {x$`Pr(>Chisq)`[2] %>% fmt_p()}"))
   }  
   
-  stop("This type of comparison is not yet supported by this function. You are welcome to request its addition or propose an implementation.")      
+  cli::cli_abort("This type of comparison is not yet supported by this function. You are welcome to request its addition or propose an implementation.")      
       
 }

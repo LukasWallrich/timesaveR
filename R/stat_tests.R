@@ -58,7 +58,7 @@ svy_cohen_d_pair <- function(data, dv, iv, pair = NULL, ttest = TRUE, print = FA
     if (length(l) == 2) {
       pair <- l
     } else {
-      stop("pair must not be NULL unless iv has exactly two distinct values.")
+      cli::cli_abort("pair must not be NULL unless iv has exactly two distinct values.")
     }
   }
   data <- eval(parse(text = paste0(
@@ -155,9 +155,9 @@ svy_pairwise_t_test <- function(data, dv, iv, cats, p.adjust = "holm", ...) {
 #' other implementations, this function scales the variables without taking the weights
 #' into account - but that means that coefficients represent the estimated change in SD of Y
 #' per SD of X *in the sample* and explicitly *not* in the population. Weighted scaling might
-#' be more appropriate, yet is not implemented here (and does not apepar to be commonly used).
+#' be more appropriate, yet is not implemented here (and does not appear to be commonly used).
 #' Also, in the model call, the weights variable will always be called `.weights`. This might
-#' pose a problem when you update the model later on, for  the moment the only workaround
+#' pose a problem when you update the model later on, for the moment the only workaround
 #' is to rename the weights variable accordingly (or to fix it and contribute a PR on
 #' Github).
 #'
@@ -166,7 +166,7 @@ svy_pairwise_t_test <- function(data, dv, iv, cats, p.adjust = "holm", ...) {
 #' @references See (Fox, 2015) for an argument why dummy variables should never
 #' be standardised. If you want to run a model with all variables standardised,
 #' one option is `QuantPsyc::lm.beta()`
-#' #' @return An `lm` object with standardized coefficients.
+#' @return An `lm` object with standardized coefficients.
 #' @examples
 #' # Basic usage with mtcars dataset
 #' lm_std(mpg ~ cyl + disp, data = mtcars)
@@ -180,22 +180,34 @@ svy_pairwise_t_test <- function(data, dv, iv, cats, p.adjust = "holm", ...) {
 #' lm_std(mpg ~ cyl + disp + am_factor, data = mtcars)
 
 lm_std <- function(formula, data = NULL, weights = NULL, weighted_standardize = FALSE, ...) {
-  if (any(stringr::str_detect(as.character(formula), "factor\\("))) stop("Functions in the formula are applied after standardising - thus factor() needs to be used before lm_std() is called")
+  if (any(stringr::str_detect(as.character(formula), "factor\\("))) {
+    cli::cli_abort("Functions in the formula are applied after standardising - thus factor() needs to be used before lm_std() is called")
+  }
   
   if (!is.null(weights) && is.logical(weighted_standardize) && isFALSE(weighted_standardize)) {
-    rlang::warn("Standardised coefficients from a model with weights are now returned based on unweighted standardisation of the variables. While that is common (and thus the default), it is unclear whether it is appropriate. Check ?lm_std, and consider changing weighted_standardize. This is displayed once per session when using weighted_standardize = FALSE. Use weighted_standardize = 'no' to use unweighted standardisation and omit the warning", .frequency = "once")
+    cli::cli_warn(
+      c(
+        "Standardised coefficients from a model with weights are now returned based on unweighted standardisation of the variables.",
+        "i" = "While that is common (and thus the default), it is unclear whether it is appropriate.",
+        "i" = "Check ?lm_std, and consider changing weighted_standardize.",
+        "i" = "This is displayed once per session when using weighted_standardize = FALSE.",
+        "i" = "Use weighted_standardize = 'no' to use unweighted standardisation and omit the warning."
+      ),
+      .frequency = "once"
+    )
   }
   
   vars <- all.vars(formula)
-  
   extras <- list(...)
   
-  if ("subset" %in% names(extras)) stop("Cannot subset in this function as that would happen after standardisation - please subset first.")
+  if ("subset" %in% names(extras)) {
+    cli::cli_abort("Cannot subset in this function as that would happen after standardisation - please subset first.")
+  }
   
   if (is.null(data)) {
     data <- NULL
     for (i in seq_along(vars)) {
-      #Odd extraction to work with with() call environments
+      # Odd extraction to work with with() call environments
       x <- get(vars[i], pos = parent.frame())
       data <- dplyr::bind_cols(data, tibble::tibble(!!vars[i] := x))
     }
@@ -207,7 +219,7 @@ lm_std <- function(formula, data = NULL, weights = NULL, weighted_standardize = 
     
     if (!rlang::quo_is_null(weights)) {
       if (rlang::as_label(weights) %in% names(data)) {
-        data <- dplyr::rename(data, .weights = !!weights) 
+        data <- dplyr::rename(data, .weights = !!weights)
       } else {
         data$.weights <- rlang::eval_tidy(weights)
       }
@@ -217,13 +229,14 @@ lm_std <- function(formula, data = NULL, weights = NULL, weighted_standardize = 
     }
   }
   
-  
   vars_num <- vars[purrr::map_lgl(data, is.numeric)]
   vars_num <- vars_num[!is.na(vars_num)]
   
   vars_dummies <- vars_num[purrr::map_lgl(vars_num, ~ dplyr::n_distinct(data[[.x]]) < 3)]
   
-  if (length(vars_dummies) > 0) warning("The following variables have less than three distinct values but are of type numeric: ", paste0(vars_dummies, collapse = ", "), ". Check whether they should not be factors instead. As it stands, they are standardised, which is typically not recommended.")
+  if (length(vars_dummies) > 0) {
+    cli::cli_warn("The following variables have fewer than three distinct values but are of type numeric: {vars_dummies}. Check whether they should not be factors instead. As it stands, they are standardised, which is typically not recommended.")
+  }
   
   data %<>% dplyr::mutate(dplyr::across(dplyr::all_of(vars_num), scale_blank))
   
@@ -286,7 +299,7 @@ t_test_mi <- function(mi_list, dv, groups, weights = NULL) {
 
   res <- summary(tests)
 
-  if (nrow(res) > 2) stop("Group should only have two levels - subset data or use pairwise_t_test_mi instead")
+  if (nrow(res) > 2) cli::cli_abort("Group should only have two levels - subset data or use pairwise_t_test_mi instead")
 
   groups <- mi_list[[1]]$g %>%
     unique() %>%
@@ -502,7 +515,7 @@ pairwise_t_tests <- function(data, outcome, groups = NULL, p.adjust.method = p.a
                              conf_level = .95, var_equal = FALSE, na.rm = NULL) {
   
   if (is.character(rlang::enexpr(outcome))) {
-    warning("Outcome and groups should be provided as raw variable names, not a string, as shown in the examples.")
+    cli::cli_warn("Outcome and groups should be provided as raw variable names, not a string, as shown in the examples.")
     outcome <- rlang::sym(outcome)
     groups <- rlang::sym(groups)
   }
@@ -514,7 +527,7 @@ pairwise_t_tests <- function(data, outcome, groups = NULL, p.adjust.method = p.a
   if (missing(groups)) {
     assert_formula(outcome)
     groups <- as.character(outcome[[3]])
-    if (length(groups) > 1) stop("If formula notation is used, only one grouping variable should be provided on the RHS")
+    if (length(groups) > 1) cli::cli_abort("If formula notation is used, only one grouping variable should be provided on the RHS")
     groups <- rlang::sym(groups)
     outcome <- rlang::sym(as.character(outcome[[2]]))
   } else {
@@ -532,26 +545,24 @@ pairwise_t_tests <- function(data, outcome, groups = NULL, p.adjust.method = p.a
     if (is.null(na.rm) || na.rm) {
       if(is.null(na.rm)) {
         n_removed <- sum(is.na(group_values) | is.na(outcome_values))
-        warning("Missing values found in the grouping or outcome variables. ",
-        n_removed,
-        " case", if (n_removed > 1) "s " else " ", "will be removed.")
+        cli::cli_warn("Missing values found in the grouping or outcome variables. {n_removed} case{if (n_removed > 1) 's' else ''} will be removed.")
       }
       data <- data %>% dplyr::filter(!is.na({{ groups }}))
     } else {
-      stop("Missing values found in the grouping or outcome variables. Set `na.rm = TRUE` to remove them.")
+      cli::cli_abort("Missing values found in the grouping or outcome variables. Set `na.rm = TRUE` to remove them.")
     }
   }
   
   # Check if the grouping variable has more than one unique value
   unique_groups <- unique(dplyr::pull(data, {{ groups }}))
   if (length(unique_groups) < 2) {
-    stop("The grouping variable must have at least two unique values for pairwise comparisons.")
+    cli::cli_abort("The grouping variable must have at least two unique values for pairwise comparisons.")
   }
   
   # Handle mixed data types (numeric and character)
   if (!is.factor(group_values)) {
     if (!is.character(group_values) && is.null(attr(group_values, "labels"))) {
-    warning("The grouping variable is not a factor. It will be converted to a factor.")
+    cli::cli_warn("The grouping variable is not a factor. It will be converted to a factor.")
     } 
     
     if (is.numeric(group_values) && is.null(attr(group_values, "labels"))) {
@@ -560,7 +571,7 @@ pairwise_t_tests <- function(data, outcome, groups = NULL, p.adjust.method = p.a
         as_factor <- getNamespace("haven")$as_factor.labelled
         data <- data %>% dplyr::mutate({{ groups }} := as_factor({{ groups }}))
       } else {
-        warning("The grouping variable is a labelled numeric, but haven package is not available. It will be converted to factor, but the group labels might be lost.")
+        cli::cli_warn("The grouping variable is a labelled numeric, but haven package is not available. It will be converted to factor, but the group labels might be lost.")
         data <- data %>% dplyr::mutate({{ groups }} := as.factor({{ groups }}))
       }
     } else {
@@ -623,14 +634,14 @@ pairwise_t_tests <- function(data, outcome, groups = NULL, p.adjust.method = p.a
 
 polr_std <- function(formula, data = NULL, weights = NULL, ...) {
 
-  if (any(stringr::str_detect(deparse(formula, width.cutoff = 200), "~.*factor\\("))) stop("Functions in the formula are applied after standardising - thus factor() needs to be used before polr_std() is called")
+  if (any(stringr::str_detect(deparse(formula, width.cutoff = 200), "~.*factor\\("))) cli::cli_abort("Functions in the formula are applied after standardising - thus factor() needs to be used before polr_std() is called")
   
   vars <- all.vars(formula)
   
   extras <- list(...)
   
-  if ("subset" %in% names(extras)) stop("Cannot subset in this function as that would happen after standardisation - please subset first.")
-  if ("Hess" %in% names(extras)) stop("Cannot use Hess argument - Hess is always set to TRUE in this function.")
+  if ("subset" %in% names(extras)) cli::cli_abort("Cannot subset in this function as that would happen after standardisation - please subset first.")
+  if ("Hess" %in% names(extras)) cli::cli_abort("Cannot use Hess argument - Hess is always set to TRUE in this function.")
   
   if (is.null(data)) {
     for (i in seq_along(vars)) {
@@ -661,7 +672,7 @@ polr_std <- function(formula, data = NULL, weights = NULL, ...) {
   
   vars_dummies <- vars_num[purrr::map_lgl(vars_num, ~ dplyr::n_distinct(data[[.x]]) < 3)]
   
-  if (length(vars_dummies) > 0) warning("The following variables have less than three distinct values but are of type numeric: ", paste0(vars_dummies, collapse = ", "), ". Check whether they should not be factors instead. As it stands, they are standardised, which is typically not recommended.")
+  if (length(vars_dummies) > 0) cli::cli_warn("The following variables have less than three distinct values but are of type numeric: {paste0(vars_dummies, collapse = ', ')}. Check whether they should not be factors instead. As it stands, they are standardised, which is typically not recommended.")
   
   data %<>% dplyr::mutate(dplyr::across(dplyr::all_of(vars_num), scale_blank))
   
@@ -697,7 +708,7 @@ dummy_code <- function(x, prefix = NA, drop_first = TRUE, verbose = interactive(
   if (is.na(prefix)) {
     prefix <- deparse(substitute(x)) %>% stringr::str_remove("^.*\\$")
     if (prefix == ".") {
-      message("prefix cannot be automatically extracted when x is piped in (and . is not a valid prefix). No prefix will be added.")
+      cli::cli_inform("prefix cannot be automatically extracted when x is piped in (and . is not a valid prefix). No prefix will be added.")
       prefix <- NULL
     }
   }
@@ -712,9 +723,9 @@ dummy_code <- function(x, prefix = NA, drop_first = TRUE, verbose = interactive(
   if (drop_first) {
     if (verbose) {
       if (!is.null(prefix)) {
-        message(prefix, " dummy-coded with the following reference level: ", levels(x)[1])
+        cli::cli_inform("{prefix} dummy-coded with the following reference level: {levels(x)[1]}")
       } else {
-        message("Dummy-coded with the following reference level: ", levels(x)[1])
+        cli::cli_inform("Dummy-coded with the following reference level: {levels(x)[1]}")
       }
     }
     out <- out[-1]

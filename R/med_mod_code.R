@@ -46,13 +46,13 @@ run_mediation <- function(data, X, Y, Ms, CVs = NULL, standardized_all = TRUE,
   .check_req_packages(c("lavaan"))
 
   if (utils::packageVersion("lavaan") > "0.6.12") {
-    message('Due to a bug in lavaan, run_mediation might not currently be stable - see https://github.com/yrosseel/lavaan/issues/275.
-            Specify missing = "listwise" or estimator = "ML" as a workaround')
+    cli::cli_inform('Due to a bug in lavaan, run_mediation might not currently be stable - see {.url https://github.com/yrosseel/lavaan/issues/275}.
+            Specify {.code missing = "listwise"} or {.code estimator = "ML"} as a workaround')
   }
   
   args <- as.list(match.call(sys.function(1), sys.call(1), expand.dots = TRUE))[-1]
   if ("conf.level" %in% names(args)) {
-    stop("The confidence level needs to be specified as conf_level, NOT conf.level")
+    cli::cli_abort("The confidence level needs to be specified as {.arg conf_level}, NOT {.arg conf.level}")
   }
     
   # Convert arguments to strings
@@ -73,7 +73,7 @@ run_mediation <- function(data, X, Y, Ms, CVs = NULL, standardized_all = TRUE,
   }
   
   if (any(stringr::str_detect(c(X, Y, CVs, Ms), "__"))) 
-    stop("This function does not support variable names that contain two __ in a row. Please rename.")
+    cli::cli_abort("This function does not support variable names that contain two {.code __} in a row. Please rename.")
   
   # Run mediation model
 

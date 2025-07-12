@@ -171,7 +171,7 @@ add_package_snippets <- function() {
 
   # if not on RStudio or RStudioServer exit
   if (!nzchar(Sys.getenv("RSTUDIO_USER_IDENTITY"))) {
-    warning("Code snippets are only implemented in RStudio - so cannot do anything here.")
+    cli::cli_warn("Code snippets are only implemented in RStudio - so cannot do anything here.")
     return(NULL)
   }
 
@@ -218,10 +218,8 @@ add_package_snippets <- function() {
     # If targeted RStudios user file does not exist, raise error (otherwise we would 'remove')
     # the default snippets from the 'user file'
     if (!file.exists(rstudioSnippetsFilePath)) {
-      stop(
-        "'", rstudioSnippetsFilePath, "' does not exist yet\n.",
-        "Use RStudio -> Tools -> Global Options -> Code -> Edit Snippets\n",
-        "to initalize the user defined snippets file by adding any (dummy) snippet\n"
+      cli::cli_abort(
+        "{rstudioSnippetsFilePath} does not exist yet.\nUse RStudio -> Tools -> Global Options -> Code -> Edit Snippets\nto initalize the user defined snippets file by adding any (dummy) snippet"
       )
     }
 

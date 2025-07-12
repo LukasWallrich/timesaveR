@@ -46,11 +46,11 @@ report_lm_with_std <- function(mod, mod_std, conf_level = .95, coef_renames = NU
   }
 
   if ((class(mod)[1] == "list" || class(mod_std)[1] == "list") && !(length(mod) == length(mod_std))) {
-    stop("Same number of models need to be included in mod and mod_std arguments")
+    cli::cli_abort("Same number of models need to be included in {.arg mod} and {.arg mod_std} arguments")
   }
   
   if (!is.null(model_names) && !length(model_names) == length(mod)) {
-    stop("Length of model names needs to be the same as length of model")
+    cli::cli_abort("Length of {.arg model_names} needs to be the same as length of {.arg model}")
   }
 
   if (!(inherits(mod, "list"))) mod <- list(mod)
@@ -59,11 +59,11 @@ report_lm_with_std <- function(mod, mod_std, conf_level = .95, coef_renames = NU
     #For simplicity, only class of first model is tested 
 if (!("lm" %in% class(mod[[1]]) || ("mira" %in% class(mod[[1]]) &&
   "lm" %in% class(mod[[1]]$analyses[[1]])))) {
-  stop("Models need to be of class lm or mira objects with lm-analyses")
+  cli::cli_abort("Models need to be of class {.cls lm} or {.cls mira} objects with {.cls lm}-analyses")
 }
 if (!("lm" %in% class(mod_std[[1]]) || ("mira" %in% class(mod_std[[1]]) &&
   "lm" %in% class(mod_std[[1]]$analyses[[1]])))) {
-  stop("Models need to be of class lm or mira objects with lm-analyses")
+  cli::cli_abort("Models need to be of class {.cls lm} or {.cls mira} objects with {.cls lm}-analyses")
 }
   
   if ("tsR_std" %in% class(mod_std[[1]]) || ("mira" %in% class(mod_std[[1]]) && "tsR_std" %in% class(mod_std[[1]]$analyses[[1]]))) {
@@ -333,14 +333,14 @@ report_polr_with_std <- function(mod, mod_std, OR = TRUE, conf_level = .95, fmt 
   .check_req_packages(c("modelsummary", "gt", "htmltools", "readr", "pscl"))
 
   if (("list" %in% class(mod) || "list" %in% class(mod_std)) && !(length(mod) == length(mod_std))) {
-    stop("Same number of models need to be included in mod and mod_std arguments")
+    cli::cli_abort("Same number of models need to be included in {.arg mod} and {.arg mod_std} arguments")
   }
 
   if (!("list" %in% class(mod))) mod <- list(mod)
   if (!("list" %in% class(mod_std))) mod_std <- list(mod_std)
 
   if (!is.null(model_names) && !length(model_names) == length(mod)) {
-    stop("Length of model names needs to be the same as length of model")
+    cli::cli_abort("Length of {.arg model_names} needs to be the same as length of {.arg model}")
   }
 
   if ("tsR_std" %in% class(mod_std[[1]]) || ("mira" %in% class(mod_std[[1]]) && "tsR_std" %in% class(mod_std[[1]]$analyses[[1]]))) {
