@@ -48,12 +48,11 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
   assert_data_frame(extras, null.ok = TRUE)
 
   if (add_distributions && is.null(data)) {
-    stop("If add_distributions = TRUE, data needs to be provided.", call. = FALSE)
+    cli::cli_abort("If {.field add_distributions} = {.val TRUE}, {.arg data} needs to be provided.")
   }
   
   if (add_distributions && "survey.design" %in% class(data)) {
-    stop("Presently, distributions cannot be shown for weighted survey data. ",
-         "Set add_distributions to FALSE", call. = FALSE)
+    cli::cli_abort("Presently, distributions cannot be shown for weighted survey data. Set {.field add_distributions} to {.val FALSE}.")
   }
 
   plot_args <- list(...)
@@ -67,7 +66,7 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
   
   if (!is.null(extras)) {
     if (!"row_names" %in% names(extras)) {
-      warning("The ordering of the 'extras' argument cannot be checked unless a `row_names` column is included. Ensure that it matches 'desc' in the correlation matrix or include such a column.") 
+      cli::cli_warn("The ordering of the {.arg extras} argument cannot be checked unless a {.field row_names} column is included. Ensure that it matches {.field desc} in the correlation matrix or include such a column.") 
       
     } else {
       extras <- extras %>% 
@@ -143,10 +142,9 @@ report_cor_table <- function(cor_matrix, ci = c("given", "z_transform", "simple_
       }
     }
   } else {
-    message("Confidence intervals are calculated based on correlation
-            coefficient +/- 2 SE. This is generally not recommended!")
+    cli::cli_inform("Confidence intervals are calculated based on correlation coefficient +/- 2 SE. This is generally not recommended!")
     if ("z_transform" %in% ci && (is.null(cor_matrix[["df"]]) && is.null(n))) {
-      message("This is because n is not provided and cor_matrix does not contain df. Change either to enable z-transformed confidence intervals.")
+      cli::cli_inform("This is because {.arg n} is not provided and {.arg cor_matrix} does not contain df. Change either to enable z-transformed confidence intervals.")
     }
 
     get_cor.ci.low <- function(cor_matrix, cor.r, cor.se, i, j, df) {
@@ -288,10 +286,10 @@ cor_matrix <- function(data,
   all_missing <- data %>% dplyr::summarise(dplyr::across(dplyr::everything(), ~all(is.na(.x)))) %>% unlist()
   if (any(all_missing)) {
     all_missing <- names(data)[all_missing]
-    message(glue::glue_collapse(all_missing, sep = ", ", last = " and "), " only have missing values. Therefore, they are dropped from the correlation table.")
+    cli::cli_inform("{glue::glue_collapse(all_missing, sep = ', ', last = ' and ')} only have missing values. Therefore, they are dropped from the correlation table.")
     data <- data %>% dplyr::select(-dplyr::all_of(all_missing))
   }
-  if (ncol(data) < 2) stop("Data needs to contain at least two numeric columns.")
+  if (ncol(data) < 2) cli::cli_abort("Data needs to contain at least two numeric columns.")
   missing <- dplyr::case_when(
     missing[1] == "pairwise" ~ "pairwise",
     missing[1] == "listwise" ~ "complete",
@@ -301,11 +299,11 @@ cor_matrix <- function(data,
   
   if (inherits(data, "resid_df")) {
     if (adjust != "none") {
-      stop("p-value adjustment not implement for partial correlation - use adjust = 'none' or omit that argument.")
+      cli::cli_abort("p-value adjustment not implement for partial correlation - use {.field adjust} = {.val none} or omit that argument.")
   }
 }
   if (is.na(missing)) assert_choice(missing, c("pairwise", "listwise", "fiml"))
-  if (!is.null(bootstrap) && missing != "fiml") stop('bootstrapping can only be used when missing = "fiml"')
+  if (!is.null(bootstrap) && missing != "fiml") cli::cli_abort('bootstrapping can only be used when {.field missing} = {.val fiml}')
 
   if (is.data.frame(var_names)) {
     assert_names(names(var_names), must.include = c("old", "new"))
@@ -315,7 +313,7 @@ cor_matrix <- function(data,
   if (!is.null(var_names)) {
     data <- data %>% dplyr::select(dplyr::any_of(names(var_names)))
     miss_vars <- setdiff(names(var_names), names(data))
-    if (length(miss_vars) > 0) warning("The following variables are included in var_names but cannot be included into the correlation matrix - either, they are missing from data or not of type numeric: ", paste(miss_vars, collapse = ", "), call. = FALSE)
+    if (length(miss_vars) > 0) cli::cli_warn("The following variables are included in {.arg var_names} but cannot be included into the correlation matrix - either, they are missing from data or not of type numeric: {paste(miss_vars, collapse = ', ')}")
     var_names <- var_names[intersect(names(var_names), names(data))]
   }
 
@@ -370,8 +368,8 @@ cor_matrix <- function(data,
       dplyr::left_join(Ms, ., by = "var")
 
     if (!is.null(bootstrap)) {
-      message("Starting to bootstrap ", bootstrap, " resamples. This might take a while.")
-
+      cli::cli_inform("Starting to bootstrap {bootstrap} resamples. This might take a while.")
+      
       # Estimate correlations with CIs
       extract_correlations <- function(mod) {
         res <- lavaan::standardizedsolution(mod) %>% 
@@ -379,7 +377,9 @@ cor_matrix <- function(data,
         res$est %>% magrittr::set_names(paste0(res$lhs, "~~", res$rhs))
       }
       
-      res <- lavaan::bootstrapLavaan(mod, R = bootstrap, FUN = extract_correlations) 
+      cli::cli_progress_bar("Bootstrapping correlations", total = bootstrap)
+      res <- lavaan::bootstrapLavaan(mod, R = bootstrap, FUN = extract_correlations)
+      cli::cli_progress_done() 
 
       # Drop NAs from bootstraps that did not converge
       res <- res[!rowSums(is.na(res)) == ncol(res),]
@@ -526,8 +526,7 @@ svy_cor_matrix <- function(svy_data, var_names = NULL, return_n = FALSE) {
     dplyr::arrange(match(.data$var, rownames(cor_matrix[[1]])))
 
   if (nrow(cor_matrix$desc) == 0) {
-    stop("No numeric columns found - check your input and that you have
-         installed the most recent dplyr version.", call. = FALSE)
+    cli::cli_abort("No numeric columns found - check your input and that you have installed the most recent dplyr version.")
   }
 
   if (!is.null(var_names)) {
@@ -629,7 +628,7 @@ wtd_cor_matrix_mi <- function(mi_list, weights, var_names = NULL) {
 cor_matrix_mi <- function(data, weights = NULL, var_names = NULL) {
   .check_req_packages(c("survey", "srvyr", "mitools", "mice"))
 
-  if (!".imp"  %in% names(data)) stop("data should contain multiple imputations, indicated by an `.imp` variable (see mice::complete() with action = 'long'")
+  if (!".imp"  %in% names(data)) cli::cli_abort("{.arg data} should contain multiple imputations, indicated by an {.field .imp} variable (see {.fun mice::complete} with {.field action} = {.val long}).")
 
   data <- data %>% dplyr::filter(.data$.imp != 0) #Remove original data if included
   
@@ -637,7 +636,7 @@ cor_matrix_mi <- function(data, weights = NULL, var_names = NULL) {
   
   if (any(all_missing)) {
     all_missing <- names(data)[all_missing]
-    message(glue::glue_collapse(all_missing, sep = ", ", last = " and "), " only have missing values. Therefore, they are dropped from the correlation table.")
+    cli::cli_inform("{glue::glue_collapse(all_missing, sep = ', ', last = ' and ')} only have missing values. Therefore, they are dropped from the correlation table.")
     data <- data %>% dplyr::select(-dplyr::all_of(all_missing))
   }
   
@@ -648,7 +647,7 @@ cor_matrix_mi <- function(data, weights = NULL, var_names = NULL) {
   l[".imp"] <- 2 # Avoid removal of id column
   
   if (any(l < 2)) {
-    warning("Some variables only have a single value, and thus no variance. They will be dropped from the correlation table: ", glue::glue_collapse(names(data)[l < 2], sep = ", ", last = " & "))
+    cli::cli_warn("Some variables only have a single value, and thus no variance. They will be dropped from the correlation table: {glue::glue_collapse(names(data)[l < 2], sep = ', ', last = ' & ')}")
     data <- data %>% dplyr::select(-dplyr::all_of(names(data)[l < 2]))
   }
   
@@ -674,7 +673,7 @@ cor_matrix_mi <- function(data, weights = NULL, var_names = NULL) {
   variables <- variables[-1]
   ct <- length(variables)
   
-  if (ct < 2) stop("The data needs to contain at least two numeric columns that have more than 1 distinct value.")
+  if (ct < 2) cli::cli_abort("The data needs to contain at least two numeric columns that have more than 1 distinct value.")
 
   data <- NULL
   for (i in seq_len(ct - 1)) {
@@ -779,7 +778,7 @@ plot_distributions <- function(data, var_names = NULL, plot_type = c("auto", "hi
 
   if (!is.null(var_names)) data <- data[names(var_names)]
 
-  if (!(plot_type[1] %in% c("auto", "histogram", "density") || test_integerish(plot_type, max.len = 1))) stop('plot_type must be one of "auto", "histogram", "density" or a single number', call. = FALSE)
+  if (!(plot_type[1] %in% c("auto", "histogram", "density") || test_integerish(plot_type, max.len = 1))) cli::cli_abort('{.arg plot_type} must be one of {.val auto}, {.val histogram}, {.val density} or a single number')
 
   assert(
     plot_type[1] %in% c("auto", "histogram", "density"),
@@ -890,7 +889,7 @@ gt_add_plots <- function(gt_table, plots, col_index) {
 tidy.cor_matrix <- function(x, both_directions = TRUE, ...) {
   extras <- list(...)
   if ("conf_level" %in% names(extras)) {
-    stop("conf_level cannot be changed in this tidy function. Please recreate the cor_matrix with the desired confidence level")
+    cli::cli_abort("{.field conf_level} cannot be changed in this tidy function. Please recreate the cor_matrix with the desired confidence level.")
   }
 
   out <- purrr::map2(x[1:7], names(x[1:7]), function(m, name) {
@@ -940,10 +939,10 @@ tidy.cor_matrix <- function(x, both_directions = TRUE, ...) {
 tidy.svy_cor_matrix <- function(x, both_directions = TRUE, ...) {
   extras <- list(...)
   if ("conf_level" %in% names(extras)) {
-    stop("conf_level cannot be changed in this tidy function. Please recreate the cor_matrix with the desired confidence level")
+    cli::cli_abort("{.field conf_level} cannot be changed in this tidy function. Please recreate the cor_matrix with the desired confidence level.")
   }
   
-  message("Presently, confidence intervals cannot be calculated for survey-weighted correlations.")
+  cli::cli_inform("Presently, confidence intervals cannot be calculated for survey-weighted correlations.")
   
   out <- purrr::map2(x[c(1, 4:6)], names(x[c(1, 4:6)]), function(m, name) {
     ind <- which(lower.tri(m, diag = FALSE), arr.ind = TRUE)
