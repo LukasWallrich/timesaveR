@@ -297,11 +297,6 @@ cor_matrix <- function(data,
     TRUE ~ NA_character_
   )
   
-  if (inherits(data, "resid_df")) {
-    if (adjust != "none") {
-      cli::cli_abort("p-value adjustment not implement for partial correlation - use {.field adjust} = {.val none} or omit that argument.")
-  }
-}
   if (is.na(missing)) assert_choice(missing, c("pairwise", "listwise", "fiml"))
   if (!is.null(bootstrap) && missing != "fiml") cli::cli_abort('bootstrapping can only be used when {.field missing} = {.val fiml}')
 
@@ -441,9 +436,17 @@ cor_matrix <- function(data,
   cor_matrix$var_renames <- NULL
 
   if (inherits(data, "resid_df")) {
-    # Adjust t-values based on df of n-3
-    cor_matrix$t.values <- sqrt(cor_matrix$n-3) * cor_matrix$cors / sqrt(1 - cor_matrix$cors^2)
-    cor_matrix$p.values <- stats::pt(abs(cor_matrix$t.values), cor_matrix$n-3, lower.tail = FALSE) * 2
+    # Get number of partialed variables and calculate correct df
+    k <- attr(data, "n_partialed")
+    if (is.null(k)) k <- 1  # fallback for legacy data
+    df_pcor <- cor_matrix$n - 2 - k
+    
+    # Store df matrix for confidence intervals
+    cor_matrix$df <- df_pcor
+    
+    # Adjust t-values and p-values based on correct df
+    cor_matrix$t.values <- sqrt(df_pcor) * cor_matrix$cors / sqrt(1 - cor_matrix$cors^2)
+    cor_matrix$p.values <- stats::pt(abs(cor_matrix$t.values), df_pcor, lower.tail = FALSE) * 2
   }
 
   if (exists("used_vars")) {
