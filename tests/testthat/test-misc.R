@@ -99,12 +99,12 @@ test_that("cut_p works", {
 
 test_that("cut_p works with different tie methods", {
   set.seed(123)
-  x_first <- cut_p(c(1, 1, 2, 2, 3), p = c(.4, .6), ties.method = "first", verbose = FALSE)
-  expect_equal(length(levels(x_first)), 2)
+  x_random <- cut_p(c(1, 1, 2, 2, 3), p = c(.4, .6), ties.method = "random", verbose = FALSE)
+  expect_equal(length(levels(x_random)), 2)
   
   set.seed(123)
-  x_last <- cut_p(c(1, 1, 2, 2, 3), p = c(.4, .6), ties.method = "last", verbose = FALSE)
-  expect_equal(length(levels(x_last)), 2)
+  x_in_order <- cut_p(c(1, 1, 2, 2, 3), p = c(.4, .6), ties.method = "in_order", verbose = FALSE)
+  expect_equal(length(levels(x_in_order)), 2)
   
   expect_error(cut_p(c(1, 2, 3), p = c(.5, .5), ties.method = "invalid"))
 })

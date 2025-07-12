@@ -139,18 +139,19 @@ sigstars <- function(p, stars = NULL, pad_html = FALSE, ns = FALSE, return_NAs =
 #' other helper functions exist to cut variables into groups of the same size
 #' or width. This function cuts a continuous variable into given proportions.
 #'
-#' Ties within the continuous variable are allocated randomly - so this function
-#' should not be used if there are many ties. The number of observations per
-#' group is rounded up for even-numbered levels (second, fourth, etc) and
-#' rounded down for others (expect for the last level that is used to balance).
+#' When there are ties in the data that span group boundaries, this function
+#' provides two methods for allocation: "random" (ties are allocated randomly)
+#' and "in_order" (ties are allocated in the order they appear). The number of 
+#' observations per group is rounded up for even-numbered levels (second, fourth, etc) 
+#' and rounded down for others (except for the last level that is used to balance).
 #' For large numbers of observations, the distribution will be very close to
 #' what is desired, for very small numbers of observations, it should be checked.
 #'
 #' @param x A numeric variable that is to be cut into categories
 #' @param p The proportion of cases to be allocated to each category, in
 #' ascending order. Should add up to one, otherwise, it will be scaled accordingly
-#' @param ties.method Method for handling ties when ranking. Accepts "average", "first", 
-#' "last", "random", "max", or "min". See ?rank for details on each method.
+#' @param ties.method Method for handling ties when ranking. Accepts "random" 
+#' (ties allocated randomly) or "in_order" (ties allocated in order of appearance).
 #' @param fct_levels Character vector with names for levels. If it is NULL, the
 #' groups will be labeled with their number and the cut-points employed.
 #' @param verbose Should boundaries of groups be reported as message?
@@ -161,8 +162,8 @@ sigstars <- function(p, stars = NULL, pad_html = FALSE, ns = FALSE, return_NAs =
 #' @export
 
 cut_p <- function(x, p, ties.method = "random", fct_levels = NULL, verbose = TRUE) {
-  if (!ties.method %in% c("average", "first", "last", "random", "max", "min")) {
-    cli::cli_abort('ties.method must be one of "average", "first", "last", "random", "max", or "min".')
+  if (!ties.method %in% c("random", "in_order")) {
+    cli::cli_abort('ties.method must be one of "random" or "in_order".')
   }
   if (sum(p) != 1) {
     cli::cli_inform("p should be probabilities that add up to 1 - will be scaled accordingly")
@@ -172,7 +173,9 @@ cut_p <- function(x, p, ties.method = "random", fct_levels = NULL, verbose = TRU
   xNA <- x
   x <- x[!is.na(x)]
 
-  ranks <- rank(x, na.last = "keep", ties.method)
+  # Map ties.method to rank() method
+  rank_method <- if (ties.method == "in_order") "first" else ties.method
+  ranks <- rank(x, na.last = "keep", rank_method)
   start <- min(x)
   end <- x[match(.floor_ceiling(p[1] * length(x), 1), ranks)]
   out <- rep(paste0("Group ", 1, " (", start, " to ", end, ")"), ceiling(p[1] * length(x)))

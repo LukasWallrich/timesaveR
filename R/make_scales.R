@@ -62,7 +62,7 @@ make_scale <- function(data, scale_items, scale_name, reverse = c(
   
   assert_choice(reverse[1], c("auto", "none", "spec"))
 
-  if (!is.null(reverse_items) && !reverse[1] == "spec") cli::cli_abort('reverse_items should only be specified together with reverse = "spec"')
+  if (!is.null(reverse_items) && reverse[1] != "spec") cli::cli_abort('reverse_items should only be specified together with reverse = "spec"')
 
     if (is.null(r_key)) r_key <- 0
   scale_vals <- data %>%
@@ -402,7 +402,7 @@ svy_make_scale <- function(data, scale_items, scale_name,
                            harmonize_ranges = NULL, scale_title = scale_name, 
                            reversed = NULL) {
  
-  .check_req_packages("survey")
+  .check_req_packages(c("survey", "rlang"))
   
   # Handle parameter alignment and backward compatibility
   if (!is.null(reversed)) {
@@ -437,7 +437,14 @@ svy_make_scale <- function(data, scale_items, scale_name,
   # Convert all scale items into numeric vars
   scale_items_num <- paste0(scale_items, "num")
   for (i in seq_along(scale_items)) {
-    data <- eval(parse(text = paste0("update(data,", scale_items_num[i], " = as.numeric(unlist(data[,scale_items[i]]$variables)))")))
+    var_name <- scale_items_num[i]
+    source_var <- scale_items[i]
+    
+    # Extract the variable data directly
+    var_data <- as.numeric(unlist(data$variables[[source_var]]))
+    
+    # Use rlang for safe variable assignment
+    data <- survey::update(data, !!rlang::sym(var_name) := var_data)
   }
 
   # Reverse reverse-coded items
@@ -448,26 +455,32 @@ svy_make_scale <- function(data, scale_items, scale_name,
       "r"
     ))
     for (i in seq_along(reverse_items)) {
-      data <- eval(parse(text = paste0("update(data,", reversed_num[i], "r = psych::reverse.code(-1, data[,reversed_num[i]]$variables))")))
+      var_name <- paste0(reversed_num[i], "r")
+      source_data <- data$variables[[reversed_num[i]]]
+      reversed_data <- psych::reverse.code(-1, source_data)
+      
+      data <- survey::update(data, !!rlang::sym(var_name) := reversed_data)
     }
   }
 
   # Create scale
-  data <- eval(parse(text = paste0("update(data,", scale_name, " = rowMeans(data[,scale_items_num]$variables, na.rm=T))")))
+  scale_vars_data <- data$variables[scale_items_num]
+  scale_matrix <- do.call(cbind, scale_vars_data)
+  scale_values <- rowMeans(scale_matrix, na.rm = TRUE)
+  
+  data <- survey::update(data, !!rlang::sym(scale_name) := scale_values))
 
   # Reverse full scale
   if (!is.null(r_key)) {
+    current_scale <- data$variables[[scale_name]]
+    
     if (r_key == -1) {
-      data <- eval(parse(text = paste0(
-        "update(data,", scale_name, " = psych::reverse.code(",
-        r_key, ", data$variables$", scale_name, "))"
-      )))
+      reversed_scale <- psych::reverse.code(r_key, current_scale)
     } else if (r_key > 0) {
-      data <- eval(parse(text = paste0(
-        "update(data,", scale_name, " = psych::reverse.code(",
-        -1, ", data$variables$", scale_name, ", maxi = ", r_key, "))"
-      )))
+      reversed_scale <- psych::reverse.code(-1, current_scale, maxi = r_key)
     }
+    
+    data <- survey::update(data, !!rlang::sym(scale_name) := reversed_scale)
   }
   
 
