@@ -377,11 +377,6 @@ cor_matrix <- function(data,
     TRUE ~ NA_character_
   )
   
-  if (inherits(data, "resid_df")) {
-    if (adjust != "none") {
-      cli::cli_abort("p-value adjustment not implement for partial correlation - use {.arg adjust} = {.val none} or omit that argument.")
-    }
-  }
   if (is.na(missing)) assert_choice(missing, c("pairwise", "listwise", "fiml"))
   if (!is.null(bootstrap) && missing != "fiml") cli::cli_abort('bootstrapping can only be used when {.arg missing} = {.val fiml}')
   
@@ -521,9 +516,36 @@ cor_matrix <- function(data,
   cor_matrix$var_renames <- NULL
   
   if (inherits(data, "resid_df")) {
-    # Adjust t-values based on df of n-3
-    cor_matrix$t.values <- sqrt(cor_matrix$n-3) * cor_matrix$cors / sqrt(1 - cor_matrix$cors^2)
-    cor_matrix$p.values <- stats::pt(abs(cor_matrix$t.values), cor_matrix$n-3, lower.tail = FALSE) * 2
+    # Get number of partialed variables and calculate correct df
+    k <- attr(data, "n_partialed")
+    if (is.null(k)) {
+      cli::cli_abort("Data is a {.cls resid_df} object, but does not have an {.field n_partialed} attribute. 
+                     Ensure that the data was created with {.fun pcor_matrix} or similar functions.")
+    }
+    
+    df_pcor <- cor_matrix$n - 2 - k
+    
+    # Store df matrix for confidence intervals
+    cor_matrix$df <- df_pcor
+    
+    # Adjust t-values and p-values based on correct df
+    cor_matrix$t.values <- sqrt(df_pcor) * cor_matrix$cors / sqrt(1 - cor_matrix$cors^2)
+    raw_p_values <- stats::pt(abs(cor_matrix$t.values), df_pcor, lower.tail = FALSE) * 2
+    
+    if (adjust != "none") {
+      # p.adjust works on a vector, so extract the lower triangle of the p-value matrix
+      p_vector <- raw_p_values[lower.tri(raw_p_values)]
+      adjusted_p_vector <- stats::p.adjust(p_vector, method = adjust)
+      
+      # Place the adjusted p-values back into the matrix
+      adjusted_p_matrix <- raw_p_values
+      adjusted_p_matrix[lower.tri(adjusted_p_matrix)] <- adjusted_p_vector
+      adjusted_p_matrix[upper.tri(adjusted_p_matrix)] <- t(adjusted_p_matrix)[upper.tri(adjusted_p_matrix)]
+      
+      cor_matrix$p.values <- adjusted_p_matrix
+    } else {
+      cor_matrix$p.values <- raw_p_values
+    }
   }
   
   if (exists("used_vars")) {

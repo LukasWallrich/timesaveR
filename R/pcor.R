@@ -52,6 +52,7 @@ pcor_matrix <- function(data, given, ...) {
   data %<>% dplyr::select(-dplyr::all_of(given))
   
   class(data) <- c("resid_df", class(data))
+  attr(data, "n_partialed") <- length(given)
   
   args$data <- data
   
