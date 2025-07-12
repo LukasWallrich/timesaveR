@@ -468,7 +468,7 @@ svy_make_scale <- function(data, scale_items, scale_name,
   scale_matrix <- do.call(cbind, scale_vars_data)
   scale_values <- rowMeans(scale_matrix, na.rm = TRUE)
   
-  data <- survey::update(data, !!rlang::sym(scale_name) := scale_values))
+  data <- survey::update(data, !!rlang::sym(scale_name) := scale_values)
 
   # Reverse full scale
   if (!is.null(r_key)) {
