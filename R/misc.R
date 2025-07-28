@@ -733,6 +733,7 @@ add_class <- function(x, class_to_add = "exp") {
 #' of code and output that is not self-contained, e.g., for teaching materials.
 #' 
 #' @param code The code to run - can be NULL, then the code is retrieved from the clipboard.
+#' @param venue The output venue for formatting. Defaults to "gh" (GitHub). Other options depend on reprex package support.
 #' @examples 
 #' if (interactive()) {
 #'   name <- "Lukas"
@@ -741,7 +742,7 @@ add_class <- function(x, class_to_add = "exp") {
 #' @export
 
 
-run_and_format <- function (code = NULL) {
+run_and_format <- function (code = NULL, venue = "gh") {
   
   .check_req_packages("reprex")
   
@@ -752,7 +753,7 @@ run_and_format <- function (code = NULL) {
     x_expr = substitute(code),
     input = NULL,
     wd = NULL,
-    venue = "gh",
+    venue = venue,
     
     render = TRUE,
     new_session = FALSE,
