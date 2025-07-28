@@ -730,10 +730,10 @@ add_class <- function(x, class_to_add = "exp") {
 #' run it and copy the formatted code and output to the clipboard. Note that 
 #' this does NOT run in a clean session and is thus unlikely to create *reproducible*
 #' examples. Instead, it is intended to be used to quickly get a formatted bit 
-#' of code and output that is not self-contained, e.g., for teaching materials.
+#' of code and output that is *not* self-contained, e.g., for teaching materials.
 #' 
 #' @param code The code to run - can be NULL, then the code is retrieved from the clipboard.
-#' @param venue The output venue for formatting. Defaults to "gh" (GitHub). Other options depend on reprex package support.
+#' @inheritParams reprex::reprex                                    
 #' @examples 
 #' if (interactive()) {
 #'   name <- "Lukas"
