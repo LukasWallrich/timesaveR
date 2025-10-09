@@ -6,9 +6,9 @@
 \usage{
 make_scale(
   data,
-  scale_items,
+  items,
   scale_name,
-  reverse = c("auto", "none", "spec"),
+  reverse_method = c("auto", "none", "spec"),
   reverse_items = NULL,
   two_items_reliability = c("spearman_brown", "cron_alpha", "r"),
   r_key = NULL,
@@ -16,22 +16,23 @@ make_scale(
   print_hist = TRUE,
   print_desc = TRUE,
   return_list = FALSE,
-  harmonize_ranges = NULL
+  harmonize_ranges = NULL,
+  scale_items = lifecycle::deprecated()
 )
 }
 \arguments{
 \item{data}{A dataframe}
 
-\item{scale_items}{Character vector with names of scale items (variables in data)}
+\item{items}{Character vector with names of scale items (variables in data)}
 
 \item{scale_name}{Name of the scale}
 
-\item{reverse}{Should scale items be reverse coded? One of "auto" - items are
+\item{reverse_method}{Should scale items be reverse coded? One of "auto" - items are
 reversed if that contributes to scale consistency, "none" - no items reversed,
 or "spec" - items specific in \code{reverse_items} are reversed.}
 
 \item{reverse_items}{Character vector with names of scale items to be reversed
-(must be subset of scale_items)}
+(must be subset of \code{items})}
 
 \item{two_items_reliability}{How should the reliability of two-item scales be
 reported? "spearman_brown" is the recommended default, but "cronbachs_alpha"
@@ -52,6 +53,8 @@ the observed maximum.}
 \item{harmonize_ranges}{Should items that have different ranges be rescaled? Default is \emph{not} to do it but issue a
 message to flag this potential issue - set to FALSE to suppress that message. If TRUE, items are rescaled to match the first
 item given. Alternatively pass a vector (c(min, max)) to specify the desired range.}
+
+\item{scale_items}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use the \code{items} argument instead}
 }
 \value{
 Depends on \code{return_list} argument. Either just the scale values,
@@ -73,6 +76,6 @@ a 40\% cut-off is defensible, so this is the default used. For more precise esti
 consider item-level multiple imputation, which can be done with \code{make_scale_mi()}.
 }
 \examples{
-scores <- make_scale(ess_health, scale_items = c("etfruit", "eatveg"), 
+scores <- make_scale(ess_health, items = c("etfruit", "eatveg"), 
                      scale_name = "Healthy eating")
 }

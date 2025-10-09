@@ -4,7 +4,13 @@
 \alias{lm_std}
 \title{lm() with standardised continuous variables}
 \usage{
-lm_std(formula, data = NULL, weights = NULL, ...)
+lm_std(
+  formula,
+  data = NULL,
+  weights = NULL,
+  weighted_standardize = "auto",
+  ...
+)
 }
 \arguments{
 \item{formula}{an object of class \code{"\link[stats]{formula}"} (or one that
@@ -24,49 +30,60 @@ lm_std(formula, data = NULL, weights = NULL, ...)
     \code{weights} (that is, minimizing \code{sum(w*e^2)}); otherwise
     ordinary least squares is used.  See also \sQuote{Details},}
 
-\item{...}{
-  Arguments passed on to \code{\link[stats:lm]{stats::lm}}
-  \describe{
-    \item{\code{na.action}}{a function which indicates what should happen
-    when the data contain \code{NA}s.  The default is set by
-    the \code{na.action} setting of \code{\link{options}}, and is
-    \code{\link[stats]{na.fail}} if that is unset.  The \sQuote{factory-fresh}
-    default is \code{\link[stats]{na.omit}}.  Another possible value is
-    \code{NULL}, no action.  Value \code{\link[stats]{na.exclude}} can be useful.}
-    \item{\code{method}}{the method to be used; for fitting, currently only
-    \code{method = "qr"} is supported; \code{method = "model.frame"} returns
-    the model frame (the same as with \code{model = TRUE}, see below).}
-    \item{\code{model,x,y,qr}}{logicals.  If \code{TRUE} the corresponding
-    components of the fit (the model frame, the model matrix, the
-    response, the QR decomposition) are returned.
-  }
-    \item{\code{singular.ok}}{logical. If \code{FALSE} (the default in S but
-    not in \R) a singular fit is an error.}
-    \item{\code{contrasts}}{an optional list. See the \code{contrasts.arg}
-    of \code{\link[stats]{model.matrix.default}}.}
-    \item{\code{offset}}{this can be used to specify an \emph{a priori} known
-    component to be included in the linear predictor during fitting.
-    This should be \code{NULL} or a numeric vector or matrix of extents
-    matching those of the response.  One or more \code{\link[stats]{offset}} terms can be
-    included in the formula instead or as well, and if more than one are
-    specified their sum is used.  See \code{\link[stats]{model.offset}}.}
-  }}
+\item{weighted_standardize}{How to standardize numeric variables when weights
+are present. Can be one of \code{"auto"} (the default), \code{TRUE}, or \code{FALSE}.
+If \code{"auto"}, weighted standardization is performed if a \code{weights}
+argument is provided. See details.}
+
+\item{...}{Additional arguments passed to \code{lm()}. Note that \code{subset} cannot
+be used here and should be applied to \code{data} beforehand.}
+}
+\value{
+An \code{lm} object with standardized coefficients.
 }
 \description{
 This runs lm() after standardising all continuous variables, while leaving
-factors intact.
+factors and character variables intact.
 }
-\details{
-In the model call, the weights variable will always be called \code{.weights}. This might
-pose a problem when you update the model later on, for  the moment the only workaround
-is to rename the weights variable accordingly (or to fix it and contribute a PR on
-Github).
+\section{Standardization Method}{
+
+When using weights, this function calculates standardized coefficients by
+default using weighted means and standard deviations. This ensures that the
+resulting coefficients can be interpreted as the estimated change in standard
+deviations of Y for a one standard deviation change in X. If you require
+coefficients based on unweighted sample standard deviations, you can set
+\code{weighted_standardize = FALSE}. This is fairly common practice, but the
+results should not be interpreted as population estimates.
 }
+
+\section{Transformations and Interactions}{
+
+Note that standardization is applied to the raw numeric variables from the
+\code{data} frame. Any in-formula transformations (e.g., \code{log(x)}, \code{I(x^2)}) or
+interactions (\code{x1 * x2}) are applied by \code{lm()} \emph{after} the base variables
+(\code{x}, \code{x1}, \code{x2}) have been standardized. This is important for the
+interpretation of the resulting coefficients.
+}
+
+\section{Internal Details}{
+
+In the model call, the weights variable will always be internally renamed to
+\code{.weights}. This may be relevant if you update the model object later.
+}
+
 \examples{
-lm_std(Sepal.Length ~ Sepal.Width + Species, iris)
+# Basic usage with mtcars dataset
+lm_std(mpg ~ cyl + disp, data = mtcars)
+
+# Using weights
+mtcars$wt_sample <- runif(nrow(mtcars), 1, 3)
+lm_std(mpg ~ cyl + disp, data = mtcars, weights = wt_sample)
+
+# Handling variables with few levels
+mtcars$am_factor <- factor(mtcars$am)
+lm_std(mpg ~ cyl + disp + am_factor, data = mtcars)
 }
 \references{
-See (Fox, 2015) for an argument why dummy variables should never
-be standardised. If you want to run a model with all variables standardised,
-one option is \code{QuantPsyc::lm.beta()}
+See Fox, J. (2015). \emph{Applied Regression Analysis and
+Generalized Linear Models}. Sage.
 }

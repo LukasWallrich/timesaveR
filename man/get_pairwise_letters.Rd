@@ -4,10 +4,10 @@
 \alias{get_pairwise_letters}
 \title{Get letters to indicate results of multiple comparisons/post-hoc tests}
 \source{
-Algorithm based on https://www.tandfonline.com/doi/abs/10.1198/1061860043515
+Algorithm based on finding maximal cliques of non-significant comparisons.
 }
 \usage{
-get_pairwise_letters(tests, alpha_level = 0.05, p.adjust.method = "none")
+get_pairwise_letters(tests, alpha_level = 0.05)
 }
 \arguments{
 \item{tests}{Either a tibble with the result of comparisons, including x and y
@@ -15,13 +15,10 @@ get_pairwise_letters(tests, alpha_level = 0.05, p.adjust.method = "none")
 of class pairwise.htest, for example returned from pairwise.t.test()}
 
 \item{alpha_level}{The level of significance for the test}
-
-\item{p.adjust.method}{One of p.adjust.methods, defaults to none as p-values will
-typically have been adjusted when carrying out the pairwise comparisons/post-hoc tests}
 }
 \value{
-A tibble with columns that indicate which letter has been assigned to each
-group/level
+A tibble with the group level, a combined letters string, and
+individual columns for each letter assigned. The tibble is sorted by level.
 }
 \description{
 This takes the results of multiple comparisons and returns a set of letters
@@ -29,9 +26,11 @@ that can be used to indicate which differences are significant. The difference
 between levels that are assigned the same letter are \emph{not} statistically different.
 }
 \examples{
-data("airquality")
-airquality$month <- factor(airquality$Month, labels = month.abb[5:9])
-x <- pairwise.t.test(airquality$Ozone, airquality$Month)
+# Works with pairwise.htest objects
+library(tibble)
+library(dplyr)
 
-get_pairwise_letters(x)
+pwtt <- pairwise.t.test(airquality$Ozone, airquality$Month)
+get_pairwise_letters(pwtt)
+
 }

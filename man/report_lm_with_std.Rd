@@ -48,7 +48,7 @@ for variables. If NULL, then the coefficients are not renamed.}
 \item \code{fmt = fmt_statistic("estimate" = 1, "r.squared" = 6)}: Format statistics differently.
 \item \code{fmt = fmt_identity()}: unformatted raw values
 }
-\item string:
+\item string: Passing the string \code{s} is equivalent to passing \code{fmt_sprintf(s)}
 \item Note on LaTeX output: To ensure proper typography, all numeric entries are enclosed in the \verb{\\num{}} command, which requires the \code{siunitx} package to be loaded in the LaTeX preamble. This behavior can be altered with global options. See the 'Details' section.
 }}
 
@@ -76,8 +76,11 @@ Coefficients omitted from this vector are omitted from the table. The order
 of the vector determines the order of the table. \code{coef_map} can be a named
 or an unnamed character vector. If \code{coef_map} is a named vector, its values
 define the labels that must appear in the table, and its names identify the
-original term names stored in the model object: \code{c("hp:mpg"="HPxM/G")}. See
-Examples section below.}
+original term names stored in the model object: \code{c("hp:mpg"="HPxM/G")}.
+If \code{coef_map} is an unnamed vector, its values must be raw variable
+names if \code{coef_rename=FALSE} and variable labels if \code{coef_rename=TRUE}.
+See \code{modelsummary::get_estimates} to get the coefficient out of a model.
+See Examples section below.}
     \item{\code{coef_omit}}{integer vector or regular expression to identify which coefficients to omit (or keep) from the table. Positive integers determine which coefficients to omit. Negative integers determine which coefficients to keep. A regular expression can be used to omit coefficients, and perl-compatible "negative lookaheads" can be used to specify which coefficients to \emph{keep} in the table. Examples:
 \itemize{
 \item c(2, 3, 5): omits the second, third, and fifth coefficients.
@@ -92,7 +95,7 @@ Examples section below.}
 }}
     \item{\code{coef_rename}}{logical, named or unnamed character vector, or function
 \itemize{
-\item Logical: TRUE renames variables based on the "label" attribute of each column. See the Example section below.
+\item Logical: TRUE renames variables based on the "label" attribute of each column. See the Example section below. Note: renaming is done by the \code{parameters} package at the extraction stage, before other arguments are applied like \code{coef_omit}. Therefore, this only works for models with builtin support and not for custom models.
 \item Unnamed character vector of length equal to the number of coefficients in the final table, after \code{coef_omit} is applied.
 \item Named character vector: Values refer to the variable names that will appear in the table. Names refer to the original term names stored in the model object. Ex: c("hp:mpg"="hp X mpg")
 \item Function: Accepts a character vector of the model's term names and returns a named vector like the one described above. The \code{modelsummary} package supplies a \code{coef_rename()} function which can do common cleaning tasks: \code{modelsummary(model, coef_rename = coef_rename)}

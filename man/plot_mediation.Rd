@@ -6,20 +6,22 @@
 \title{Plot mediation model with one or more mediators}
 \usage{
 plot_mediation(
-  IV,
-  DV,
+  X,
+  Y,
   Ms,
   data,
   digits = 2,
   coef_offset = length(Ms),
   filename = NULL,
-  ind_p_values = FALSE
+  ind_p_values = FALSE,
+  IV = lifecycle::deprecated(),
+  DV = lifecycle::deprecated()
 )
 }
 \arguments{
-\item{IV}{Character. Name of predictor}
+\item{X}{Character. Name of predictor}
 
-\item{DV}{Character. Name of dependent variable}
+\item{Y}{Character. Name of dependent variable}
 
 \item{Ms}{Character vector. Names of mediator variables}
 
@@ -38,6 +40,10 @@ be edited. See timesaveR:::.coef_offset_3 for an example of an offset tibble.}
 \item{ind_p_values}{Should significance stars be shown for indirect effects,
 based on pvalues passed in data? If FALSE, indirect effects with confidence
 intervals that do not include zero are bolded}
+
+\item{IV}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use the \code{X} argument instead}
+
+\item{DV}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use the \code{Y} argument instead}
 }
 \value{
 A list of a the graph and the associated code.
@@ -55,8 +61,8 @@ res <- run_mediation(ess_health, fltdpr, health, dosprt, agea, bootstraps = 50)
 
 # Run plot command
 plot <- plot_mediation(
-  IV = "Frequency of  <br /> feeling depressed",
-  DV = "Self-reported <br /> poor health", Ms = "Frequency of <br /> physical activity", 
+  X = "Frequency of  <br /> feeling depressed",
+  Y = "Self-reported <br /> poor health", Ms = "Frequency of <br /> physical activity", 
   data = res
 )
 

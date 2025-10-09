@@ -12,8 +12,10 @@ https://medium.com/@shandou/how-to-compute-confidence-interval-for-pearsons-r-a-
 \usage{
 report_cor_table(
   cor_matrix,
-  ci = c("given", "z_transform", "simple_SE"),
-  n = NULL,
+  ci_type = deprecated(),
+  ci_width = deprecated(),
+  ci = deprecated(),
+  n = deprecated(),
   add_distributions = FALSE,
   data = NULL,
   filename = NULL,
@@ -27,35 +29,36 @@ report_cor_table(
 }
 \arguments{
 \item{cor_matrix}{A correlation matrix, for example returned from
-\code{\link[=cor_matrix]{cor_matrix()}}, \code{\link[=svy_cor_matrix]{svy_cor_matrix()}}, or \code{\link[=cor_matrix_mi]{cor_matrix_mi()}}}
+\code{\link[=cor_matrix]{cor_matrix()}}, \code{\link[=svy_cor_matrix]{svy_cor_matrix()}}, or \code{\link[=cor_matrix_mi]{cor_matrix_mi()}}.}
 
-\item{ci}{Method to create CI - default is to use any given in the cor_matrix,
-and otherwise to compute them using z-transformations. The simple SE method
-should not be used, but is provided for compatibility.}
+\item{ci_type}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#defunct}{\figure{lifecycle-defunct.svg}{options: alt='[Defunct]'}}}{\strong{[Defunct]}} Recalculating CIs in this
+function has been removed. Please generate CIs in \code{cor_matrix()}.}
 
-\item{n}{Number of observations to calculate confidence intervals - only
-needed if cor_matrix does not contain degrees of freedom (df) or numbers of observations (n) and confidence
-intervals are to be calculated using z-transformations}
+\item{ci_width}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#defunct}{\figure{lifecycle-defunct.svg}{options: alt='[Defunct]'}}}{\strong{[Defunct]}} Use \code{conf_level} in \code{cor_matrix()} instead.}
 
-\item{add_distributions}{Add graphs showing variable distributions?}
+\item{ci}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#defunct}{\figure{lifecycle-defunct.svg}{options: alt='[Defunct]'}}}{\strong{[Defunct]}} Superseded by functionality in \code{cor_matrix()}.}
 
-\item{data}{Original data, only needed if \code{add_distribution = TRUE}}
+\item{n}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#defunct}{\figure{lifecycle-defunct.svg}{options: alt='[Defunct]'}}}{\strong{[Defunct]}} No longer used.}
 
-\item{filename}{the file name to create on disk. Include '.html' extension to
-best preserve formatting (see gt::gtsave for details)}
+\item{add_distributions}{Logical. Add graphs showing variable distributions?}
+
+\item{data}{Original data, only needed if \code{add_distributions = TRUE}.}
+
+\item{filename}{The file name to create on disk. Include '.html' extension to
+best preserve formatting (see \code{gt::gtsave} for details).}
 
 \item{notes}{List of additional notes to show under the table.}
 
 \item{stars}{A character vector to change the significance symbols (see details below)}
 
 \item{add_title}{Should title be added to table? Set to TRUE for default
-title or to character for custom title}
+title or provide a character string for custom title.}
 
 \item{extras}{Tibble of additional columns to be added after the descriptives column -
-needs to be sorted in the same order as the \code{desc} element in the cor_matrix unless
+needs to be sorted in the same order as the \code{desc} element in the \code{cor_matrix} unless
 there is a \code{row_names} column. If there is, this will be used to match it to the \code{desc} rows.}
 
-\item{apa_style}{Logical, should APA-style formatting be applied}
+\item{apa_style}{Logical, should APA-style formatting be applied.}
 
 \item{...}{
   Arguments passed on to \code{\link[=plot_distributions]{plot_distributions}}
@@ -68,12 +71,18 @@ that number is used as the maximum number of unique values for which a histogram
   }}
 }
 \value{
-A table that can be printed in the RStudio console to be shown in the
-viewer. Unless it is to be post-processed with further \code{gt} functions, it should
-usually be saved by passing a filename argument.
+A \code{gt} table that can be further formatted with \code{gt}-functions.
 }
 \description{
-This function, creates (and optionally saves) a correlation table with
+This function creates (and optionally saves) a correlation table with
 summary statistics. It accepts correlation matrices from various functions
-in this package as its first argument
+in this package as its first argument.
+}
+\examples{
+cor_matrix(iris) \%>\% report_cor_table()
+
+cor_matrix(iris) \%>\% report_cor_table(ci_width = .99)
+
+cor_matrix(iris) \%>\% report_cor_table(add_distributions = TRUE, data = iris, add_title = "Iris correlations and distributions")
+
 }
