@@ -59,7 +59,8 @@
 #' # To create the graph again (e.g., after you edit its code)
 #' DiagrammeR::grViz(plot$code)
 #' }
-plot_mediation <- function(X, Y, Ms, data, digits = 2, coef_offset = length(Ms), filename = NULL, ind_p_values = FALSE, IV = deprecated(), DV = deprecated()) {
+plot_mediation <- function(X, Y, Ms, data, digits = 2, coef_offset = length(Ms), 
+                           filename = NULL, ind_p_values = FALSE, IV = lifecycle::deprecated(), DV = lifecycle::deprecated()) {
   
   if (lifecycle::is_present(DV)) {
     lifecycle::deprecate_warn("0.0.3", "make_scale(DV)", "make_scale(Y)")

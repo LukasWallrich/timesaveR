@@ -99,15 +99,11 @@ report_cat_vars <- function(data, dv, ..., var_names = NULL, level_names = NULL,
   data <- rename_cat_variables(data, var_names = var_names, level_names = level_names)
 
   if (!is.null(var_names)) {
-    var_names_chr <- var_names$new
-    names(var_names_chr) <- var_names$old
-
-    vars <- purrr::map(vars, function(x) {
-      x %>%
-        dplyr::as_label() %>%
-        stringr::str_replace_all(var_names_chr) %>%
-        rlang::sym()
-    })
+    var_map <- setNames(var_names$new, var_names$old)
+    
+    vars <- purrr::map(vars, ~ rlang::sym(
+      dplyr::recode(dplyr::as_label(.x), !!!var_map, .default = dplyr::as_label(.x))
+    ))
   }
 
   descr <- purrr::map(vars, function(x) {

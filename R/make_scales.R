@@ -52,7 +52,7 @@ make_scale <- function(data, items, scale_name, reverse_method = c(
 proration_cutoff = .4,
 print_hist = TRUE, print_desc = TRUE, return_list = FALSE,
 harmonize_ranges = NULL,
-scale_items = deprecated()) {
+scale_items = lifecycle::deprecated()) {
   
   if (lifecycle::is_present(scale_items)) {
     lifecycle::deprecate_warn("0.0.3", "make_scale(scale_items)", "make_scale(items)")
@@ -369,167 +369,157 @@ spearman_brown <- function(data, items, name = "", SB_only = FALSE) {
 #'
 #' @param data A srvyr survey object
 #' @param items A characters vector containing the items for that scale
-#'   (variables in data)
+#' (variables in data)
 #' @param scale_name Character. The name of the variable the scale should be saved as
 #' @param reverse Should scale items be reverse coded? One of "none" - no items reversed,
-#'   or "spec" - items specific in `reverse_items` are reversed. Note: "auto" is not
-#'   supported for survey objects.
+#' or "spec" - items specific in `reverse_items` are reversed. Note: "auto" is not
+#' supported for survey objects.
 #' @param reverse_items Character vector with names of scale items to be reversed
-#'   (must be subset of scale_items). Used when reverse = "spec".
+#' (must be subset of scale_items). Used when reverse = "spec".
 #' @param two_items_reliability How should the reliability of two-item scales be
-#'   reported? "spearman_brown" is the recommended default, but "cronbachs_alpha"
-#'   and Pearson's "r" are also supported.
+#' reported? "spearman_brown" is the recommended default, but "cronbachs_alpha"
+#' and Pearson's "r" are also supported.
 #' @param r_key (optional) Numeric. Set to the possible maximum value of the scale
 #' if the whole scale should be reversed, or to -1 to reverse the scale based on
 #' the observed maximum
-#' @param scale_items `r lifecycle::badge("deprecated")` Use the `items` argument instead
 #' @param proration_cutoff Scales scores are only calculated for cases with at most this share of missing data.
 #' @param print_hist Logical. Should histograms of the scale and its items be printed.
 #' @param print_desc Logical. Should descriptive statistics for the scale be printed.
-#' @param return_list Logical. Should only scale values be returned, or survey object with scale added?
-#' @param harmonize_ranges Should items that have different ranges be rescaled? Default is *not* to do it but issue a 
+#' @param return_list Logical. Should only the survey object with scale values be returned, or descriptives as well?
+#' @param harmonize_ranges Should items that have different ranges be rescaled? Default is *not* to do it but issue a
 #' message to flag this potential issue - set to FALSE to suppress that message. If TRUE, items are rescaled to match the first
 #' item given. Alternatively pass a vector (c(min, max)) to specify the desired range.
 #' @param scale_title Character. Name of scale for printing. Defaults to scale_name
-#' @param reversed (deprecated) Use reverse_items instead. A characters vector containing the items that should be reverse-coded (
-#'   subset of scale_items)
+#' @param reversed `r lifecycle::badge("deprecated")` Use `reverse_items` instead.
+#' @param scale_items `r lifecycle::badge("deprecated")` Use the `items` argument instead
 #' @return The survey object with the scale added as an additional variable.
-#' @examples 
-#' 
+#' @examples
+#'
 #' library(survey)
 #' data(api)
-#' 
-#' svy_data <- svydesign(id = ~1, strata = ~stype, weights = ~pw, 
-#'                    data = apistrat, fpc = ~fpc)
+#'
+#' svy_data <- svydesign(id = ~1, strata = ~stype, weights = ~pw,
+#' data = apistrat, fpc = ~fpc)
 #' scale_items <- c("ell", "meals", "mobility", "col.grad", "full")
-#' scale_reversed <- c("col.grad", "full")                    
-#' svy_make_scale(svy_data, scale_items, "SES", reversed = scale_reversed)    
+#' scale_reversed <- c("col.grad", "full")
+#' svy_make_scale(svy_data, scale_items, "SES", reversed = scale_reversed)
 
 #' @export
 
-
-svy_make_scale <- function(data, items, scale_name, 
+svy_make_scale <- function(data, items, scale_name,
                            reverse = c("none", "spec"), reverse_items = NULL,
                            two_items_reliability = c("spearman_brown", "cronbachs_alpha", "r"),
                            r_key = NULL, proration_cutoff = .4,
                            print_hist = TRUE, print_desc = TRUE, return_list = FALSE,
-                           harmonize_ranges = NULL, scale_title = scale_name, 
-                           reversed = NULL, scale_items = deprecated()) {
-
+                           harmonize_ranges = NULL, scale_title = scale_name,
+                           reversed = lifecycle::deprecated(), scale_items = lifecycle::deprecated()) {
+  
   if (lifecycle::is_present(scale_items)) {
-    lifecycle::deprecate_warn("0.0.3", "make_scale(scale_items)", "make_scale(items)")
+    lifecycle::deprecate_warn("0.0.3", "svy_make_scale(scale_items)", "svy_make_scale(items)")
     items <- scale_items
   }
-
+  
   .check_req_packages(c("survey", "rlang"))
   
-  # Handle parameter alignment and backward compatibility
-  if (!is.null(reversed)) {
-    cli::cli_warn("The 'reversed' parameter is deprecated. Use 'reverse_items' instead.")
+  if (lifecycle::is_present(reversed)) {
+    lifecycle::deprecate_warn("0.0.3", "svy_make_scale(reversed)", "svy_make_scale(reverse_items)")
     if (is.null(reverse_items)) {
       reverse_items <- reversed
       reverse <- "spec"
     }
   }
   
-  # Validate parameters aligned with make_scale
   if (!all(items %in% names(data$variables))) {
-    cli::cli_abort("Not all items can be found in the survey data. The following are missing: {paste(setdiff(items, names(data$variables)), collapse = ', ')}")
+    cli::cli_abort("Not all items can be found in the survey data. Missing: {paste(setdiff(items, names(data$variables)), collapse = ', ')}")
   }
+  if (length(items) < 2) cli::cli_abort("`items` must contain at least two variables")
+  if (!is.null(reverse_items) && reverse[1] != "spec")
+    cli::cli_abort("`reverse_items` should only be used with `reverse = \"spec\"`")
+  if (reverse[1] == "auto")
+    cli::cli_abort("Automatic reverse coding ({.arg reverse} = {.val auto}) isn't supported for survey objects")
   
-  if (length(items) < 2) {
-    cli::cli_abort("Scales need to have at least two items specified in {.arg items}")
-  }
-  
-  if (!is.null(reverse_items) && reverse[1] != "spec") {
-    cli::cli_abort('{.arg reverse_items} should only be specified together with {.arg reverse} = "spec"')
-  }
-  
-  if (reverse[1] == "auto") {
-    cli::cli_abort('Automatic reverse coding ("auto") is not supported for survey objects. Use {.arg reverse} = "spec" with {.arg reverse_items}.')
-  }
-
-  if (!scale_title == scale_name) {
+  if (scale_title != scale_name)
     scale_title <- paste0(scale_title, " (", scale_name, ")")
+  
+  ## numeric copies of all items
+  scale_items_num <- paste0(items, "num")
+  for (i in seq_along(items)) {
+    var_name   <- scale_items_num[i]
+    source_var <- items[i]
+    var_data   <- as.numeric(unlist(data$variables[[source_var]]))
+    data       <- do.call(update, c(list(data), setNames(list(var_data), var_name)))
   }
-
-  # Convert all scale items into numeric vars
-  scale_items_num <- paste0(scale_items, "num")
-  for (i in seq_along(scale_items)) {
-    var_name <- scale_items_num[i]
-    source_var <- scale_items[i]
-    
-    # Extract the variable data directly
-    var_data <- as.numeric(unlist(data$variables[[source_var]]))
-    
-    # Use rlang for safe variable assignment
-    data <- survey::update(data, !!rlang::sym(var_name) := var_data)
-  }
-
-  # Reverse reverse-coded items
+  
+  ## reverse-coded items
   if (reverse[1] == "spec" && !is.null(reverse_items)) {
-    reversed_num <- paste0(reverse_items, "num")
-    scale_items_num <- c(setdiff(scale_items_num, reversed_num), paste0(
-      reversed_num,
-      "r"
-    ))
+    reversed_num     <- paste0(reverse_items, "num")
+    scale_items_num  <- c(setdiff(scale_items_num, reversed_num),
+                          paste0(reversed_num, "r"))
     for (i in seq_along(reverse_items)) {
-      var_name <- paste0(reversed_num[i], "r")
-      source_data <- data$variables[[reversed_num[i]]]
-      reversed_data <- psych::reverse.code(-1, source_data)
-      
-      data <- survey::update(data, !!rlang::sym(var_name) := reversed_data)
+      var_name     <- paste0(reversed_num[i], "r")
+      source_data  <- data$variables[[reversed_num[i]]]
+      reversed_dat <- psych::reverse.code(-1, source_data)
+      data         <- do.call(update, c(list(data), setNames(list(reversed_dat), var_name)))
     }
   }
-
-  # Create scale
-  scale_vars_data <- data$variables[scale_items_num]
-  scale_matrix <- do.call(cbind, scale_vars_data)
-  scale_values <- rowMeans(scale_matrix, na.rm = TRUE)
   
-  data <- survey::update(data, !!rlang::sym(scale_name) := scale_values)
-
-  # Reverse full scale
+  ## composite scale
+  scale_matrix  <- do.call(cbind, data$variables[scale_items_num])
+  scale_values  <- rowMeans(scale_matrix, na.rm = TRUE)
+  data          <- do.call(update, c(list(data), setNames(list(scale_values), scale_name)))
+  
+  ## optional full-scale reversal
   if (!is.null(r_key)) {
-    current_scale <- data$variables[[scale_name]]
-    
-    if (r_key == -1) {
-      reversed_scale <- psych::reverse.code(r_key, current_scale)
-    } else if (r_key > 0) {
-      reversed_scale <- psych::reverse.code(-1, current_scale, maxi = r_key)
+    current_scale  <- data$variables[[scale_name]]
+    reversed_scale <- if (r_key == -1) {
+      psych::reverse.code(r_key, current_scale)
+    } else {
+      psych::reverse.code(-1, current_scale, maxi = r_key)
     }
-    
-    data <- survey::update(data, !!rlang::sym(scale_name) := reversed_scale)
+    data <- do.call(update, c(list(data), setNames(list(reversed_scale), scale_name)))
+  }
+  if (return_list) {
+    descriptives <- list()
+    descriptives$text <- ""
   }
   
-
-  if (print_desc) {
-    if (reverse[1] == "spec" && !is.null(reverse_items)) {
+  if (print_desc || return_list) {
+    mean_val <- round_(survey::svymean(as.formula(paste0("~", scale_name)),
+                                       data, na.rm = TRUE)[1], 3)
+    sd_val <- round_(sqrt(survey::svyvar(as.formula(paste0("~", scale_name)),
+                                         data, na.rm = TRUE)[1]), 3)
+    alpha_val <- survey::svycralpha(as.formula(.scale_formula(scale_items_num)), data, na.rm = TRUE)
+    
+    description_text <- glue::glue('
+                           Descriptives for {scale_title} scale:
+                           Mean: {mean_val}  SD: {sd_val}
+                           Cronbach\'s alpha: {fmt_cor(alpha_val)}')
+    
+    if (reverse[1] == "spec" && !is.null(reverse_items) && length(reverse_items) > 0) {
       reversed_min <- numeric()
       reversed_max <- numeric()
       reversed_num <- paste0(reverse_items, "num")
       for (i in seq_along(reverse_items)) {
-        reversed_min[i] <- min(data[, reversed_num[i]]$variables, na.rm = TRUE)
-        reversed_max[i] <- max(data[, reversed_num[i]]$variables, na.rm = TRUE)
+        reversed_min[i] <- min(data$variables[, reversed_num[i]], na.rm = TRUE)
+        reversed_max[i] <- max(data$variables[, reversed_num[i]], na.rm = TRUE)
       }
+      reversed_text <- paste0("\n", reverse_items, " (", reversed_min, ", ", reversed_max, ")", collapse = "")
+      description_text <- glue::glue('{description_text}\n\nThe following items were reverse coded (with min and max values): {reversed_text}')
     }
-
-    print(glue::glue('
     
-                     Descriptives for {scale_title} scale:
-                     Mean: {round_(survey::svymean(as.formula(paste0("~", scale_name)), 
-                     data, na.rm = TRUE)[1], 3)}  SD: {round_(sqrt(survey::svyvar(as.formula(paste0("~", scale_name)), 
-                     data, na.rm = TRUE)[1]), 3)}
-                     Cronbach\'s alpha: {fmt_cor(survey::svycralpha(as.formula(.scale_formula(scale_items_num)), data, na.rm = TRUE))}'))
+    if (print_desc) print(description_text)
     
-    if (reverse[1] == "spec" && !is.null(reverse_items) && length(reverse_items) > 0) {
-      print(glue::glue('
-
-The following items were reverse coded (with min and max values): \\
-                       {paste0("\n", reverse_items, " (", reversed_min, ", ", reversed_max, ")", collapse = "")}'))
+    if(return_list){
+      descriptives$n_items <- length(items)
+      descriptives$reliability <- alpha_val
+      descriptives$reliability_method <- "cronbachs_alpha"
+      descriptives$mean <- mean_val
+      descriptives$SD <- sd_val
+      descriptives$reversed <- if (reverse[1] == "spec" && !is.null(reverse_items)) paste0(reverse_items, collapse = " ") else ""
+      descriptives$text <- description_text
     }
   }
-
+  
   # Print histograms of items and scale
   if (print_hist) {
     hist_vars <- c(scale_name, paste0(items, "num"))
@@ -541,13 +531,18 @@ The following items were reverse coded (with min and max values): \\
       ))
       x$var <- stringr::str_split(names(x[1]), "\\.")[[1]][2]
       colnames(x)[1] <- "val"
-      data2 %<>% rbind(x)
+      data2 <- rbind(data2, x)
     }
     print(ggplot2::ggplot(data2, ggplot2::aes(.data$val, y = .data$Freq)) +
-      ggplot2::geom_bar(stat = "identity", na.rm = TRUE) +
-      ggplot2::facet_wrap(~var))
+            ggplot2::geom_bar(stat = "identity", na.rm = TRUE) +
+            ggplot2::facet_wrap(~var))
   }
-  return(data)
+  
+  if (return_list) {
+    return(list(survey_data = data, descriptives = descriptives))
+  } else {
+    return(data)
+  }
 }
 
 # Helper function for calculating Cronbach's alpha
