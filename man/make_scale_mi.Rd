@@ -11,13 +11,14 @@ that multiple imputation at item level results in much higher statistical power 
 \usage{
 make_scale_mi(
   data,
-  scale_items,
+  items,
   scale_name,
   proration_cutoff = 0,
   seed = NULL,
   alpha_ci = FALSE,
   boot = 5000,
   parallel = TRUE,
+  scale_items = deprecated(),
   ...
 )
 }
@@ -25,7 +26,7 @@ make_scale_mi(
 \item{data}{A dataframe containing multiple imputations, distinguished by a \code{.imp}
 variable. Typically the output from \code{mice::complete(mids, "long")}.}
 
-\item{scale_items}{Character vector with names of scale items (variables in data)}
+\item{items}{Character vector with names of scale items (variables in data)}
 
 \item{scale_name}{Name of the scale}
 
@@ -39,14 +40,16 @@ variable. Typically the output from \code{mice::complete(mids, "long")}.}
 
 \item{parallel}{Should bootstrapping be conducted in parallel (using \code{parallel}-package)? Pass a number to select the number of cores - otherwise, the function will use all but one core.}
 
+\item{scale_items}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use the \code{items} argument instead}
+
 \item{...}{
   Arguments passed on to \code{\link[=make_scale]{make_scale}}
   \describe{
-    \item{\code{reverse}}{Should scale items be reverse coded? One of "auto" - items are
+    \item{\code{reverse_method}}{Should scale items be reverse coded? One of "auto" - items are
 reversed if that contributes to scale consistency, "none" - no items reversed,
 or "spec" - items specific in \code{reverse_items} are reversed.}
     \item{\code{reverse_items}}{Character vector with names of scale items to be reversed
-(must be subset of scale_items)}
+(must be subset of \code{items})}
     \item{\code{r_key}}{(optional) Numeric. Set to the possible maximum value of the scale
 if the whole scale should be reversed, or to -1 to reverse the scale based on
 the observed maximum.}

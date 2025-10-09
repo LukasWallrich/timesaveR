@@ -58,6 +58,12 @@ missing data. To date, FIML correlation matrices can be obtained with the \code{
 function, but that function does not report significance tests or confidence intervals, or with the
 \code{\link[lavaan:lavCor]{lavaan::lavCor()}} function - this function also uses \code{lavaan} for the estimation,
 but facilitates bootstrapping and returns the results in a more accessible format.
+
+When \code{bootstrap} is used, confidence intervals are calculated using the
+Bias-Corrected and Accelerated (BCa) bootstrap method. In the rare case
+that BCa calculations fail for a given correlation, the function will
+automatically fall back to the simpler percentile method for that value and
+issue a warning.
 }
 \references{
 For evidence on the utility of the FIML estimator, see Enders, C. K. (2001)

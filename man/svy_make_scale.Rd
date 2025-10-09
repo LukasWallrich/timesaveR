@@ -6,7 +6,7 @@
 \usage{
 svy_make_scale(
   data,
-  scale_items,
+  items,
   scale_name,
   reverse = c("none", "spec"),
   reverse_items = NULL,
@@ -18,13 +18,14 @@ svy_make_scale(
   return_list = FALSE,
   harmonize_ranges = NULL,
   scale_title = scale_name,
-  reversed = NULL
+  reversed = lifecycle::deprecated(),
+  scale_items = lifecycle::deprecated()
 )
 }
 \arguments{
 \item{data}{A srvyr survey object}
 
-\item{scale_items}{A characters vector containing the items for that scale
+\item{items}{A characters vector containing the items for that scale
 (variables in data)}
 
 \item{scale_name}{Character. The name of the variable the scale should be saved as}
@@ -50,7 +51,7 @@ the observed maximum}
 
 \item{print_desc}{Logical. Should descriptive statistics for the scale be printed.}
 
-\item{return_list}{Logical. Should only scale values be returned, or survey object with scale added?}
+\item{return_list}{Logical. Should only the survey object with scale values be returned, or descriptives as well?}
 
 \item{harmonize_ranges}{Should items that have different ranges be rescaled? Default is \emph{not} to do it but issue a
 message to flag this potential issue - set to FALSE to suppress that message. If TRUE, items are rescaled to match the first
@@ -58,8 +59,9 @@ item given. Alternatively pass a vector (c(min, max)) to specify the desired ran
 
 \item{scale_title}{Character. Name of scale for printing. Defaults to scale_name}
 
-\item{reversed}{(deprecated) Use reverse_items instead. A characters vector containing the items that should be reverse-coded (
-subset of scale_items)}
+\item{reversed}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{reverse_items} instead.}
+
+\item{scale_items}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use the \code{items} argument instead}
 }
 \value{
 The survey object with the scale added as an additional variable.
@@ -75,9 +77,9 @@ more parsimonious output and some added functionality.
 library(survey)
 data(api)
 
-svy_data <- svydesign(id = ~1, strata = ~stype, weights = ~pw, 
-                   data = apistrat, fpc = ~fpc)
+svy_data <- svydesign(id = ~1, strata = ~stype, weights = ~pw,
+data = apistrat, fpc = ~fpc)
 scale_items <- c("ell", "meals", "mobility", "col.grad", "full")
-scale_reversed <- c("col.grad", "full")                    
-svy_make_scale(svy_data, scale_items, "SES", reversed = scale_reversed)    
+scale_reversed <- c("col.grad", "full")
+svy_make_scale(svy_data, scale_items, "SES", reversed = scale_reversed)
 }

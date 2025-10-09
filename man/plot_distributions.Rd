@@ -36,7 +36,7 @@ or density charts.
 \examples{
 \dontrun{
 plot_distributions(mtcars, var_names = c(wt = "Weight", mpg = "Efficiency",
-                   am = "Transmission", gear = "Gears"))
+                                         am = "Transmission", gear = "Gears"))
 }
 
 }

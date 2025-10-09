@@ -4,7 +4,13 @@
 \alias{cut_p}
 \title{Cut a continuous variable into given proportions}
 \usage{
-cut_p(x, p, ties.method = "random", fct_levels = NULL, verbose = TRUE)
+cut_p(
+  x,
+  p,
+  ties.method = c("random", "in_order"),
+  fct_levels = NULL,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{x}{A numeric variable that is to be cut into categories}

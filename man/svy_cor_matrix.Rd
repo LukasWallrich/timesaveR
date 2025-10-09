@@ -2,9 +2,9 @@
 % Please edit documentation in R/cor_tables.R
 \name{svy_cor_matrix}
 \alias{svy_cor_matrix}
-\title{Create a correlation matrix from survey data with summary statistics}
+\title{Create a correlation matrix from survey data with summary statistics and confidence intervals}
 \usage{
-svy_cor_matrix(svy_data, var_names = NULL, return_n = FALSE)
+svy_cor_matrix(svy_data, var_names = NULL, ci_level = 0.95)
 }
 \arguments{
 \item{svy_data}{A survey object created with the survey or srvyr package. Only
@@ -14,12 +14,12 @@ numeric variables will be included in the result.}
 for variables. If NULL, then the variables are not renamed. If names are provided, only the variables included here are retained.
 This is most helpful when the results are passed to some print function, such as \code{\link[=report_cor_table]{report_cor_table()}}}
 
-\item{return_n}{Should the sample size be returned? Note that this is \emph{not} survey-weighted, and should thus only be used when the weights add up to the number of observations.}
+\item{ci_level}{Confidence level for confidence intervals (default = 0.95)}
 }
 \value{
 A correlation matrix list in the format provided by
 \code{jtools::svycor()} with the addition of a \code{desc}-element with means
-and standard deviations of the variables.
+and standard deviations of the variables, plus \code{ci.low} and \code{ci.high} matrices.
 }
 \description{
 This function wraps jtools::svycor() so that it works in a srvyr-pipeline,
@@ -29,17 +29,19 @@ statistics. Only numeric variables are included in the result.
 \examples{
 \dontrun{
 if (requireNamespace("survey") & requireNamespace("srvyr")) {
-  library(survey)
-  library(srvyr)
-  data(api)
-  # Create survey design object
-  dstrat <- apistrat \%>\% as_survey_design(1, strata = stype, fpc = fpc, weight = pw)
+ library(survey)
+ library(srvyr)
+ data(api)
+ # Create survey design object
+ dstrat <- apistrat \%>\% as_survey_design(1, strata = stype, fpc = fpc, weight = pw)
 
 var_names <- c(meals = "Share subsidized meals", ell = "English language learners",
               growth = "Performance Change")
 
-  # Print correlation matrix
-  svy_cor_matrix(dstrat, var_names)
+ # Print correlation matrix with confidence intervals
+ result <- svy_cor_matrix(dstrat, var_names)
+ print(result$ci.low)  # Lower confidence bounds
+ print(result$ci.high) # Upper confidence bounds
 }
 }
 

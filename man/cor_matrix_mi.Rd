@@ -9,7 +9,7 @@ but adapted to use weights and return in the format accepted by
 \code{\link{report_cor_table}}
 }
 \usage{
-cor_matrix_mi(data, weights = NULL, var_names = NULL)
+cor_matrix_mi(data, weights = NULL, var_names = NULL, ci_level = 0.95)
 }
 \arguments{
 \item{data}{A dataframe with multiple imputations distinguished by a \code{.imp} variable.
@@ -22,11 +22,14 @@ for variables. If NULL, then the variables are not renamed. If names are provide
 This is most helpful when the results are passed to some print function, such as \code{\link[=report_cor_table]{report_cor_table()}}
 To facilitate post-processing, correlations with \emph{original} variable
 names are returned in the \code{tests} element.}
+
+\item{ci_level}{Confidence level for confidence intervals (default = 0.95)}
 }
 \value{
 A correlation matrix list similar to the format provided by
 \code{jtools::svycor()} with the addition of a \code{desc}-element with means
-and standard deviations of the variables.
+and standard deviations of the variables. Returns \code{ci.low} and \code{ci.high}
+matrices with confidence intervals for correlations.
 }
 \description{
 This function takes an imputationList with a vector of weights and returns
@@ -44,7 +47,7 @@ library(mice)
 
 # Create Dataset with missing data
 ess_health <- ess_health \%>\% sample_n(500) \%>\% 
-    select(etfruit, eatveg , dosprt, health, wt = pspwght)
+      select(etfruit, eatveg , dosprt, health, wt = pspwght)
 add_missing <- function(x) {x[!rbinom(length(x), 1, .9)] <- NA; x}
 ess_health <- ess_health \%>\% mutate(across(c(everything(), -wt), add_missing))
 
@@ -53,4 +56,7 @@ ess_health_mi <- mice(ess_health, printFlag = FALSE)
 ess_health_mi <- complete(ess_health_mi, "long")
 
 cor_matrix <- cor_matrix_mi(ess_health_mi, weights = wt)
+# Access confidence intervals
+print(cor_matrix$ci.low)
+print(cor_matrix$ci.high)
 }

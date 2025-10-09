@@ -4,17 +4,44 @@
 \alias{run_and_format}
 \title{Run a code snippet and copy formatted code and output to clipboard}
 \usage{
-run_and_format(code = NULL)
+run_and_format(code = NULL, venue = "gh")
 }
 \arguments{
 \item{code}{The code to run - can be NULL, then the code is retrieved from the clipboard.}
+
+\item{venue}{Character. Must be one of the following (case insensitive):
+\itemize{
+\item "gh" for \href{https://github.github.com/gfm/}{GitHub-Flavored Markdown}, the
+default
+\item "r" for a runnable R script, with commented output interleaved. Also useful
+for \href{https://slack.com/intl/en-ca/slack-tips/share-code-snippets}{Slack code snippets};
+select "R" from the "Type" drop-down menu to enjoy nice syntax
+highlighting.
+\item "rtf" for
+\href{https://en.wikipedia.org/wiki/Rich_Text_Format}{Rich Text Format}
+(not supported for un-reprexing)
+\item "html" for an HTML fragment suitable for inclusion in a larger HTML
+document (not supported for un-reprexing)
+\item "slack" for pasting into a Slack message. Optimized for people who opt out
+of Slack's WYSIWYG interface. Go to
+\strong{Preferences > Advanced > Input options} and select "Format messages with
+markup". (If there is demand for a second Slack venue optimized for use
+with WYSIWYG, please open an issue to discuss.)
+\item "so" for
+\href{https://stackoverflow.com/editing-help#syntax-highlighting}{Stack Overflow Markdown}.
+Note: this is just an alias for "gh", since Stack Overflow started to
+support CommonMark-style fenced code blocks in January 2019.
+\item "ds" for Discourse, e.g.,
+\href{https://forum.posit.co/}{forum.posit.co}. Note: this is
+currently just an alias for "gh".
+}}
 }
 \description{
 This builds on the \code{\link[reprex:reprex]{reprex::reprex()}} function to take a chunk of code,
 run it and copy the formatted code and output to the clipboard. Note that
 this does NOT run in a clean session and is thus unlikely to create \emph{reproducible}
 examples. Instead, it is intended to be used to quickly get a formatted bit
-of code and output that is not self-contained, e.g., for teaching materials.
+of code and output that is \emph{not} self-contained, e.g., for teaching materials.
 }
 \examples{
 if (interactive()) {
