@@ -14,7 +14,7 @@ mod3 <- lm_std(mpg ~ wt + hp, weights = 1:32)
 
 
 test_that("lm_std fits a basic linear model correctly", {
-  model <- lm_std(mpg ~ cyl, data = mtcars)
+  model <- lm_std(mpg ~ hp, data = mtcars)
   expect_s3_class(model, "lm_std")
   expect_true(attr(model, "standardized"))
   
@@ -29,7 +29,7 @@ test_that("lm_std works with weights", {
   # Create weights
   mtcars$wt_sample <- runif(nrow(mtcars), 1, 3)
   
-  model_weighted <- lm_std(mpg ~ cyl + disp, data = mtcars, weights = wt_sample)
+  model_weighted <- lm_std(mpg ~ hp + wt, data = mtcars, weights = wt_sample)
   expect_s3_class(model_weighted, "lm_std")
   expect_true(attr(model_weighted, "standardized"))
   
@@ -42,7 +42,8 @@ test_that("lm_std handles variables with few distinct values", {
   
   expect_warning(
     model <- lm_std(mpg ~ cyl + disp + gear_num, data = mtcars),
-    "The following numeric variables have fewer than three distinct values: gear_num. Consider converting them to factors as standardizing them is typically not recommended."
+    "numeric variables have fewer than three distinct values",
+    fixed = TRUE
   )
   
   expect_s3_class(model, "lm_std")
@@ -59,7 +60,7 @@ test_that("lm_std handles factor variables correctly", {
   mtcars$am_factor <- factor(mtcars$am)
   
   # Fit model with factor variable
-  model <- lm_std(mpg ~ cyl + disp + am_factor, data = mtcars)
+  model <- lm_std(mpg ~ hp + wt + am_factor, data = mtcars)
   expect_s3_class(model, "lm_std")
   
   # Check that factor variable is included as is
@@ -68,13 +69,13 @@ test_that("lm_std handles factor variables correctly", {
 
 test_that("lm_std prevents usage of 'subset' argument", {
   expect_error(
-    lm_std(mpg ~ cyl + disp, data = mtcars, subset = mpg > 20),
+    lm_std(mpg ~ hp + wt, data = mtcars, subset = mpg > 20),
     "Cannot subset in this function as that would happen after standardisation - please subset first."
   )
 })
 
 test_that("lm_std handles '...' arguments correctly", {
-  model <- lm_std(mpg ~ cyl + disp, data = mtcars, na.action = na.exclude)
+  model <- lm_std(mpg ~ hp + wt, data = mtcars, na.action = na.exclude)
   expect_s3_class(model, "lm_std")
   
   # Check that na.action is set correctly
@@ -83,19 +84,22 @@ test_that("lm_std handles '...' arguments correctly", {
 
 test_that("lm_std works without data argument", {
   mpg <- mtcars$mpg
-  cyl <- mtcars$cyl
-  disp <- mtcars$disp
+  hp <- mtcars$hp
+  wt <- mtcars$wt
   
-  model <- lm_std(mpg ~ cyl + disp)
+  model <- lm_std(mpg ~ hp + wt)
   expect_s3_class(model, "lm_std")
   
-  # Check coefficients
-  expected_cor_cyl_mpg <- cor(cyl, mpg)
-  expect_equal(round(coef(model)["cyl"], 4), round(expected_cor_cyl_mpg, 4))
+  # Check coefficients (should match manual standardisation)
+  expected_beta <- coef(lm(scale(mpg) ~ scale(hp) + scale(wt)))["scale(hp)"]
+  expect_equal(
+    round(unname(coef(model)["hp"]), 4),
+    round(unname(expected_beta), 4)
+  )
 })
 
 test_that("lm_std assigns correct class and attributes", {
-  model <- lm_std(mpg ~ cyl + disp, data = mtcars)
+  model <- lm_std(mpg ~ hp + wt, data = mtcars)
   expect_s3_class(model, "lm_std")
   expect_true(attr(model, "standardized"))
   
@@ -106,8 +110,9 @@ test_that("lm_std assigns correct class and attributes", {
 test_that("lm_std warns when binary variables are not factors", {
   
   expect_warning(
-    lm_std(mpg ~ cyl + disp + am, data = mtcars),
-    'The following variables have fewer than three distinct values'
+    lm_std(mpg ~ hp + wt + am, data = mtcars),
+    'numeric variables have fewer than three distinct values',
+    fixed = TRUE
   )
 })
 

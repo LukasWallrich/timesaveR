@@ -260,7 +260,63 @@ cut_p <- function(x, p,
 #' @keywords internal
 
 scale_blank <- function(x, center = TRUE, scale = TRUE) {
-  as.numeric(scale(x))
+  if (!scale) {
+    return(as.numeric(scale(x, center = center, scale = scale)))
+  }
+
+  # Guard against zero-variance inputs which make base::scale() return NA
+  if (all(is.na(x))) {
+    return(rep(NA_real_, length(x)))
+  }
+
+  var_x <- stats::var(x, na.rm = TRUE)
+  if (is.na(var_x) || isTRUE(all.equal(var_x, 0))) {
+    return(rep(0, length(x)))
+  }
+
+  as.numeric(scale(x, center = center, scale = scale))
+}
+
+
+#' Create a Z-score (standardize) for a vector using weights.
+#'
+#' @param x A numeric vector.
+#' @param w A numeric vector of weights. Must be the same length as x.
+#' @param na.rm If TRUE, remove cases where x or w is NA.
+#' @return A numeric vector of the same length as x with weighted Z-scores.
+#'
+scale_weighted <- function(x, w, na.rm = TRUE) {
+  if (length(x) != length(w)) {
+    cli::cli_abort("`x` and `w` must have the same length.")
+  }
+
+  if (na.rm) {
+    valid_indices <- !is.na(x) & !is.na(w)
+  } else {
+    valid_indices <- rep(TRUE, length(x))
+  }
+
+  x_valid <- x[valid_indices]
+  w_valid <- w[valid_indices]
+
+  if (!length(x_valid)) {
+    return(rep(NA_real_, length(x)))
+  }
+
+  weighted_mean <- stats::weighted.mean(x_valid, w_valid)
+  weighted_cov <- stats::cov.wt(as.matrix(x_valid), wt = w_valid)$cov[1, 1]
+
+  if (is.na(weighted_cov) || isTRUE(all.equal(weighted_cov, 0))) {
+    out <- rep(0, length(x))
+    out[!valid_indices] <- NA_real_
+    return(out)
+  }
+
+  weighted_sd <- sqrt(weighted_cov)
+
+  out <- rep(NA_real_, length(x))
+  out[valid_indices] <- (x_valid - weighted_mean) / weighted_sd
+  out
 }
 
 #' Convert a tibble/dataframe to tribble code
@@ -905,4 +961,3 @@ dupl_items <- function(x) {
   duplicated_elements <- x[duplicated(x)]
   unique(duplicated_elements)
 }
-

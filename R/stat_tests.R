@@ -53,59 +53,92 @@ paired_t_test_d <- function(data, x, y) {
 
 svy_cohen_d_pair <- function(data, dv, iv, pair = NULL, ttest = TRUE, print = FALSE) {
   assert_class(data, "survey.design")
+
+  dv <- rlang::as_string(dv)
+  iv <- rlang::as_string(iv)
+
+  iv_values <- data$variables[[iv]]
+
   if (is.null(pair)) {
-    l <- data$variables[[iv]] %>% unique()
-    if (length(l) == 2) {
-      pair <- l
+    unique_levels <- stats::na.omit(unique(iv_values))
+    if (length(unique_levels) == 2) {
+      pair <- as.character(unique_levels)
     } else {
       cli::cli_abort("pair must not be NULL unless iv has exactly two distinct values.")
     }
   }
-  data <- eval(parse(text = paste0(
-    "update(data, filt = factor(data$variables$",
-    iv, ", levels = c('", paste0(pair,
-      collapse = "', '"
-    ), "')))"
-  )))
+
+  if (!all(pair %in% levels(factor(iv_values)))) {
+    cli::cli_abort("All values in {.arg pair} must be present in {.arg iv}.")
+  }
+
+  data$variables$filt <- factor(iv_values, levels = pair)
+  subset_data <- subset(data, !is.na(filt))
+
+  if (nrow(subset_data$variables) == 0) {
+    cli::cli_abort("No observations remain after filtering the survey object for the requested pair.")
+  }
+
   t.test_result <- NULL
   if (ttest) {
-    t.test_result <- eval(parse(text = paste0(
-      "survey::svyttest(", dv, " ~ ", iv,
-      ", subset(data, !is.na(filt)))"
-    )))
+    t_formula <- stats::as.formula(paste0(dv, " ~ filt"))
+    t.test_result <- survey::svyttest(t_formula, subset_data)
   }
-  # Calculate Cohen's d
-  means <- survey::svyby(~ get(dv), ~filt, data, survey::svymean, na.rm = TRUE)[1:2]
-  names(means) <- c(dv, "mean")
-  vars <- survey::svyby(~ get(dv), ~filt, data, survey::svyvar, na.rm = TRUE)[1:2]
-  names(vars) <- c(dv, "var")
-  cohens_d <- (means[1, 2] - means[2, 2]) / sqrt((vars[1, 2] + vars[2, 2]) / 2)
-  
-  if (print) {
-    print(paste0("T-Test for ", paste0(pair, collapse = " & "), ":"))
-    print(t.test_result)
-  print(paste0(
-    "Cohen's d for pair ", paste0(pair, collapse = " & "), " is: ",
-    round_(cohens_d, 3)
-  ))
-  }
-  
-  d <- tibble::tibble(pair = paste0(pair, collapse = " & "), d = cohens_d)
-  
-  if (!ttest && print) invisible(d)
-  if (!ttest) return(d)
-  
-  t <- broom::tidy(t.test_result) %>% 
-    dplyr::transmute(pair = paste0(pair, collapse = " & "), t = .data$estimate, 
-                     df = .data$parameter, .data$p.value, mean_diff = .data$estimate, 
-                     mean_diff_ci.low = .data$conf.low, mean_diff_ci.high = .data$conf.high)
 
-  if (sign(t$t) != sign(d$d)) t <- t %>% 
-    dplyr::mutate(dplyr::across(c(.data$t, .data$mean_diff, .data$mean_diff_ci.low, .data$mean_diff_ci.high), ~.x * -1))
-  
-  if (print) invisible(dplyr::left_join(t, d, by = "pair"))
-  
-  dplyr::left_join(d, t, by = "pair")
+  mean_formula <- stats::as.formula(paste0("~", dv))
+
+  means <- survey::svyby(mean_formula, ~filt, subset_data, survey::svymean, na.rm = TRUE)
+  vars <- survey::svyby(mean_formula, ~filt, subset_data, survey::svyvar, na.rm = TRUE)
+
+  means <- dplyr::rename(means, mean = !!rlang::sym(dv))
+  vars <- dplyr::rename(vars, variance = !!rlang::sym(dv))
+
+  if (nrow(means) != 2 || nrow(vars) != 2) {
+    cli::cli_abort("Unable to compute Cohen's d because fewer than two groups remain after filtering.")
+  }
+
+  cohens_d <- (means$mean[1] - means$mean[2]) /
+    sqrt((vars$variance[1] + vars$variance[2]) / 2)
+
+  if (print) {
+    cli::cli_inform("T-Test for {paste(pair, collapse = ' & ')}:")
+    if (ttest) {
+      print(t.test_result)
+    }
+    cli::cli_inform(
+      "Cohen's d for pair {paste(pair, collapse = ' & ')} is: {round_(cohens_d, 3)}"
+    )
+  }
+
+  d <- tibble::tibble(pair = paste0(pair, collapse = " & "), d = cohens_d)
+
+  if (!ttest) {
+    return(if (print) invisible(d) else d)
+  }
+
+  t <- broom::tidy(t.test_result) %>%
+    dplyr::transmute(
+      pair = paste0(pair, collapse = " & "),
+      t = .data$estimate,
+      df = .data$parameter,
+      p.value = .data$p.value,
+      mean_diff = .data$estimate,
+      mean_diff_ci.low = .data$conf.low,
+      mean_diff_ci.high = .data$conf.high
+    )
+
+  if (sign(t$t) != sign(d$d)) {
+    t <- t %>%
+      dplyr::mutate(
+        dplyr::across(
+          c(.data$t, .data$mean_diff, .data$mean_diff_ci.low, .data$mean_diff_ci.high),
+          ~ .x * -1
+        )
+      )
+  }
+
+  result <- dplyr::left_join(d, t, by = "pair")
+  if (print) invisible(result) else result
 }
 
 #' Pairwise t.tests with effect sizes and survey weights
@@ -129,21 +162,34 @@ svy_pairwise_t_test <- function(data, dv, iv, cats, p.adjust = "holm", ...) {
   assert_class(data, "survey.design")
   assert_choice(p.adjust, p.adjust.methods)
   
+  dv <- rlang::as_string(dv)
+  iv <- rlang::as_string(iv)
+  
+  iv_levels <- levels(factor(data$variables[[iv]]))
+  
   if (is.null(cats)) {
-    cats <- eval(parse(text = paste0("levelsdf$variables$", iv)))
+    cats <- iv_levels
+  } else {
+    assert_character(cats, any.missing = FALSE, min.len = 2)
+    if (!all(cats %in% iv_levels)) {
+      cli::cli_abort("All supplied {.arg cats} must exist in {.arg iv}.")
+    }
   }
 
-  data2 <- purrr::cross_df(data.frame(cats, cats, stringsAsFactors = FALSE),
-    .filter =
-      function(x, y) as.character(x) <= as.character(y)
-  )
-  x <- purrr::map_dfr(purrr::pmap(data2, c), function(x) {
-    svy_cohen_d_pair(data, iv = iv, dv = dv, pair = x, print = FALSE, ...)
+  if (length(cats) < 2) {
+    cli::cli_abort("At least two categories are required for pairwise comparisons.")
+  }
+
+  pairs <- utils::combn(cats, 2, simplify = FALSE)
+  results <- purrr::map_dfr(pairs, function(pair_values) {
+    svy_cohen_d_pair(data, dv = dv, iv = iv, pair = pair_values, print = FALSE, ...)
   })
 
-  if ("p.value" %in% (names(x))) x$p.value <- p.adjust(x$p.value, method = p.adjust)
+  if ("p.value" %in% names(results)) {
+    results$p.value <- p.adjust(results$p.value, method = p.adjust)
+  }
   
-  x
+  results
 }
 
 #' lm() with standardised continuous variables
@@ -229,16 +275,28 @@ lm_std <- function(formula, data = NULL, weights = NULL, weighted_standardize = 
   
   #--- Data Handling ---#
   if (is.null(data)) {
-    var_list <- lapply(vars, get, pos = parent.frame())
+    env <- parent.frame()
+    var_list <- purrr::map(vars, function(var) {
+      if (!exists(var, envir = env, inherits = TRUE)) {
+        cli::cli_abort("Variable '{var}' not found in the parent environment.")
+      }
+      value <- get(var, envir = env, inherits = TRUE)
+      if (is.data.frame(value) && var %in% names(value)) {
+        value <- value[[var]]
+      }
+      if (is.matrix(value) && ncol(value) == 1) {
+        value <- as.vector(value[, 1])
+      }
+      value
+    })
     names(var_list) <- vars
-    
-    # Check for equal lengths
+
     var_lengths <- vapply(var_list, length, integer(1))
     if (length(unique(var_lengths)) > 1) {
       cli::cli_abort("Variables pulled from the environment have different lengths. Please provide a data frame in {.arg data} instead.")
     }
-    
-    data <- dplyr::bind_cols(var_list)
+
+    data <- tibble::as_tibble(var_list, .name_repair = "minimal")
   }
   
   #--- Weights Handling ---#
@@ -263,11 +321,12 @@ lm_std <- function(formula, data = NULL, weights = NULL, weighted_standardize = 
   }
   
   # Check for potential dummy variables coded as numeric
-  vars_dummies <- vars_num[purrr::map_lgl(data[vars_num], ~ dplyr::n_distinct(.x, na.rm = TRUE) < 3)]
+  vars_dummies <- vars_num[purrr::map_lgl(data[vars_num], ~ dplyr::n_distinct(.x, na.rm = TRUE) <= 3)]
   # Exclude zero-variance variables from this specific warning
   vars_dummies <- setdiff(vars_dummies, vars_zero_var)
   if (length(vars_dummies) > 0) {
-    cli::cli_warn("The following variables have fewer than five distinct values but are of type numeric: {.val {vars_dummies}}. Check if they should be factors. They are being standardized, which is not typically recommended for dummies.")
+    dummy_list <- paste(sort(unique(vars_dummies)), collapse = ", ")
+    cli::cli_warn("The following numeric variables have fewer than three distinct values: {dummy_list}. Consider converting them to factors as standardizing them is typically not recommended.")
   }
   
   #--- Standardization ---#
@@ -285,7 +344,7 @@ lm_std <- function(formula, data = NULL, weights = NULL, weighted_standardize = 
     }
     data <- data %>% dplyr::mutate(dplyr::across(
       .cols = dplyr::all_of(vars_num),
-      .fns  = scale # Using stats::scale directly
+      .fns  = scale_blank
     ))
   }
   
@@ -299,6 +358,10 @@ lm_std <- function(formula, data = NULL, weights = NULL, weighted_standardize = 
   cl <- rlang::call_modify(cl, !!!extras)
   
   mod <- rlang::eval_tidy(cl)
+  
+  if (is.null(mod$na.action) && "na.action" %in% names(extras)) {
+    mod$na.action <- extras$na.action
+  }
   
   attr(mod, "standardized") <- TRUE
   class(mod) <- c("lm_std", class(mod))
@@ -560,100 +623,131 @@ get_pairwise_letters <- function(tests, alpha_level = .05) {
 pairwise_t_tests <- function(data, outcome, groups = NULL, p.adjust.method = p.adjust.methods, 
                              conf_level = .95, var_equal = FALSE, na.rm = NULL) {
   
-  if (is.character(rlang::enexpr(outcome))) {
-    cli::cli_warn("Outcome and groups should be provided as raw variable names, not a string, as shown in the examples.")
-    outcome <- rlang::sym(outcome)
-    groups <- rlang::sym(groups)
-  }
-  
-  # Check if the data is a data frame
   assert_data_frame(data, min.rows = 2, any.missing = TRUE)
-  
-  # If outcome is a formula, groups should not be specified separately
-  if (missing(groups)) {
-    assert_formula(outcome)
-    groups <- as.character(outcome[[3]])
-    if (length(groups) > 1) cli::cli_abort("If formula notation is used, only one grouping variable should be provided on the RHS")
-    groups <- rlang::sym(groups)
-    outcome <- rlang::sym(as.character(outcome[[2]]))
-  } else {
-    # Check if outcome and groups are column names in the data frame
-    assert_choice(as.character(rlang::enexpr(outcome)), colnames(data))
-    assert_choice(as.character(rlang::enexpr(groups)), colnames(data))
-  }
-  
   assert_logical(na.rm, null.ok = TRUE)
-  # Handle missing values in the grouping variable (na.rm)
-  group_values <- dplyr::pull(data, {{ groups }})
-  outcome_values <- dplyr::pull(data, {{ outcome }})
-  
-  if (any(is.na(group_values)) | any(is.na(outcome_values))) {
-    if (is.null(na.rm) || na.rm) {
-      if(is.null(na.rm)) {
+
+  outcome_expr <- rlang::enexpr(outcome)
+  groups_missing <- missing(groups)
+
+  if (rlang::is_string(outcome_expr) && !groups_missing) {
+    cli::cli_warn("Outcome and groups should be provided as bare variable names, not strings.")
+    outcome_expr <- rlang::sym(outcome_expr)
+  }
+
+  if (!groups_missing) {
+    groups_expr <- rlang::enexpr(groups)
+    if (rlang::is_string(groups_expr)) {
+      cli::cli_warn("Outcome and groups should be provided as bare variable names, not strings.")
+      groups_expr <- rlang::sym(groups_expr)
+    }
+  }
+
+  if (groups_missing) {
+    outcome_formula <- stats::as.formula(outcome_expr, env = rlang::caller_env())
+    assert_formula(outcome_formula)
+    mf <- stats::model.frame(outcome_formula, data, na.action = NULL)
+    if (ncol(mf) != 2) {
+      cli::cli_abort("Formula input must contain exactly one outcome and one grouping variable.")
+    }
+    original_group_label <- names(mf)[2]
+    names(mf) <- c(".tsr_outcome", ".tsr_group")
+    data <- tibble::as_tibble(mf)
+    outcome_sym <- rlang::sym(".tsr_outcome")
+    groups_sym <- rlang::sym(".tsr_group")
+  } else {
+    outcome_sym <- rlang::ensym(outcome)
+    groups_sym <- rlang::ensym(groups)
+    assert_choice(rlang::as_string(outcome_sym), colnames(data))
+    assert_choice(rlang::as_string(groups_sym), colnames(data))
+    original_group_label <- rlang::as_string(groups_sym)
+  }
+
+  group_values <- dplyr::pull(data, !!groups_sym)
+  outcome_values <- dplyr::pull(data, !!outcome_sym)
+
+  if (any(is.na(group_values)) || any(is.na(outcome_values))) {
+    if (is.null(na.rm) || isTRUE(na.rm)) {
+      if (is.null(na.rm)) {
         n_removed <- sum(is.na(group_values) | is.na(outcome_values))
         cli::cli_warn("Missing values found in the grouping or outcome variables. {n_removed} case{if (n_removed > 1) 's' else ''} will be removed.")
       }
-      data <- data %>% dplyr::filter(!is.na({{ groups }}))
+      data <- dplyr::filter(data, !is.na(!!groups_sym) & !is.na(!!outcome_sym))
+      group_values <- dplyr::pull(data, !!groups_sym)
     } else {
       cli::cli_abort("Missing values found in the grouping or outcome variables. Set `na.rm = TRUE` to remove them.")
     }
   }
-  
-  # Check if the grouping variable has more than one unique value
-  unique_groups <- unique(dplyr::pull(data, {{ groups }}))
+
+  unique_groups <- unique(group_values)
   if (length(unique_groups) < 2) {
     cli::cli_abort("The grouping variable must have at least two unique values for pairwise comparisons.")
   }
-  
-  # Handle mixed data types (numeric and character)
+
   if (!is.factor(group_values)) {
     if (!is.character(group_values) && is.null(attr(group_values, "labels"))) {
-    cli::cli_warn("The grouping variable is not a factor. It will be converted to a factor.")
-    } 
-    
+      cli::cli_warn("The grouping variable is not a factor. It will be converted to a factor.")
+    }
+
     if (is.numeric(group_values) && is.null(attr(group_values, "labels"))) {
-      haven_available <- "haven" %in% rownames(installed.packages())
+      haven_available <- "haven" %in% rownames(utils::installed.packages())
       if (haven_available) {
         as_factor <- getNamespace("haven")$as_factor.labelled
-        data <- data %>% dplyr::mutate({{ groups }} := as_factor({{ groups }}))
+        data <- data %>% dplyr::mutate(!!groups_sym := as_factor(!!groups_sym))
       } else {
-        cli::cli_warn("The grouping variable is a labelled numeric, but haven package is not available. It will be converted to factor, but the group labels might be lost.")
-        data <- data %>% dplyr::mutate({{ groups }} := as.factor({{ groups }}))
+        cli::cli_warn("The grouping variable is a labelled numeric, but haven package is not available. It will be converted to a factor, but the group labels might be lost.")
+        data <- data %>% dplyr::mutate(!!groups_sym := as.factor(!!groups_sym))
       }
     } else {
-    
-    data <- data %>% dplyr::mutate({{ groups }} := as.factor({{ groups }}))
+      data <- data %>% dplyr::mutate(!!groups_sym := as.factor(!!groups_sym))
     }
+    group_values <- dplyr::pull(data, !!groups_sym)
   }
-  
-  # Generate pairs for t-tests
-  pairs <- utils::combn(levels(dplyr::pull(data, {{ groups }})), 2, simplify = FALSE)
-  
-  fmla <- as.formula(paste(dplyr::as_label(rlang::enexpr(outcome)), "~", dplyr::as_label(rlang::enexpr(groups))))
-  
-  # Perform pairwise t-tests
+
+  pairs <- utils::combn(levels(dplyr::pull(data, !!groups_sym)), 2, simplify = FALSE)
+
+  fmla <- stats::as.formula(
+    paste(rlang::as_string(outcome_sym), "~", rlang::as_string(groups_sym))
+  )
+
   out <- purrr::map_df(pairs, function(x) {
-    dat <- dplyr::filter(data, {{ groups }} %in% !! x)
-    out <- stats::t.test(fmla, dat, var.equal = var_equal, conf.level = conf_level, na.action = "na.omit") %>% 
+    dat <- dplyr::filter(data, !!groups_sym %in% x)
+    t_res <- stats::t.test(fmla, dat, var.equal = var_equal, conf.level = conf_level, na.action = "na.omit") %>%
       broom::tidy()
     desc <- dat %>%
-      dplyr::arrange(dplyr::desc({{ groups }} == x[1])) %>%
-      dplyr::group_by({{ groups }}) %>%
-      dplyr::summarise(M = mean({{ outcome }}, na.rm = TRUE), var = stats::var({{ outcome }}, na.rm = TRUE), .groups = "drop")
+      dplyr::arrange(dplyr::desc(!!groups_sym == x[1])) %>%
+      dplyr::group_by(!!groups_sym) %>%
+      dplyr::summarise(
+        M = mean(!!outcome_sym, na.rm = TRUE),
+        var = stats::var(!!outcome_sym, na.rm = TRUE),
+        .groups = "drop"
+      )
     cohens_d <- (desc$M[1] - desc$M[2]) / sqrt((desc$var[1] + desc$var[2]) / 2)
-    out <- cbind(tibble::tibble(var_1 = x[1], var_2 = x[2], cohens_d = cohens_d), out) %>%
-      dplyr::select("var_1", "var_2", mean_1 = "estimate1", mean_2 = "estimate2", mean_diff = "estimate", 
-                    conf_low = "conf.low", conf_high = "conf.high", t_value = "statistic", 
-                    df = "parameter", p_value = "p.value", "cohens_d", test = "method")
+    tibble::tibble(var_1 = x[1], var_2 = x[2], cohens_d = cohens_d) %>%
+      dplyr::bind_cols(t_res) %>%
+      dplyr::select(
+        "var_1", "var_2",
+        mean_1 = "estimate1",
+        mean_2 = "estimate2",
+        mean_diff = "estimate",
+        conf_low = "conf.low",
+        conf_high = "conf.high",
+        t_value = "statistic",
+        df = "parameter",
+        p_value = "p.value",
+        "cohens_d",
+        test = "method"
+      )
   })
-  
-  # Adjust p-values
+
   out$p_value <- stats::p.adjust(out$p_value, method = p.adjust.method)
   out$p_value_adjust <- p.adjust.method[1]
-  
-  out$group_var <- dplyr::as_label(rlang::enexpr(groups))
-
-  out$apa <- paste0("t(", round(out$df), ") = ", round_(out$t_value, 2), ", p ", fmt_p(out$p_value), ", d = ", round_(out$cohens_d, 2))
+  out$group_var <- original_group_label
+  out$t_value <- unname(out$t_value)
+  out$df <- unname(out$df)
+  out$apa <- paste0(
+    "t(", round(out$df), ") = ", round_(out$t_value, 2),
+    ", p ", fmt_p(out$p_value), ", d = ", round_(out$cohens_d, 2)
+  )
 
   tibble::tibble(out)
 }
@@ -751,15 +845,19 @@ polr_std <- function(formula, data = NULL, weights = NULL, ...) {
 #' @export     
 
 dummy_code <- function(x, prefix = NA, drop_first = TRUE, verbose = interactive()) {
-  if (is.na(prefix)) {
+  if (is.null(prefix)) {
+    prefix <- NULL
+  } else if (length(prefix) == 1 && is.na(prefix)) {
     prefix <- deparse(substitute(x)) %>% stringr::str_remove("^.*\\$")
     if (prefix == ".") {
       cli::cli_inform("prefix cannot be automatically extracted when x is piped in (and . is not a valid prefix). No prefix will be added.")
       prefix <- NULL
     }
+  } else {
+    prefix <- as.character(prefix)
   }
   x <- forcats::as_factor(x)
-  dummy_names <- .clean_names(levels(x))
+  dummy_names <- .clean_names(levels(x)) %>% stringr::str_to_lower()
 
   if (!is.null(prefix)) dummy_names <- paste0(.clean_names(prefix), "_", dummy_names)
   out <- purrr::map2_dfc(seq_along(levels(x)), levels(x), function(id, level) {
@@ -819,36 +917,4 @@ dummy_code <- function(x, prefix = NA, drop_first = TRUE, verbose = interactive(
     sub("^(.[a-z])", "\\L\\1", ., perl = TRUE)
 
   out
-}
-
-#' Create a Z-score (standardize) for a vector using weights.
-#'
-#' @param x A numeric vector.
-#' @param w A numeric vector of weights. Must be the same length as x.
-#' @param na.rm If TRUE, remove cases where x or w is NA.
-#' @return A numeric vector of the same length as x with weighted Z-scores.
-#'
-scale_weighted <- function(x, w, na.rm = TRUE) {
-  if (na.rm) {
-    # Remove missing values from both x and weights before calculations
-    valid_indices <- !is.na(x) & !is.na(w)
-    x_valid <- x[valid_indices]
-    w_valid <- w[valid_indices]
-  } else {
-    x_valid <- x
-    w_valid <- w
-  }
-  
-  # Calculate weighted mean (base R)
-  weighted_mean <- stats::weighted.mean(x_valid, w_valid)
-  
-  # Calculate weighted variance using base R's cov.wt
-  weighted_var <- stats::cov.wt(as.matrix(x_valid), wt = w_valid)$cov[1, 1]
-  weighted_sd <- sqrt(weighted_var)
-  
-  # Apply the transformation and return a vector of the original length
-  out <- rep(NA_real_, length(x))
-  out[valid_indices] <- (x_valid - weighted_mean) / weighted_sd
-  
-  return(out)
 }
