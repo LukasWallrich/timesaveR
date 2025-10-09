@@ -78,6 +78,7 @@ std_stars_pad <- c(`&nbsp;&nbsp;&nbsp;` = 1, `&dagger;&nbsp;&nbsp;` = .1, `*&nbs
 
 sigstars <- function(p, stars = NULL, pad_html = FALSE, ns = FALSE, return_NAs = FALSE) {
   if (is.null(stars)) stars <- c(`&dagger;` = .1, `*` = 0.05, `**` = 0.01, `***` = 0.001)
+  stars <- sort(stars, decreasing = T)
   ns <- ifelse(ns == TRUE, "<sup>ns</sup>", "")
   if (pad_html) {
     .check_req_packages(c("xml2"), note = "Trying to add HTML-padding to sigstars.")
@@ -161,55 +162,78 @@ sigstars <- function(p, stars = NULL, pad_html = FALSE, ns = FALSE, return_NAs =
 #' cut_p(iris$Sepal.Length, p = c(.25, .50, .25), fct_levels = c("short", "middling", "long"))
 #' @export
 
-cut_p <- function(x, p, ties.method = "random", fct_levels = NULL, verbose = TRUE) {
-  if (!ties.method %in% c("random", "in_order")) {
-    cli::cli_abort('ties.method must be one of "random" or "in_order".')
-  }
+cut_p <- function(x, p,
+                  ties.method = c("random", "in_order"),
+                  fct_levels = NULL,
+                  verbose = TRUE) {
+  ties.method <- match.arg(ties.method)
   if (sum(p) != 1) {
-    cli::cli_inform("p should be probabilities that add up to 1 - will be scaled accordingly")
+    cli::cli_inform("p does not sum to 1 – it will be rescaled.")
     p <- p / sum(p)
   }
-
-  xNA <- x
-  x <- x[!is.na(x)]
-
-  # Map ties.method to rank() method
-  rank_method <- if (ties.method == "in_order") "first" else ties.method
-  ranks <- rank(x, na.last = "keep", rank_method)
-  start <- min(x)
-  end <- x[match(.floor_ceiling(p[1] * length(x), 1), ranks)]
-  out <- rep(paste0("Group ", 1, " (", start, " to ", end, ")"), ceiling(p[1] * length(x)))
-  for (i in seq.int(2, length(p) - 1, 1)) {
-    start <- x[match(.floor_ceiling(cumsum(p)[i - 1] * length(x) + 1, i - 1), ranks)]
-    end <- x[match(.floor_ceiling(cumsum(p)[i] * length(x), i), ranks)]
-    out <- c(out, rep(paste0("Group ", i, " (", start, " to ", end, ")"), .floor_ceiling(p[i] * length(x), i)))
+  
+  na_idx  <- is.na(x)
+  x_clean <- x[!na_idx]
+  n       <- length(x_clean)
+  if (n == 0) {
+    cli::cli_warn("Input vector contains only NA values or is empty.")
+    return(x)
   }
-  start <- x[match(.floor_ceiling(cumsum(p)[length(p) - 1] * length(x) + 1, length(p) - 1), ranks)]
-  end <- max(x)
-  out <- c(out, rep(paste0("Group ", length(p), " (", start, " to ", end, ")"), length(x) - length(out)))
-
-  out <- factor(out)
-
+  
+  rank_method <- if (ties.method == "in_order") "first" else "random"
+  ranks <- rank(x_clean, na.last = "keep", ties.method = rank_method)
+  
+  k           <- length(p)
+  out_labels  <- character(0)
+  out_counts  <- integer(0)
+  
+  # helper: cumulative index → observed value
+  obs_at <- function(idx) x_clean[match(idx, ranks)]
+  
+  # first group
+  start <- min(x_clean)
+  end   <- obs_at(.floor_ceiling(p[1] * n, 1))
+  out_labels  <- c(out_labels, paste0("Group 1 (", start, " to ", end, ")"))
+  out_counts  <- c(out_counts, .floor_ceiling(p[1] * n, 1))
+  
+  # possible middle groups
+  if (k > 2) {
+    for (i in 2:(k - 1)) {
+      start <- obs_at(.floor_ceiling(sum(p[1:(i - 1)]) * n + 1, i - 1))
+      end   <- obs_at(.floor_ceiling(sum(p[1:i]) * n, i))
+      out_labels <- c(out_labels, paste0("Group ", i, " (", start, " to ", end, ")"))
+      out_counts <- c(out_counts, .floor_ceiling(p[i] * n, i))
+    }
+  }
+  
+  # last group
+  start <- obs_at(.floor_ceiling(sum(p[1:(k - 1)]) * n + 1, k - 1))
+  end   <- max(x_clean)
+  out_labels <- c(out_labels, paste0("Group ", k, " (", start, " to ", end, ")"))
+  out_counts <- c(out_counts, n - sum(out_counts))
+  
+  # build factor for non-NA values
+  out_factor <- factor(rep(out_labels, out_counts), levels = out_labels)
+  x_clean    <- out_factor[ranks]
+  
+  # reinject NAs
+  result <- factor(rep(NA, length(x)), levels = levels(out_factor))
+  result[!na_idx] <- x_clean
+  
+  # optional relabelling
   if (!is.null(fct_levels)) {
-    if (!length(fct_levels) == length(p)) {
-      cli::cli_abort("Arguments fct_levels and p need to have same length")
+    if (length(fct_levels) != k) {
+      cli::cli_abort("fct_levels and p must have identical length.")
     }
     if (verbose) {
-      cli::cli_inform("Factor levels were assigned as follows:\n{paste(levels(out), fct_levels, sep = ': ', collapse = '\n')}")
+      cli::cli_inform("Factor levels assigned as:\n{paste(levels(result), fct_levels, sep = ': ', collapse = '\n')}")
     }
-    levels(out) <- fct_levels
+    levels(result) <- fct_levels
   }
-
-  xNA[!is.na(xNA)] <- out[ranks]
-  xNA <- factor(xNA)
-  if (!is.null(fct_levels)) {
-    if (!length(fct_levels) == length(p)) {
-      cli::cli_abort("Arguments fct_levels and p need to have same length")
-    }
-    levels(xNA) <- fct_levels
-  }
-  xNA
+  
+  result
 }
+
 
 #' Helper function to round up and down in turn
 #'
@@ -220,7 +244,7 @@ cut_p <- function(x, p, ties.method = "random", fct_levels = NULL, verbose = TRU
 #' @keywords internal
 
 .floor_ceiling <- function(x, i) {
-  if (i %% 2 == 1) {
+  if (i %% 2 == 0) {
     return(ceiling(x))
   }
   floor(x)

@@ -27,6 +27,7 @@ NULL
 globalVariables(".")
 
 #' @importFrom magrittr %<>%
+#' @importFrom lifecycle deprecated
 #' @importFrom rlang .data
 #' @importFrom rlang :=
 #' @importFrom stats as.formula cor.test sd t.test lm p.adjust.methods quantile coef
@@ -119,4 +120,29 @@ knit_print.timesaveR_raw_html <- function(x, ...) {
   res <- stringr::str_remove(res, "</html>")
   
   structure(res, class = "knit_asis")
+}
+
+
+#' Check for and error on a defunct argument
+#'
+#' @param arg The argument to check, passed directly.
+#' @param details The text for the `details` argument of `deprecate_stop()`.
+#' @param when The package version when the argument became defunct.
+#'
+#' @noRd
+check_defunct <- function(arg, details, when = "0.3.0") {
+  # Get the name of the argument from the calling function
+  arg_name <- rlang::as_name(rlang::enquo(arg))
+  
+  # Only act if the user actually supplied the argument
+  if (lifecycle::is_present(arg)) {
+    # Dynamically get the name of the function that called this helper
+    caller_name <- rlang::call_name(rlang::caller_call())
+    
+    lifecycle::deprecate_stop(
+      when = when,
+      what = paste0(caller_name, "(", arg_name, ")"),
+      details = details
+    )
+  }
 }
