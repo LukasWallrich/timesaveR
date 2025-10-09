@@ -33,7 +33,7 @@ test_that("svy_make_scale handles deprecated 'reversed' parameter", {
   expect_warning(
     result <- svy_make_scale(svy_data, scale_items, "test_scale_dep", 
                             reversed = c("ell"), print_desc = FALSE, print_hist = FALSE),
-    "The 'reversed' parameter is deprecated"
+    "deprecated as of timesaveR"
   )
   
   expect_true("test_scale_dep" %in% names(result$variables))
@@ -42,17 +42,17 @@ test_that("svy_make_scale handles deprecated 'reversed' parameter", {
 test_that("svy_make_scale validates input parameters", {
   expect_error(
     svy_make_scale(svy_data, c("nonexistent"), "test"),
-    "Not all scale_items can be found"
+    "Not all items can be found in the survey data"
   )
   
   expect_error(
     svy_make_scale(svy_data, c("ell"), "test"),
-    "Scales need to have at least two items"
+    "must contain at least two variables"
   )
   
   expect_error(
     svy_make_scale(svy_data, c("ell", "meals"), "test", reverse = "auto"),
-    'Automatic reverse coding \\("auto"\\) is not supported'
+    "isn't supported"
   )
 })
 
@@ -65,8 +65,8 @@ test_that("svy_make_scale parameter alignment with make_scale", {
                           two_items_reliability = "spearman_brown", 
                           proration_cutoff = 0.4,
                           harmonize_ranges = NULL,
-                          return_list = FALSE,
+                          return_list = TRUE,
                           print_desc = FALSE, print_hist = FALSE)
   
-  expect_true("aligned_scale" %in% names(result$variables))
+  expect_true("aligned_scale" %in% names(result$survey_data$variables))
 })

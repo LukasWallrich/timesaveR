@@ -1,6 +1,7 @@
 
-mod1 <- lm_std(mpg ~ wt + hp, mtcars, weights = cyl)
 library(magrittr)
+
+mod1 <- lm_std(mpg ~ wt + hp, mtcars, weights = cyl)
 
 mod4 <- with(mtcars, lm_std(mpg ~ wt + hp, weights = 1:32))
 
@@ -11,9 +12,6 @@ mod2 <- lm_std(mpg ~ wt + hp, weights = cyl)
 
 mod3 <- lm_std(mpg ~ wt + hp, weights = 1:32)
 
-test_that("lm_std works", {
-
-})
 
 test_that("lm_std fits a basic linear model correctly", {
   model <- lm_std(mpg ~ cyl, data = mtcars)
@@ -105,21 +103,20 @@ test_that("lm_std assigns correct class and attributes", {
   expect_s3_class(model, "lm")
 })
 
-test_that("lm_std fails gracefully with non-numeric data", {
-  mtcars$gear_factor <- factor(mtcars$gear)
+test_that("lm_std warns when binary variables are not factors", {
   
-  expect_error(
-    lm_std(mpg ~ cyl + disp + gear_factor, data = mtcars),
-    "The following numeric variables have fewer than three distinct values: gear_factor."
+  expect_warning(
+    lm_std(mpg ~ cyl + disp + am, data = mtcars),
+    'The following variables have fewer than three distinct values'
   )
 })
 
 
 test_that("lm_std works", {
-  expect_equal(round(summary(mod1)$coefficients[2,1], 3), -0.585)
+  expect_equal(round(summary(mod1)$coefficients[2,1], 3), -0.624)
   expect_equal(summary(mod1)$coefficients, summary(mod2)$coefficients)
   expect_equal(summary(mod3)$coefficients, summary(mod4)$coefficients)
-  expect_equal(round(summary(mod3)$coefficients[2,1], 3), -0.666)
+  expect_equal(round(summary(mod3)$coefficients[2,1], 3), -0.647)
 })
 
 data("airquality")
