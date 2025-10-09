@@ -149,23 +149,37 @@ svy_pairwise_t_test <- function(data, dv, iv, cats, p.adjust = "holm", ...) {
 #' lm() with standardised continuous variables
 #'
 #' This runs lm() after standardising all continuous variables, while leaving
-#' factors intact.
+#' factors and character variables intact.
 #'
-#' Beware when using weights and calculating standardized coefficients. In line with
-#' other implementations, this function scales the variables without taking the weights
-#' into account - but that means that coefficients represent the estimated change in SD of Y
-#' per SD of X *in the sample* and explicitly *not* in the population. Weighted scaling might
-#' be more appropriate, yet is not implemented here (and does not appear to be commonly used).
-#' Also, in the model call, the weights variable will always be called `.weights`. This might
-#' pose a problem when you update the model later on, for the moment the only workaround
-#' is to rename the weights variable accordingly (or to fix it and contribute a PR on
-#' Github).
+#' @section Standardization Method:
+#' When using weights, this function calculates standardized coefficients by
+#' default using weighted means and standard deviations. This ensures that the
+#' resulting coefficients can be interpreted as the estimated change in standard
+#' deviations of Y for a one standard deviation change in X. If you require
+#' coefficients based on unweighted sample standard deviations, you can set
+#' `weighted_standardize = FALSE`. This is fairly common practice, but the 
+#' results should not be interpreted as population estimates.
+#'
+#' @section Transformations and Interactions:
+#' Note that standardization is applied to the raw numeric variables from the
+#' `data` frame. Any in-formula transformations (e.g., `log(x)`, `I(x^2)`) or
+#' interactions (`x1 * x2`) are applied by `lm()` *after* the base variables
+#' (`x`, `x1`, `x2`) have been standardized. This is important for the
+#' interpretation of the resulting coefficients.
+#'
+#' @section Internal Details:
+#' In the model call, the weights variable will always be internally renamed to
+#' `.weights`. This may be relevant if you update the model object later.
 #'
 #' @inheritParams stats::lm
-#' @param ... Additional arguments passed to `lm()`. Note that `subset` cannot be used here and should be applied to `data` beforehand.
-#' @references See (Fox, 2015) for an argument why dummy variables should never
-#' be standardised. If you want to run a model with all variables standardised,
-#' one option is `QuantPsyc::lm.beta()`
+#' @param ... Additional arguments passed to `lm()`. Note that `subset` cannot
+#'   be used here and should be applied to `data` beforehand.
+#' @param weighted_standardize How to standardize numeric variables when weights
+#'   are present. Can be one of `"auto"` (the default), `TRUE`, or `FALSE`.
+#'   If `"auto"`, weighted standardization is performed if a `weights`
+#'   argument is provided. See details.
+#' @references See Fox, J. (2015). *Applied Regression Analysis and
+#'   Generalized Linear Models*. Sage.
 #' @return An `lm` object with standardized coefficients.
 #' @examples
 #' # Basic usage with mtcars dataset
@@ -178,83 +192,118 @@ svy_pairwise_t_test <- function(data, dv, iv, cats, p.adjust = "holm", ...) {
 #' # Handling variables with few levels
 #' mtcars$am_factor <- factor(mtcars$am)
 #' lm_std(mpg ~ cyl + disp + am_factor, data = mtcars)
+#' @export
 
-lm_std <- function(formula, data = NULL, weights = NULL, weighted_standardize = FALSE, ...) {
-  if (any(stringr::str_detect(as.character(formula), "factor\\("))) {
-    cli::cli_abort("Functions in the formula are applied after standardising - thus factor() needs to be used before lm_std() is called")
-  }
+lm_std <- function(formula, data = NULL, weights = NULL, weighted_standardize = "auto", ...) {
   
-  if (!is.null(weights) && is.logical(weighted_standardize) && isFALSE(weighted_standardize)) {
-    cli::cli_warn(
-      c(
-        "Standardised coefficients from a model with weights are now returned based on unweighted standardisation of the variables.",
-        "i" = "While that is common (and thus the default), it is unclear whether it is appropriate.",
-        "i" = "Check ?lm_std, and consider changing weighted_standardize.",
-        "i" = "This is displayed once per session when using weighted_standardize = FALSE.",
-        "i" = "Use weighted_standardize = 'no' to use unweighted standardisation and omit the warning."
-      ),
-      .frequency = "once"
-    )
-  }
-  
+  weights_quo <- rlang::enquo(weights)
   vars <- all.vars(formula)
   extras <- list(...)
   
+  #--- Initial Checks ---#
+  if (is.character(rlang::quo_get_expr(weights_quo))) {
+    cli::cli_abort("The {.arg weights} argument cannot be a character string. Please provide it as a bare variable name or an expression.")
+  }
+  
+  if (any(stringr::str_detect(as.character(formula), "factor\\("))) {
+    cli::cli_abort("Functions in the formula are applied after standardising - thus factor() needs to be used before lm_std() is called.")
+  }
   if ("subset" %in% names(extras)) {
     cli::cli_abort("Cannot subset in this function as that would happen after standardisation - please subset first.")
   }
   
+  weights_provided <- !rlang::quo_is_null(weights_quo)
+  
+  #--- Resolve Weighted Standardization Logic ---#
+  if (weighted_standardize == "auto") {
+    do_weighted_std <- weights_provided
+  } else if (!is.logical(weighted_standardize)) {
+    cli::cli_abort('{.arg weighted_standardize} must be "auto", TRUE, or FALSE.')
+  } else {
+    do_weighted_std <- weighted_standardize
+  }
+  
+  if (do_weighted_std && !weights_provided) {
+    cli::cli_abort("{.code weighted_standardize = TRUE} requires a {.arg weights} argument.")
+  }
+  
+  #--- Data Handling ---#
   if (is.null(data)) {
-    data <- NULL
-    for (i in seq_along(vars)) {
-      # Odd extraction to work with with() call environments
-      x <- get(vars[i], pos = parent.frame())
-      data <- dplyr::bind_cols(data, tibble::tibble(!!vars[i] := x))
-    }
-    if (!is.null(weights)) data$.weights <- weights
-  }
-  
-  if (!is.null(data)) {
-    weights <- rlang::enquo(weights)
+    var_list <- lapply(vars, get, pos = parent.frame())
+    names(var_list) <- vars
     
-    if (!rlang::quo_is_null(weights)) {
-      if (rlang::as_label(weights) %in% names(data)) {
-        data <- dplyr::rename(data, .weights = !!weights)
-      } else {
-        data$.weights <- rlang::eval_tidy(weights)
-      }
-      data <- data[c(vars, ".weights")]
+    # Check for equal lengths
+    var_lengths <- vapply(var_list, length, integer(1))
+    if (length(unique(var_lengths)) > 1) {
+      cli::cli_abort("Variables pulled from the environment have different lengths. Please provide a data frame in {.arg data} instead.")
+    }
+    
+    data <- dplyr::bind_cols(var_list)
+  }
+  
+  #--- Weights Handling ---#
+  if (weights_provided) {
+    # If weights is a symbol matching a column name, rename it
+    if (rlang::is_symbol(rlang::quo_get_expr(weights_quo)) && rlang::as_label(weights_quo) %in% names(data)) {
+      data <- dplyr::rename(data, .weights = !!weights_quo)
+      # Otherwise, evaluate it as a vector
     } else {
-      data <- data[vars]
+      data$.weights <- rlang::eval_tidy(weights_quo, data = data)
     }
   }
   
-  vars_num <- vars[purrr::map_lgl(data, is.numeric)]
+  #--- Variable Identification and Checks ---#
+  vars_num <- vars[purrr::map_lgl(data[vars], is.numeric)]
   vars_num <- vars_num[!is.na(vars_num)]
   
-  vars_dummies <- vars_num[purrr::map_lgl(vars_num, ~ dplyr::n_distinct(data[[.x]]) < 3)]
+  # Check for zero-variance numeric variables
+  vars_zero_var <- vars_num[purrr::map_lgl(data[vars_num], ~ stats::sd(.x, na.rm = TRUE) == 0)]
+  if (length(vars_zero_var) > 0) {
+    cli::cli_warn("The following numeric variables have zero variance and will be dropped by {.fn lm}: {.val {vars_zero_var}}.")
+  }
   
+  # Check for potential dummy variables coded as numeric
+  vars_dummies <- vars_num[purrr::map_lgl(data[vars_num], ~ dplyr::n_distinct(.x, na.rm = TRUE) < 3)]
+  # Exclude zero-variance variables from this specific warning
+  vars_dummies <- setdiff(vars_dummies, vars_zero_var)
   if (length(vars_dummies) > 0) {
-    cli::cli_warn("The following variables have fewer than three distinct values but are of type numeric: {vars_dummies}. Check whether they should not be factors instead. As it stands, they are standardised, which is typically not recommended.")
+    cli::cli_warn("The following variables have fewer than five distinct values but are of type numeric: {.val {vars_dummies}}. Check if they should be factors. They are being standardized, which is not typically recommended for dummies.")
   }
   
-  data %<>% dplyr::mutate(dplyr::across(dplyr::all_of(vars_num), scale_blank))
-  
-  formula <- Reduce(paste, deparse(formula))
-  
-  if (!rlang::quo_is_null(weights)) {
-    mod <- eval(parse(text = glue::glue("lm({formula}, data = data, weights = .weights, ...)")))
+  #--- Standardization ---#
+
+  if (do_weighted_std) {
+    cli::cli_inform("Standardizing variables using weighted means and standard deviations.")
+    data <- data %>% dplyr::mutate(dplyr::across(
+      .cols = dplyr::all_of(vars_num),
+      .fns  = ~ scale_weighted(.x, w = .data$.weights)
+    ))
   } else {
-    mod <- eval(parse(text = glue::glue("lm({formula}, data = data, ...)")))
+    if (weights_provided) {
+      cli::cli_inform("Standardizing variables using UNweighted means and standard deviations.")
+      cli::cli_warn("Note that standardising variables based on unweighted summary statistics is common, but the results should not be interpreted as population estimates.", .frequency = "once", .frequency_id = "lm_std_unweighted")
+    }
+    data <- data %>% dplyr::mutate(dplyr::across(
+      .cols = dplyr::all_of(vars_num),
+      .fns  = scale # Using stats::scale directly
+    ))
   }
+  
+  #--- Model Fitting (Robust programmatic approach) ---#
+  cl <- rlang::call2("lm", formula = formula, data = quote(data), .ns = "stats")
+  
+  if (weights_provided) {
+    cl$weights <- as.symbol(".weights")
+  }
+  
+  cl <- rlang::call_modify(cl, !!!extras)
+  
+  mod <- rlang::eval_tidy(cl)
   
   attr(mod, "standardized") <- TRUE
   class(mod) <- c("lm_std", class(mod))
   mod
 }
-
-
-
 
 #' t-test() on multiply-imputed data (accepts survey weights)
 #'
@@ -374,121 +423,118 @@ pairwise_t_test_mi <- function(mi_list, dv, groups, weights = NULL, p.adjust.met
 #' (the levels/groups that were compared) and p_value for the comparison or an object
 #' of class pairwise.htest, for example returned from pairwise.t.test()
 #' @param alpha_level The level of significance for the test
-#' @param p.adjust.method One of p.adjust.methods, defaults to none as p-values will
-#' typically have been adjusted when carrying out the pairwise comparisons/post-hoc tests
 #'
-#' @return A tibble with columns that indicate which letter has been assigned to each
-#' group/level
-#' @source Algorithm based on https://www.tandfonline.com/doi/abs/10.1198/1061860043515
+#' @return A tibble with the group level, a combined letters string, and
+#' individual columns for each letter assigned. The tibble is sorted by level.
+#' @source Algorithm based on finding maximal cliques of non-significant comparisons.
 #'
 #' @examples
-#' data("airquality")
-#' airquality$month <- factor(airquality$Month, labels = month.abb[5:9])
-#' x <- pairwise.t.test(airquality$Ozone, airquality$Month)
+#' # Works with pairwise.htest objects
+#' library(tibble)
+#' library(dplyr)
 #'
-#' get_pairwise_letters(x)
-#' @export
-
-
-get_pairwise_letters <- function(tests,
-                                 alpha_level = .05,
-                                 p.adjust.method = "none") {
+#' pwtt <- pairwise.t.test(airquality$Ozone, airquality$Month)
+#' get_pairwise_letters(pwtt)
+#'
+get_pairwise_letters <- function(tests, alpha_level = .05) {
+  
+  # Step 1: Convert input into a standardized P-value matrix
   if ("pairwise.htest" %in% class(tests)) {
-    tests <- tests$p.value
-    dat_levels <- c(colnames(tests), rownames(tests)) %>% unique()
-    p <- cbind(rbind(NA, tests), NA)
-    diag(p) <- 1
-    p[upper.tri(p)] <- t(p)[upper.tri(p)]
-
-    colnames(p) <- dat_levels
-    rownames(p) <- dat_levels
-    tests <- dat_levels %>%
-      utils::combn(2) %>%
-      split(col(.)) %>%
-      purrr::map_df(function(a) tibble::tibble(x = a[1], y = a[2]))
-
-    tests$p_value <- NA
-    tests <- purrr::pmap_dfr(tests, function(...) {
-      current <- tibble::tibble(...)
-      current %>% dplyr::mutate(p_value = p[.data$x, .data$y])
-    })
-  }
-
-  dat_levels <- c(tests$x, tests$y) %>%
-    as.character() %>%
-    unique()
-
-  tests$p_value %<>% stats::p.adjust(p.adjust.method)
-
-  tests %<>% dplyr::filter(.data$p_value < alpha_level)
-  dat_letters <- tibble::tibble(dat_level = dat_levels)
-
-  if (nrow(tests) == 0) { # If no comparisons are significant
-    dat_letters[2] <- TRUE
+    p_matrix <- tests$p.value
+    all_levels <- union(rownames(p_matrix), colnames(p_matrix))
+    full_p_matrix <- matrix(1, nrow = length(all_levels), ncol = length(all_levels),
+                            dimnames = list(all_levels, all_levels))
+    full_p_matrix[rownames(p_matrix), colnames(p_matrix)] <- p_matrix
+    full_p_matrix[colnames(p_matrix), rownames(p_matrix)] <- t(p_matrix)
+    p_matrix <- full_p_matrix
+    
   } else {
-    dat_letters[2:(nrow(tests) + 2)] <- FALSE
-    dat_letters[2] <- TRUE
-
-    n <- 2
-    for (i in seq_len(nrow(tests))) {
-      for (j in 2:n) {
-        if (dat_letters[dat_letters$dat_level == tests$x[i], j][[1]] &&
-          dat_letters[dat_letters$dat_level == tests$y[i], j][[1]]) {
-          n <- n + 1
-          dat_letters[n] <- dat_letters[j]
-          dat_letters[dat_letters$dat_level == tests$x[i], j] <- FALSE
-          dat_letters[dat_letters$dat_level == tests$y[i], n] <- FALSE
-        }
-      }
+    dat_levels <- unique(c(tests$x, tests$y))
+    p_matrix <- matrix(1, nrow = length(dat_levels), ncol = length(dat_levels),
+                       dimnames = list(dat_levels, dat_levels))
+    for(i in 1:nrow(tests)) {
+      p_matrix[tests$x[i], tests$y[i]] <- tests$p_value[i]
+      p_matrix[tests$y[i], tests$x[i]] <- tests$p_value[i]
     }
-
-    n <- 1
-    absorb <- numeric()
-
-    for (i in 2:(ncol(dat_letters) - 1)) {
-      for (j in (i + 1):ncol(dat_letters)) {
-        if (min(dat_letters[i] - dat_letters[j]) >= 0) {
-          absorb[n] <- j
-          n <- n + 1
-        }
-      }
-    }
-
-    if (length(absorb > 0)) dat_letters <- dat_letters[-absorb]
-
-
-    n <- 1
-    absorb <- numeric()
-
-    for (i in (ncol(dat_letters):3)) {
-      for (j in 2:(i - 1)) {
-        if (min(dat_letters[i] - dat_letters[j]) >= 0) {
-          absorb[n] <- j
-          n <- n + 1
-        }
-      }
-    }
-
-    if (length(absorb > 0)) dat_letters <- dat_letters[-absorb]
   }
   
-  #Sort letters
-  letter_order <- purrr::map_int(dat_letters[-1], ~min(which(.x == TRUE))) %>% sort()
-  dat_letters <- cbind(dat_letters[1], dat_letters[names(letter_order)])
+  # Step 2: Create a boolean matrix of non-significant comparisons
+  non_sig_matrix <- p_matrix >= alpha_level
+  diag(non_sig_matrix) <- TRUE
+  dat_levels <- colnames(non_sig_matrix)
+  n_levels <- length(dat_levels)
   
-  for (i in 2:ncol(dat_letters)) {
-    dat_letters[letters[i - 1]] <- NA_character_
-    dat_letters[letters[i - 1]][dat_letters[[i]], ] <-
-      letters[i - 1]
+  # Step 3: Find all cliques (groups of mutually non-significant levels)
+  all_cliques <- list()
+  for (level in dat_levels) {
+    all_cliques <- c(all_cliques, list(level)) # Add cliques of size 1
   }
-
-  dat_letters %<>% dplyr::select(-dplyr::matches("^\\.")) %>%
-    tidyr::unite("letters", -"dat_level", sep = "", remove = FALSE, na.rm = TRUE) %>%
-    dplyr::rename(level = "dat_level")
-
-  return(tibble::as_tibble(dat_letters))
+  if (n_levels >= 2) {
+    for (i in 2:n_levels) {
+      potential_cliques <- utils::combn(dat_levels, i, simplify = FALSE)
+      for (clique in potential_cliques) {
+        pairs <- utils::combn(clique, 2, simplify = FALSE)
+        is_clique <- all(sapply(pairs, function(p) non_sig_matrix[p[1], p[2]]))
+        if(is_clique) {
+          all_cliques <- c(all_cliques, list(clique))
+        }
+      }
+    }
+  }
+  
+  # Step 4: Filter for maximal cliques
+  final_cliques <- list()
+  if (length(all_cliques) > 0) {
+    all_cliques <- all_cliques[order(sapply(all_cliques, length), decreasing = TRUE)]
+    for (clique1 in all_cliques) {
+      is_maximal <- TRUE
+      for (clique2 in all_cliques) {
+        if (identical(clique1, clique2)) next
+        if (all(clique1 %in% clique2)) {
+          is_maximal <- FALSE
+          break
+        }
+      }
+      if (is_maximal) {
+        final_cliques <- c(final_cliques, list(clique1))
+      }
+    }
+  }
+  final_cliques <- unique(lapply(final_cliques, sort))
+  
+  # Step 5: Format output tibble
+  letter_data <- tibble::tibble(level = dat_levels)
+  
+  if (length(final_cliques) > 0) {
+    final_cliques <- final_cliques[order(sapply(final_cliques, `[`, 1))]
+    names(final_cliques) <- letters[1:length(final_cliques)]
+    
+    # Create individual letter columns (a, b, c...) with the letter or NA
+    letter_cols <- list()
+    for (letter in names(final_cliques)) {
+      col_data <- ifelse(letter_data$level %in% final_cliques[[letter]], letter, NA_character_)
+      letter_cols[[letter]] <- col_data
+    }
+    letter_cols_df <- tibble::as_tibble(letter_cols)
+    
+    # Create the combined "letters" string column
+    letters_combined <- apply(letter_cols_df, 1, function(x) paste(stats::na.omit(x), collapse=""))
+    
+    # Bind all columns together
+    letter_data$letters <- letters_combined
+    letter_data <- dplyr::bind_cols(letter_data, letter_cols_df)
+    
+    # Reorder columns to spec: level, letters, a, b, c...
+    letter_data <- letter_data[c("level", "letters", names(final_cliques))]
+  } else {
+    letter_data$letters <- "" # Case with no significant differences
+  }
+  
+  # Final Step 6: Sort the entire tibble by the level name
+  letter_data <- letter_data |> dplyr::arrange(level)
+  
+  return(letter_data)
 }
-
 #' Pairwise t-tests() returned in tidy dataframe
 #'
 #' This runs pairwise independent-samples t-tests (assuming unequal variance by default, but can be changed)
@@ -773,4 +819,36 @@ dummy_code <- function(x, prefix = NA, drop_first = TRUE, verbose = interactive(
     sub("^(.[a-z])", "\\L\\1", ., perl = TRUE)
 
   out
+}
+
+#' Create a Z-score (standardize) for a vector using weights.
+#'
+#' @param x A numeric vector.
+#' @param w A numeric vector of weights. Must be the same length as x.
+#' @param na.rm If TRUE, remove cases where x or w is NA.
+#' @return A numeric vector of the same length as x with weighted Z-scores.
+#'
+scale_weighted <- function(x, w, na.rm = TRUE) {
+  if (na.rm) {
+    # Remove missing values from both x and weights before calculations
+    valid_indices <- !is.na(x) & !is.na(w)
+    x_valid <- x[valid_indices]
+    w_valid <- w[valid_indices]
+  } else {
+    x_valid <- x
+    w_valid <- w
+  }
+  
+  # Calculate weighted mean (base R)
+  weighted_mean <- stats::weighted.mean(x_valid, w_valid)
+  
+  # Calculate weighted variance using base R's cov.wt
+  weighted_var <- stats::cov.wt(as.matrix(x_valid), wt = w_valid)$cov[1, 1]
+  weighted_sd <- sqrt(weighted_var)
+  
+  # Apply the transformation and return a vector of the original length
+  out <- rep(NA_real_, length(x))
+  out[valid_indices] <- (x_valid - weighted_mean) / weighted_sd
+  
+  return(out)
 }
