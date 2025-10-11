@@ -7,6 +7,13 @@
 #' @source https://stackoverflow.com/questions/9063889/how-to-round-a-data-frame-in-r-that-contains-some-character-variables
 #' @export
 
+round_df <- function(df, digits = 2) {
+  nums <- vapply(df, is.numeric, FUN.VALUE = logical(1))
+
+  df[, nums] <- lapply(df[, nums, drop = FALSE], .round_half_to_even, digits = digits)
+  df
+}
+
 # Internal helper for round half to even
 .round_half_to_even <- function(x, digits) {
   pow <- 10^digits
@@ -33,13 +40,6 @@
 
   rounded[is.na(x)] <- NA
   rounded
-}
-
-round_df <- function(df, digits = 2) {
-  nums <- vapply(df, is.numeric, FUN.VALUE = logical(1))
-
-  df[, nums] <- lapply(df[, nums, drop = FALSE], .round_half_to_even, digits = digits)
-  df
 }
 
 #' Format p-value in line with APA standard (no leading 0)
