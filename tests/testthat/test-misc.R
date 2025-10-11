@@ -189,3 +189,121 @@ test_that("paste_ function works as expected", {
   expect_equal(paste_("hello", c(NA, "world")), c("hello", "hello world"))
   expect_equal(paste_(), "")
 })
+
+# Tests for scale_blank and scale_weighted ----
+
+test_that("scale_blank works with basic input", {
+  x <- c(1, 2, 3, 4, 5)
+  result <- scale_blank(x)
+
+  expect_type(result, "double")
+  expect_length(result, 5)
+  expect_equal(mean(result), 0, tolerance = 1e-10)
+  expect_equal(sd(result), 1, tolerance = 1e-10)
+})
+
+test_that("scale_blank handles zero variance", {
+  x <- rep(5, 10)
+  result <- scale_blank(x)
+
+  expect_type(result, "double")
+  expect_length(result, 10)
+  expect_true(all(result == 0))
+})
+
+test_that("scale_blank handles all NA input", {
+  x <- rep(NA_real_, 10)
+  result <- scale_blank(x)
+
+  expect_type(result, "double")
+  expect_length(result, 10)
+  expect_true(all(is.na(result)))
+})
+
+test_that("scale_blank respects center and scale parameters", {
+  x <- c(10, 20, 30, 40, 50)
+
+  # Center only
+  result_center <- scale_blank(x, center = TRUE, scale = FALSE)
+  expect_equal(mean(result_center), 0, tolerance = 1e-10)
+  expect_false(isTRUE(all.equal(sd(result_center), 1)))
+
+  # Neither center nor scale
+  result_none <- scale_blank(x, center = FALSE, scale = FALSE)
+  expect_equal(result_none, x)
+})
+
+test_that("scale_weighted works with basic input", {
+  set.seed(123)
+  x <- c(1, 2, 3, 4, 5)
+  w <- c(1, 1, 1, 1, 1)  # Equal weights
+  result <- scale_weighted(x, w)
+
+  expect_type(result, "double")
+  expect_length(result, 5)
+  # With equal weights, should be similar to regular standardization
+  expect_true(abs(mean(result[!is.na(result)])) < 1e-10)
+})
+
+test_that("scale_weighted handles unequal weights", {
+  x <- c(1, 2, 3, 4, 5)
+  w <- c(2, 1, 1, 1, 1)  # Higher weight on first value
+
+  # Weighted mean = (1*2 + 2 + 3 + 4 + 5) / (2 + 1 + 1 + 1 + 1) = 16 / 6 ≈ 2.667
+  # Weighted variance = sum(w * (x - mean_w)^2) / sum(w) = 13.33 / 6 = 2.222
+  # Weighted SD = sqrt(2.222) ≈ 1.491
+  #
+  # Standardized values: (x - 2.667) / 1.491
+  expected <- c(-1.118, -0.447, 0.224, 0.894, 1.565)
+
+  result <- scale_weighted(x, w)
+
+  expect_type(result, "double")
+  expect_length(result, 5)
+  expect_true(all(!is.na(result)))
+  expect_equal(result, expected, tolerance = 1e-3)
+})
+
+test_that("scale_weighted errors on length mismatch", {
+  x <- c(1, 2, 3)
+  w <- c(1, 1)
+
+  expect_error(
+    scale_weighted(x, w),
+    "must have the same length"
+  )
+})
+
+test_that("scale_weighted handles NA values", {
+  x <- c(1, 2, NA, 4, 5)
+  w <- c(1, 1, 1, NA, 1)
+
+  result <- scale_weighted(x, w, na.rm = TRUE)
+
+  expect_type(result, "double")
+  expect_length(result, 5)
+  # NA positions should remain NA
+  expect_true(is.na(result[3]))
+  expect_true(is.na(result[4]))
+})
+
+test_that("scale_weighted handles zero variance", {
+  x <- rep(5, 10)
+  w <- rep(1, 10)
+
+  result <- scale_weighted(x, w)
+
+  expect_type(result, "double")
+  expect_length(result, 10)
+  expect_true(all(result == 0))
+})
+
+test_that("scale_weighted handles all NA input", {
+  x <- rep(NA_real_, 5)
+  w <- rep(1, 5)
+
+  result <- scale_weighted(x, w)
+
+  expect_length(result, 5)
+  expect_true(all(is.na(result)))
+})

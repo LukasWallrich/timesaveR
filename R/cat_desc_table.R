@@ -126,12 +126,24 @@ report_cat_vars <- function(data, dv, ..., var_names = NULL, level_names = NULL,
   if (!(exists("no_dv") && no_dv == TRUE)) {
   
   tests <- purrr::map(vars, function(x) {
-    stats::pairwise.t.test(data %>% dplyr::select(!!dv) %>% dplyr::pull(),
+    pairwise_result <- stats::pairwise.t.test(data %>% dplyr::select(!!dv) %>% dplyr::pull(),
       data %>% dplyr::select(!!x) %>% dplyr::pull(),
       p.adjust.method = p_adjust[1]
-    ) %>%
-      get_pairwise_letters(alpha_level = alpha_level) %>%
-      dplyr::select("level", "letters")
+    )
+    letters_result <- get_pairwise_letters(pairwise_result, alpha_level = alpha_level)
+
+    # Handle single-level case - get_pairwise_letters returns empty tibble
+    if (nrow(letters_result) == 0) {
+      # Get the single level from the data
+      single_level <- data %>%
+        dplyr::select(!!x) %>%
+        dplyr::pull() %>%
+        unique() %>%
+        as.character()
+      letters_result <- tibble::tibble(level = single_level, letters = "a")
+    }
+
+    letters_result %>% dplyr::select("level", "letters")
   })
 
   descr <- purrr::map2(descr, tests, function(x, y) {
@@ -149,12 +161,15 @@ report_cat_vars <- function(data, dv, ..., var_names = NULL, level_names = NULL,
     ) %>%
     dplyr::select("group_var", "level", "N", "Share", "*M (SD)*")
   } else {
-    descr_formatted <- descr %>%
+    # No DV case - combine descr list into data frame and select only relevant columns
+    descr <- descr %>%
       purrr::map_dfr(rbind) %>%
+      dplyr::select("group_var", "level", "N", "Share")
+
+    descr_formatted <- descr %>%
       dplyr::mutate(
         N = round_(.data$N, 0)
-      ) %>%
-      dplyr::select("group_var", "level", "N", "Share")
+      )
   }
   f <- function(x) {
     stats::setNames(lapply(

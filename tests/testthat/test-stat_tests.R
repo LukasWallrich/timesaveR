@@ -186,4 +186,188 @@ test_that("pairwise t-test works", {
   expect_equal(t1$t_value, c(-3.80952793,  -6.44497389, -3.62123044))
   expect_equal(pairwise_t_tests(data.frame(x = 1:10, y = rep(c("a", "b"), 5)), x ~ y)$t_value, -.5)
 })
-                
+
+test_that("get_pairwise_letters handles all non-significant comparisons", {
+  # Create p-value matrix where all comparisons are non-significant
+  tests <- tibble::tibble(
+    x = c("A", "A", "B"),
+    y = c("B", "C", "C"),
+    p_value = c(0.1, 0.2, 0.3)  # All > 0.05
+  )
+
+  result <- get_pairwise_letters(tests, alpha_level = 0.05)
+
+  # All groups should have the same letter since no significant differences
+  expect_equal(length(unique(result$letters)), 1)
+})
+
+test_that("get_pairwise_letters handles all significant comparisons", {
+  # Create p-value matrix where all comparisons are significant
+  tests <- tibble::tibble(
+    x = c("A", "A", "B"),
+    y = c("B", "C", "C"),
+    p_value = c(0.001, 0.002, 0.003)  # All < 0.05
+  )
+
+  result <- get_pairwise_letters(tests, alpha_level = 0.05)
+
+  # Each group should have a different letter
+  expect_equal(nrow(result), 3)
+  expect_equal(length(unique(result$letters)), 3)
+})
+
+test_that("get_pairwise_letters handles NaN p-values correctly", {
+  # Create test with NaN p-values (e.g., from groups with zero variance)
+  pmat <- matrix(c(1, 0.05, NaN,
+                   0.05, 1, 0.03,
+                   NaN, 0.03, 1),
+                 nrow = 3, byrow = TRUE,
+                 dimnames = list(c("A", "B", "C"), c("A", "B", "C")))
+
+  pw_test <- list(p.value = pmat[-1, -ncol(pmat), drop = FALSE])
+  class(pw_test) <- "pairwise.htest"
+
+  # NaN should be treated as non-significant (groups can't be shown to differ)
+  result <- suppressWarnings(get_pairwise_letters(pw_test))
+  expect_equal(length(unique(result$letters)), 1)
+  expect_s3_class(result, "data.frame")
+})
+
+test_that("lm_std handles zero variance variables", {
+  test_data <- mtcars
+  test_data$constant <- 5  # Zero variance
+
+  expect_warning(
+    lm_std(mpg ~ hp + constant, data = test_data),
+    "zero variance"
+  )
+})
+
+test_that("lm_std handles weighted_standardize parameter correctly", {
+  test_data <- mtcars
+  test_data$weights <- runif(nrow(test_data), 0.5, 1.5)
+
+  # Should use weighted standardization by default when weights are provided
+  expect_message(
+    lm_std(mpg ~ hp + wt, data = test_data, weights = weights, weighted_standardize = "auto"),
+    "weighted means and standard deviations"
+  )
+
+  # Should use unweighted when explicitly requested
+  expect_message(
+    lm_std(mpg ~ hp + wt, data = test_data, weights = weights, weighted_standardize = FALSE),
+    "UNweighted"
+  )
+
+  # Should error if weighted_standardize = TRUE but no weights
+  expect_error(
+    lm_std(mpg ~ hp + wt, data = test_data, weighted_standardize = TRUE),
+    "requires a.*weights.*argument"
+  )
+})
+
+test_that("polr_std handles edge cases", {
+  skip_if_not_installed("MASS")
+
+  # Test with factor outcome
+  test_data <- WVS
+
+  expect_s3_class(
+    polr_std(poverty ~ religion + age, data = test_data),
+    "polr"
+  )
+
+  # Test error when factor() is in formula
+  expect_error(
+    polr_std(poverty ~ factor(religion) + age, data = test_data),
+    "factor\\(\\) needs to be used before polr_std"
+  )
+})
+
+test_that("dummy_code handles edge cases", {
+  # Test with NULL prefix
+  result_null <- dummy_code(iris$Species[1:10], prefix = NULL, verbose = FALSE)
+  expect_true(all(!grepl("^species_", names(result_null))))
+
+  # Test with drop_first = FALSE
+  result_all <- dummy_code(iris$Species[1:10], drop_first = FALSE, verbose = FALSE)
+  expect_equal(ncol(result_all), 3)  # Should have all levels
+
+  # Test with character vector
+  char_vec <- c("A", "B", "A", "C", "B")
+  result_char <- dummy_code(char_vec, prefix = "test", verbose = FALSE)
+  expect_equal(ncol(result_char), 2)  # n-1 dummies
+})
+
+# Tests for multiply imputed data t-tests ----
+
+test_that("t_test_mi works with basic two-group comparison", {
+  skip_if_not_installed("mice")
+
+  # Create imputed data with a two-level grouping variable
+  set.seed(123)
+  nhanes_subset <- mice::nhanes2
+  # Create a binary group variable
+  nhanes_subset$binary_group <- factor(ifelse(nhanes_subset$age %in% c("20-39"), "young", "older"))
+
+  imp <- mice::mice(nhanes_subset, m = 5, printFlag = FALSE)
+  imp_list <- mice::complete(imp, action = "long") %>%
+    dplyr::group_split(.imp)
+
+  result <- t_test_mi(imp_list, bmi, binary_group)
+
+  expect_s3_class(result, "tbl_df")
+  expect_named(result, c("x", "y", "mean_diff", "t_value", "df", "p_value", "group_var"))
+  expect_equal(result$group_var, "binary_group")
+  expect_equal(nrow(result), 1)
+  expect_true(is.numeric(result$mean_diff))
+  expect_true(is.numeric(result$p_value))
+})
+
+test_that("t_test_mi errors with more than two groups", {
+  skip_if_not_installed("mice")
+
+  set.seed(123)
+  imp <- mice::mice(mice::nhanes2, m = 3, printFlag = FALSE)
+  imp_list <- mice::complete(imp, action = "long") %>%
+    dplyr::group_split(.imp)
+
+  # age variable has 3 levels
+  expect_error(
+    t_test_mi(imp_list, bmi, age),
+    "Group should only have two levels"
+  )
+})
+
+test_that("pairwise_t_test_mi works with multiple groups", {
+  skip_if_not_installed("mice")
+
+  set.seed(123)
+  imp <- mice::mice(mice::nhanes2, m = 5, printFlag = FALSE)
+  imp_list <- mice::complete(imp, action = "long") %>%
+    dplyr::group_split(.imp)
+
+  result <- pairwise_t_test_mi(imp_list, bmi, hyp, p.adjust.method = "none")
+
+  expect_s3_class(result, "tbl_df")
+  expect_true("p_value" %in% names(result))
+  expect_true("mean_diff" %in% names(result))
+  expect_true(nrow(result) >= 1)  # Should have at least one comparison
+  expect_true(all(result$p_value >= 0 & result$p_value <= 1))
+})
+
+test_that("pairwise_t_test_mi p-value adjustment works", {
+  skip_if_not_installed("mice")
+
+  set.seed(123)
+  imp <- mice::mice(mice::nhanes2, m = 5, printFlag = FALSE)
+  imp_list <- mice::complete(imp, action = "long") %>%
+    dplyr::group_split(.imp)
+
+  result_none <- pairwise_t_test_mi(imp_list, bmi, hyp, p.adjust.method = "none")
+  result_holm <- pairwise_t_test_mi(imp_list, bmi, hyp, p.adjust.method = "holm")
+
+  # Adjusted p-values should be >= unadjusted (more conservative)
+  expect_true(all(result_holm$p_value >= result_none$p_value))
+})
+

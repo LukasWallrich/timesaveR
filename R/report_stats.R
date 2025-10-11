@@ -20,12 +20,18 @@ report_anova <- function(x) {
 
   # Likely from anova() of two lm() models
   if (stringr::str_detect(attributes(x)$heading[1], "Analysis of Variance Table")) {
-    return(glue::glue("<em>F</em>({x$Df[2]}, {x$Res.Df[2]}) = {x$F[2] %>% round_(2)}, <em>p</em> {x$`Pr(>F)`[2] %>% fmt_p()}"))
+    # Handle negative Df (when models are in reverse order)
+    df1 <- abs(x$Df[2])
+    df2 <- if (x$Df[2] < 0) x$Res.Df[1] else x$Res.Df[2]
+    return(glue::glue("<em>F</em>({df1}, {df2}) = {x$F[2] %>% round_(2)}, <em>p</em> {x$`Pr(>F)`[2] %>% fmt_p()}"))
   }
-  
+
   # Likely from car::linearHypothesis()
   if (stringr::str_detect(attributes(x)$heading[1], "Linear hypothesis test")) {
-    return(glue::glue("<em>F</em>({x$Df[2]}, {x$Res.Df[2]}) = {x$F[2] %>% round_(2)}, <em>p</em> {x$`Pr(>F)`[2] %>% fmt_p()}"))
+    # Handle negative Df (when models are in reverse order)
+    df1 <- abs(x$Df[2])
+    df2 <- if (x$Df[2] < 0) x$Res.Df[1] else x$Res.Df[2]
+    return(glue::glue("<em>F</em>({df1}, {df2}) = {x$F[2] %>% round_(2)}, <em>p</em> {x$`Pr(>F)`[2] %>% fmt_p()}"))
   }
   
   # Likely from anova() of two lavaan models

@@ -500,10 +500,21 @@ pairwise_t_test_mi <- function(mi_list, dv, groups, weights = NULL, p.adjust.met
 #' get_pairwise_letters(pwtt)
 #'
 get_pairwise_letters <- function(tests, alpha_level = .05) {
-  
+
   # Step 1: Convert input into a standardized P-value matrix
   if ("pairwise.htest" %in% class(tests)) {
     p_matrix <- tests$p.value
+
+    # Handle single-level case (0x0 matrix from pairwise.t.test)
+    if (nrow(p_matrix) == 0 || ncol(p_matrix) == 0) {
+      # Extract the single level from the data.name string
+      # Format is typically "variable and groupvar" - need to get unique levels
+      cli::cli_warn("Only one level found in pairwise comparisons. Assigning letter 'a' to single group.")
+      # Return a single-row tibble - caller needs to provide the actual level name
+      # since it's not in the p_matrix
+      return(tibble::tibble(level = character(0), letters = character(0)))
+    }
+
     all_levels <- union(rownames(p_matrix), colnames(p_matrix))
     full_p_matrix <- matrix(1, nrow = length(all_levels), ncol = length(all_levels),
                             dimnames = list(all_levels, all_levels))
@@ -523,6 +534,9 @@ get_pairwise_letters <- function(tests, alpha_level = .05) {
   
   # Step 2: Create a boolean matrix of non-significant comparisons
   non_sig_matrix <- p_matrix >= alpha_level
+  # Treat NaN/NA p-values as non-significant (groups can't be shown to differ)
+  # NaN occurs when: SD=0, Inf values, or other numerical issues
+  non_sig_matrix[is.na(non_sig_matrix)] <- TRUE
   diag(non_sig_matrix) <- TRUE
   dat_levels <- colnames(non_sig_matrix)
   n_levels <- length(dat_levels)
@@ -598,6 +612,7 @@ get_pairwise_letters <- function(tests, alpha_level = .05) {
   
   return(letter_data)
 }
+
 #' Pairwise t-tests() returned in tidy dataframe
 #'
 #' This runs pairwise independent-samples t-tests (assuming unequal variance by default, but can be changed)

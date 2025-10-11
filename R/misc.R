@@ -8,8 +8,26 @@
 #' @param var_names A tibble containing `old` and `new` names for the variables. If NULL, only levels are renamed.
 #' @param level_names A tibble containing old `var` names and `level_old` and `level_new` names. If NULL, only variables are renamed.
 #'
-#' @return The dataframe or list of dataframes passed to data, with variables and/or levels renamed. 
+#' @return The dataframe or list of dataframes passed to data, with variables and/or levels renamed.
 #' Any variables where levels are renamed will be converted to factors.
+#' @examples
+#' var_renames <- tibble::tribble(
+#'   ~old,     ~new,
+#'   "gndr",   "Gender",
+#'   "cntry",  "Country"
+#' )
+#'
+#' level_renames <- tibble::tribble(
+#'   ~var,     ~level_old, ~level_new,
+#'   "gndr",   "1",        "Male",
+#'   "gndr",   "2",        "Female",
+#'   "cntry",  "DE",       "Germany",
+#'   "cntry",  "FR",       "France",
+#'   "cntry",  "GB",       "UK"
+#' )
+#'
+#' rename_cat_variables(ess_health, var_names = var_renames,
+#'                      level_names = level_renames)
 #' @export
 
 rename_cat_variables <- function(data, var_names = NULL, level_names = NULL) {

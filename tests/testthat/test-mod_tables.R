@@ -18,14 +18,40 @@ test_that("mira accepted by report_lm_with_std", {
 })
 
 
-# Test below is also included as example - works there, fails here ... should be sorted out at some point.
 
-# library(MASS)
-# pov_att <- polr(poverty ~ religion + age + gender, data = WVS[1:200,])
-# pov_att_std <- polr_std(poverty ~ religion + age + gender, data = WVS[1:200,])
-# res <- report_polr_with_std(pov_att, pov_att_std, coef_omit = "\\|")
-# 
-# test_that("polr table works", {
-#   expect_equal(res$gt_tab$`_data`$Model2, 
-#                c("1.02 &nbsp;&nbsp;&nbsp; [0.51, 2.03]", "1.28 &dagger;&nbsp;&nbsp; [0.98, 1.66]", "0.99 &nbsp;&nbsp;&nbsp; [0.59, 1.68]"))
-# })
+# Tests for mira.lm_F_test ----
+
+test_that("mira.lm_F_test works with mira objects", {
+  skip_if_not_installed("miceadds")
+
+  # Use existing imputed data
+  result <- mira.lm_F_test(mod1, return_list = TRUE)
+
+  expect_type(result, "list")
+  expect_named(result, c("F", "DoF", "DoF_residual", "p.value"))
+  expect_true(is.numeric(result$F))
+  expect_true(is.numeric(result$p.value))
+  expect_true(result$p.value >= 0 && result$p.value <= 1)
+})
+
+test_that("mira.lm_F_test returns formatted string", {
+  skip_if_not_installed("miceadds")
+
+  result <- mira.lm_F_test(mod1, return_list = FALSE)
+
+  expect_type(result, "character")
+  expect_match(result, "\\*F\\*\\(")  # Check for F-test format
+  expect_match(result, "\\*p\\*")  # Check for p-value
+})
+
+test_that("mira.lm_F_test works with multiple predictors", {
+  skip_if_not_installed("miceadds")
+
+  # Create a more complex model
+  mod_complex <- with(imp, lm(bmi ~ age + chl + hyp))
+  result <- mira.lm_F_test(mod_complex, return_list = TRUE)
+
+  expect_type(result, "list")
+  expect_true(result$DoF > 1)  # Should have multiple DoF
+  expect_true(is.numeric(result$F))
+})

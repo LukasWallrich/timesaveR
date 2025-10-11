@@ -45,12 +45,14 @@ run_mediation <- function(data, X, Y, Ms, CVs = NULL, standardized_all = TRUE,
 
   .check_req_packages(c("lavaan"))
 
-  if (utils::packageVersion("lavaan") > "0.6.12") {
-    cli::cli_inform('Due to a bug in lavaan, run_mediation might not currently be stable - see {.url https://github.com/yrosseel/lavaan/issues/275}.
-            Specify {.code missing = "listwise"} or {.code estimator = "ML"} as a workaround')
+  # Check for specific lavaan version with bootstrap bug (only 0.6-13)
+  if (utils::packageVersion("lavaan") == "0.6.13") {
+    cli::cli_warn('lavaan 0.6-13 has a bootstrap bug that may cause errors with {.code estimator = "MLR"} and {.code missing = "direct"}.
+            See {.url https://github.com/yrosseel/lavaan/issues/275}.
+            Consider updating lavaan or specify {.code missing = "listwise"} or {.code estimator = "ML"} as a workaround.')
   }
   
-  args <- as.list(match.call(sys.function(1), sys.call(1), expand.dots = TRUE))[-1]
+  args <- as.list(match.call(expand.dots = TRUE))[-1]
   if ("conf.level" %in% names(args)) {
     cli::cli_abort("The confidence level needs to be specified as {.arg conf_level}, NOT {.arg conf.level}")
   }
@@ -73,7 +75,7 @@ run_mediation <- function(data, X, Y, Ms, CVs = NULL, standardized_all = TRUE,
   }
   
   if (any(stringr::str_detect(c(X, Y, CVs, Ms), "__"))) 
-    cli::cli_abort("This function does not support variable names that contain two {.code __} in a row. Please rename.")
+    cli::cli_abort("This function does not support variable names that contain two {.code _} in a row. Please rename.")
   
   # Run mediation model
 
@@ -138,8 +140,8 @@ run_mediation <- function(data, X, Y, Ms, CVs = NULL, standardized_all = TRUE,
     # Drop unsuccessful bootstraps
     tidyr::drop_na()
 
-  bs_CVs <- bs %>% 
-    dplyr::select(dplyr::matches(paste0(paste0("\\.", CVs_string), collapse = "|")), -dplyr::matches("\\.\\.")) %>%
+  bs_CVs <- bs %>%
+    dplyr::select(dplyr::matches(paste0(paste0("\\.", CVs_string, "$"), collapse = "|")), -dplyr::matches("\\.\\.")) %>%
     t() %>%
     data.frame()
 
@@ -166,24 +168,24 @@ run_mediation <- function(data, X, Y, Ms, CVs = NULL, standardized_all = TRUE,
     t() %>%
     data.frame() %>%
     tibble::rownames_to_column("parameter") %>%
-    tidyr::gather(-.data$parameter, key = "rep", value = "coef") %>%
+    tidyr::gather(-"parameter", key = "rep", value = "coef") %>%
     dplyr::group_by(.data$parameter) %>%
-    dplyr::summarise(est = mean(.data$coef), se = sd(.data$coef), 
-                     pvalue = ifelse(.data$est > 0, mean(.data$coef < 0) * 2, mean(.data$coef > 0) * 2), 
-                     ci.lower = quantile(.data$coef, (1 - conf_level) / 2), 
+    dplyr::summarise(est = mean(.data$coef), se = sd(.data$coef),
+                     pvalue = ifelse(.data$est > 0, mean(.data$coef < 0) * 2, mean(.data$coef > 0) * 2),
+                     ci.lower = quantile(.data$coef, (1 - conf_level) / 2),
                      ci.upper = quantile(.data$coef, 1 - (1 - conf_level) / 2)) %>%
-    tidyr::separate(.data$parameter, c("type", "mediator"), fill = "right", sep = "__") %>%
+    tidyr::separate("parameter", c("type", "mediator"), fill = "right", sep = "__") %>%
     dplyr::mutate(mediator = stringr::str_replace_all(.data$mediator, Ms %>% magrittr::set_names(M_letter)))
 
   CV_res <- bs_CVs %>%
     tibble::rownames_to_column("parameter") %>%
-    tidyr::gather(-.data$parameter, key = "rep", value = "coef") %>%
+    tidyr::gather(-"parameter", key = "rep", value = "coef") %>%
     dplyr::group_by(.data$parameter) %>%
-    dplyr::summarise(est = mean(.data$coef), se = sd(.data$coef), 
-                     pvalue = ifelse(.data$est > 0, mean(.data$coef < 0) * 2, mean(.data$coef > 0) * 2), 
-                     ci.lower = quantile(.data$coef, (1 - conf_level) / 2), 
+    dplyr::summarise(est = mean(.data$coef), se = sd(.data$coef),
+                     pvalue = ifelse(.data$est > 0, mean(.data$coef < 0) * 2, mean(.data$coef > 0) * 2),
+                     ci.lower = quantile(.data$coef, (1 - conf_level) / 2),
                      ci.upper = quantile(.data$coef, 1 - (1 - conf_level) / 2)) %>%
-    tidyr::separate(.data$parameter, c("DV", "CV"), fill = "right", sep = "~")
+    tidyr::separate("parameter", c("DV", "CV"), fill = "right", sep = "\\.")
 
   attr(res, "CV_coefficients") <- CV_res
   attr(res, "lavaan_code") <- mod

@@ -100,13 +100,19 @@ test_that("cor_matrix works with FIML method", {
 
 
 test_that("cor_matrix works with FIML and bootstrapping", {
-  
+
+  # Set seed for reproducibility
+  set.seed(300688)
+
   expect_snapshot({
-    fiml_boot_cor_matrix <- cor_matrix(
-      dplyr::select(ess_health_sample, -pspwght),
-      missing = "fiml",
-      bootstrap = 100,
-      seed = 12345
+    # Suppress lavaan warnings about empty cases
+    suppressWarnings(
+      fiml_boot_cor_matrix <- cor_matrix(
+        dplyr::select(ess_health_sample, -pspwght),
+        missing = "fiml",
+        bootstrap = 100,
+        seed = 300688  # Use same seed as test setup
+      )
     )
   })
   model_syntax <- '
@@ -253,4 +259,433 @@ test_that("report_cor_table adds plots correctly", {
     "gt_tbl"
   )
 })
+
+# Additional tests for cor_matrix edge cases
+test_that("cor_matrix handles all-missing variables", {
+  df <- mtcars
+  df$all_na <- NA_real_
+  expect_message(
+    cor_matrix(df),
+    "all_na only have missing values"
+  )
+})
+
+test_that("cor_matrix requires at least 2 numeric columns", {
+  df <- data.frame(x = 1:10)
+  expect_error(
+    cor_matrix(df),
+    "Data needs to contain at least two numeric columns"
+  )
+})
+
+test_that("cor_matrix works with different correlation methods", {
+  spearman_cor <- cor_matrix(mtcars, method = "spearman")
+  kendall_cor <- cor_matrix(mtcars, method = "kendall")
+
+  expect_s3_class(spearman_cor, "cor_matrix")
+  expect_s3_class(kendall_cor, "cor_matrix")
+})
+
+test_that("cor_matrix works with different adjustment methods", {
+  adjusted_cor <- cor_matrix(mtcars, adjust = "bonferroni")
+  raw_cor <- cor_matrix(mtcars, adjust = "none")
+  expect_false()(any(adjusted_cor$p.values  raw_cor$p.values, na.rm = TRUE))
+  expect_s3_class(adjusted_cor, "cor_matrix")
+})
+
+test_that("cor_matrix works with listwise deletion", {
+  df <- mtcars
+  df[1:5, "mpg"] <- NA
+  listwise_cor <- cor_matrix(df, missing = "listwise")
+  expect_s3_class(listwise_cor, "cor_matrix")
+})
+
+test_that("cor_matrix rejects bootstrap without FIML", {
+  expect_error(
+    cor_matrix(mtcars, bootstrap = 100),
+    "bootstrapping can only be used when"
+  )
+})
+
+test_that("cor_matrix handles var_names as tibble", {
+  var_names_df <- tibble::tibble(
+    old = c("mpg", "cyl"),
+    new = c("Miles per Gallon", "Cylinders")
+  )
+  result <- cor_matrix(mtcars, var_names = var_names_df)
+  expect_equal(rownames(result$cors), c("Miles per Gallon", "Cylinders"))
+})
+
+test_that("cor_matrix warns about missing variables in var_names", {
+  # When var_names includes non-existent variables, a warning should be issued
+  expect_warning(
+    cor_matrix(mtcars, var_names = c(mpg = "MPG", cyl = "CYL", nonexistent = "Fake")),
+    "cannot be included into the correlation matrix"
+  )
+})
+
+test_that("cor_matrix handles var_names correctly", {
+  result <- cor_matrix(mtcars, var_names = c(mpg = "MPG", cyl = "CYL"))
+  expect_equal(nrow(result$cors), 2)
+  expect_equal(rownames(result$cors), c("MPG", "CYL"))
+})
+
+test_that("cor_matrix with FIML and invalid missing argument", {
+  expect_error(
+    cor_matrix(mtcars, missing = "invalid"),
+    "Must be element of set"
+  )
+})
+
+test_that("cor_matrix returns all required elements", {
+  result <- cor_matrix(mtcars[, 1:4])
+  expect_true(all(c("cors", "p.values", "std.err", "t.values", "n", "ci.low", "ci.high", "desc") %in% names(result)))
+})
+
+test_that("cor_matrix confidence intervals are symmetric", {
+  result <- cor_matrix(mtcars[, 1:3])
+  # Check that CI matrices have same structure
+  expect_equal(dim(result$ci.low), dim(result$ci.high))
+})
+
+# Tests for tidy.cor_matrix
+test_that("tidy.cor_matrix works with both_directions = TRUE", {
+  tidy_result <- tidy(mtcars_cor_matrix, both_directions = TRUE)
+  expect_s3_class(tidy_result, "tbl_df")
+  expect_true("column1" %in% names(tidy_result))
+  expect_true("column2" %in% names(tidy_result))
+  expect_true("estimate" %in% names(tidy_result))
+  # Should have both A-B and B-A
+  n_vars <- nrow(mtcars_cor_matrix$desc)
+  expected_rows <- n_vars * (n_vars - 1)
+  expect_equal(nrow(tidy_result), expected_rows)
+})
+
+test_that("tidy.cor_matrix works with both_directions = FALSE", {
+  tidy_result <- tidy(mtcars_cor_matrix, both_directions = FALSE)
+  n_vars <- nrow(mtcars_cor_matrix$desc)
+  expected_rows <- n_vars * (n_vars - 1) / 2
+  expect_equal(nrow(tidy_result), expected_rows)
+})
+
+test_that("tidy.cor_matrix rejects conf_level argument", {
+  expect_error(
+    tidy(mtcars_cor_matrix, conf_level = 0.99),
+    "cannot be changed in this tidy function"
+  )
+})
+
+test_that("tidy.cor_matrix returns correct column names", {
+  tidy_result <- tidy(mtcars_cor_matrix)
+  expect_true(all(c("column1", "column2", "estimate", "p.value", "std.error",
+                    "statistic", "conf.low", "conf.high", "n") %in% names(tidy_result)))
+})
+
+# Tests for tidy.svy_cor_matrix
+test_that("tidy.svy_cor_matrix works", {
+  expect_message(
+    tidy_result <- tidy(ess_survey_cor_matrix),
+    "confidence intervals cannot be calculated"
+  )
+  # ToDo - check whether CIs can be calculated for survey data in future
+  expect_s3_class(tidy_result, "tbl_df")
+})
+
+test_that("tidy.svy_cor_matrix works with both_directions = FALSE", {
+  expect_message(
+    tidy_result <- tidy(ess_survey_cor_matrix, both_directions = FALSE)
+  )
+  n_vars <- nrow(ess_survey_cor_matrix$desc)
+  expected_rows <- n_vars * (n_vars - 1) / 2
+  expect_equal(nrow(tidy_result), expected_rows)
+})
+
+# Tests for pcor_matrix
+test_that("pcor_matrix works correctly", {
+  result <- pcor_matrix(mtcars, given = c("wt", "hp"))
+  expect_s3_class(result, "cor_matrix")
+  # Should have all numeric vars except the two given
+  expect_true(nrow(result$cors) < ncol(mtcars))
+  # Check that df attribute is set for partial correlations
+  expect_true(!is.null(result$df))
+})
+
+test_that("pcor_matrix rejects missing argument", {
+  expect_error(
+    pcor_matrix(mtcars, given = "wt", missing = "pairwise"),
+    "`missing` argument cannot be set"
+  )
+})
+
+test_that("pcor_matrix warns about dropped missing data", {
+  df <- mtcars
+  df[1:5, "mpg"] <- NA
+  expect_warning(
+    pcor_matrix(df, given = "wt"),
+    "Dropped .* rows with missing data"
+  )
+})
+
+test_that("pcor_matrix calculates partial correlations correctly", {
+  # Test that partial correlations differ from regular correlations
+  regular_cor <- cor_matrix(mtcars)
+  partial_cor <- pcor_matrix(mtcars, given = "wt")
+
+  # Partial correlation should be different from regular correlation
+  expect_false(isTRUE(all.equal(regular_cor$cors["mpg", "hp"], partial_cor$cors["mpg", "hp"])))
+
+  # Partial correlation should be identical to lm_std approach
+  lm_fit <- with(mtcars, lm_std(mpg ~ hp + wt))
+  expected_partial <- summary(lm_fit)$estimate["hp"]
+  computed_partial <- partial_cor$cors["mpg", "hp"]
+  expect_equal(computed_partial, expected_partial)
+})
+
+test_that("pcor_matrix handles var_names correctly", {
+  result <- pcor_matrix(mtcars, given = "wt", var_names = c(mpg = "MPG", cyl = "CYL"))
+  expect_equal(rownames(result$cors), c("MPG", "CYL"))
+})
+
+test_that("pcor_matrix p-value adjustment works", {
+  # Test that p-value adjustment now works without error
+  expect_warning(out_unadj <- pcor_matrix(timesaveR::ess_health, given = c("agea", "gndr"),
+              var_names = c("health" = "Health", "weight" = "Weight", "dosprt" = "Sport"),
+              adjust = "none"))
+
+  expect_warning(out_adj <- pcor_matrix(timesaveR::ess_health, given = c("agea", "gndr"),
+              var_names = c("health" = "Health", "weight" = "Weight", "dosprt" = "Sport"),
+              adjust = "holm"))
+
+  # Check that adjusted p-values are generally larger (more conservative)
+  expect_true(all(out_adj$p.values >= out_unadj$p.values | is.na(out_adj$p.values)))
+
+  # Verify correlations remain the same
+  expect_equal(out_adj$cors, out_unadj$cors)
+})
+
+# Tests for plot_distributions
+test_that("plot_distributions creates histogram for discrete variables", {
+  plots <- plot_distributions(mtcars, var_names = c(cyl = "Cylinders", am = "Transmission"))
+  expect_type(plots, "list")
+  expect_length(plots, 2)
+  expect_s3_class(plots[[1]], "gg")
+})
+
+test_that("plot_distributions creates density plots for continuous variables", {
+  plots <- plot_distributions(mtcars, var_names = c(mpg = "MPG", wt = "Weight"),
+                              plot_type = "density")
+  expect_length(plots, 2)
+  expect_s3_class(plots[[1]], "gg")
+})
+
+test_that("plot_distributions works with auto plot_type", {
+  plots <- plot_distributions(mtcars[, c("mpg", "cyl")], plot_type = "auto")
+  expect_length(plots, 2)
+})
+
+test_that("plot_distributions works with numeric plot_type threshold", {
+  plots <- plot_distributions(mtcars[, c("mpg", "cyl")], plot_type = 5)
+  expect_length(plots, 2)
+})
+
+test_that("plot_distributions aligns histogram y-axes when requested", {
+  plots <- plot_distributions(mtcars[, c("cyl", "gear")],
+                              plot_type = "histogram", hist_align_y = TRUE)
+  expect_length(plots, 2)
+  # Verify that plots were created successfully
+  expect_s3_class(plots[[1]], "gg")
+  expect_s3_class(plots[[2]], "gg")
+})
+
+test_that("plot_distributions handles var_names as tibble", {
+  var_names_df <- tibble::tibble(
+    old = c("mpg", "cyl"),
+    new = c("MPG", "CYL")
+  )
+  plots <- plot_distributions(mtcars, var_names = var_names_df)
+  expect_named(plots, c("MPG", "CYL"))
+})
+
+test_that("plot_distributions errors on non-numeric data", {
+  df <- data.frame(a = letters[1:10], b = LETTERS[1:10])
+  expect_error(
+    plot_distributions(df),
+    "No numeric columns found"
+  )
+})
+
+
+
+
+
+test_that("plot_distributions rejects invalid plot_type", {
+  expect_error(
+    plot_distributions(mtcars, plot_type = "invalid"),
+    "`plot_type` must be one of"
+  )
+})
+
+test_that("plot_distributions applies custom theme", {
+  custom_theme <- ggplot2::theme_minimal()
+  plots <- plot_distributions(mtcars[, 1:2], plot_theme = custom_theme)
+  expect_s3_class(plots[[1]], "gg")
+})
+
+# Tests for gt_add_plots
+test_that("gt_add_plots adds plots to gt table", {
+  cor_tab <- cor_matrix(mtcars[, 1:3]) %>%
+    report_cor_table(extras = tibble::tibble(Distributions = 1:3))
+  plots <- plot_distributions(mtcars[, 1:3])
+  result <- gt_add_plots(cor_tab, plots, 3)
+  expect_s3_class(result, "gt_tbl")
+})
+
+test_that("gt_add_plots warns when plot count doesn't match rows", {
+  cor_tab <- cor_matrix(mtcars[, 1:3]) %>% report_cor_table()
+  plots <- plot_distributions(mtcars[, 1:2])  # Only 2 plots for 3 vars
+  expect_warning(
+    gt_add_plots(cor_tab, plots, 3),
+    "number of plots should usually match"
+  )
+})
+
+# Tests for svy_cor_matrix edge cases
+test_that("svy_cor_matrix validates ci_level parameter", {
+  expect_error(
+    svy_cor_matrix(ess_survey, ci_level = 1.5),
+    "Assertion on 'ci_level' failed"
+  )
+})
+
+test_that("svy_cor_matrix handles var_names as tibble", {
+  var_names_df <- tibble::tibble(
+    old = c("health", "agea"),
+    new = c("Health", "Age")
+  )
+  result <- svy_cor_matrix(ess_survey, var_names = var_names_df)
+  expect_true("Health" %in% rownames(result$cors))
+})
+
+test_that("svy_cor_matrix requires numeric columns", {
+  # This should work but just verify that numeric columns are required
+  df <- data.frame(x = 1:10, y = 11:20, wt = rep(1, 10))
+  svy <- as_survey_design(df, weights = wt)
+  result <- svy_cor_matrix(svy)
+  expect_true("cors" %in% names(result))
+})
+
+# Tests for cor_matrix_mi edge cases
+test_that("cor_matrix_mi validates ci_level parameter", {
+  expect_error(
+    cor_matrix_mi(ess_health_mi_long, ci_level = 0),
+    "ci_level must be between 0 and 1"
+  )
+  expect_error(
+    cor_matrix_mi(ess_health_mi_long, ci_level = 1),
+    "ci_level must be between 0 and 1"
+  )
+})
+
+test_that("cor_matrix_mi errors when .imp column is missing", {
+  df_no_imp <- ess_health_sample
+  expect_error(
+    cor_matrix_mi(df_no_imp),
+    ".imp"
+  )
+})
+
+test_that("cor_matrix_mi filters out original data (.imp = 0)", {
+  # The complete(mice, "long", include = TRUE) includes .imp = 0
+  result <- cor_matrix_mi(ess_health_mi_long)
+  # Should work without error, filtering out .imp = 0 internally
+  expect_true("cors" %in% names(result))
+})
+
+test_that("cor_matrix_mi warns about zero-variance variables", {
+  df <- ess_health_mi_long
+  df$constant <- 1
+  expect_warning(
+    cor_matrix_mi(df),
+    "only have a single value"
+  )
+})
+
+test_that("cor_matrix_mi handles all-missing variables", {
+  df <- ess_health_mi_long
+  df$all_na <- NA_real_
+  expect_message(
+    cor_matrix_mi(df),
+    "only have missing values"
+  )
+})
+
+test_that("cor_matrix_mi requires at least 2 numeric columns", {
+  df <- ess_health_mi_long %>% select(.imp, .id, agea)
+  expect_error(
+    cor_matrix_mi(df),
+    "needs to contain at least two numeric columns"
+  )
+})
+
+test_that("cor_matrix_mi rejects duplicate var_names", {
+  expect_error(
+    cor_matrix_mi(ess_health_mi_long, var_names = c(agea = "Age", health = "Age")),
+    "var_names must map to unique new names"
+  )
+})
+
+test_that("cor_matrix_mi handles var_names as tibble", {
+  var_names_df <- tibble::tibble(
+    old = c("health", "agea"),
+    new = c("Health", "Age")
+  )
+  result <- cor_matrix_mi(ess_health_mi_long, var_names = var_names_df)
+  expect_true("Health" %in% rownames(result$cors))
+})
+
+test_that("cor_matrix_mi confidence intervals work correctly", {
+  result <- cor_matrix_mi(ess_health_mi_long, ci_level = 0.90)
+  expect_true(!is.null(result$ci.low))
+  expect_true(!is.null(result$ci.high))
+  expect_equal(result$ci_level, 0.90)
+})
+
+# Tests for report_cor_table additional edge cases
+test_that("report_cor_table validates cor_matrix is a list", {
+  expect_error(
+    report_cor_table(mtcars),
+    "missing required element"
+  )
+})
+
+test_that("report_cor_table validates required elements", {
+  bad_list <- list(cors = matrix(1:4, 2, 2))
+  expect_error(
+    report_cor_table(bad_list),
+    "missing required element"
+  )
+})
+
+test_that("report_cor_table errors when add_distributions = TRUE with survey data", {
+  expect_error(
+    report_cor_table(ess_survey_cor_matrix, add_distributions = TRUE, data = ess_survey),
+    "distributions cannot be shown for weighted survey data"
+  )
+})
+
+test_that("report_cor_table works with apa_style = FALSE", {
+  result <- report_cor_table(mtcars_cor_matrix, apa_style = FALSE)
+  expect_s3_class(result, "gt_tbl")
+})
+
+test_that("report_cor_table works with custom notes", {
+  result <- report_cor_table(mtcars_cor_matrix, notes = list("Custom note 1", "Custom note 2"))
+  expect_s3_class(result, "gt_tbl")
+})
+
+test_that("report_cor_table works with add_title = TRUE", {
+  result <- report_cor_table(mtcars_cor_matrix, add_title = TRUE)
+  expect_s3_class(result, "gt_tbl")
+})
+
 

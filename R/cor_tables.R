@@ -33,11 +33,21 @@
 #' for calculation of confidence intervals adapted from
 #' https://medium.com/@shandou/how-to-compute-confidence-interval-for-pearsons-r-a-brief-guide-951445b9cb2d`
 #' @examples
-#' cor_matrix(iris) %>% report_cor_table()
+#' # Basic correlation table
+#' cor_matrix(iris, var_names = c(Sepal.Length = "Sepal Length",
+#'                                 Sepal.Width = "Sepal Width")) %>%
+#'   report_cor_table()
 #'
-#' cor_matrix(iris) %>% report_cor_table(ci_width = .99)
+#' # With distributions
+#' cor_matrix(iris) %>%
+#'   report_cor_table(add_distributions = TRUE, data = iris,
+#'                    add_title = "Iris correlations and distributions")
 #'
-#' cor_matrix(iris) %>% report_cor_table(add_distributions = TRUE, data = iris, add_title = "Iris correlations and distributions")
+#' # Using ESS health data
+#' cor_matrix(ess_health, var_names = c(health = "Health",
+#'                                       dosprt = "Physical activity",
+#'                                       etfruit = "Fruit consumption")) %>%
+#'   report_cor_table()
 #'
 #' @export
 
@@ -87,7 +97,7 @@ report_cor_table <- function(cor_matrix, ci_type = deprecated(),
   if (isTRUE(add_title)) {
     add_title <- "Means, standard deviations, and correlations with confidence intervals"
   } else if (!isFALSE(add_title) && !is.character(add_title)) {
-    stop("'add_title' must be TRUE, FALSE, or a character string.", call. = FALSE)
+    cli::cli_abort("'add_title' must be TRUE, FALSE, or a character string.")
   }
 
   if (!is.null(extras)) {
@@ -209,7 +219,7 @@ report_cor_table <- function(cor_matrix, ci_type = deprecated(),
 
   if (add_distributions) {
     if (length(plots) != nrow(cells_df)) {
-      stop("The number of plots does not match the number of variables in the table.", call. = FALSE)
+      cli::cli_abort("The number of plots does not match the number of variables in the table.")
     }
     distribution_column <- which(names(cells_df) == "Distributions")
     tab <- gt_add_plots(tab, plots, distribution_column)
@@ -281,6 +291,18 @@ report_cor_table <- function(cor_matrix, ci_type = deprecated(),
 #'  http://www.sthda.com/english/wiki/elegant-correlation-table-using-xtable-r-package
 #' @references For evidence on the utility of the FIML estimator, see Enders, C. K. (2001)
 #' The performance of the full information maximum likelihood estimator in multiple regression models with missing data
+#' @examples
+#' # Basic correlation matrix
+#' cor_matrix(iris)
+#'
+#' # With renamed variables
+#' cor_matrix(ess_health, var_names = c(health = "Self-rated health",
+#'                                       dosprt = "Days of sport per week",
+#'                                       etfruit = "Fruit consumption"))
+#'
+#' # Using Spearman correlations
+#' cor_matrix(ess_health, method = "spearman")
+#'
 #' @export
 
 cor_matrix <- function(data,
@@ -293,14 +315,25 @@ cor_matrix <- function(data,
                        seed = NULL) {
   
   set.seed(seed)
-  
+
+  # Preserve attributes before selecting numeric columns
+  data_attrs <- attributes(data)
+  data_attrs <- data_attrs[!names(data_attrs) %in% c("names", "row.names", "class")]
+
   data %<>% dplyr::select_if(is.numeric)
+
   all_missing <- data %>% dplyr::summarise(dplyr::across(dplyr::everything(), ~all(is.na(.x)))) %>% unlist()
   if (any(all_missing)) {
     all_missing <- names(data)[all_missing]
     cli::cli_inform("{glue::glue_collapse(all_missing, sep = ', ', last = ' and ')} only have missing values. Therefore, they are dropped from the correlation table.")
     data <- data %>% dplyr::select(-dplyr::all_of(all_missing))
   }
+
+ # Restore non-standard attributes (e.g., n_partialed from pcor_matrix)
+  for (attr_name in names(data_attrs)) {
+    attr(data, attr_name) <- data_attrs[[attr_name]]
+  }
+
   if (ncol(data) < 2) cli::cli_abort("Data needs to contain at least two numeric columns.")
   missing <- dplyr::case_when(
     missing[1] == "pairwise" ~ "pairwise",
@@ -318,7 +351,17 @@ cor_matrix <- function(data,
   }
   
   if (!is.null(var_names)) {
+    # Preserve attributes before selecting variables
+    preserved_attrs <- attributes(data)
+    preserved_attrs <- preserved_attrs[!names(preserved_attrs) %in% c("names", "row.names", "class")]
+
     data <- data %>% dplyr::select(dplyr::any_of(names(var_names)))
+
+    # Restore non-standard attributes
+    for (attr_name in names(preserved_attrs)) {
+      attr(data, attr_name) <- preserved_attrs[[attr_name]]
+    }
+
     miss_vars <- setdiff(names(var_names), names(data))
     if (length(miss_vars) > 0) cli::cli_warn("The following variables are included in {.arg var_names} but cannot be included into the correlation matrix - either, they are missing from data or not of type numeric: {paste(miss_vars, collapse = ', ')}")
     var_names <- var_names[intersect(names(var_names), names(data))]
@@ -606,7 +649,6 @@ svy_cor_matrix <- function(svy_data, var_names = NULL, ci_level = 0.95) {
     r <- cor_matrix$cors
     se_r <- cor_matrix$std.err
     se_z <- se_r / (1 - r^2)
-    browser()
     r_sel <- r
     r_sel[abs(r_sel) > .999] <- NA
     z_val <- atanh(r_sel)
@@ -929,7 +971,7 @@ cor_matrix_mi <- function(data, weights = NULL, var_names = NULL, ci_level = 0.9
 #'
 plot_distributions <- function(data, var_names = NULL, plot_type = c("auto", "histogram", "density"), hist_align_y = FALSE, plot_theme = NULL) {
   data %<>% dplyr::select_if(is.numeric)
-  if (ncol(data) == 0) stop("No numeric columns found - check your input.", call. = FALSE)
+  if (ncol(data) == 0) cli::cli_abort("No numeric columns found - check your input.")
   if (is.data.frame(var_names)) {
     assert_names(names(var_names), must.include = c("old", "new"))
     var_names <- var_names$new %>% magrittr::set_names(var_names$old)
@@ -975,12 +1017,8 @@ plot_distributions <- function(data, var_names = NULL, plot_type = c("auto", "hi
   })
   
   if (hist_align_y) {
-    ymax <- purrr::map_dbl(plots, ~ ggplot2::layer_scales(.x) %>%
-                             extract2("y") %>%
-                             extract2("range") %>%
-                             extract2("range") %>%
-                             extract(2))
-    
+    ymax <- purrr::map_dbl(plots, ~ ggplot2::layer_scales(.x)[["y"]][["range"]][["range"]][2])
+
     if (any(plot_hist)) {
       hist_max <- max(ymax[plot_hist])
       plots[plot_hist] <- purrr::map(plots[plot_hist], ~ .x + ggplot2::ylim(0, hist_max))
@@ -1049,6 +1087,15 @@ gt_add_plots <- function(gt_table, plots, col_index) {
 #' \item{ci.low}{Lower bound of confidence interval. Width is determined in call to [cor_matrix()]}
 #' \item{ci.high}{Upper bound of confidence interval. Width is determined in call to [cor_matrix()]}
 #' @method tidy cor_matrix
+#' @examples
+#' # Create and tidy a correlation matrix
+#' cm <- cor_matrix(iris)
+#' tidy(cm, both_directions = FALSE)
+#'
+#' # With ESS health data
+#' cm_ess <- cor_matrix(ess_health,
+#'                      var_names = c(health = "Health", dosprt = "Sport"))
+#' tidy(cm_ess)
 #' @export
 
 tidy.cor_matrix <- function(x, both_directions = TRUE, ...) {
@@ -1130,3 +1177,66 @@ tidy.svy_cor_matrix <- function(x, both_directions = TRUE, ...) {
   }
   out
 }
+
+#' Calculates a partial correlation matrix controlling for one or more variables
+#'
+#' This returns a matrix aligned with the `cor_matrix()` function after parceling
+#' out the effect of one or more other variables. This function requires complete data;
+#' incomplete cases are dropped with a warning.
+#' 
+#' @inheritParams cor_matrix 
+#' @param given A character vector with one or multiple variables in data. It/they will be parceled out from all other variables in data,
+#' before the correlation table is calculated.
+#' @inheritDotParams cor_matrix -missing
+#' @examples
+#' 
+#' # One might want to estimate correlations between health and possible predictors in the ESS
+#' # after parceling out / controling for key demographic attributes:
+#' pcor_matrix(ess_health, given = c("agea", "gndr"), 
+#'    var_names = c("health" = "Health", "weight" = "Weight", "dosprt" = "Sport")) %>% 
+#'    tidy(both_directions = FALSE)
+#' 
+#' @export 
+
+pcor_matrix <- function(data, given, ...) {
+  
+  args <- list(...)
+  
+  data %<>% dplyr::select_if(is.numeric)
+
+  if (!is.null(args$var_names)) {
+    if (is.data.frame(args$var_names)) {
+      assert_names(names(var_names), must.include = c("old", "new"))
+      var_names <- args$var_names$old
+    } else {
+      var_names <- names(args$var_names)
+    }
+    data %<>% dplyr::select(dplyr::any_of(c(given, var_names)))
+  }
+  
+  if (!is.null(args$missing)) {
+   cli::cli_abort("`missing` argument cannot be set - pcor_matrix only supports listwise deletion.") 
+  }
+  
+  if (anyMissing(data)) {
+    full <- nrow(data)
+    data <- data %>% tidyr::drop_na()
+    cli::cli_warn("Dropped {full - nrow(data)} rows with missing data.")
+  }
+  
+  for (v in setdiff(names(data), given)) {
+    formula <- formula(paste(v, "~", paste(given, collapse = " + ")))
+    data[[v]] <- stats::residuals(lm(formula, data))
+  }
+  
+  data %<>% dplyr::select(-dplyr::all_of(given))
+  
+  class(data) <- c("resid_df", class(data))
+  attr(data, "n_partialed") <- length(given)
+  
+  args$data <- data
+  
+  do.call(cor_matrix, args)
+  
+}
+

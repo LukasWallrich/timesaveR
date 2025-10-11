@@ -38,9 +38,17 @@
 #' @return Depends on `return_list` argument. Either just the scale values,
 #'  or a list of scale values and descriptives. If descriptives are returned, check the `text` element for a convenient summary.
 #' @export
-#' @examples 
-#' scores <- make_scale(ess_health, items = c("etfruit", "eatveg"), 
-#'                      scale_name = "Healthy eating")
+#' @examples
+#' # Create a simple two-item scale
+#' scores <- make_scale(ess_health, items = c("etfruit", "eatveg"),
+#'                      scale_name = "Healthy eating", print_hist = FALSE)
+#' head(scores)
+#'
+#' # Create scale with automatic reverse coding
+#' \dontrun{
+#' make_scale(ess_health, items = c("fltdpr", "flteeff", "wrhpp"),
+#'            scale_name = "Depression", reverse_method = "auto")
+#' }
 
 make_scale <- function(data, items, scale_name, reverse_method = c(
   "auto",
@@ -105,19 +113,26 @@ scale_items = lifecycle::deprecated()) {
           ((x - min(x, na.rm = TRUE)) / (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))) *
             (max_val - min_val) + min_val
         }
-        
-        scale_vals %>% 
-          dplyr::summarise(dplyr::across(dplyr::everything(), rescale_range))
+
+        scale_vals <- scale_vals %>%
+          dplyr::mutate(dplyr::across(dplyr::everything(), rescale_range))
       }
     }
   }
   
-  l <- scale_vals %>% 
+  l <- scale_vals %>%
     dplyr::summarise(dplyr::across(dplyr::everything(), ~length(unique(.x)))) %>%
     unlist()
-  
+
   if (any(l < 2)) {
-    cli::cli_warn("Some scale variables have zero variance. This is frequently a mistake and can lead to errors in this function: {glue::glue_collapse(names(scale_vals)[l < 2], sep = ', ', last = ' & ')}")
+    zero_var_items <- names(scale_vals)[l < 2]
+    items_with_variance <- sum(l >= 2)
+
+    if (items_with_variance < 2) {
+      cli::cli_abort("Cannot calculate scale reliability with fewer than 2 items with variance. The following items have zero variance: {glue::glue_collapse(zero_var_items, sep = ', ', last = ' & ')}")
+    } else {
+      cli::cli_warn("Some scale variables have zero variance and will be excluded from reliability calculation but included in the scale score. Items with zero variance: {glue::glue_collapse(zero_var_items, sep = ', ', last = ' & ')}")
+    }
   }
   
   proration_cutoff <- proration_cutoff * ncol(scale_vals)
@@ -126,11 +141,28 @@ scale_items = lifecycle::deprecated()) {
   if ((reverse_method != "spec")[1]) {
     check.keys <- reverse_method[1] != "none"
     msg <- utils::capture.output(alpha_obj <- suppressWarnings(scale_vals %>% psych::alpha(na.rm = TRUE, check.keys = check.keys)))
-    #NB: This handling depends on the exact `psych` output text - so could lead to bugs with psych updates 
+    # Display messages about item reversals, with defensive handling for message format changes
     if (length(msg) > 0) {
-      stringr::str_replace(msg, "To do this, run the function again with the 'check.keys=TRUE' option", "If that makes sense, rerun the function and either specify these items to be reversed or allow automatic reverse coding") %>%
-        stringr::str_replace("with the total scale", paste("with the total", scale_name, "scale")) %>% 
-        cat()
+      # Check if message contains expected patterns before string replacement
+      msg_text <- paste(msg, collapse = "\n")
+
+      # Only apply replacements if the expected text patterns are found
+      if (stringr::str_detect(msg_text, "check\\.keys")) {
+        msg_text <- stringr::str_replace(msg_text,
+          "To do this, run the function again with the 'check.keys=TRUE' option",
+          "If that makes sense, rerun the function and either specify these items to be reversed or allow automatic reverse coding")
+      }
+
+      if (stringr::str_detect(msg_text, "with the total scale") && nchar(scale_name) > 0) {
+        msg_text <- stringr::str_replace(msg_text,
+          "with the total scale",
+          paste("with the total", scale_name, "scale"))
+      }
+
+      # Only print if message contains relevant reversal information
+      if (stringr::str_detect(msg_text, "negatively correlated|check\\.keys|reversed")) {
+        cat(msg_text, "\n")
+      }
     }
   } else {
     alpha_obj <- suppressWarnings(scale_vals %>% psych::alpha(na.rm = TRUE, keys = reverse_items))
@@ -273,7 +305,7 @@ make_scales <- function(data, items, reversed = FALSE, two_items_reliability = c
           reverse_items = reversed[scales_rev]
         ), make_scale,
         data = data, return_list = TRUE,
-        reverse = "spec", two_items_reliability, print_desc = print_desc, ...
+        reverse_method = "spec", two_items_reliability, print_desc = print_desc, ...
         ) %>% purrr::transpose()
       } else {
         cli::cli_abort("Reverse list and variable lists cannot be matched - check that they have same names")
@@ -286,20 +318,20 @@ make_scales <- function(data, items, reversed = FALSE, two_items_reliability = c
       
     scales_n_rev_values <- purrr::map2(items[scales_n_rev], scales_n_rev, make_scale,
                                          data = data,
-                                         return_list = TRUE, reverse = "none", two_items_reliability = two_items_reliability,
+                                         return_list = TRUE, reverse_method = "none", two_items_reliability = two_items_reliability,
                                        print_desc = print_desc, ...
       ) %>% purrr::transpose()
     }
   } else if (reversed) {
     scales_rev_values <- purrr::map2(items, names(items), make_scale,
                                        data = data,
-                                       return_list = TRUE, reverse = "auto", two_items_reliability = two_items_reliability,
+                                       return_list = TRUE, reverse_method = "auto", two_items_reliability = two_items_reliability,
                                      print_desc = print_desc, ...
-    ) %>% purrr::transpose()    
+    ) %>% purrr::transpose()
   } else {
     scales_n_rev_values <- purrr::map2(items, names(items), make_scale,
                                        data = data,
-                                       return_list = TRUE, reverse = "none", two_items_reliability = two_items_reliability,
+                                       return_list = TRUE, reverse_method = "none", two_items_reliability = two_items_reliability,
                                        print_desc = print_desc, ...
     ) %>% purrr::transpose()
   }
