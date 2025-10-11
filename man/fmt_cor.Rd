@@ -14,3 +14,7 @@ fmt_cor(cor_value, digits = 2)
 \description{
 Format numbers as correlation coefficients, by rounding them and removing the leading 0
 }
+\examples{
+fmt_cor(0.127)
+fmt_cor(c(0.456, -0.789, 0.023))
+}

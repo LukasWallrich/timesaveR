@@ -79,10 +79,20 @@ summary statistics. It accepts correlation matrices from various functions
 in this package as its first argument.
 }
 \examples{
-cor_matrix(iris) \%>\% report_cor_table()
+# Basic correlation table
+cor_matrix(iris, var_names = c(Sepal.Length = "Sepal Length",
+                                Sepal.Width = "Sepal Width")) \%>\%
+  report_cor_table()
 
-cor_matrix(iris) \%>\% report_cor_table(ci_width = .99)
+# With distributions
+cor_matrix(iris) \%>\%
+  report_cor_table(add_distributions = TRUE, data = iris,
+                   add_title = "Iris correlations and distributions")
 
-cor_matrix(iris) \%>\% report_cor_table(add_distributions = TRUE, data = iris, add_title = "Iris correlations and distributions")
+# Using ESS health data
+cor_matrix(ess_health, var_names = c(health = "Health",
+                                      dosprt = "Physical activity",
+                                      etfruit = "Fruit consumption")) \%>\%
+  report_cor_table()
 
 }

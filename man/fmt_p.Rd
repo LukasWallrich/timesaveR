@@ -20,3 +20,8 @@ Formats p-value in line with APA standard, returning it without leading 0 and
 as < .001 (or below the smallest value expressible with the given number of
 significant digits) and > .99 when it is extremely small or large.
 }
+\examples{
+fmt_p(0.04355)
+fmt_p(0.0001)
+fmt_p(c(0.04355, 0.0001, 0.654), equal_sign = FALSE)
+}

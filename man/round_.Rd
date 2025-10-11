@@ -20,3 +20,7 @@ all numbers to the same width. \code{round()} and similar functions drop
 trailing zeros - this version keeps them and thus rounds 1.201 to 1.20
 rather than 1.2 when 2 digits are requested.
 }
+\examples{
+round_(1.201, 2)
+round_(c(1.2, 3.456, 7.8), digits = 2)
+}

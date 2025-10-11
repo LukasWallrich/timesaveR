@@ -22,3 +22,22 @@ Renaming categorical variables and their levels, for instance for summary tables
 function accepts tibbles containing the old and new names for arguments and levels, and returns a dataframe
 (or list of dataframes, if one is passed) with variables and levels renamed.
 }
+\examples{
+var_renames <- tibble::tribble(
+  ~old,     ~new,
+  "gndr",   "Gender",
+  "cntry",  "Country"
+)
+
+level_renames <- tibble::tribble(
+  ~var,     ~level_old, ~level_new,
+  "gndr",   "1",        "Male",
+  "gndr",   "2",        "Female",
+  "cntry",  "DE",       "Germany",
+  "cntry",  "FR",       "France",
+  "cntry",  "GB",       "UK"
+)
+
+rename_cat_variables(ess_health, var_names = var_renames,
+                     level_names = level_renames)
+}

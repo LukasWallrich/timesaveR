@@ -14,3 +14,7 @@ fmt_pct(x, digits = 1)
 \description{
 Formats fractions as percentages, i.e. multiplying them by 100 and adding '\%'
 }
+\examples{
+fmt_pct(0.127)
+fmt_pct(c(0.127, 0.456, 0.789), digits = 2)
+}

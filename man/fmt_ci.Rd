@@ -14,9 +14,13 @@ fmt_ci(lower, upper, digits = 2, drop_0 = FALSE)
 \item{digits}{Number of significant digits, defaults to 2}
 
 \item{drop_0}{Logical. Should leading 0 be dropped, e.g., when reporting correlation coefficients.
-Note that this only makes sense (and only works) when the values are between -1 and 1}
+Note that this only works when all values are between -1 and 1 (inclusive)}
 }
 \description{
 Constructs a confidence intervals from upper and lower bounds,
 placing them in between square brackets
+}
+\examples{
+fmt_ci(1.23, 2.68)
+fmt_ci(c(0.12, 0.45), c(0.34, 0.67), drop_0 = TRUE)
 }

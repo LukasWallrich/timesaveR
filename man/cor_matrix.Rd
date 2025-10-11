@@ -65,6 +65,19 @@ that BCa calculations fail for a given correlation, the function will
 automatically fall back to the simpler percentile method for that value and
 issue a warning.
 }
+\examples{
+# Basic correlation matrix
+cor_matrix(iris)
+
+# With renamed variables
+cor_matrix(ess_health, var_names = c(health = "Self-rated health",
+                                      dosprt = "Days of sport per week",
+                                      etfruit = "Fruit consumption"))
+
+# Using Spearman correlations
+cor_matrix(ess_health, method = "spearman")
+
+}
 \references{
 For evidence on the utility of the FIML estimator, see Enders, C. K. (2001)
 The performance of the full information maximum likelihood estimator in multiple regression models with missing data

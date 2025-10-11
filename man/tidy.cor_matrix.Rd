@@ -33,3 +33,13 @@ its relatives into a tidy dataframe. Note that by default, results for both the 
 and \code{cor(B, A)} are returned, while entries for \verb{A, A}, i.e. the values on the diagonal,
 are never included.
 }
+\examples{
+# Create and tidy a correlation matrix
+cm <- cor_matrix(iris)
+tidy(cm, both_directions = FALSE)
+
+# With ESS health data
+cm_ess <- cor_matrix(ess_health,
+                     var_names = c(health = "Health", dosprt = "Sport"))
+tidy(cm_ess)
+}
