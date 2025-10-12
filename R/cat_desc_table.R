@@ -99,8 +99,8 @@ report_cat_vars <- function(data, dv, ..., var_names = NULL, level_names = NULL,
   data <- rename_cat_variables(data, var_names = var_names, level_names = level_names)
 
   if (!is.null(var_names)) {
-    var_map <- setNames(var_names$new, var_names$old)
-    
+    var_map <- stats::setNames(var_names$new, var_names$old)
+
     vars <- purrr::map(vars, ~ rlang::sym(
       dplyr::recode(dplyr::as_label(.x), !!!var_map, .default = dplyr::as_label(.x))
     ))

@@ -115,9 +115,9 @@ report_cor_table <- function(cor_matrix, ci_type = deprecated(),
     if ("row_names" %in% names(extras)) {
       # Use 'row_names' to align 'extras' with variables
       extras <- cor_matrix$desc %>%
-        dplyr::select(var) %>%
+        dplyr::select(.data$var) %>%
         dplyr::left_join(extras, by = c("var" = "row_names")) %>%
-        dplyr::select(-var)
+        dplyr::select(-.data$var)
     } else {
       if (nrow(extras) != nrow(cor_matrix$desc)) {
         cli::cli_abort("The number of rows in {.arg extras} does not match the number of variables in {.arg cor_matrix}.
@@ -380,8 +380,8 @@ cor_matrix <- function(data,
   
   extract_correlations <- function(mod) {
     lavaan::standardizedsolution(mod) |>
-      dplyr::filter(op == "~~", lhs != rhs) |>
-      dplyr::transmute(name = paste(lhs, rhs, sep = "~~"), est.std) |>
+      dplyr::filter(.data$op == "~~", .data$lhs != .data$rhs) |>
+      dplyr::transmute(name = paste(.data$lhs, .data$rhs, sep = "~~"), .data$est.std) |>
       tibble::deframe()
   }
   
@@ -415,7 +415,7 @@ cor_matrix <- function(data,
     desc_stat <- data |>
       psych::describe() |>
       tibble::as_tibble(rownames = "var") |>
-      dplyr::select(var, M = mean, SD = sd)
+      dplyr::select(.data$var, M = .data$mean, SD = .data$sd)
     
   } else {
     
@@ -426,12 +426,12 @@ cor_matrix <- function(data,
     vars_used <- names(data)
     
     Ms <- lavaan::parameterestimates(mod) |>
-      dplyr::filter(op == "~1") |>
-      dplyr::select(var = lhs, M = est)
-    
+      dplyr::filter(.data$op == "~1") |>
+      dplyr::select(var = .data$lhs, M = .data$est)
+
     desc_stat <- lavaan::parameterestimates(mod) |>
-      dplyr::filter(op == "~~", lhs == rhs) |>
-      dplyr::transmute(var = lhs, SD = sqrt(est)) |>
+      dplyr::filter(.data$op == "~~", .data$lhs == .data$rhs) |>
+      dplyr::transmute(var = .data$lhs, SD = sqrt(.data$est)) |>
       dplyr::left_join(Ms, by = "var")
     
     if (!is.null(bootstrap)) {
@@ -501,7 +501,7 @@ cor_matrix <- function(data,
           idx <- match(nm, colnames(boot_obj$t))            # numeric index for boot.ci
           ci  <- boot::boot.ci(boot_obj, conf = conf_level,
                                type = "bca", index = idx)
-          
+
           tibble::tibble(
             term     = nm,
             est      = orig[[nm]],
@@ -513,13 +513,13 @@ cor_matrix <- function(data,
           )
         }
       ) |>
-        tidyr::separate(term, c("lhs", "rhs"), sep = "~~")
+        tidyr::separate(.data$term, c("lhs", "rhs"), sep = "~~")
       
     } else {
       
       res <- lavaan::standardizedsolution(mod) |>
-        dplyr::filter(rhs != lhs) |>
-        dplyr::rename(est = est.std)
+        dplyr::filter(.data$rhs != .data$lhs) |>
+        dplyr::rename(est = .data$est.std)
     }
     
     m <- matrix(nrow = length(vars_used), ncol = length(vars_used),
@@ -672,9 +672,9 @@ svy_cor_matrix <- function(svy_data, var_names = NULL, ci_level = 0.95) {
     srvyr::select_if(is.numeric) %>%
     srvyr::summarise_all(list(`1M` = srvyr::survey_mean, `1SD` = srvyr::survey_var), na.rm = TRUE) %>%
     dplyr::select(!dplyr::matches("_se")) %>%
-    tidyr::pivot_longer(cols = everything(), names_to = "key", values_to = "value") %>%
+    tidyr::pivot_longer(cols = dplyr::everything(), names_to = "key", values_to = "value") %>%
     tidyr::separate(.data$key, into = c("var", "statistic"), sep = "_1") %>%
-    tidyr::pivot_wider(names_from = "statistic", values_from = "value") %>%
+    tidyr::pivot_wider(names_from = .data$statistic, values_from = .data$value) %>%
     dplyr::mutate(SD = sqrt(.data$SD)) %>%
     dplyr::arrange(match(.data$var, rownames(cor_matrix$cors)))
   
@@ -885,7 +885,7 @@ cor_matrix_mi <- function(data, weights = NULL, var_names = NULL, ci_level = 0.9
   
   to_matrix <- function(data, names, value, set_diag = 1) {
     m <- matrix(0, length(names), length(names))
-    m[as.matrix(data %>% magrittr::extract(c("row", "column")))] <- data[[value]]
+    m[as.matrix(data %>% dplyr::select(.data$row, .data$column))] <- data[[value]]
     rownames(m) <- names
     colnames(m) <- names
     if (!is.na(set_diag)) {
@@ -971,8 +971,9 @@ cor_matrix_mi <- function(data, weights = NULL, var_names = NULL, ci_level = 0.9
   cor_matrix
 }
 
-#' Calculate the correlation, based on weighted scaling and 
+#' Calculate the correlation, based on weighted scaling and
 #' listwise deletion *before* scaling
+#' @noRd
 
 .wtd_cor_test_lm <- function(x, y, wt, ...) {
   
@@ -1118,7 +1119,7 @@ cor_matrix_mi <- function(data, weights = NULL, var_names = NULL, ci_level = 0.9
       # Create ggplot histogram
       out <- ggplot2::ggplot(plot_data) +
         ggplot2::geom_rect(
-          ggplot2::aes(xmin = xmin, xmax = xmax, ymin = 0, ymax = y),
+          ggplot2::aes(xmin = .data$xmin, xmax = .data$xmax, ymin = 0, ymax = .data$y),
           fill = "grey", color = "white", linewidth = 3
         )
 
@@ -1136,7 +1137,7 @@ cor_matrix_mi <- function(data, weights = NULL, var_names = NULL, ci_level = 0.9
       tryCatch({
         density_data <- .extract_svysmooth_data(formula_obj, data)
 
-        ggplot2::ggplot(density_data, ggplot2::aes(x = x, y = y)) +
+        ggplot2::ggplot(density_data, ggplot2::aes(x = .data$x, y = .data$y)) +
           ggplot2::geom_area(fill = "grey", color = "black", linewidth = 0.5)
       }, error = function(e) {
         # Fallback to histogram if density estimation fails
@@ -1163,7 +1164,7 @@ cor_matrix_mi <- function(data, weights = NULL, var_names = NULL, ci_level = 0.9
 
         ggplot2::ggplot(plot_data) +
           ggplot2::geom_rect(
-            ggplot2::aes(xmin = xmin, xmax = xmax, ymin = 0, ymax = y),
+            ggplot2::aes(xmin = .data$xmin, xmax = .data$xmax, ymin = 0, ymax = .data$y),
             fill = "grey", color = "white", linewidth = 3
           )
       })

@@ -37,6 +37,7 @@ Imports:
     tidyr,
     tidyselect
 Suggests:
+    boot,
     car,
     clipr,
     DiagrammeR,
@@ -46,6 +47,7 @@ Suggests:
     gt,
     htmltools,
     jtools,
+    KernSmooth,
     knitr,
     lavaan,
     MASS,

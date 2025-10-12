@@ -9,7 +9,7 @@
 }
 
 .onAttach <- function(libname, pkgname) {
-  cli::cli_inform("Note re timesaveR: Many functions in this package are alpha-versions - please treat results with care and report bugs and desired features.")
+  packageStartupMessage("Note re timesaveR: Many functions in this package are alpha-versions - please treat results with care and report bugs and desired features.")
 }
 
 
@@ -47,14 +47,14 @@ globalVariables(".")
 #' @importFrom lifecycle deprecated
 #' @importFrom rlang .data
 #' @importFrom rlang :=
-#' @importFrom stats as.formula cor.test sd t.test lm p.adjust.methods quantile coef
+#' @importFrom stats as.formula cor.test sd t.test lm p.adjust.methods quantile coef qnorm qt setNames update
 #' @importFrom here here
 #' @importFrom lifecycle deprecated
 #' @importFrom utils getFromNamespace
 #' @import checkmate
 #' @importFrom generics tidy
 # ## broom needed to get tidy.lm, tidy.polr etc
-#' @importFrom broom tidy 
+#' @importFrom broom tidy
 #' @importFrom generics glance
 #' @export
 broom::tidy #with generics::tidy, model summary tables fail

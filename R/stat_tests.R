@@ -144,8 +144,8 @@ t_test <- function(x, y = NULL, data = NULL, paired = FALSE, mu = 0,
     # Independent samples
     mean1 <- mean(x_vec, na.rm = TRUE)
     mean2 <- mean(y_vec, na.rm = TRUE)
-    var1 <- var(x_vec, na.rm = TRUE)
-    var2 <- var(y_vec, na.rm = TRUE)
+    var1 <- stats::var(x_vec, na.rm = TRUE)
+    var2 <- stats::var(y_vec, na.rm = TRUE)
     n1 <- sum(!is.na(x_vec))
     n2 <- sum(!is.na(y_vec))
 
@@ -321,7 +321,7 @@ svy_cohen_d_pair <- function(data, dv, iv, pair = NULL, ttest = TRUE, print = FA
   }
 
   data$variables$filt <- factor(iv_values, levels = pair)
-  subset_data <- subset(data, !is.na(filt))
+  subset_data <- subset(data, !is.na(data$variables$filt))
 
   if (nrow(subset_data$variables) == 0) {
     cli::cli_abort("No observations remain after filtering the survey object for the requested pair.")

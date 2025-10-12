@@ -78,7 +78,7 @@ std_stars_pad <- c(`&nbsp;&nbsp;&nbsp;` = 1, `&dagger;&nbsp;&nbsp;` = .1, `*&nbs
 #' string is returned for NAs, unless that behaviour is overwritten.
 #'
 #'  Symbols and thresholds are *** *p* < .001,  ** *p* < .01, * *p*
-#'  < .05 and † *p* < .1. The symbols can be changed by passing a named character vector sorted
+#'  < .05 and \u2020 *p* < .1. The symbols can be changed by passing a named character vector sorted
 #'  descendingly to the `stars` argument. For the default, the argument would be
 #' `stars <- c(`&dagger;` = .1, `*` = 0.05, `**` = 0.01, `***` = 0.001)`
 #'
@@ -186,7 +186,7 @@ cut_p <- function(x, p,
                   verbose = TRUE) {
   ties.method <- match.arg(ties.method)
   if (sum(p) != 1) {
-    cli::cli_inform("p does not sum to 1 – it will be rescaled.")
+    cli::cli_inform("p does not sum to 1 - it will be rescaled.")
     p <- p / sum(p)
   }
   
@@ -204,8 +204,8 @@ cut_p <- function(x, p,
   k           <- length(p)
   out_labels  <- character(0)
   out_counts  <- integer(0)
-  
-  # helper: cumulative index → observed value
+
+  # helper: cumulative index -> observed value
   obs_at <- function(idx) x_clean[match(idx, ranks)]
   
   # first group
@@ -609,7 +609,7 @@ dump_to_clip <- function(x) {
 #' @param to_clip Logical. Indicates whether the generated code for the vector 
 #' should be copied to the clipboard. Defaults to `TRUE` in interactive sessions. 
 #' Requires the `clipr` package to be installed.
-#' @param return_type Character string specifying the type of return value. 
+#' @param return Character string specifying the type of return value. 
 #' Choose `"code"` to return the `c()` command as a string or `"vector"` to 
 #' return the actual R vector. Defaults to `"code"`. Abbreviated values like 
 #' `"c"` or `"v"` are accepted.
@@ -617,7 +617,7 @@ dump_to_clip <- function(x) {
 #' If `FALSE` (default), empty values are omitted from the resulting vector.
 #'
 #' @return A character string representing the `c()` command or the actual R 
-#' vector, depending on the `return_type` parameter.
+#' vector, depending on the `return` parameter.
 #'
 #' @examples
 #' 
@@ -625,11 +625,11 @@ dump_to_clip <- function(x) {
 #' # c("a", "b", "c")
 #' 
 #' 
-#' line_to_vector("1 2 3", return_type = "vector")
+#' line_to_vector("1 2 3", return = "vector")
 #' # [1] 1 2 3
 #' 
 #' # Can abbreviate return argument
-# line_to_vector("Friday Saturday Sunday", return_type = "v")
+# line_to_vector("Friday Saturday Sunday", return = "v")
 #' # [1] "Friday"   "Saturday" "Sunday"
 #'
 #' @export

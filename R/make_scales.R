@@ -481,7 +481,7 @@ svy_make_scale <- function(data, items, scale_name,
     var_name   <- scale_items_num[i]
     source_var <- items[i]
     var_data   <- as.numeric(unlist(data$variables[[source_var]]))
-    data       <- do.call(update, c(list(data), setNames(list(var_data), var_name)))
+    data       <- do.call(update, c(list(data), stats::setNames(list(var_data), var_name)))
   }
   
   ## reverse-coded items
@@ -493,14 +493,14 @@ svy_make_scale <- function(data, items, scale_name,
       var_name     <- paste0(reversed_num[i], "r")
       source_data  <- data$variables[[reversed_num[i]]]
       reversed_dat <- psych::reverse.code(-1, source_data)
-      data         <- do.call(update, c(list(data), setNames(list(reversed_dat), var_name)))
+      data         <- do.call(update, c(list(data), stats::setNames(list(reversed_dat), var_name)))
     }
   }
   
   ## composite scale
   scale_matrix  <- do.call(cbind, data$variables[scale_items_num])
   scale_values  <- rowMeans(scale_matrix, na.rm = TRUE)
-  data          <- do.call(update, c(list(data), setNames(list(scale_values), scale_name)))
+  data          <- do.call(update, c(list(data), stats::setNames(list(scale_values), scale_name)))
   
   ## optional full-scale reversal
   if (!is.null(r_key)) {
@@ -510,7 +510,7 @@ svy_make_scale <- function(data, items, scale_name,
     } else {
       psych::reverse.code(-1, current_scale, maxi = r_key)
     }
-    data <- do.call(update, c(list(data), setNames(list(reversed_scale), scale_name)))
+    data <- do.call(update, c(list(data), stats::setNames(list(reversed_scale), scale_name)))
   }
   if (return_list) {
     descriptives <- list()
