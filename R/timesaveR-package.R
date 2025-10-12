@@ -1,4 +1,12 @@
-
+.onLoad <- function(libname, pkgname) {
+  op <- options()
+  op.timesaveR <- list(
+    timesaveR.round_method = "to_even"
+  )
+  toset <- !(names(op.timesaveR) %in% names(op))
+  if (any(toset)) options(op.timesaveR[toset])
+  invisible()
+}
 
 .onAttach <- function(libname, pkgname) {
   cli::cli_inform("Note re timesaveR: Many functions in this package are alpha-versions - please treat results with care and report bugs and desired features.")
@@ -13,6 +21,15 @@
 #' correlations and distributions, reporting linear regression models with
 #' standardized coefficients and F-change comparisons, as well as plotting
 #' mediation models.
+#'
+#' @section Package Options:
+#' The package recognizes the following option:
+#' \describe{
+#'   \item{`timesaveR.round_method`}{Controls rounding behavior throughout the
+#'   package. Options are `"to_even"` (default; banker's rounding) or `"default"`
+#'   (standard R rounding). Set via `options(timesaveR.round_method = "default")`.}
+#' }
+#'
 #' @docType package
 #' @name timesaveR
 

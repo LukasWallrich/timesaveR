@@ -82,7 +82,7 @@ scale_items = lifecycle::deprecated()) {
   
   if (is.null(r_key)) r_key <- 0
   scale_vals <- data %>%
-    dplyr::select(dplyr::one_of(items)) %>%
+    dplyr::select(dplyr::all_of(items)) %>%
     dplyr::mutate(dplyr::across(dplyr::everything(), as.numeric))
   
   if (is.null(harmonize_ranges[1]) || 
@@ -213,9 +213,11 @@ scale_items = lifecycle::deprecated()) {
   }
   if (print_hist) {
     (cbind(scale_vals, Scale = alpha_obj$scores) %>%
-       tidyr::gather(
-         key = "category", value = "resp",
-         factor_key = TRUE
+       tidyr::pivot_longer(
+         cols = everything(),
+         names_to = "category",
+         values_to = "resp",
+         names_transform = list(category = as.factor)
        ) %>%
        ggplot2::ggplot(ggplot2::aes(x = .data$resp)) +
        ggplot2::geom_histogram(binwidth = 0.5, na.rm = TRUE) +
@@ -670,7 +672,7 @@ make_scale_mi <- function(data, items, scale_name, proration_cutoff = 0, seed = 
   }
   full <- rlang::exec("make_scale", data, items = items, scale_name = scale_name, print_desc = FALSE, print_hist = FALSE, proration_cutoff = proration_cutoff, return_list = TRUE, !!!extras)
     if (full$descriptives$reversed != "") {
-   rev_code <- purrr::map_chr(unlist(stringr::str_split(full$descriptives$reversed, " ")), stringr::str_trim)
+   rev_code <- purrr::map_chr(unlist(stringr::str_split(full$descriptives$reversed, " ")), ~ stringr::str_trim(as.character(.x)))
    purrr::walk(rev_code, function(rev_code_now) {
      data[rev_code_now] <<- psych::reverse.code(-1, data[rev_code_now])
    })

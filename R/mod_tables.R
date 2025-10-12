@@ -491,8 +491,17 @@ tidy.mira <- function(x, conf.int = TRUE, conf.level = .95, ...) {
   out <- summary(mice::pool(x, ...), type = "all", conf.int = conf.int, conf.level = conf.level) %>%
     dplyr::mutate(term = as.character(.data$term)) %>%
     tibble::as_tibble()
-  conf_vars <- names(out)[stringr::str_detect(names(out), "%")]
-  names(out)[names(out) %in% conf_vars] <- c("conf.low", "conf.high")
+
+  # Remove percentage-based confidence interval columns if conf.low/conf.high exist
+  if ("conf.low" %in% names(out) && "conf.high" %in% names(out)) {
+    conf_vars <- names(out)[stringr::str_detect(names(out), "%")]
+    out <- out %>% dplyr::select(-dplyr::all_of(conf_vars))
+  } else {
+    # Rename percentage columns if they're the only CI columns
+    conf_vars <- names(out)[stringr::str_detect(names(out), "%")]
+    names(out)[names(out) %in% conf_vars] <- c("conf.low", "conf.high")
+  }
+
   out <- out %>% dplyr::select("term", order(names(.)))
   return(out)
 }

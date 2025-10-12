@@ -131,7 +131,7 @@ svy_cohen_d_pair <- function(data, dv, iv, pair = NULL, ttest = TRUE, print = FA
     t <- t %>%
       dplyr::mutate(
         dplyr::across(
-          c(.data$t, .data$mean_diff, .data$mean_diff_ci.low, .data$mean_diff_ci.high),
+          c("t", "mean_diff", "mean_diff_ci.low", "mean_diff_ci.high"),
           ~ .x * -1
         )
       )

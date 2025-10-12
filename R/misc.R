@@ -311,6 +311,9 @@ scale_weighted <- function(x, w, na.rm = TRUE) {
   if (na.rm) {
     valid_indices <- !is.na(x) & !is.na(w)
   } else {
+    if (any(is.na(x)) || any(is.na(w))) {
+      cli::cli_abort("`x` and `w` must not contain NA when `na.rm = FALSE`.")
+    }
     valid_indices <- rep(TRUE, length(x))
   }
 
@@ -321,19 +324,25 @@ scale_weighted <- function(x, w, na.rm = TRUE) {
     return(rep(NA_real_, length(x)))
   }
 
-  weighted_mean <- stats::weighted.mean(x_valid, w_valid)
-  weighted_cov <- stats::cov.wt(as.matrix(x_valid), wt = w_valid)$cov[1, 1]
+  total_weight <- sum(w_valid)
+  if (is.na(total_weight) || total_weight <= 0) {
+    cli::cli_abort("`w` must sum to a positive, non-missing value.")
+  }
 
-  if (is.na(weighted_cov) || isTRUE(all.equal(weighted_cov, 0))) {
+  weighted_mean <- sum(x_valid * w_valid) / total_weight
+  centered <- x_valid - weighted_mean
+  weighted_var <- sum(w_valid * centered^2) / total_weight
+
+  if (is.na(weighted_var) || isTRUE(all.equal(weighted_var, 0))) {
     out <- rep(0, length(x))
     out[!valid_indices] <- NA_real_
     return(out)
   }
 
-  weighted_sd <- sqrt(weighted_cov)
+  weighted_sd <- sqrt(weighted_var)
 
   out <- rep(NA_real_, length(x))
-  out[valid_indices] <- (x_valid - weighted_mean) / weighted_sd
+  out[valid_indices] <- centered / weighted_sd
   out
 }
 
@@ -357,7 +366,7 @@ to_tribble <- function(x, show = FALSE, digits = 5, to_clip = interactive()) {
   no_cols <- ncol(x)
   x %<>% dplyr::mutate_if(is.factor, as.character)
   x %<>% dplyr::mutate_if(is.character, function(x) paste0('"', x, '"'))
-  x %<>% dplyr::mutate_if(is.numeric, function(x) round(x, digits))
+  x %<>% dplyr::mutate_if(is.numeric, function(x) .round_dispatch(x, digits))
 
   lengths <- pmax(
     purrr::map_int(x, ~ max(nchar(.x, keepNA = FALSE))),
@@ -735,7 +744,7 @@ l2v <- line_to_vector
 #' @export
 
 na_share <- function(x, round = 2) {
-  (sum(is.na(x)) / length(x)) %>% round(round)
+  .round_dispatch(sum(is.na(x)) / length(x), round)
 }
 
 rm_na <- function(x) {

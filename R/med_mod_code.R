@@ -168,7 +168,7 @@ run_mediation <- function(data, X, Y, Ms, CVs = NULL, standardized_all = TRUE,
     t() %>%
     data.frame() %>%
     tibble::rownames_to_column("parameter") %>%
-    tidyr::gather(-"parameter", key = "rep", value = "coef") %>%
+    tidyr::pivot_longer(cols = -"parameter", names_to = "rep", values_to = "coef") %>%
     dplyr::group_by(.data$parameter) %>%
     dplyr::summarise(est = mean(.data$coef), se = sd(.data$coef),
                      pvalue = ifelse(.data$est > 0, mean(.data$coef < 0) * 2, mean(.data$coef > 0) * 2),
@@ -179,7 +179,7 @@ run_mediation <- function(data, X, Y, Ms, CVs = NULL, standardized_all = TRUE,
 
   CV_res <- bs_CVs %>%
     tibble::rownames_to_column("parameter") %>%
-    tidyr::gather(-"parameter", key = "rep", value = "coef") %>%
+    tidyr::pivot_longer(cols = -"parameter", names_to = "rep", values_to = "coef") %>%
     dplyr::group_by(.data$parameter) %>%
     dplyr::summarise(est = mean(.data$coef), se = sd(.data$coef),
                      pvalue = ifelse(.data$est > 0, mean(.data$coef < 0) * 2, mean(.data$coef > 0) * 2),
