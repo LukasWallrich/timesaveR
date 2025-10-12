@@ -19,3 +19,4 @@ A numeric vector of the same length as x with weighted Z-scores.
 \description{
 Create a Z-score (standardize) for a vector using weights.
 }
+\keyword{internal}
