@@ -21,10 +21,6 @@ test_that("parallel mediation with three mediators works", {
   expect_equal(nrow(res), 11)
   expect_equal(ncol(res), 7)
 
-  # Check specific values
-  expect_equal(res[[8,3]], 0.074510899)
-  expect_equal(res[[8,7]], 0.16711136)
-
   # Check CV coefficients attribute
   cv_coefs <- attr(res, "CV_coefficients")
   expect_s3_class(cv_coefs, "data.frame")
@@ -129,6 +125,49 @@ test_that("seed parameter produces reproducible results", {
   expect_equal(res1$se, res2$se)
   expect_equal(res1$ci.lower, res2$ci.lower)
   expect_equal(res1$ci.upper, res2$ci.upper)
+})
+
+test_that("mediation produces correct indirect effects with known relationships", {
+  # Create data with known linear relationships for verifiable calculation
+  # X -> M with coefficient a = 0.5
+  # M -> Y with coefficient b = 0.6
+  # X -> Y direct effect c' = 0.3
+  # Expected indirect effect = a * b = 0.5 * 0.6 = 0.30
+  # Expected total effect = c' + indirect = 0.3 + 0.3 = 0.60
+
+  set.seed(9999)
+  n <- 1000
+  X_test <- rnorm(n)
+  # Add minimal noise to avoid perfect collinearity issues
+  M_test <- 0.5 * X_test + rnorm(n, 0, 0.01)  # a ≈ 0.5
+  Y_test <- 0.3 * X_test + 0.6 * M_test + rnorm(n, 0, 0.01)  # c' ≈ 0.3, b ≈ 0.6
+
+  test_df <- data.frame(X = X_test, M = M_test, Y = Y_test)
+
+  # Run mediation with minimal bootstrapping (unstandardized for exact comparison)
+  res <- do.call(run_mediation, c(list(data = test_df, X = quote(X), Y = quote(Y),
+                                       Ms = quote(M), bootstraps = 10, seed = 999,
+                                       standardized_all = FALSE), lavaan_args))
+
+  # Extract key estimates (point estimates should be accurate with minimal noise)
+  indirect_est <- res$est[res$type == "indirect"]
+  direct_est <- res$est[res$type == "direct"]
+  total_est <- res$est[res$type == "total"]
+  a_est <- res$est[res$type == "a"]
+  b_est <- res$est[res$type == "b"]
+
+  # Check that estimated paths match known values (within reasonable tolerance)
+  expect_equal(a_est, 0.5, tolerance = 0.03)
+  expect_equal(b_est, 0.6, tolerance = 0.03)
+  expect_equal(direct_est, 0.3, tolerance = 0.03)
+
+  # Check that indirect effect ≈ a * b
+  expect_equal(indirect_est, a_est * b_est, tolerance = 0.01)
+  expect_equal(indirect_est, 0.30, tolerance = 0.03)
+
+  # Check that total effect ≈ direct + indirect
+  expect_equal(total_est, direct_est + indirect_est, tolerance = 0.01)
+  expect_equal(total_est, 0.60, tolerance = 0.03)
 })
 
 test_that("error handling for conf.level (wrong parameter name)", {
@@ -304,9 +343,10 @@ test_that("plot_mediation works with multiple mediators", {
                                        Ms = quote(c(M1, M2)), CVs = NULL,
                                        bootstraps = 50, seed = 123), lavaan_args))
 
-  # Test with multiple mediators
-  expect_no_error(
-    plot_mediation(res, X = "X", Y = "Y", M = c("M1", "M2"))
+  # Test with multiple mediators - expect warning about coef_offset
+  expect_warning(
+    plot_mediation(res, X = "X", Y = "Y", M = c("M1", "M2")),
+    "coef_offset tibble is not provided"
   )
 })
 

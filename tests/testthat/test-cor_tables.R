@@ -36,8 +36,8 @@ ess_health_mi_long <- complete(ess_health_mi, "long", include = TRUE)
 mi_cor_matrix <- cor_matrix_mi(ess_health_mi_long)
 mi_cor_matrix_weighted <- cor_matrix_mi(ess_health_mi_long, weights = pspwght)
 
-# Perform FIML correlation matrix
-fiml_cor_matrix <- cor_matrix(ess_health_sample, missing = "fiml")
+# Perform FIML correlation matrix - suppress lavaan variance scaling warning
+fiml_cor_matrix <- suppressWarnings(cor_matrix(ess_health_sample, missing = "fiml"))
 
 
 # Tests for cor_matrix functions
@@ -534,8 +534,11 @@ test_that("plot_distributions applies custom theme", {
 
 # Tests for gt_add_plots
 test_that("gt_add_plots adds plots to gt table", {
-  cor_tab <- cor_matrix(mtcars[, 1:3]) %>%
-    report_cor_table(extras = tibble::tibble(Distributions = 1:3))
+  expect_warning(
+    cor_tab <- cor_matrix(mtcars[, 1:3]) %>%
+      report_cor_table(extras = tibble::tibble(Distributions = 1:3)),
+    "does not have a row_names column"
+  )
   plots <- plot_distributions(mtcars[, 1:3])
   result <- gt_add_plots(cor_tab, plots, 3)
   expect_s3_class(result, "gt_tbl")

@@ -9,7 +9,8 @@ set.seed(300688)
 imp <- mice(nhanes)
 
 mod1 <- with(imp, lm(bmi ~ age))
-mod2 <- with(imp, lm_std(bmi ~ age))
+# Suppress warning about few distinct values in age variable (expected for this test data)
+mod2 <- suppressWarnings(with(imp, lm_std(bmi ~ age)))
 
 tab <- report_lm_with_std(mod1, mod2)
 

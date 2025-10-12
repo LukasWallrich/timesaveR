@@ -105,8 +105,10 @@ test_that("cut_p works with different tie methods", {
   x_in_order <- cut_p(c(1, 1, 2, 2, 3, 1, 1), p = c(.4, .6), ties.method = "in_order", verbose = FALSE)
   expect_equal(length(levels(x_in_order)), 2)
   
-  expect(dplyr::last(x_random) != dplyr::last(x_in_order), 
-         "Random and in_order tie methods should yield different results")
+  expect_true(
+    any(as.character(x_random) != as.character(x_in_order)),
+    "Random and in_order tie methods should yield different results"
+  )
   
   expect_error(cut_p(c(1, 2, 3), p = c(.5, .5), ties.method = "invalid"))
 })

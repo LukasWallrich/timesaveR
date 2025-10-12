@@ -177,7 +177,7 @@ test_that("report_cat_vars respects alpha_level parameter", {
   expect_s3_class(result_00001$descr, "data.frame")
 
   # At alpha = 0.00001, groups should not be different
-  expect_equal(length(unique(result_01$descr$letters)), 1)
+  expect_equal(length(unique(result_00001$descr$letters)), 1)
 })
 
 test_that("report_cat_vars handles custom notes", {

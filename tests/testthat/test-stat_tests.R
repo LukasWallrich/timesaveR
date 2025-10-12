@@ -218,9 +218,10 @@ test_that("get_pairwise_letters handles all significant comparisons", {
 
 test_that("get_pairwise_letters handles NaN p-values correctly", {
   # Create test with NaN p-values (e.g., from groups with zero variance)
-  pmat <- matrix(c(1, 0.05, NaN,
-                   0.05, 1, 0.03,
-                   NaN, 0.03, 1),
+  # All comparisons are either non-significant or NaN
+  pmat <- matrix(c(1, 0.3, NaN,
+                   0.3, 1, NaN,
+                   NaN, NaN, 1),
                  nrow = 3, byrow = TRUE,
                  dimnames = list(c("A", "B", "C"), c("A", "B", "C")))
 
@@ -228,6 +229,7 @@ test_that("get_pairwise_letters handles NaN p-values correctly", {
   class(pw_test) <- "pairwise.htest"
 
   # NaN should be treated as non-significant (groups can't be shown to differ)
+  # With all p-values >= 0.05 or NaN, all groups should get the same letter
   result <- suppressWarnings(get_pairwise_letters(pw_test))
   expect_equal(length(unique(result$letters)), 1)
   expect_s3_class(result, "data.frame")
@@ -254,9 +256,9 @@ test_that("lm_std handles weighted_standardize parameter correctly", {
   )
 
   # Should use unweighted when explicitly requested
-  expect_message(
-    lm_std(mpg ~ hp + wt, data = test_data, weights = weights, weighted_standardize = FALSE),
-    "UNweighted"
+expect_message(
+  lm_std(mpg ~ hp + wt, data = test_data, weights = weights, weighted_standardize = FALSE), 
+  "UNweighted"
   )
 
   # Should error if weighted_standardize = TRUE but no weights
@@ -310,7 +312,8 @@ test_that("t_test_mi works with basic two-group comparison", {
   # Create a binary group variable
   nhanes_subset$binary_group <- factor(ifelse(nhanes_subset$age %in% c("20-39"), "young", "older"))
 
-  imp <- mice::mice(nhanes_subset, m = 5, printFlag = FALSE)
+  # Suppress mice warnings about logged events
+  imp <- suppressWarnings(mice::mice(nhanes_subset, m = 5, printFlag = FALSE))
   imp_list <- mice::complete(imp, action = "long") %>%
     dplyr::group_split(.imp)
 

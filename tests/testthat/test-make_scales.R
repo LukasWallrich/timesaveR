@@ -46,14 +46,14 @@ scale2 <- make_scale_mi(ess_health_mi, c("cgtsmke", "dosprt", "health"), "health
 test_that("make_scale_mi works and returns expected structure", {
   # Test basic functionality without exact value matching (due to seed issues on GH)
   expect_type(scale1, "list")
-  expect_true("scale" %in% names(scale1))
+  expect_true("scores" %in% names(scale1))
   expect_true("descriptives" %in% names(scale1))
 
   # Check descriptives structure
   desc <- scale1$descriptives
   expect_true("reliability" %in% names(desc))
   expect_true("mean" %in% names(desc))
-  expect_true("sd" %in% names(desc))
+  expect_true("SD" %in% names(desc))
   expect_true(is.numeric(desc$reliability))
   expect_true(is.numeric(desc$mean))
 

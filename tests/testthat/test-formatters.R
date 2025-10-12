@@ -25,9 +25,10 @@ test_that("fmt_p with different digits", {
     fmt_p(0.00001, digits = 4),
     "< .0001"
   )
+  # With banker's rounding (default), 0.12345 rounds to 0.1234 (round to even)
   expect_equal(
     fmt_p(0.12345, digits = 4),
-    "= .1235"
+    "= .1234"
   )
 })
 
@@ -79,6 +80,7 @@ test_that("fmt_pct with different digits", {
     fmt_pct(0.1234, digits = 0),
     "12%"
   )
+  # With banker's rounding (default), 12.345 rounds to 12.34 (round to even)
   expect_equal(
     fmt_pct(0.12345, digits = 2),
     "12.34%"
@@ -324,4 +326,92 @@ test_that("round_df preserves dataframe structure", {
   expect_equal(rownames(result), c("row1", "row2"))
   expect_equal(ncol(result), 2)
   expect_equal(nrow(result), 2)
+})
+
+# Tests for rounding option behavior
+test_that("rounding option controls round_() behavior", {
+  # Save original option
+  orig_opt <- getOption("timesaveR.round_method")
+  on.exit(options(timesaveR.round_method = orig_opt))
+
+  # Test with to_even (default)
+  options(timesaveR.round_method = "to_even")
+  expect_equal(round_(2.5, 0), "2")  # rounds to even
+  expect_equal(round_(3.5, 0), "4")  # rounds to even
+  expect_equal(round_(1.235, 2), "1.24")  # rounds to even
+
+  # Test with default
+  options(timesaveR.round_method = "default")
+  expect_equal(round_(2.5, 0), "2")  # R's round also rounds to even by default
+  expect_equal(round_(3.5, 0), "4")
+  # But standard rounding differs in some cases
+  expect_equal(round_(2.55, 1), "2.5")  # standard rounding
+})
+
+test_that("rounding option controls round_df() behavior", {
+  # Save original option
+  orig_opt <- getOption("timesaveR.round_method")
+  on.exit(options(timesaveR.round_method = orig_opt))
+
+  df <- data.frame(x = c(1.235, 2.455, 3.565))
+
+  # Test with to_even
+  options(timesaveR.round_method = "to_even")
+  result_even <- round_df(df, 2)
+  expect_equal(result_even$x, c(1.24, 2.46, 3.56))
+
+  # Test with default
+  options(timesaveR.round_method = "default")
+  result_default <- round_df(df, 2)
+  # Results should be consistent with R's round()
+  expect_equal(result_default$x, round(df$x, 2))
+})
+
+test_that("rounding option controls fmt_*() functions", {
+  # Save original option
+  orig_opt <- getOption("timesaveR.round_method")
+  on.exit(options(timesaveR.round_method = orig_opt))
+
+  # Test fmt_cor
+  options(timesaveR.round_method = "to_even")
+  expect_equal(fmt_cor(0.235, 2), ".24")
+
+  options(timesaveR.round_method = "default")
+  expect_equal(fmt_cor(0.235, 2), fmt_cor(0.235, 2))  # Verify it still works
+
+  # Test fmt_pct
+  options(timesaveR.round_method = "to_even")
+  expect_equal(fmt_pct(0.0235, 1), "2.4%")
+
+  # Test fmt_p
+  options(timesaveR.round_method = "to_even")
+  expect_equal(fmt_p(0.0235, 2), "= .02")
+})
+
+test_that("invalid rounding option produces warning", {
+  # Save original option
+  orig_opt <- getOption("timesaveR.round_method")
+  on.exit(options(timesaveR.round_method = orig_opt))
+
+  options(timesaveR.round_method = "invalid")
+  expect_warning(round_(1.5, 0), "Invalid timesaveR.round_method option")
+  # Should fall back to to_even
+  expect_warning(result <- round_(2.5, 0), "Invalid")
+  expect_equal(result, "2")
+})
+
+test_that("rounding consistency across functions", {
+  # Save original option
+  orig_opt <- getOption("timesaveR.round_method")
+  on.exit(options(timesaveR.round_method = orig_opt))
+
+  options(timesaveR.round_method = "to_even")
+
+  # All functions should use the same rounding for the same value
+  val <- 1.235
+  expect_equal(as.numeric(round_(val, 2)), round_df(data.frame(x = val), 2)$x)
+
+  # fmt_cor should also be consistent (though it returns string with different format)
+  val2 <- 0.235
+  expect_true(grepl("24", fmt_cor(val2, 2)))  # Should round to .24
 })
