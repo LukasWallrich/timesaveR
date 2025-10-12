@@ -32,5 +32,4 @@ library(dplyr)
 
 pwtt <- pairwise.t.test(airquality$Ozone, airquality$Month)
 get_pairwise_letters(pwtt)
-
 }
