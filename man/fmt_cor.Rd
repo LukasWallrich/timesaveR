@@ -12,7 +12,9 @@ fmt_cor(cor_value, digits = 2)
 \item{digits}{Number of significant digits, defaults to 2}
 }
 \description{
-Format numbers as correlation coefficients, by rounding them and removing the leading 0
+Format numbers as correlation coefficients, by rounding them and removing the leading 0.
+Respects the \code{timesaveR.round_method} option for consistent rounding behavior
+(see \code{\link[=round_]{round_()}} for details).
 }
 \examples{
 fmt_cor(0.127)

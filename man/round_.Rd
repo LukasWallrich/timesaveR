@@ -20,6 +20,17 @@ all numbers to the same width. \code{round()} and similar functions drop
 trailing zeros - this version keeps them and thus rounds 1.201 to 1.20
 rather than 1.2 when 2 digits are requested.
 }
+\details{
+By default, uses "round half to even" (banker's rounding), but the rounding
+method can be changed via the \code{timesaveR.round_method} option (see Details).
+
+The rounding method is controlled by the \code{timesaveR.round_method} option:
+\itemize{
+\item \code{"to_even"} (default): Round half to even (banker's rounding)
+\item \code{"default"}: Standard R rounding (round half away from zero)
+}
+Set via \code{options(timesaveR.round_method = "default")} to change for your session.
+}
 \examples{
 round_(1.201, 2)
 round_(c(1.2, 3.456, 7.8), digits = 2)

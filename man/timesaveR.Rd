@@ -13,6 +13,16 @@ correlations and distributions, reporting linear regression models with
 standardized coefficients and F-change comparisons, as well as plotting
 mediation models.
 }
+\section{Package Options}{
+
+The package recognizes the following option:
+\describe{
+\item{\code{timesaveR.round_method}}{Controls rounding behavior throughout the
+package. Options are \code{"to_even"} (default; banker's rounding) or \code{"default"}
+(standard R rounding). Set via \code{options(timesaveR.round_method = "default")}.}
+}
+}
+
 \seealso{
 Useful links:
 \itemize{

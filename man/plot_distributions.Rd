@@ -13,7 +13,10 @@ plot_distributions(
 )
 }
 \arguments{
-\item{data}{A dataframe - if var_names is NULL, all numeric variables in x will be used, otherwise those included in var_names will be selected}
+\item{data}{A dataframe or survey design object. If var_names is NULL, all numeric
+variables in data will be used, otherwise those included in var_names will be selected.
+For survey design objects, survey weights will be properly incorporated using
+\code{svyhist()} and \code{svysmooth()}.}
 
 \item{var_names}{A named character vector with new variable names or a tibble as provided by \code{\link[=get_rename_tribbles]{get_rename_tribbles()}}
 If provided, only variables included here will be plotted. Apart from that, this will only determine the names of the list items, so it is most relevant if the output is to be combined with a correlation matrix, e.g., from \code{cor_matrix()}}
@@ -31,12 +34,21 @@ A list of plots
 }
 \description{
 Particularly in exploratory data analysis, it can be instructive to see histograms
-or density charts.
+or density charts. This function works with both regular data frames and survey
+design objects, properly accounting for survey weights when present.
 }
 \examples{
 \dontrun{
+# Regular data
 plot_distributions(mtcars, var_names = c(wt = "Weight", mpg = "Efficiency",
                                          am = "Transmission", gear = "Gears"))
+
+# Survey data
+library(survey)
+library(srvyr)
+data(api)
+dstrat <- apistrat \%>\% as_survey_design(1, strata = stype, fpc = fpc, weight = pw)
+plot_distributions(dstrat, var_names = c(enroll = "Enrollment", api00 = "API Score"))
 }
 
 }

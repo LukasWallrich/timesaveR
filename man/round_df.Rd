@@ -15,5 +15,15 @@ round_df(df, digits = 2)
 \item{digits}{Number of digits, defaults to 2}
 }
 \description{
-Rounds all numeric columns in dataframe, using "round half to even" (aka banker's rounding)
+Rounds all numeric columns in dataframe. By default, uses "round half to even"
+(aka banker's rounding), but the rounding method can be changed via the
+\code{timesaveR.round_method} option (see Details).
+}
+\details{
+The rounding method is controlled by the \code{timesaveR.round_method} option:
+\itemize{
+\item \code{"to_even"} (default): Round half to even (banker's rounding)
+\item \code{"default"}: Standard R rounding (round half away from zero)
+}
+Set via \code{options(timesaveR.round_method = "default")} to change for your session.
 }

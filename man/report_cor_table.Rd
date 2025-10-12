@@ -40,9 +40,12 @@ function has been removed. Please generate CIs in \code{cor_matrix()}.}
 
 \item{n}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#defunct}{\figure{lifecycle-defunct.svg}{options: alt='[Defunct]'}}}{\strong{[Defunct]}} No longer used.}
 
-\item{add_distributions}{Logical. Add graphs showing variable distributions?}
+\item{add_distributions}{Logical. Add graphs showing variable distributions?
+Works with both regular data frames and survey design objects.}
 
-\item{data}{Original data, only needed if \code{add_distributions = TRUE}.}
+\item{data}{Original data, only needed if \code{add_distributions = TRUE}. Can be a
+regular data frame or a survey design object. For survey data, distributions
+will be properly weighted using \code{svyhist()} and \code{svysmooth()}.}
 
 \item{filename}{The file name to create on disk. Include '.html' extension to
 best preserve formatting (see \code{gt::gtsave} for details).}
@@ -94,5 +97,17 @@ cor_matrix(ess_health, var_names = c(health = "Health",
                                       dosprt = "Physical activity",
                                       etfruit = "Fruit consumption")) \%>\%
   report_cor_table()
+
+# With survey data and distributions
+\dontrun{
+library(survey)
+library(srvyr)
+data(api)
+dstrat <- apistrat \%>\% as_survey_design(1, strata = stype, fpc = fpc, weight = pw)
+svy_cor_matrix(dstrat, var_names = c(enroll = "Enrollment",
+                                      api00 = "API 2000",
+                                      api99 = "API 1999")) \%>\%
+  report_cor_table(add_distributions = TRUE, data = dstrat)
+}
 
 }

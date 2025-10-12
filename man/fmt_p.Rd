@@ -20,6 +20,10 @@ Formats p-value in line with APA standard, returning it without leading 0 and
 as < .001 (or below the smallest value expressible with the given number of
 significant digits) and > .99 when it is extremely small or large.
 }
+\details{
+Respects the \code{timesaveR.round_method} option for consistent rounding behavior
+(see \code{\link[=round_]{round_()}} for details).
+}
 \examples{
 fmt_p(0.04355)
 fmt_p(0.0001)
