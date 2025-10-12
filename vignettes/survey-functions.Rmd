@@ -26,7 +26,7 @@ Large-scale social surveys often do not aim to recruit random samples, but rathe
 
 # Survey weights in timesaveR
 
-Many functions in the `timesaveR` package have alternatives that accept survey objects instead of dataframes. These functions are designated by the `svy_` prefix. To use them, you will first need to use the `srvyr` package to create a survey object based on the dataframe.
+Many functions in the `timesaveR` package have alternatives that accept survey objects instead of dataframes. These functions are designated by the `svy_` prefix. The `svy_` functions ensure that all calculations (means, correlations, tests) account for survey weights, providing accurate population estimates rather than sample statistics. To use them, you will first need to use the `srvyr` package to create a survey object based on the dataframe.
 
 Below, I show some analyses of the European Social Survey 2014 data using the correct survey weights.
 
@@ -60,9 +60,10 @@ Then, the `svy_make_scale()` command can be used to **calculate scale scores and
 
 ```{r}
 
-ess_survey <- svy_make_scale(ess_survey, depression_items, 
-                             "depression", reversed = depression_reversed) %>% 
-  svy_make_scale(healthy_eating_items, "healthy_eating", r_key = -1)
+ess_survey <- svy_make_scale(ess_survey, depression_items,
+                             "depression", reversed = depression_reversed) %>%
+  svy_make_scale(healthy_eating_items, "healthy_eating",
+                 r_key = -1)  # r_key = -1 reverses the entire scale after creation
 
 ```
 
@@ -80,8 +81,8 @@ ess_survey %>%
 It is often helpful to use different variable names for display. For this, functions in the package typically accept rename tibbles that contain an `old` and a `new` column. By using the `tibble::tribble` notation, they can be entered more cleanly than named character vectors, and the `get_rename_tribble()` helper function creates most of the code.
 
 ```{r}
-#Call 
-# get_rename_tribbles(ess_health, agea, health, depression, healthy_eating, which = "vars") 
+# Call
+# get_rename_tribbles(ess_health, agea, health, depression, healthy_eating, which = "vars")
 # to get most of this code
 
 var_renames <- tibble::tribble(
@@ -92,13 +93,28 @@ var_renames <- tibble::tribble(
    "healthy_eating",  "Healthy eating"
 )
 
-# If var_names are provided, only variables included in that argument 
+# If var_names are provided, only variables included in that argument
 # are included in the correlation table
-ess_survey %>% svy_cor_matrix(var_names = var_renames) %>% 
+ess_survey %>% svy_cor_matrix(var_names = var_renames) %>%
   report_cor_table()
 ```
 
-*For now, we cannot `add_distributions` to the correlation table while using survey weights.*
+## Adding distribution plots
+
+You can add distribution plots to correlation tables for survey data. These distributions are properly weighted using `svyhist()` for discrete variables and `svysmooth()` for continuous variables, ensuring they reflect the population rather than just the sample composition.
+
+```{r}
+ess_survey %>% svy_cor_matrix(var_names = var_renames) %>%
+  report_cor_table(add_distributions = TRUE, data = ess_survey)
+```
+
+The `plot_distributions()` function can also be used directly with survey data:
+
+```{r}
+plot_distributions(ess_survey, var_names = var_renames)
+```
+
+These plots properly account for survey weights, so the distributions shown represent population estimates rather than raw sample frequencies.
 
 # Testing significance of difference between two groups
 
@@ -107,6 +123,7 @@ Cohen's *d* as a measure of effect size, or subsetting to compare just two level
 there are more in the data is less trivial, and is where `svy_cohen_d_pair()` comes in.
 
 ```{r}
+# Returns Cohen's d in the 'd' column
 svy_cohen_d_pair(ess_survey, "health", "gndr")
 svy_cohen_d_pair(ess_survey, "health", "cntry", pair = c("DE", "GB"))
 ```

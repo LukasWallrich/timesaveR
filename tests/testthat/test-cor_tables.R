@@ -289,7 +289,7 @@ test_that("cor_matrix works with different correlation methods", {
 test_that("cor_matrix works with different adjustment methods", {
   adjusted_cor <- cor_matrix(mtcars, adjust = "bonferroni")
   raw_cor <- cor_matrix(mtcars, adjust = "none")
-  expect_false()(any(adjusted_cor$p.values  raw_cor$p.values, na.rm = TRUE))
+  expect_true(all(adjusted_cor$p.values >= raw_cor$p.values, na.rm = TRUE))
   expect_s3_class(adjusted_cor, "cor_matrix")
 })
 
@@ -434,9 +434,10 @@ test_that("pcor_matrix calculates partial correlations correctly", {
   # Partial correlation should be different from regular correlation
   expect_false(isTRUE(all.equal(regular_cor$cors["mpg", "hp"], partial_cor$cors["mpg", "hp"])))
 
-  # Partial correlation should be identical to lm_std approach
-  lm_fit <- with(mtcars, lm_std(mpg ~ hp + wt))
-  expected_partial <- summary(lm_fit)$estimate["hp"]
+  # Partial correlation should match manual calculation (correlation of residuals)
+  mpg_resid <- residuals(lm(mpg ~ wt, data = mtcars))
+  hp_resid <- residuals(lm(hp ~ wt, data = mtcars))
+  expected_partial <- cor(mpg_resid, hp_resid)
   computed_partial <- partial_cor$cors["mpg", "hp"]
   expect_equal(computed_partial, expected_partial)
 })
@@ -568,9 +569,10 @@ test_that("svy_cor_matrix handles var_names as tibble", {
 
 test_that("svy_cor_matrix requires numeric columns", {
   # This should work but just verify that numeric columns are required
-  df <- data.frame(x = 1:10, y = 11:20, wt = rep(1, 10))
+  df <- data.frame(x = 1:10, y = 11:20, z = 21:30, wt = rep(1, 10))
   svy <- as_survey_design(df, weights = wt)
-  result <- svy_cor_matrix(svy)
+  # Select only the variables of interest, excluding the weight column
+  result <- svy_cor_matrix(svy, var_names = c("x" = "x", "y" = "y", "z" = "z"))
   expect_true("cors" %in% names(result))
 })
 
@@ -666,11 +668,9 @@ test_that("report_cor_table validates required elements", {
   )
 })
 
-test_that("report_cor_table errors when add_distributions = TRUE with survey data", {
-  expect_error(
-    report_cor_table(ess_survey_cor_matrix, add_distributions = TRUE, data = ess_survey),
-    "distributions cannot be shown for weighted survey data"
-  )
+test_that("report_cor_table works with add_distributions = TRUE for survey data", {
+  result <- report_cor_table(ess_survey_cor_matrix, add_distributions = TRUE, data = ess_survey)
+  expect_s3_class(result, "gt_tbl")
 })
 
 test_that("report_cor_table works with apa_style = FALSE", {
@@ -686,6 +686,54 @@ test_that("report_cor_table works with custom notes", {
 test_that("report_cor_table works with add_title = TRUE", {
   result <- report_cor_table(mtcars_cor_matrix, add_title = TRUE)
   expect_s3_class(result, "gt_tbl")
+})
+
+# Tests for survey distribution plots
+test_that("plot_distributions works with survey data - auto mode", {
+  plots <- plot_distributions(ess_survey, var_names = c(health = "Health", agea = "Age"))
+  expect_type(plots, "list")
+  expect_length(plots, 2)
+  expect_s3_class(plots[[1]], "gg")
+  expect_s3_class(plots[[2]], "gg")
+})
+
+test_that("plot_distributions works with survey data - histogram mode", {
+  plots <- plot_distributions(ess_survey, var_names = c(health = "Health"),
+                              plot_type = "histogram")
+  expect_type(plots, "list")
+  expect_s3_class(plots[[1]], "gg")
+})
+
+test_that("plot_distributions works with survey data - density mode", {
+  # Use a continuous variable for density
+  plots <- plot_distributions(ess_survey, var_names = c(agea = "Age"),
+                              plot_type = "density")
+  expect_type(plots, "list")
+  expect_s3_class(plots[[1]], "gg")
+})
+
+test_that("plot_distributions handles survey data with custom theme", {
+  custom_theme <- ggplot2::theme_minimal()
+  plots <- plot_distributions(ess_survey, var_names = c(health = "Health"),
+                              plot_theme = custom_theme)
+  expect_s3_class(plots[[1]], "gg")
+})
+
+test_that("plot_distributions aligns histogram y-axes for survey data", {
+  plots <- plot_distributions(ess_survey, var_names = c(health = "Health", dosprt = "Sport"),
+                              plot_type = "histogram", hist_align_y = TRUE)
+  expect_length(plots, 2)
+  expect_s3_class(plots[[1]], "gg")
+  expect_s3_class(plots[[2]], "gg")
+})
+
+test_that("plot_distributions handles var_names as tibble for survey data", {
+  var_names_df <- tibble::tibble(
+    old = c("health", "agea"),
+    new = c("Health", "Age")
+  )
+  plots <- plot_distributions(ess_survey, var_names = var_names_df)
+  expect_named(plots, c("Health", "Age"))
 })
 
 

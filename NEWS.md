@@ -12,10 +12,12 @@
 
 ## Enhancements
 
+* `report_cor_table()` and `plot_distributions()` now support survey-weighted data. Distribution plots for survey design objects properly account for sampling weights using `svyhist()` for discrete variables and `svysmooth()` for continuous variables. This ensures that distributions reflect the population rather than just the sample composition.
+* Added package-level rounding option `timesaveR.round_method` to control rounding behavior consistently across all formatting and rounding functions. Set to `"to_even"` (default, banker's rounding) or `"default"` (standard R rounding). Change via `options(timesaveR.round_method = "default")`. This ensures all `round_()`, `round_df()`, `fmt_p()`, `fmt_pct()`, `fmt_cor()`, and related functions use the same rounding method.
 * `make_scale()` now has a `proration_cutoff` argument to specify the maximum share of missing data ignored in each case. This offers a simple way to improve on casewise deletion for handling missing data, without getting scale scores based on an insufficient subset of items. [NB: This is a *breaking* change, earlier versions implicitly had a proration_cutoff of 1, returning scale scores if at least one item was present - which is indefensible when there is a lot of missing data.]
-* Added summary `text` to descriptives returned by `make_scale()` 
+* Added summary `text` to descriptives returned by `make_scale()`
 * Enabled `report_lm_with_std()` to show R2 change for more than one pair of models
-* Added option to use `t.test()`-style formula notion in `pairwise_t_tests()` 
+* Added option to use `t.test()`-style formula notion in `pairwise_t_tests()`
 * Allow automatic reverse-coding in `make_scales()`
 * `report_cor_table()` now ensures correct ordering of extra columns if `row_names` column is included
 * Added `tidy.svy_cor_matrix()` to tidy survey-weighted correlation matrices
@@ -32,6 +34,7 @@
 * `pairwise_t_tests()` can now deal with missing data and labelled arguments (#9)
 * `make_scales()` now correctly reacts to `print_desc` argument
 * `cor_matrix()` now works robustly with `missing = "fiml"` even when some bootstraps do not converge
+* `round_df()` and `round_()` now consistently use round-to-even/banker's rounding
 
 # timesaveR 0.0.2
 

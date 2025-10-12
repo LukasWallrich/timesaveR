@@ -10,7 +10,10 @@
 #' needed if cor_matrix does not contain degrees of freedom (`df`) or numbers of observations (`n`) and confidence
 #' intervals are to be calculated using z-transformations.
 #' @param add_distributions Logical. Add graphs showing variable distributions?
-#' @param data Original data, only needed if `add_distributions = TRUE`.
+#' Works with both regular data frames and survey design objects.
+#' @param data Original data, only needed if `add_distributions = TRUE`. Can be a
+#' regular data frame or a survey design object. For survey data, distributions
+#' will be properly weighted using `svyhist()` and `svysmooth()`.
 #' @param filename The file name to create on disk. Include '.html' extension to
 #' best preserve formatting (see `gt::gtsave` for details).
 #' @inheritDotParams plot_distributions -var_names
@@ -49,6 +52,18 @@
 #'                                       etfruit = "Fruit consumption")) %>%
 #'   report_cor_table()
 #'
+#' # With survey data and distributions
+#' \dontrun{
+#' library(survey)
+#' library(srvyr)
+#' data(api)
+#' dstrat <- apistrat %>% as_survey_design(1, strata = stype, fpc = fpc, weight = pw)
+#' svy_cor_matrix(dstrat, var_names = c(enroll = "Enrollment",
+#'                                       api00 = "API 2000",
+#'                                       api99 = "API 1999")) %>%
+#'   report_cor_table(add_distributions = TRUE, data = dstrat)
+#' }
+#'
 #' @export
 
 report_cor_table <- function(cor_matrix, ci_type = deprecated(),
@@ -84,10 +99,6 @@ report_cor_table <- function(cor_matrix, ci_type = deprecated(),
 
   if (add_distributions && is.null(data)) {
     cli::cli_abort("If {.arg add_distributions} = TRUE, the {.arg data} argument must be provided.")
-  }
-
-  if (add_distributions && "survey.design" %in% class(data)) {
-    cli::cli_abort("Presently, distributions cannot be shown for weighted survey data. Set {.arg add_distributions} to {.val FALSE}.")
   }
 
   if (!is.null(stars) && (!is.numeric(stars) || is.null(names(stars)))) {
@@ -620,11 +631,11 @@ svy_cor_matrix <- function(svy_data, var_names = NULL, ci_level = 0.95) {
   
   if (!is.null(var_names)) {
     svy_data %<>%
-      srvyr::select(dplyr::one_of(names(var_names)))
+      srvyr::select(dplyr::all_of(names(var_names)))
   }
   
   names(svy_data$variables) <- stringr::str_replace_all(names(svy_data$variables), stringr::fixed("_1"), "_.1")
-  
+
   cor_matrix <- jtools::svycor(~., svy_data, na.rm = TRUE, sig.stats = TRUE)
   
   ## --- weighted descriptives -------------------------------------------------
@@ -632,9 +643,9 @@ svy_cor_matrix <- function(svy_data, var_names = NULL, ci_level = 0.95) {
     srvyr::select_if(is.numeric) %>%
     srvyr::summarise_all(list(`1M` = srvyr::survey_mean, `1SD` = srvyr::survey_var), na.rm = TRUE) %>%
     dplyr::select(!dplyr::matches("_se")) %>%
-    tidyr::gather(key = "key", value = "value") %>%
+    tidyr::pivot_longer(cols = everything(), names_to = "key", values_to = "value") %>%
     tidyr::separate(.data$key, into = c("var", "statistic"), sep = "_1") %>%
-    tidyr::spread(.data$statistic, .data$value) %>%
+    tidyr::pivot_wider(names_from = "statistic", values_from = "value") %>%
     dplyr::mutate(SD = sqrt(.data$SD)) %>%
     dplyr::arrange(match(.data$var, rownames(cor_matrix$cors)))
   
@@ -948,12 +959,210 @@ cor_matrix_mi <- function(data, weights = NULL, var_names = NULL, ci_level = 0.9
   lm(y_scaled ~ x_scaled, weights = w_clean)
 }
 
+#' Extract data from survey histogram for ggplot2 conversion
+#'
+#' Internal helper function that captures output from svyhist() and extracts
+#' the histogram data for conversion to ggplot2
+#'
+#' @param formula Formula for the variable to plot
+#' @param design Survey design object
+#' @return A list with breaks, density, and counts
+#' @keywords internal
+#' @noRd
+.extract_svyhist_data <- function(formula, design) {
+  # Capture the histogram output without actually plotting
+  # svyhist returns the histogram object, but it creates plots as a side effect
+  # We need to suppress the plotting by opening a temporary null device
+
+  # Store current device
+  cur_dev <- grDevices::dev.cur()
+
+  # Open a null device to suppress plotting
+  tmp_file <- tempfile(fileext = ".pdf")
+  grDevices::pdf(file = tmp_file)
+  on.exit({
+    grDevices::dev.off()
+    unlink(tmp_file)
+    if (cur_dev > 1) grDevices::dev.set(cur_dev)
+  }, add = TRUE)
+
+  # Call svyhist - it will plot to our null device
+  hist_obj <- survey::svyhist(formula, design)
+
+  list(
+    breaks = hist_obj$breaks,
+    density = hist_obj$density,
+    counts = hist_obj$counts,
+    mids = hist_obj$mids
+  )
+}
+
+#' Extract data from survey density estimation for ggplot2 conversion
+#'
+#' Internal helper function that captures output from svysmooth() and extracts
+#' the density data for conversion to ggplot2
+#'
+#' @param formula Formula for the variable to plot
+#' @param design Survey design object
+#' @return A data frame with x and y coordinates
+#' @keywords internal
+#' @noRd
+.extract_svysmooth_data <- function(formula, design) {
+  # Get the smooth/density estimate
+  smooth_obj <- survey::svysmooth(formula, design, method = "locpoly")
+
+  # Extract x and y coordinates
+  tibble::tibble(
+    x = smooth_obj[[1]]$x,
+    y = smooth_obj[[1]]$y
+  )
+}
+
+#' Create distribution plots for survey data
+#'
+#' Internal function that creates distribution plots for survey design objects,
+#' properly accounting for survey weights using svyhist() and svysmooth()
+#'
+#' @inheritParams plot_distributions
+#' @return A list of ggplot2 plots
+#' @keywords internal
+#' @noRd
+.plot_distributions_svy <- function(data, var_names = NULL, plot_type = c("auto", "histogram", "density"), hist_align_y = FALSE, plot_theme = NULL) {
+
+  # Extract variable data from survey design
+  svy_data <- data$variables %>% dplyr::select_if(is.numeric)
+
+  if (ncol(svy_data) == 0) cli::cli_abort("No numeric columns found - check your input.")
+
+  if (is.data.frame(var_names)) {
+    assert_names(names(var_names), must.include = c("old", "new"))
+    var_names <- var_names$new %>% magrittr::set_names(var_names$old)
+  }
+
+  # Extract the underlying data for determining plot types
+  if (!is.null(var_names)) {
+    # For determining plot types, work with the variable data
+    svy_data <- svy_data[names(var_names)]
+  }
+
+  if (!(plot_type[1] %in% c("auto", "histogram", "density") || test_integerish(plot_type, max.len = 1))) {
+    cli::cli_abort('{.arg plot_type} must be one of {.val auto}, {.val histogram}, {.val density} or a single number')
+  }
+
+  assert(
+    plot_type[1] %in% c("auto", "histogram", "density"),
+    test_integerish(plot_type, max.len = 1)
+  )
+
+  # Determine which variables should use histograms vs density plots
+  plot_hist <- (
+    if (is.numeric(plot_type)) {
+      purrr::map_lgl(svy_data, ~ (unique(.x) %>% rm_na() %>% length()) <= plot_type)
+    } else {
+      switch(plot_type[1],
+             auto = purrr::map_lgl(svy_data, ~ (unique(.x) %>% rm_na() %>% length()) < 10),
+             histogram = rep(TRUE, ncol(svy_data)),
+             density = rep(FALSE, ncol(svy_data))
+      )
+    })
+
+  if (is.null(var_names)) var_names <- names(svy_data)
+  names(var_names) <- names(svy_data)
+
+  # Create plots for each variable
+  plots <- purrr::map2(names(var_names), plot_hist, function(var_name, use_hist) {
+    formula_str <- paste0("~", var_name)
+    formula_obj <- as.formula(formula_str)
+
+    if (use_hist) {
+      # Use survey-weighted histogram
+      hist_data <- .extract_svyhist_data(formula_obj, data)
+
+      # Create data frame for ggplot
+      plot_data <- tibble::tibble(
+        x = hist_data$mids,
+        y = hist_data$density,
+        xmin = hist_data$breaks[-length(hist_data$breaks)],
+        xmax = hist_data$breaks[-1]
+      )
+
+      # Create ggplot histogram
+      out <- ggplot2::ggplot(plot_data) +
+        ggplot2::geom_rect(
+          ggplot2::aes(xmin = xmin, xmax = xmax, ymin = 0, ymax = y),
+          fill = "grey", color = "white", linewidth = 3
+        )
+
+      # Set x-axis breaks
+      breaks <- unique(svy_data[[var_name]]) %>% rm_na()
+      if (length(breaks) <= 5) {
+        out <- out + ggplot2::scale_x_continuous(breaks = breaks)
+      } else {
+        out <- out + ggplot2::scale_x_continuous(breaks = scales::breaks_extended(5))
+      }
+
+      return(out)
+    } else {
+      # Use survey-weighted density estimation
+      tryCatch({
+        density_data <- .extract_svysmooth_data(formula_obj, data)
+
+        ggplot2::ggplot(density_data, ggplot2::aes(x = x, y = y)) +
+          ggplot2::geom_area(fill = "grey", color = "black", linewidth = 0.5)
+      }, error = function(e) {
+        # Fallback to histogram if density estimation fails
+        cli::cli_warn("Density estimation failed for {.field {var_name}}, using histogram instead: {e$message}")
+        hist_data <- .extract_svyhist_data(formula_obj, data)
+
+        plot_data <- tibble::tibble(
+          x = hist_data$mids,
+          y = hist_data$density,
+          xmin = hist_data$breaks[-length(hist_data$breaks)],
+          xmax = hist_data$breaks[-1]
+        )
+
+        ggplot2::ggplot(plot_data) +
+          ggplot2::geom_rect(
+            ggplot2::aes(xmin = xmin, xmax = xmax, ymin = 0, ymax = y),
+            fill = "grey", color = "white", linewidth = 3
+          )
+      })
+    }
+  })
+
+  # Align y-axes for histograms if requested
+  if (hist_align_y) {
+    ymax <- purrr::map_dbl(plots, ~ ggplot2::layer_scales(.x)[["y"]][["range"]][["range"]][2])
+
+    if (any(plot_hist)) {
+      hist_max <- max(ymax[plot_hist])
+      plots[plot_hist] <- purrr::map(plots[plot_hist], ~ .x + ggplot2::ylim(0, hist_max))
+    }
+  }
+
+  # Apply consistent theme
+  plots <- purrr::map(plots, ~ .x + ggplot2::theme_classic() +
+                        ggplot2::theme(axis.title = ggplot2::element_blank(),
+                                      axis.text.y = ggplot2::element_blank(),
+                                      axis.ticks = ggplot2::element_blank(),
+                                      axis.line = ggplot2::element_blank()))
+
+  if (!is.null(plot_theme)) plots <- purrr::map(plots, ~ .x + plot_theme)
+
+  names(plots) <- var_names
+  plots
+}
+
 #' Create distribution charts to show in descriptive table
 #'
 #' Particularly in exploratory data analysis, it can be instructive to see histograms
-#' or density charts.
+#' or density charts. This function works with both regular data frames and survey
+#' design objects, properly accounting for survey weights when present.
 #'
-#' @param data A dataframe - if var_names is NULL, all numeric variables in x will be used, otherwise those included in var_names will be selected
+#' @param data A dataframe or survey design object. If var_names is NULL, all numeric
+#' variables in data will be used, otherwise those included in var_names will be selected.
+#' For survey design objects, survey weights will be properly incorporated using
+#' `svyhist()` and `svysmooth()`.
 #' @param var_names A named character vector with new variable names or a tibble as provided by [get_rename_tribbles()]
 #' If provided, only variables included here will be plotted. Apart from that, this will only determine the names of the list items, so it is most relevant if the output is to be combined with a correlation matrix, e.g., from `cor_matrix()`
 #' @param plot_type Type of plot that should be produced - `histogram` or `density` plot. If `auto`,
@@ -965,11 +1174,29 @@ cor_matrix_mi <- function(data, weights = NULL, var_names = NULL, ci_level = 0.9
 #' @return A list of plots
 #' @examples
 #' \dontrun{
+#' # Regular data
 #' plot_distributions(mtcars, var_names = c(wt = "Weight", mpg = "Efficiency",
 #'                                          am = "Transmission", gear = "Gears"))
+#'
+#' # Survey data
+#' library(survey)
+#' library(srvyr)
+#' data(api)
+#' dstrat <- apistrat %>% as_survey_design(1, strata = stype, fpc = fpc, weight = pw)
+#' plot_distributions(dstrat, var_names = c(enroll = "Enrollment", api00 = "API Score"))
 #' }
 #'
 plot_distributions <- function(data, var_names = NULL, plot_type = c("auto", "histogram", "density"), hist_align_y = FALSE, plot_theme = NULL) {
+
+  # Check if this is survey data
+  is_survey <- inherits(data, "survey.design") || inherits(data, "svyrep.design") || inherits(data, "tbl_svy")
+
+  if (is_survey) {
+    .check_req_packages(c("survey", "srvyr"))
+    return(.plot_distributions_svy(data, var_names, plot_type, hist_align_y, plot_theme))
+  }
+
+  # Original implementation for regular data
   data %<>% dplyr::select_if(is.numeric)
   if (ncol(data) == 0) cli::cli_abort("No numeric columns found - check your input.")
   if (is.data.frame(var_names)) {
