@@ -143,7 +143,7 @@ test_that("pairwise letters work", {
 })
 
 
-x <- paired_t_test_d(iris, "Sepal.Width", "Petal.Length")
+x <- suppressWarnings(paired_t_test_d(iris, "Sepal.Width", "Petal.Length"))
 
 test_that("paired t-test with d works", {
   expect_equal(x$d, -0.35185088)
@@ -375,5 +375,164 @@ test_that("pairwise_t_test_mi p-value adjustment works", {
 
   # Adjusted p-values should be >= unadjusted (more conservative)
   expect_true(all(result_holm$p_value >= result_none$p_value))
+})
+
+# Tests for t_test function ----
+
+test_that("t_test works for one-sample t-test", {
+  result <- t_test(mtcars$mpg, mu = 20)
+
+  expect_s3_class(result, "timesaveR_t_test")
+  expect_equal(result$test_type, "one_sample")
+  expect_true(!is.null(result$cohens_d))
+  expect_true(is.numeric(result$statistic))
+  expect_true(is.numeric(result$p.value))
+
+  # Compare to base t.test
+  base_result <- t.test(mtcars$mpg, mu = 20)
+  expect_equal(result$statistic, unname(base_result$statistic))
+  expect_equal(result$p.value, base_result$p.value)
+
+  # Check Cohen's d calculation
+  expected_d <- (mean(mtcars$mpg) - 20) / sd(mtcars$mpg)
+  expect_equal(result$cohens_d, expected_d)
+})
+
+test_that("t_test works for independent samples with formula", {
+  result <- t_test(mpg ~ am, data = mtcars)
+
+  expect_s3_class(result, "timesaveR_t_test")
+  expect_equal(result$test_type, "independent")
+  expect_true(!is.null(result$cohens_d))
+
+  # Compare to base t.test
+  base_result <- t.test(mpg ~ am, data = mtcars)
+  expect_equal(result$statistic, unname(base_result$statistic))
+  expect_equal(result$p.value, base_result$p.value)
+})
+
+test_that("t_test works for independent samples with vectors", {
+  result <- t_test(mtcars$mpg[mtcars$am == 0], mtcars$mpg[mtcars$am == 1])
+
+  expect_s3_class(result, "timesaveR_t_test")
+  expect_equal(result$test_type, "independent")
+  expect_true(!is.null(result$cohens_d))
+
+  # Compare to base t.test
+  base_result <- t.test(mtcars$mpg[mtcars$am == 0], mtcars$mpg[mtcars$am == 1])
+  expect_equal(result$statistic, unname(base_result$statistic))
+  expect_equal(result$p.value, base_result$p.value)
+})
+
+test_that("t_test works for paired samples", {
+  result <- t_test(iris$Sepal.Width, iris$Petal.Length, paired = TRUE)
+
+  expect_s3_class(result, "timesaveR_t_test")
+  expect_equal(result$test_type, "paired")
+  expect_true(!is.null(result$cohens_d))
+
+  # Compare to base t.test
+  base_result <- t.test(iris$Sepal.Width, iris$Petal.Length, paired = TRUE)
+  expect_equal(result$statistic, unname(base_result$statistic))
+  expect_equal(result$p.value, base_result$p.value)
+
+  # Check Cohen's d calculation
+  diff_vec <- iris$Sepal.Width - iris$Petal.Length
+  expected_d <- mean(diff_vec) / sd(diff_vec)
+  expect_equal(result$cohens_d, expected_d)
+})
+
+test_that("t_test handles var.equal parameter correctly", {
+  result_welch <- t_test(mpg ~ am, data = mtcars, var.equal = FALSE)
+  result_student <- t_test(mpg ~ am, data = mtcars, var.equal = TRUE)
+
+  # Degrees of freedom should differ
+  expect_false(result_welch$parameter == result_student$parameter)
+
+  # Student's t-test should have integer df
+  expect_true(result_student$parameter == (nrow(mtcars) - 2))
+})
+
+test_that("t_test handles alternative hypothesis correctly", {
+  result_two <- t_test(mtcars$mpg, mu = 20, alternative = "two.sided")
+  result_less <- t_test(mtcars$mpg, mu = 20, alternative = "less")
+  result_greater <- t_test(mtcars$mpg, mu = 20, alternative = "greater")
+
+  expect_equal(result_two$alternative, "two.sided")
+  expect_equal(result_less$alternative, "less")
+  expect_equal(result_greater$alternative, "greater")
+
+  # P-values should differ
+  expect_false(result_two$p.value == result_less$p.value)
+})
+
+test_that("t_test handles confidence level correctly", {
+  result_95 <- t_test(mtcars$mpg, mu = 20, conf.level = 0.95)
+  result_99 <- t_test(mtcars$mpg, mu = 20, conf.level = 0.99)
+
+  # 99% CI should be wider than 95% CI
+  width_95 <- result_95$conf.high - result_95$conf.low
+  width_99 <- result_99$conf.high - result_99$conf.low
+  expect_true(width_99 > width_95)
+})
+
+test_that("t_test errors with invalid formula", {
+  expect_error(
+    t_test(mpg ~ am + cyl, data = mtcars),
+    "Formula must be of the form: outcome ~ group"
+  )
+})
+
+test_that("t_test errors with non-numeric outcome", {
+  test_data <- mtcars
+  test_data$char_var <- as.character(test_data$mpg)
+
+  expect_error(
+    t_test(char_var ~ am, data = test_data),
+    "Outcome variable must be numeric"
+  )
+})
+
+test_that("t_test errors when grouping variable has wrong number of levels", {
+  expect_error(
+    t_test(mpg ~ cyl, data = mtcars),
+    "must have exactly 2 levels"
+  )
+})
+
+test_that("t_test print method works", {
+  result <- t_test(mtcars$mpg, mu = 20)
+
+  # Check that print doesn't error and returns invisibly
+  expect_output(print(result), "Cohen's d")
+  expect_output(print(result), "t =")
+  expect_output(print(result), "p-value")
+
+  # Check invisible return
+  printed <- capture.output(returned <- print(result))
+  expect_identical(returned, result)
+})
+
+test_that("t_test Cohen's d matches paired_t_test_d for paired samples", {
+  # Use the same data as the existing paired_t_test_d test
+  old_result <- suppressWarnings(paired_t_test_d(iris, "Sepal.Width", "Petal.Length"))
+  new_result <- t_test(iris$Sepal.Width, iris$Petal.Length, paired = TRUE)
+
+  # Cohen's d should match
+  expect_equal(new_result$cohens_d, old_result$d, tolerance = 0.0001)
+})
+
+test_that("t_test handles missing values correctly", {
+  x_with_na <- c(mtcars$mpg[1:20], NA, NA)
+  y_with_na <- c(mtcars$hp[1:20], NA, NA)
+
+  # Should handle NAs via na.rm in calculations
+  result <- t_test(x_with_na, mu = 20)
+  expect_true(!is.na(result$cohens_d))
+  expect_true(!is.na(result$statistic))
+
+  # Paired with NAs
+  result_paired <- t_test(x_with_na, y_with_na, paired = TRUE)
+  expect_true(!is.na(result_paired$cohens_d))
 })
 

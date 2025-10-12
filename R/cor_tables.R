@@ -974,6 +974,7 @@ cor_matrix_mi <- function(data, weights = NULL, var_names = NULL, ci_level = 0.9
 #' Calculate the correlation, based on weighted scaling and
 #' listwise deletion *before* scaling
 #' @noRd
+#' @keywords internal
 
 .wtd_cor_test_lm <- function(x, y, wt, ...) {
   

@@ -50,6 +50,7 @@ reference:
 - contents:
   - lm_std
   - polr_std
+  - t_test
   - t_test_mi
   - paired_t_test_d
   - pairwise_t_tests

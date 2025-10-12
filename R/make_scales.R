@@ -214,7 +214,7 @@ scale_items = lifecycle::deprecated()) {
   if (print_hist) {
     (cbind(scale_vals, Scale = alpha_obj$scores) %>%
        tidyr::pivot_longer(
-         cols = everything(),
+         cols = tidyr::everything(),
          names_to = "category",
          values_to = "resp",
          names_transform = list(category = as.factor)

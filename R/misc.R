@@ -78,7 +78,7 @@ std_stars_pad <- c(`&nbsp;&nbsp;&nbsp;` = 1, `&dagger;&nbsp;&nbsp;` = .1, `*&nbs
 #' string is returned for NAs, unless that behaviour is overwritten.
 #'
 #'  Symbols and thresholds are *** *p* < .001,  ** *p* < .01, * *p*
-#'  < .05 and \u2020 *p* < .1. The symbols can be changed by passing a named character vector sorted
+#'  < .05 and † *p* < .1. The symbols can be changed by passing a named character vector sorted
 #'  descendingly to the `stars` argument. For the default, the argument would be
 #' `stars <- c(`&dagger;` = .1, `*` = 0.05, `**` = 0.01, `***` = 0.001)`
 #'
@@ -302,7 +302,8 @@ scale_blank <- function(x, center = TRUE, scale = TRUE) {
 #' @param w A numeric vector of weights. Must be the same length as x.
 #' @param na.rm If TRUE, remove cases where x or w is NA.
 #' @return A numeric vector of the same length as x with weighted Z-scores.
-#'
+#' @keywords internal
+
 scale_weighted <- function(x, w, na.rm = TRUE) {
   if (length(x) != length(w)) {
     cli::cli_abort("`x` and `w` must have the same length.")
