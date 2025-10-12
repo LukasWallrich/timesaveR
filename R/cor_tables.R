@@ -640,7 +640,9 @@ cor_matrix <- function(data,
 #'
 svy_cor_matrix <- function(svy_data, var_names = NULL, ci_level = 0.95) {
   .check_req_packages(c("jtools", "survey", "srvyr", "weights"))
-  
+
+  if (any(duplicated(var_names))) cli::cli_abort("var_names must map to unique new names")
+
   assert_numeric(ci_level, lower = 0, upper = 1, null.ok = FALSE)
   
   assert(
@@ -712,7 +714,7 @@ svy_cor_matrix <- function(svy_data, var_names = NULL, ci_level = 0.95) {
     })
     used_vars <- intersect(var_names, rownames(cor_matrix$cors))
     cor_matrix[rename_mats] <- purrr::map(cor_matrix[rename_mats], ~ .x[used_vars, used_vars])
-    cor_matrix$desc$var %<>% stringr::str_replace_all(var_names)
+    cor_matrix$desc$var <- dplyr::recode(cor_matrix$desc$var, !!!var_names, .default = cor_matrix$desc$var)
     cor_matrix$desc <- cor_matrix$desc[match(used_vars, cor_matrix$desc$var), ]
   }
   
@@ -939,25 +941,25 @@ cor_matrix_mi <- function(data, weights = NULL, var_names = NULL, ci_level = 0.9
   
   if (!is.null(var_names)) {
     rename_mats <- intersect(c("cors", "std.err", "p.values", "t.values", "df", "n", "ci.low", "ci.high"), names(cor_matrix))
-    
+
     # Find which variables to keep (based on old names, before renaming)
     vars_to_keep <- intersect(names(var_names), rownames(cor_matrix$cors))
-    
+
     # Apply renaming to matrices
     cor_matrix[rename_mats] <- purrr::map(cor_matrix[rename_mats], function(x) {
-      rownames(x) <- rownames(x) %>% stringr::str_replace_all(var_names)
-      colnames(x) <- colnames(x) %>% stringr::str_replace_all(var_names)
+      rownames(x) <- dplyr::recode(rownames(x), !!!var_names, .default = rownames(x))
+      colnames(x) <- dplyr::recode(colnames(x), !!!var_names, .default = colnames(x))
       x
     })
-    
+
     # Subset to requested variables (now using new names)
     new_var_names <- var_names[vars_to_keep]
     cor_matrix[rename_mats] <- purrr::map(cor_matrix[rename_mats], ~ .x[new_var_names, new_var_names])
-    
+
     # Handle descriptives
-    cor_matrix$desc$var %<>% stringr::str_replace_all(var_names)
+    cor_matrix$desc$var <- dplyr::recode(cor_matrix$desc$var, !!!var_names, .default = cor_matrix$desc$var)
     cor_matrix$desc <- cor_matrix$desc[cor_matrix$desc$var %in% new_var_names, ]
-    
+
     used_vars <- new_var_names
   }
   
