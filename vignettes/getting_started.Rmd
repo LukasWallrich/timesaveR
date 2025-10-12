@@ -73,7 +73,7 @@ ess_health %>%
 It is often helpful to use different variable names for display. For this, functions in the package typically accept rename tibbles that contain an `old` and a `new` column. By using the `tibble::tribble` notation, they can be entered more cleanly that named character vectors, and the `get_rename_tribble()` helper function creates most of the code.
 
 ```{r}
-#Use get_rename_tribbles to get most of this code
+# Use get_rename_tribbles to get most of this code
 var_renames <- tibble::tribble(
   ~old,             ~new,             
    "agea",           "Age",          
@@ -149,7 +149,7 @@ report_lm_with_std(mod1, mod2)
 Often, the coefficient names - particularly for dummy variables - are not particularly clear or pleasing. In such cases, they can be renamed easily - again, there is a helper function (`get_coef_rename_tribble()`) that creates most of the necessary code. In the new names, you can use markdown formatting, for instance to add information on reference levels.
 
 ```{r}
-#get_coef_rename_tribble(mod1) is the starting point.
+# get_coef_rename_tribble(mod1) is the starting point.
 
 coef_names <- tibble::tribble(
   ~old,           ~new,           
