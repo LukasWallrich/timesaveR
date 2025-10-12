@@ -653,7 +653,7 @@ make_scale_mi <- function(data, items, scale_name, proration_cutoff = 0, seed = 
     extras$print_hist <- NULL
   }
 
-  if ("two_items_reliability" %in% names(extras) && extras$two_items_reliability  != "cron_alpha") {
+  if ("two_items_reliability" %in% names(extras) && !extras$two_items_reliability %in% c("cronbachs_alpha", "cron_alpha")) {
     cli::cli_warn("Cannot pool estimates for Spearman-Brown reliability or correlation yet - Cronbach's alpha is returned")
     extras$two_items_reliability <- NULL
   }
@@ -756,17 +756,39 @@ make_scale_mi <- function(data, items, scale_name, proration_cutoff = 0, seed = 
     }
     
     if (return_list) {
-      descriptives <- list(n_items = length(items), reliability = pooled_alpha[[1]], reliability_method = "cron_alpha",
-                           mean = descr$mean, SD = descr$sd, 
-                           m_imputations = length(unique(data$`.imp`)),
-                           text = description_text)
+      # Calculate rev_min and rev_max first if needed
+      if (full$descriptives$reversed != "") {
+        rev_details <- data %>% dplyr::select(dplyr::all_of(rev_code)) %>%
+          tidyr::pivot_longer(dplyr::everything()) %>%
+          dplyr::group_by(.data$name) %>%
+          dplyr::summarise(min = min(.data$value, na.rm = TRUE), max = max(.data$value, na.rm = TRUE), .groups = "drop")
+        rev_min_val <- min(rev_details$min)
+        rev_max_val <- max(rev_details$max)
+      } else {
+        rev_min_val <- NA
+        rev_max_val <- NA
+      }
+
+      # Build descriptives list with same order as make_scale
+      descriptives <- list(
+        n_items = length(items),
+        reliability = pooled_alpha[[1]],
+        reliability_method = "cronbachs_alpha",
+        mean = descr$mean,
+        SD = descr$sd,
+        reversed = ifelse(full$descriptives$reversed != "", full$descriptives$reversed, ""),
+        rev_min = rev_min_val,
+        rev_max = rev_max_val,
+        m_imputations = length(unique(data$`.imp`)),
+        text = description_text
+      )
+
       if (alpha_ci) {
         descriptives$reliability_ci_lower <- pooled_alpha[[2]]
         descriptives$reliability_ci_upper <- pooled_alpha[[3]]
         descriptives$reliability_ci_level <- alpha_ci
       }
-      
-      if (exists("rev_details")) descriptives$reversed <- rev_details
+
       return(list(scores = full$scores, descriptives = descriptives))
     }
     
