@@ -33,7 +33,7 @@ string is returned for NAs, unless that behaviour is overwritten.
 }
 \details{
 Symbols and thresholds are *** \emph{p} < .001,  ** \emph{p} < .01, * \emph{p}
-< .05 and † \emph{p} < .1. The symbols can be changed by passing a named character vector sorted
+< .05 and \u2020 \emph{p} < .1. The symbols can be changed by passing a named character vector sorted
 descendingly to the \code{stars} argument. For the default, the argument would be
 \verb{stars <- c(}†\verb{= .1,}\emph{\verb{= 0.05,}\strong{\verb{= 0.01,}}}\verb{ = 0.001)}
 }

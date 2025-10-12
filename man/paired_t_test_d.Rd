@@ -15,11 +15,22 @@ paired_t_test_d(data, x, y)
 Invisibly returns a list including the t.test() output and Cohen's D
 }
 \description{
-This function takes two variables that are representing paired data and
-calculates a paired samples \code{t.test}. It then also calculates and prints
-Cohen's d as a measure of effect size and shows a clearer data label than
-the t.test function.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+This function has been deprecated in favor of \code{\link[=t_test]{t_test()}}, which provides a more
+comprehensive interface for all types of t-tests. Please use \code{t_test(x, y, paired = TRUE)}
+instead.
 }
 \examples{
+\dontrun{
+# Deprecated - use t_test() instead
 paired_t_test_d(iris, "Sepal.Width", "Petal.Length")
+
+# New approach:
+t_test(iris$Sepal.Width, iris$Petal.Length, paired = TRUE)
 }
+}
+\seealso{
+\code{\link[=t_test]{t_test()}} for the recommended replacement
+}
+\keyword{internal}

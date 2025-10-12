@@ -39,17 +39,17 @@ newlines if present). Can also be \code{"all"} to split by all supported separat
 should be copied to the clipboard. Defaults to \code{TRUE} in interactive sessions.
 Requires the \code{clipr} package to be installed.}
 
-\item{keep_blank_as_na}{Logical. If \code{TRUE}, empty values are kept as \code{NA}.
-If \code{FALSE} (default), empty values are omitted from the resulting vector.}
-
-\item{return_type}{Character string specifying the type of return value.
+\item{return}{Character string specifying the type of return value.
 Choose \code{"code"} to return the \code{c()} command as a string or \code{"vector"} to
 return the actual R vector. Defaults to \code{"code"}. Abbreviated values like
 \code{"c"} or \code{"v"} are accepted.}
+
+\item{keep_blank_as_na}{Logical. If \code{TRUE}, empty values are kept as \code{NA}.
+If \code{FALSE} (default), empty values are omitted from the resulting vector.}
 }
 \value{
 A character string representing the \code{c()} command or the actual R
-vector, depending on the \code{return_type} parameter.
+vector, depending on the \code{return} parameter.
 }
 \description{
 This function takes a line of items separated by spaces, tabs, or newlines and
@@ -70,7 +70,7 @@ line_to_vector("a b c", strings = TRUE)
 # c("a", "b", "c")
 
 
-line_to_vector("1 2 3", return_type = "vector")
+line_to_vector("1 2 3", return = "vector")
 # [1] 1 2 3
 
 # Can abbreviate return argument
