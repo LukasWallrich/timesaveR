@@ -455,14 +455,41 @@ cor_matrix <- function(data,
         extract_correlations(fit)
       }
       
-      boot_obj <- boot::boot(
-        data      = data,
-        statistic = stat_fun,
-        R         = bootstrap,
-        sim       = "ordinary",
-        parallel  = "multicore",
-        ncpus     = max(1, parallel::detectCores() - 1)
-      )
+      # Determine if we can safely use multicore
+      ncpus_available <- parallel::detectCores()
+      use_multicore <- .Platform$OS.type != "windows" && !is.null(ncpus_available) && ncpus_available > 1
+
+      # For safety, try multicore first but fall back to single-core if it fails
+      boot_obj <- tryCatch({
+        if (use_multicore) {
+          boot::boot(
+            data      = data,
+            statistic = stat_fun,
+            R         = bootstrap,
+            sim       = "ordinary",
+            parallel  = "multicore",
+            ncpus     = max(1, ncpus_available - 1)
+          )
+        } else {
+          boot::boot(
+            data      = data,
+            statistic = stat_fun,
+            R         = bootstrap,
+            sim       = "ordinary"
+          )
+        }
+      }, error = function(e) {
+        # If multicore fails, fall back to single-core
+        if (use_multicore) {
+          cli::cli_warn("Multicore bootstrapping failed, using single-core instead.")
+        }
+        boot::boot(
+          data      = data,
+          statistic = stat_fun,
+          R         = bootstrap,
+          sim       = "ordinary"
+        )
+      })
       
       if (is.null(colnames(boot_obj$t))) {
         colnames(boot_obj$t) <- names(stat_fun(data, seq_len(nrow(data))))
@@ -1111,6 +1138,17 @@ cor_matrix_mi <- function(data, weights = NULL, var_names = NULL, ci_level = 0.9
           ggplot2::geom_area(fill = "grey", color = "black", linewidth = 0.5)
       }, error = function(e) {
         # Fallback to histogram if density estimation fails
+        # Check if KernSmooth is missing and offer to install it
+        if (grepl("KernSmooth", e$message, ignore.case = TRUE) &&
+            !requireNamespace("KernSmooth", quietly = TRUE) &&
+            interactive()) {
+          if (utils::askYesNo("The KernSmooth package is required for density estimation. Would you like to install it?")) {
+            utils::install.packages("KernSmooth")
+            if (requireNamespace("KernSmooth", quietly = TRUE)) {
+              cli::cli_inform("KernSmooth installed successfully. Please re-run your command.")
+            }
+          }
+        }
         cli::cli_warn("Density estimation failed for {.field {var_name}}, using histogram instead: {e$message}")
         hist_data <- .extract_svyhist_data(formula_obj, data)
 

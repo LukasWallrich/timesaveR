@@ -256,9 +256,12 @@ test_that("lm_std handles weighted_standardize parameter correctly", {
   )
 
   # Should use unweighted when explicitly requested
-expect_message(
-  lm_std(mpg ~ hp + wt, data = test_data, weights = weights, weighted_standardize = FALSE), 
-  "UNweighted"
+  # Note: The respective warning appears only once per session, so we suppress all warnings
+  expect_message(
+    suppressWarnings(
+      lm_std(mpg ~ hp + wt, data = test_data, weights = weights, weighted_standardize = FALSE)
+    ),
+    "UNweighted"
   )
 
   # Should error if weighted_standardize = TRUE but no weights

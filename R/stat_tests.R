@@ -498,6 +498,7 @@ pairwise_t_test_mi <- function(mi_list, dv, groups, weights = NULL, p.adjust.met
 #'
 #' pwtt <- pairwise.t.test(airquality$Ozone, airquality$Month)
 #' get_pairwise_letters(pwtt)
+#' @export
 #'
 get_pairwise_letters <- function(tests, alpha_level = .05) {
 

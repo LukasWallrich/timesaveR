@@ -735,7 +735,10 @@ test_that("plot_distributions handles var_names as tibble for survey data", {
     old = c("health", "agea"),
     new = c("Health", "Age")
   )
-  plots <- plot_distributions(ess_survey, var_names = var_names_df)
+  # Suppress warning about KernSmooth - the function has a fallback
+  suppressWarnings(
+    plots <- plot_distributions(ess_survey, var_names = var_names_df)
+  )
   expect_named(plots, c("Health", "Age"))
 })
 
