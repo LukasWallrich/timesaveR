@@ -1,18 +1,266 @@
+#' Comprehensive t-test with Cohen's d
+#'
+#' This function wraps [stats::t.test()] to provide a consistent interface for
+#' independent-samples, paired-samples, and one-sample t-tests. It always
+#' calculates Cohen's d as a measure of effect size and returns results in a
+#' tidy format.
+#'
+#' @param x A numeric vector of data values, or a formula of the form
+#'   `outcome ~ group` for independent samples tests.
+#' @param y An optional numeric vector of data values. For independent samples,
+#'   this should be NULL if `x` is a formula. For paired samples, this should
+#'   be a vector of the same length as `x`.
+#' @param data An optional data frame containing the variables in the formula
+#'   (for independent samples tests only).
+#' @param paired Logical indicating whether to perform a paired samples t-test.
+#'   Default is FALSE.
+#' @param mu A number indicating the true value of the mean (for one-sample tests)
+#'   or difference in means (for paired and independent samples tests). Default is 0.
+#' @param var.equal Logical indicating whether to treat the two variances as
+#'   equal for independent samples tests. Default is FALSE (Welch's t-test).
+#' @param conf.level Confidence level for the confidence interval. Default is 0.95.
+#' @param alternative A character string specifying the alternative hypothesis:
+#'   "two.sided" (default), "less", or "greater".
+#' @param ... Additional arguments passed to [stats::t.test()].
+#'
+#' @return An object of class "timesaveR_t_test" containing:
+#'   \item{test_type}{Type of t-test performed}
+#'   \item{statistic}{The t-statistic}
+#'   \item{parameter}{Degrees of freedom}
+#'   \item{p.value}{The p-value}
+#'   \item{estimate}{The estimated mean or mean difference}
+#'   \item{conf.low}{Lower bound of confidence interval}
+#'   \item{conf.high}{Upper bound of confidence interval}
+#'   \item{cohens_d}{Cohen's d effect size}
+#'   \item{alternative}{Alternative hypothesis}
+#'   \item{method}{Description of the test method}
+#'   \item{data.name}{Description of the data}
+#'   \item{htest}{The original htest object from t.test()}
+#'
+#' @details
+#' Cohen's d is calculated as follows:
+#' \itemize{
+#'   \item For independent samples: \code{(mean1 - mean2) / pooled_sd}
+#'         (or using separate SDs if var.equal = FALSE)
+#'   \item For paired samples: \code{mean_diff / sd_diff}
+#'   \item For one sample: \code{(mean - mu) / sd}
+#' }
+#'
+#' @examples
+#' # One-sample t-test
+#' t_test(mtcars$mpg, mu = 20)
+#'
+#' # Independent samples t-test (formula interface)
+#' t_test(mpg ~ am, data = mtcars)
+#'
+#' # Independent samples t-test (vector interface)
+#' t_test(mtcars$mpg[mtcars$am == 0], mtcars$mpg[mtcars$am == 1])
+#'
+#' # Paired samples t-test
+#' t_test(iris$Sepal.Width, iris$Petal.Length, paired = TRUE)
+#'
+#' @seealso [stats::t.test()], [pairwise_t_tests()]
+#' @export
+t_test <- function(x, y = NULL, data = NULL, paired = FALSE, mu = 0,
+                   var.equal = FALSE, conf.level = 0.95,
+                   alternative = c("two.sided", "less", "greater"), ...) {
+
+  alternative <- match.arg(alternative)
+
+  # Determine test type and prepare data
+  if (inherits(x, "formula")) {
+    # Independent samples with formula
+    if (!is.null(data)) {
+      mf <- stats::model.frame(x, data, na.action = NULL)
+    } else {
+      mf <- stats::model.frame(x, na.action = NULL)
+    }
+
+    if (ncol(mf) != 2) {
+      cli::cli_abort("Formula must be of the form: outcome ~ group")
+    }
+
+    outcome <- mf[[1]]
+    group <- mf[[2]]
+
+    if (!is.numeric(outcome)) {
+      cli::cli_abort("Outcome variable must be numeric")
+    }
+
+    group_levels <- levels(factor(group))
+    if (length(group_levels) != 2) {
+      cli::cli_abort("Grouping variable must have exactly 2 levels. Found {length(group_levels)} levels.")
+    }
+
+    test_type <- "independent"
+    x_vec <- outcome[group == group_levels[1]]
+    y_vec <- outcome[group == group_levels[2]]
+    data_name <- paste(names(mf)[1], "by", names(mf)[2])
+
+  } else if (is.null(y)) {
+    # One sample t-test
+    test_type <- "one_sample"
+    x_vec <- x
+    y_vec <- NULL
+    data_name <- deparse(substitute(x))
+
+  } else if (paired) {
+    # Paired samples t-test
+    test_type <- "paired"
+    x_vec <- x
+    y_vec <- y
+    data_name <- paste(deparse(substitute(x)), "and", deparse(substitute(y)))
+
+  } else {
+    # Independent samples with vectors
+    test_type <- "independent"
+    x_vec <- x
+    y_vec <- y
+    data_name <- paste(deparse(substitute(x)), "and", deparse(substitute(y)))
+  }
+
+  # Run the t-test
+  if (test_type == "one_sample") {
+    t_result <- stats::t.test(x_vec, mu = mu, conf.level = conf.level,
+                              alternative = alternative, ...)
+  } else if (test_type == "paired") {
+    t_result <- stats::t.test(x_vec, y_vec, paired = TRUE, mu = mu,
+                              conf.level = conf.level, alternative = alternative, ...)
+  } else {
+    t_result <- stats::t.test(x_vec, y_vec, paired = FALSE, mu = mu,
+                              var.equal = var.equal, conf.level = conf.level,
+                              alternative = alternative, ...)
+  }
+
+  # Calculate Cohen's d
+  if (test_type == "one_sample") {
+    cohens_d <- (mean(x_vec, na.rm = TRUE) - mu) / sd(x_vec, na.rm = TRUE)
+
+  } else if (test_type == "paired") {
+    diff_vec <- x_vec - y_vec
+    cohens_d <- mean(diff_vec, na.rm = TRUE) / sd(diff_vec, na.rm = TRUE)
+
+  } else {
+    # Independent samples
+    mean1 <- mean(x_vec, na.rm = TRUE)
+    mean2 <- mean(y_vec, na.rm = TRUE)
+    var1 <- var(x_vec, na.rm = TRUE)
+    var2 <- var(y_vec, na.rm = TRUE)
+    n1 <- sum(!is.na(x_vec))
+    n2 <- sum(!is.na(y_vec))
+
+    if (var.equal) {
+      # Pooled standard deviation
+      pooled_sd <- sqrt(((n1 - 1) * var1 + (n2 - 1) * var2) / (n1 + n2 - 2))
+      cohens_d <- (mean1 - mean2) / pooled_sd
+    } else {
+      # Average of standard deviations (common approach for unequal variances)
+      cohens_d <- (mean1 - mean2) / sqrt((var1 + var2) / 2)
+    }
+  }
+
+  # Create result object
+  result <- list(
+    test_type = test_type,
+    statistic = unname(t_result$statistic),
+    parameter = unname(t_result$parameter),
+    p.value = t_result$p.value,
+    estimate = if (is.null(names(t_result$estimate))) {
+      unname(t_result$estimate)
+    } else {
+      t_result$estimate
+    },
+    conf.low = t_result$conf.int[1],
+    conf.high = t_result$conf.int[2],
+    cohens_d = unname(cohens_d),
+    alternative = alternative,
+    method = t_result$method,
+    data.name = data_name,
+    mu = mu,
+    conf.level = conf.level,
+    htest = t_result
+  )
+
+  class(result) <- c("timesaveR_t_test", "list")
+  result
+}
+
+#' @export
+print.timesaveR_t_test <- function(x, digits = 3, ...) {
+  cat("\n")
+  cat(x$method, "\n\n")
+  cat("data: ", x$data.name, "\n")
+  cat("t = ", round_(x$statistic, digits), ", ",
+      "df = ", round(x$parameter, 2), ", ",
+      "p-value ", fmt_p(x$p.value), "\n", sep = "")
+  cat("alternative hypothesis: ")
+  if (x$alternative == "two.sided") {
+    cat("true mean is not equal to", x$mu, "\n")
+  } else if (x$alternative == "less") {
+    cat("true mean is less than", x$mu, "\n")
+  } else {
+    cat("true mean is greater than", x$mu, "\n")
+  }
+
+  cat(x$conf.level * 100, "% confidence interval:\n", sep = "")
+  cat(" ", round_(x$conf.low, digits), " ", round_(x$conf.high, digits), "\n", sep = "")
+
+  if (x$test_type == "one_sample") {
+    cat("sample estimate:\n")
+    cat(" mean of x\n")
+    cat(" ", round_(unname(x$estimate), digits), "\n", sep = "")
+  } else if (x$test_type == "paired") {
+    cat("sample estimate:\n")
+    cat(" mean difference\n")
+    cat(" ", round_(unname(x$estimate), digits), "\n", sep = "")
+  } else {
+    cat("sample estimates:\n")
+    if (is.null(names(x$estimate))) {
+      cat(" mean of x    mean of y\n")
+      cat(" ", round_(x$estimate, digits), "\n", sep = "")
+    } else {
+      cat(" ", paste(names(x$estimate), collapse = "    "), "\n", sep = "")
+      cat(" ", paste(round_(x$estimate, digits), collapse = "    "), "\n", sep = "")
+    }
+  }
+
+  cat("\nCohen's d: ", round_(x$cohens_d, digits), "\n", sep = "")
+  cat("\n")
+
+  invisible(x)
+}
+
 #' Paired t.test with Cohen's d
 #'
-#' This function takes two variables that are representing paired data and
-#' calculates a paired samples `t.test`. It then also calculates and prints
-#' Cohen's d as a measure of effect size and shows a clearer data label than
-#' the t.test function.
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#'
+#' This function has been deprecated in favor of [t_test()], which provides a more
+#' comprehensive interface for all types of t-tests. Please use `t_test(x, y, paired = TRUE)`
+#' instead.
 #'
 #' @param data A dataframe
 #' @param x,y Character strings indicating the names of the two variables
 #' @return Invisibly returns a list including the t.test() output and Cohen's D
-#' @examples 
+#' @examples
+#' \dontrun{
+#' # Deprecated - use t_test() instead
 #' paired_t_test_d(iris, "Sepal.Width", "Petal.Length")
+#'
+#' # New approach:
+#' t_test(iris$Sepal.Width, iris$Petal.Length, paired = TRUE)
+#' }
+#' @seealso [t_test()] for the recommended replacement
+#' @keywords internal
 #' @export
 
 paired_t_test_d <- function(data, x, y) {
+  lifecycle::deprecate_warn(
+    when = "0.0.3",
+    what = "paired_t_test_d()",
+    with = "t_test()"
+  )
+
   t.test_result <- t.test(x = data[[x]], y = data[[y]], paired = TRUE)
   t.test_result$data.name <- paste(x, "vs.", y)
   print(t.test_result)
