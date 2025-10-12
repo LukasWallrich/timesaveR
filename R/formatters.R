@@ -1,16 +1,27 @@
 #' Round all numeric columns in dataframe
 #'
-#' Rounds all numeric columns in dataframe, using "round half to even" (aka banker's rounding)
+#' Rounds all numeric columns in dataframe. By default, uses "round half to even"
+#' (aka banker's rounding), but the rounding method can be changed via the
+#' `timesaveR.round_method` option (see Details).
 #'
 #' @param df Dataframe to be rounded
 #' @param digits Number of digits, defaults to 2
+#'
+#' @details
+#' The rounding method is controlled by the `timesaveR.round_method` option:
+#' \itemize{
+#'   \item `"to_even"` (default): Round half to even (banker's rounding)
+#'   \item `"default"`: Standard R rounding (round half away from zero)
+#' }
+#' Set via `options(timesaveR.round_method = "default")` to change for your session.
+#'
 #' @source https://stackoverflow.com/questions/9063889/how-to-round-a-data-frame-in-r-that-contains-some-character-variables
 #' @export
 
 round_df <- function(df, digits = 2) {
   nums <- vapply(df, is.numeric, FUN.VALUE = logical(1))
 
-  df[, nums] <- lapply(df[, nums, drop = FALSE], .round_half_to_even, digits = digits)
+  df[, nums] <- lapply(df[, nums, drop = FALSE], .round_dispatch, digits = digits)
   df
 }
 
@@ -42,11 +53,27 @@ round_df <- function(df, digits = 2) {
   rounded
 }
 
+# Internal rounding dispatcher - respects package option
+.round_dispatch <- function(x, digits) {
+  method <- getOption("timesaveR.round_method", "to_even")
+  if (method == "to_even") {
+    .round_half_to_even(x, digits)
+  } else if (method == "default") {
+    round(x, digits)
+  } else {
+    cli::cli_warn("Invalid timesaveR.round_method option: {method}. Using 'to_even'.")
+    .round_half_to_even(x, digits)
+  }
+}
+
 #' Format p-value in line with APA standard (no leading 0)
 #'
 #' Formats p-value in line with APA standard, returning it without leading 0 and
 #' as < .001 (or below the smallest value expressible with the given number of
 #' significant digits) and > .99 when it is extremely small or large.
+#'
+#' Respects the `timesaveR.round_method` option for consistent rounding behavior
+#' (see [round_()] for details).
 #'
 #' @param p_value Numeric, or a vector of numbers
 #' @param digits Number of significant digits, defaults to 3
@@ -76,7 +103,9 @@ fmt_p <- function(p_value, digits = 3, equal_sign = TRUE) {
 
   fmt <- paste0("%.", digits, "f")
   fmt_p <- function(x) {
-    paste0(if(equal_sign == TRUE) "= " else "", sprintf(fmt, x)) %>%
+    # Round using dispatcher first
+    rounded <- .round_dispatch(x, digits)
+    paste0(if(equal_sign == TRUE) "= " else "", sprintf(fmt, rounded)) %>%
       stringr::str_replace("0.", ".")
   }
   exact <- !(p_value < 10^(-digits) | p_value > .99) & p_value >= 0 & p_value <= 1
@@ -99,7 +128,9 @@ fmt_p <- function(p_value, digits = 3, equal_sign = TRUE) {
 
 #' Format fraction as percentage string
 #'
-#' Formats fractions as percentages, i.e. multiplying them by 100 and adding '%'
+#' Formats fractions as percentages, i.e. multiplying them by 100 and adding '%'.
+#' Respects the `timesaveR.round_method` option for consistent rounding behavior
+#' (see [round_()] for details).
 #'
 #' @param x Numeric, or a vector of numbers
 #' @param digits Number of significant digits, defaults to 1
@@ -110,8 +141,12 @@ fmt_p <- function(p_value, digits = 3, equal_sign = TRUE) {
 
 fmt_pct <- function(x, digits = 1) {
   assert_numeric(x)
+
+  # Round using dispatcher first
+  rounded <- .round_dispatch(x * 100, digits)
+
   fmt <- paste0("%1.", digits, "f%%")
-  out <- sprintf(fmt, x * 100)
+  out <- sprintf(fmt, rounded)
   attributes(out) <- attributes(x)
   out[is.na(x)] <- NA
   out
@@ -119,7 +154,9 @@ fmt_pct <- function(x, digits = 1) {
 
 #' Format number as correlation coefficient
 #'
-#' Format numbers as correlation coefficients, by rounding them and removing the leading 0
+#' Format numbers as correlation coefficients, by rounding them and removing the leading 0.
+#' Respects the `timesaveR.round_method` option for consistent rounding behavior
+#' (see [round_()] for details).
 #'
 #' @param cor_value Numeric, or a vector of numbers
 #' @param digits Number of significant digits, defaults to 2
@@ -130,8 +167,12 @@ fmt_pct <- function(x, digits = 1) {
 
 fmt_cor <- function(cor_value, digits = 2) {
   qassert(cor_value, "r[-1, 1]")
+
+  # Round using dispatcher first
+  rounded <- .round_dispatch(cor_value, digits)
+
   fmt <- paste0("%.", digits, "f")
-  out <- sprintf(fmt, cor_value) %>%
+  out <- sprintf(fmt, rounded) %>%
     stringr::str_replace(stringr::fixed("0."), ".")
   attributes(out) <- attributes(cor_value)
   out[is.na(cor_value)] <- NA
@@ -179,9 +220,21 @@ fmt_ci <- function(lower, upper, digits = 2, drop_0 = FALSE) {
 #' trailing zeros - this version keeps them and thus rounds 1.201 to 1.20
 #' rather than 1.2 when 2 digits are requested.
 #'
+#' By default, uses "round half to even" (banker's rounding), but the rounding
+#' method can be changed via the `timesaveR.round_method` option (see Details).
+#'
 #' @param x Numeric vector to be rounded
 #' @param digits Number of significant digits
 #' @return Character vector of rounded values, with trailing zeroes as needed to show `digits` figures after the decimal point
+#'
+#' @details
+#' The rounding method is controlled by the `timesaveR.round_method` option:
+#' \itemize{
+#'   \item `"to_even"` (default): Round half to even (banker's rounding)
+#'   \item `"default"`: Standard R rounding (round half away from zero)
+#' }
+#' Set via `options(timesaveR.round_method = "default")` to change for your session.
+#'
 #' @examples
 #' round_(1.201, 2)
 #' round_(c(1.2, 3.456, 7.8), digits = 2)
@@ -191,8 +244,8 @@ round_ <- function(x, digits = 2) {
   checkmate::assert_numeric(x)
   checkmate::assert_integerish(digits)
 
-  # Use internal helper for proper round half to even
-  rounded <- .round_half_to_even(x, digits)
+  # Use dispatcher to respect package option
+  rounded <- .round_dispatch(x, digits)
 
   # Format with trailing zeros
   fmt <- paste0("%.", digits, "f")
