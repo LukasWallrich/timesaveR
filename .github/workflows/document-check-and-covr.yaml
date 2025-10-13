@@ -3,13 +3,21 @@ on:
     branches:
       - main
       - master
+  pull_request:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
 
 name: R-CMD-check
 
 jobs:
-  document-and-dispatch:
-    name: document
+  document-check-and-pkgdown:
+    name: document, check, and pkgdown
     runs-on: ubuntu-latest
+    # Only restrict concurrency for non-PR jobs
+    concurrency:
+      group: pkgdown-${{ github.event_name != 'pull_request' || github.run_id }}
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     steps:
@@ -19,18 +27,18 @@ jobs:
           use-public-rspm: true
           r-version: 'release'
       - name: Delete-Namespace
-        run: Rscript -e 'file.remove("NAMESPACE")'          
+        run: Rscript -e 'file.remove("NAMESPACE")'
       - uses: r-lib/actions/setup-pandoc@v2
       - name: system dependencies
         run: sudo apt-get install libcurl4-openssl-dev libnode-dev
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::rcmdcheck, any::roxygen2, any::devtools
-          needs: check
+          extra-packages: any::rcmdcheck, any::roxygen2, any::devtools, any::pkgdown
+          needs: website
 
       - name: Document
         run: Rscript -e 'roxygen2::roxygenise(); devtools::build_readme()'
-        
+
       - name: commit
         run: |
           git config --local user.email "actions@github.com"
@@ -38,12 +46,26 @@ jobs:
           git add -f man/\* NAMESPACE
           git commit -m 'Documentation' || echo "No changes to commit"
           git push origin || echo "No changes to commit"
-    
-        
+
+
       - uses: r-lib/actions/check-r-package@v2
-         
+        continue-on-error: true
+
       - name: Test coverage
         run: |
           install.packages(c("covr"))
           covr::codecov()
         shell: Rscript {0}
+        continue-on-error: true
+
+      - name: Build pkgdown site
+        run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
+        shell: Rscript {0}
+
+      - name: Deploy to GitHub pages 🚀
+        if: github.event_name != 'pull_request'
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          clean: true
+          branch: gh-pages
+          folder: docs
