@@ -19,7 +19,7 @@ It also changes the default units from in to cm, and defaults to saving temporar
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9004</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.3</span>
       </span>
     </div>
 
@@ -103,7 +103,8 @@ If not supplied, uses the size of the current graphics device.</p></dd>
 
     <dt><code>dpi</code></dt>
 <dd><p>Plot resolution. Also accepts a string input: "retina" (320),
-"print" (300), or "screen" (72). Applies only to raster output types.</p></dd>
+"print" (300), or "screen" (72). Only applies when converting pixel units,
+as is typical for raster output types.</p></dd>
 
     <dt><code>limitsize</code></dt>
 <dd><p>When <code>TRUE</code> (the default), <code>ggsave()</code> will not

@@ -20,7 +20,7 @@ rather than 1.2 when 2 digits are requested."><meta property="og:image" content=
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9004</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.3</span>
       </span>
     </div>
 
@@ -91,7 +91,23 @@ rather than 1.2 when 2 digits are requested.</p>
     <h2>Value</h2>
     <p>Character vector of rounded values, with trailing zeroes as needed to show <code>digits</code> figures after the decimal point</p>
     </div>
+    <div id="details">
+    <h2>Details</h2>
+    <p>By default, uses "round half to even" (banker's rounding), but the rounding
+method can be changed via the <code>timesaveR.round_method</code> option (see Details).</p>
+<p>The rounding method is controlled by the <code>timesaveR.round_method</code> option:</p><ul><li><p><code>"to_even"</code> (default): Round half to even (banker's rounding)</p></li>
+<li><p><code>"default"</code>: Standard R rounding (round half away from zero)</p></li>
+</ul><p>Set via <code>options(timesaveR.round_method = "default")</code> to change for your session.</p>
+    </div>
 
+    <div id="ref-examples">
+    <h2>Examples</h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">round_</span><span class="op">(</span><span class="fl">1.201</span>, <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "1.20"</span>
+<span class="r-in"><span><span class="fu">round_</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.2</span>, <span class="fl">3.456</span>, <span class="fl">7.8</span><span class="op">)</span>, digits <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "1.20" "3.46" "7.80"</span>
+</code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>

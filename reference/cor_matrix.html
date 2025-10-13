@@ -18,7 +18,7 @@ includes descriptives (mean and standard deviation) - ready for creating a nice 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9004</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.3</span>
       </span>
     </div>
 
@@ -141,6 +141,11 @@ missing data. To date, FIML correlation matrices can be obtained with the <code>
 function, but that function does not report significance tests or confidence intervals, or with the
 <code><a href="https://rdrr.io/pkg/lavaan/man/lavCor.html" class="external-link">lavaan::lavCor()</a></code> function - this function also uses <code>lavaan</code> for the estimation,
 but facilitates bootstrapping and returns the results in a more accessible format.</p>
+<p>When <code>bootstrap</code> is used, confidence intervals are calculated using the
+Bias-Corrected and Accelerated (BCa) bootstrap method. In the rare case
+that BCa calculations fail for a given correlation, the function will
+automatically fall back to the simpler percentile method for that value and
+issue a warning.</p>
     </div>
     <div id="references">
     <h2>References</h2>
@@ -148,6 +153,868 @@ but facilitates bootstrapping and returns the results in a more accessible forma
 The performance of the full information maximum likelihood estimator in multiple regression models with missing data</p>
     </div>
 
+    <div id="ref-examples">
+    <h2>Examples</h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Basic correlation matrix</span></span></span>
+<span class="r-in"><span><span class="fu">cor_matrix</span><span class="op">(</span><span class="va">iris</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cors</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              Sepal.Length Sepal.Width Petal.Length Petal.Width</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length    1.0000000  -0.1175698    0.8717538   0.8179411</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width    -0.1175698   1.0000000   -0.4284401  -0.3661259</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Petal.Length    0.8717538  -0.4284401    1.0000000   0.9628654</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Petal.Width     0.8179411  -0.3661259    0.9628654   1.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $std.err</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              Sepal.Length Sepal.Width Petal.Length Petal.Width</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length   0.00000000  0.08162941   0.04027317  0.04728953</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width    0.08162941  0.00000000   0.07427301  0.07649200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Petal.Length   0.04027317  0.07427301   0.00000000  0.02219237</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Petal.Width    0.04728953  0.07649200   0.02219237  0.00000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $p.values</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              Sepal.Length  Sepal.Width Petal.Length  Petal.Width</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length 0.000000e+00 1.518983e-01 1.038667e-47 2.325498e-37</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width  1.518983e-01 0.000000e+00 4.513314e-08 4.073229e-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Petal.Length 1.038667e-47 4.513314e-08 0.000000e+00 4.675004e-86</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Petal.Width  2.325498e-37 4.073229e-06 4.675004e-86 0.000000e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $t.values</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              Sepal.Length Sepal.Width Petal.Length Petal.Width</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length          Inf   -1.440287    21.646019   17.296454</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width     -1.440287         Inf    -5.768449   -4.786461</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Petal.Length    21.646019   -5.768449          Inf   43.387237</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Petal.Width     17.296454   -4.786461    43.387237         Inf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $n</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              Sepal.Length Sepal.Width Petal.Length Petal.Width</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length          150         150          150         150</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width           150         150          150         150</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Petal.Length          150         150          150         150</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Petal.Width           150         150          150         150</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ci.low</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              Sepal.Length Sepal.Width Petal.Length Petal.Width</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length           NA          NA           NA          NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width    -0.2726932          NA           NA          NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Petal.Length    0.8270363  -0.5508771           NA          NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Petal.Width     0.7568971  -0.4972130    0.9490525          NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ci.high</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              Sepal.Length Sepal.Width Petal.Length Petal.Width</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length           NA          NA           NA          NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width    0.04351158          NA           NA          NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Petal.Length   0.90550805  -0.2879499           NA          NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Petal.Width    0.86483606  -0.2186966    0.9729853          NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $desc</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 4 × 3</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   var              M    SD</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Sepal.Length  5.84 0.828</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> Sepal.Width   3.06 0.436</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> Petal.Length  3.76 1.77 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> Petal.Width   1.20 0.762</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "cor_matrix" "list"      </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># With renamed variables</span></span></span>
+<span class="r-in"><span><span class="fu">cor_matrix</span><span class="op">(</span><span class="va">ess_health</span>, var_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>health <span class="op">=</span> <span class="st">"Self-rated health"</span>,</span></span>
+<span class="r-in"><span>                                      dosprt <span class="op">=</span> <span class="st">"Days of sport per week"</span>,</span></span>
+<span class="r-in"><span>                                      etfruit <span class="op">=</span> <span class="st">"Fruit consumption"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cors</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                        Self-rated health Days of sport per week</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Self-rated health             1.00000000             -0.1825322</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Days of sport per week       -0.18253222              1.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Fruit consumption             0.06028032             -0.1098591</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                        Fruit consumption</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Self-rated health             0.06028032</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Days of sport per week       -0.10985908</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Fruit consumption             1.00000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $std.err</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                        Self-rated health Days of sport per week</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Self-rated health             0.00000000             0.01159115</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Days of sport per week        0.01159115             0.00000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Fruit consumption             0.01175308             0.01171785</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                        Fruit consumption</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Self-rated health             0.01175308</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Days of sport per week        0.01171785</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Fruit consumption             0.00000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $p.values</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                        Self-rated health Days of sport per week</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Self-rated health           0.000000e+00           5.863886e-55</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Days of sport per week      5.863886e-55           0.000000e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Fruit consumption           2.990367e-07           9.051710e-21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                        Fruit consumption</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Self-rated health           2.990367e-07</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Days of sport per week      9.051710e-21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Fruit consumption           0.000000e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $t.values</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                        Self-rated health Days of sport per week</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Self-rated health                    Inf             -15.747554</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Days of sport per week        -15.747554                    Inf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Fruit consumption               5.128898              -9.375362</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                        Fruit consumption</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Self-rated health               5.128898</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Days of sport per week         -9.375362</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Fruit consumption                    Inf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $n</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                        Self-rated health Days of sport per week</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Self-rated health                   7219                   7197</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Days of sport per week              7197                   7201</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Fruit consumption                   7215                   7197</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                        Fruit consumption</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Self-rated health                   7215</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Days of sport per week              7197</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Fruit consumption                   7220</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ci.low</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                        Self-rated health Days of sport per week</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Self-rated health                     NA                     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Days of sport per week       -0.20477256                     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Fruit consumption             0.03725707             -0.1326264</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                        Fruit consumption</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Self-rated health                     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Days of sport per week                NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Fruit consumption                     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ci.high</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                        Self-rated health Days of sport per week</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Self-rated health                     NA                     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Days of sport per week       -0.16010349                     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Fruit consumption             0.08323962            -0.08697593</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                        Fruit consumption</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Self-rated health                     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Days of sport per week                NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Fruit consumption                     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $desc</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 3</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   var                        M    SD</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Self-rated health       2.26 0.915</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> Days of sport per week  3.26 2.65 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> Fruit consumption       3.04 1.43 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $var_renames</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   old     new                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> health  Self-rated health     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> dosprt  Days of sport per week</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> etfruit Fruit consumption     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "cor_matrix" "list"      </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Using Spearman correlations</span></span></span>
+<span class="r-in"><span><span class="fu">cor_matrix</span><span class="op">(</span><span class="va">ess_health</span>, method <span class="op">=</span> <span class="st">"spearman"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cors</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 gndr         agea      eisced      pweight       pspwght</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> gndr     1.000000000  0.001386349 -0.06526763  0.032451978 -0.0021480123</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> agea     0.001386349  1.000000000 -0.13526441  0.006501118 -0.2612718582</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eisced  -0.065267630 -0.135264415  1.00000000 -0.079046012 -0.2279951708</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pweight  0.032451978  0.006501118 -0.07904601  1.000000000 -0.0605226880</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pspwght -0.002148012 -0.261271858 -0.22799517 -0.060522688  1.0000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> health   0.040269814  0.279280368 -0.19233407 -0.040681347 -0.0664840683</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> height  -0.701472237 -0.173518043  0.16177522 -0.143695496  0.0306269586</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> weight  -0.496441325  0.097456972  0.02015338 -0.143365003  0.0006768299</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> icbrnct  0.010667440 -0.066686172  0.04080379  0.031434448  0.0934315321</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> etfruit -0.157460226 -0.202748574 -0.08256422 -0.039299716  0.0742627669</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eatveg  -0.139681656 -0.074995202 -0.12799220 -0.186685060  0.0201678008</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dosprt  -0.044080879 -0.040694067  0.08855172 -0.185977879  0.0010716258</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cgtsmke  0.125444202  0.085488116  0.05642249  0.014604397  0.0068491201</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alcfreq  0.247070726 -0.124940421 -0.17516795  0.006827024  0.0740425545</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltdpr   0.122260210 -0.014768762 -0.09421071  0.009608483 -0.0300145877</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> flteeff  0.083332063 -0.040623197 -0.08417074 -0.091590042  0.0167958980</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> slprl    0.140037028  0.026930830 -0.06347684  0.014411901 -0.0207707980</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> wrhpp   -0.019182365 -0.048963910  0.02544220  0.061142113  0.0687911999</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltlnl   0.083435108  0.013134952 -0.13993147  0.166426779 -0.1032335975</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> enjlf   -0.056723921 -0.016553630  0.02918938  0.185169787  0.0414642773</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltsd    0.157131253  0.012811709 -0.09694603  0.120445676 -0.0313050433</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cldgng   0.069362902  0.009148542 -0.11652475 -0.051713280  0.0115115491</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              health      height        weight      icbrnct     etfruit</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> gndr     0.04026981 -0.70147224 -0.4964413246  0.010667440 -0.15746023</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> agea     0.27928037 -0.17351804  0.0974569724 -0.066686172 -0.20274857</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eisced  -0.19233407  0.16177522  0.0201533834  0.040803785 -0.08256422</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pweight -0.04068135 -0.14369550 -0.1433650027  0.031434448 -0.03929972</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pspwght -0.06648407  0.03062696  0.0006768299  0.093431532  0.07426277</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> health   1.00000000 -0.10316612  0.1178557257 -0.021273042  0.05193874</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> height  -0.10316612  1.00000000  0.5533330286 -0.052660561  0.13890733</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> weight   0.11785573  0.55333303  1.0000000000 -0.011173691  0.06910988</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> icbrnct -0.02127304 -0.05266056 -0.0111736912  1.000000000 -0.06986703</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> etfruit  0.05193874  0.13890733  0.0691098764 -0.069867031  1.00000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eatveg   0.10175935  0.11224638  0.0905486021 -0.055562773  0.50010878</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dosprt  -0.18957208  0.06676695 -0.0217212222 -0.015987593 -0.11049009</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cgtsmke -0.11933749 -0.11681699 -0.0657451382  0.073362029 -0.22026202</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alcfreq  0.08242663 -0.20065328 -0.1203337628  0.162937351 -0.02403993</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltdpr   0.28144176 -0.10843668 -0.0520720747  0.015609138  0.04311065</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> flteeff  0.30218753 -0.07012818 -0.0016186777 -0.010472176  0.06914567</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> slprl    0.24895361 -0.12093752 -0.0085783855 -0.041785895  0.03706653</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> wrhpp   -0.24891462  0.02231862 -0.0234711771  0.016958579 -0.06254538</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltlnl   0.18081519 -0.10805002 -0.0676134671  0.034664423  0.02917289</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> enjlf   -0.26036094  0.03087964 -0.0097134083 -0.002203857 -0.07366855</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltsd    0.21047857 -0.15024985 -0.0808236647  0.047231574  0.00399417</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cldgng   0.25495232 -0.05507991  0.0375397771  0.003338221  0.08305732</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               eatveg       dosprt     cgtsmke      alcfreq       fltdpr</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> gndr    -0.139681656 -0.044080879  0.12544420  0.247070726  0.122260210</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> agea    -0.074995202 -0.040694067  0.08548812 -0.124940421 -0.014768762</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eisced  -0.127992200  0.088551717  0.05642249 -0.175167954 -0.094210715</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pweight -0.186685060 -0.185977879  0.01460440  0.006827024  0.009608483</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pspwght  0.020167801  0.001071626  0.00684912  0.074042554 -0.030014588</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> health   0.101759348 -0.189572079 -0.11933749  0.082426633  0.281441757</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> height   0.112246378  0.066766949 -0.11681699 -0.200653275 -0.108436676</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> weight   0.090548602 -0.021721222 -0.06574514 -0.120333763 -0.052072075</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> icbrnct -0.055562773 -0.015987593  0.07336203  0.162937351  0.015609138</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> etfruit  0.500108778 -0.110490092 -0.22026202 -0.024039934  0.043110654</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eatveg   1.000000000 -0.064525042 -0.15251485  0.043373617  0.065584179</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dosprt  -0.064525042  1.000000000  0.03829197 -0.068573012 -0.086799506</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cgtsmke -0.152514854  0.038291968  1.00000000  0.147252199 -0.076665521</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alcfreq  0.043373617 -0.068573012  0.14725220  1.000000000  0.076727262</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltdpr   0.065584179 -0.086799506 -0.07666552  0.076727262  1.000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> flteeff  0.083398356 -0.113091317 -0.07863904  0.087888591  0.405667902</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> slprl    0.041430025 -0.088935131 -0.05829569  0.052449542  0.302687542</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> wrhpp   -0.104138032  0.062397566  0.06935764 -0.017222877 -0.424389165</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltlnl   0.065636555 -0.081783861 -0.05035156  0.103152964  0.356631703</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> enjlf   -0.130477069  0.079351409  0.05634298 -0.046306899 -0.400179271</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltsd    0.009120405 -0.068882309 -0.03905719  0.085496503  0.505956076</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cldgng   0.090852895 -0.124335214 -0.07371113  0.089219795  0.311425385</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              flteeff        slprl       wrhpp      fltlnl        enjlf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> gndr     0.083332063  0.140037028 -0.01918236  0.08343511 -0.056723921</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> agea    -0.040623197  0.026930830 -0.04896391  0.01313495 -0.016553630</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eisced  -0.084170737 -0.063476839  0.02544220 -0.13993147  0.029189382</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pweight -0.091590042  0.014411901  0.06114211  0.16642678  0.185169787</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pspwght  0.016795898 -0.020770798  0.06879120 -0.10323360  0.041464277</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> health   0.302187528  0.248953606 -0.24891462  0.18081519 -0.260360935</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> height  -0.070128179 -0.120937523  0.02231862 -0.10805002  0.030879639</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> weight  -0.001618678 -0.008578386 -0.02347118 -0.06761347 -0.009713408</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> icbrnct -0.010472176 -0.041785895  0.01695858  0.03466442 -0.002203857</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> etfruit  0.069145672  0.037066527 -0.06254538  0.02917289 -0.073668545</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eatveg   0.083398356  0.041430025 -0.10413803  0.06563655 -0.130477069</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dosprt  -0.113091317 -0.088935131  0.06239757 -0.08178386  0.079351409</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cgtsmke -0.078639040 -0.058295688  0.06935764 -0.05035156  0.056342984</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alcfreq  0.087888591  0.052449542 -0.01722288  0.10315296 -0.046306899</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltdpr   0.405667902  0.302687542 -0.42438916  0.35663170 -0.400179271</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> flteeff  1.000000000  0.303919044 -0.28046560  0.21616827 -0.311265316</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> slprl    0.303919044  1.000000000 -0.21918025  0.19778059 -0.207779995</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> wrhpp   -0.280465598 -0.219180246  1.00000000 -0.28748958  0.601279059</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltlnl   0.216168274  0.197780595 -0.28748958  1.00000000 -0.272102324</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> enjlf   -0.311265316 -0.207779995  0.60127906 -0.27210232  1.000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltsd    0.297352287  0.270760098 -0.35352761  0.40540274 -0.320363148</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cldgng   0.402420313  0.270991133 -0.23344351  0.22734598 -0.260732908</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                fltsd       cldgng</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> gndr     0.157131253  0.069362902</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> agea     0.012811709  0.009148542</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eisced  -0.096946033 -0.116524746</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pweight  0.120445676 -0.051713280</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pspwght -0.031305043  0.011511549</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> health   0.210478568  0.254952319</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> height  -0.150249849 -0.055079907</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> weight  -0.080823665  0.037539777</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> icbrnct  0.047231574  0.003338221</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> etfruit  0.003994170  0.083057321</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eatveg   0.009120405  0.090852895</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dosprt  -0.068882309 -0.124335214</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cgtsmke -0.039057195 -0.073711131</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alcfreq  0.085496503  0.089219795</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltdpr   0.505956076  0.311425385</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> flteeff  0.297352287  0.402420313</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> slprl    0.270760098  0.270991133</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> wrhpp   -0.353527612 -0.233443505</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltlnl   0.405402742  0.227345976</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> enjlf   -0.320363148 -0.260732908</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltsd    1.000000000  0.268770318</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cldgng   0.268770318  1.000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $std.err</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 gndr         agea       eisced    pweight    pspwght     health</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> gndr    1.753199e-10 1.179576e-02 1.176571e-02 0.01175932 0.01176549 0.01176168</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> agea    1.179576e-02 2.485772e-10 1.170774e-02 0.01179552 0.01138604 0.01132956</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eisced  1.176571e-02 1.170774e-02 1.756973e-10 0.01175395 0.01148030 0.01157473</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pweight 1.175932e-02 1.179552e-02 1.175395e-02 0.00000000 0.01174395 0.01176148</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pspwght 1.176549e-02 1.138604e-02 1.148030e-02 0.01174395 0.00000000 0.01174518</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> health  1.176168e-02 1.132956e-02 1.157473e-02 0.01176148 0.01174518 0.00000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> height  8.415005e-03 1.165337e-02 1.167455e-02 0.01168474 0.01180173 0.01174919</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> weight  1.037839e-02 1.192096e-02 1.197297e-02 0.01183220 0.01195570 0.01187662</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> icbrnct 1.176485e-02 1.176951e-02 1.178103e-02 0.01175971 0.01171405 0.01176856</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> etfruit 1.162358e-02 1.155480e-02 1.175468e-02 0.01176132 0.01173791 0.01175860</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eatveg  1.165663e-02 1.176828e-02 1.169956e-02 0.01156509 0.01176965 0.01171499</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dosprt  1.177448e-02 1.180325e-02 1.176335e-02 0.01158031 0.01178592 0.01157543</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cgtsmke 1.167581e-02 1.175422e-02 1.177370e-02 0.01176752 0.01176850 0.01168953</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alcfreq 1.140866e-02 1.170904e-02 1.161500e-02 0.01177340 0.01174135 0.01173849</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltdpr  1.169751e-02 1.181175e-02 1.175476e-02 0.01178539 0.01178062 0.01131345</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> flteeff 1.174168e-02 1.179999e-02 1.176291e-02 0.01173313 0.01178100 0.01123570</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> slprl   1.166656e-02 1.180546e-02 1.178100e-02 0.01178143 0.01178012 0.01141565</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> wrhpp   1.179114e-02 1.180629e-02 1.181169e-02 0.01177124 0.01176537 0.01142609</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltlnl  1.174157e-02 1.180872e-02 1.168866e-02 0.01161834 0.01171971 0.01159247</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> enjlf   1.177350e-02 1.181554e-02 1.180965e-02 0.01158855 0.01178234 0.01138895</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltsd   1.163952e-02 1.181124e-02 1.175248e-02 0.01170013 0.01178015 0.01152511</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cldgng  1.176000e-02 1.181419e-02 1.173011e-02 0.01177261 0.01178761 0.01140120</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              height      weight    icbrnct    etfruit     eatveg     dosprt</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> gndr    0.008415005 0.010378390 0.01176485 0.01162358 0.01165663 0.01177448</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> agea    0.011653373 0.011920962 0.01176951 0.01155480 0.01176828 0.01180325</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eisced  0.011674551 0.011972972 0.01178103 0.01175468 0.01169956 0.01176335</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pweight 0.011684736 0.011832199 0.01175971 0.01176132 0.01156509 0.01158031</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pspwght 0.011801733 0.011955700 0.01171405 0.01173791 0.01176965 0.01178592</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> health  0.011749185 0.011876625 0.01176856 0.01175860 0.01171499 0.01157543</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> height  0.000000000 0.009975749 0.01179089 0.01169607 0.01173757 0.01179986</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> weight  0.009975749 0.000000000 0.01195496 0.01192882 0.01190914 0.01197086</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> icbrnct 0.011790890 0.011954956 0.00000000 0.01174165 0.01175385 0.01178443</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> etfruit 0.011696067 0.011928822 0.01174165 0.00000000 0.01019415 0.01171702</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eatveg  0.011737565 0.011909143 0.01175385 0.01019415 0.00000000 0.01176627</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dosprt  0.011799859 0.011970862 0.01178443 0.01171702 0.01176627 0.00000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cgtsmke 0.011728886 0.011932394 0.01173707 0.01148372 0.01163674 0.01177974</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alcfreq 0.011574403 0.011876468 0.01161633 0.01177435 0.01176749 0.01176309</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltdpr  0.011748300 0.011948880 0.01178450 0.01177743 0.01176464 0.01175943</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> flteeff 0.011785599 0.011961673 0.01178201 0.01175691 0.01174487 0.01172499</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> slprl   0.011727968 0.011962104 0.01177237 0.01177701 0.01177581 0.01175393</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> wrhpp   0.011823302 0.011971246 0.01179161 0.01177267 0.01173245 0.01178837</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltlnl  0.011745517 0.011935169 0.01177558 0.01178010 0.01176133 0.01176116</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> enjlf   0.011818955 0.011972264 0.01179246 0.01176290 0.01169574 0.01177168</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltsd   0.011683829 0.011926822 0.01177278 0.01178829 0.01178872 0.01177594</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cldgng  0.011802519 0.011960104 0.01178832 0.01175011 0.01174290 0.01171483</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              cgtsmke    alcfreq       fltdpr    flteeff      slprl       wrhpp</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> gndr    1.167581e-02 0.01140866 1.169751e-02 0.01174168 0.01166656 0.011791136</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> agea    1.175422e-02 0.01170904 1.181175e-02 0.01179999 0.01180546 0.011806285</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eisced  1.177370e-02 0.01161500 1.175476e-02 0.01176291 0.01178100 0.011811687</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pweight 1.176752e-02 0.01177340 1.178539e-02 0.01173313 0.01178143 0.011771241</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pspwght 1.176850e-02 0.01174135 1.178062e-02 0.01178100 0.01178012 0.011765368</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> health  1.168953e-02 0.01173849 1.131345e-02 0.01123570 0.01141565 0.011426090</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> height  1.172889e-02 0.01157440 1.174830e-02 0.01178560 0.01172797 0.011823302</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> weight  1.193239e-02 0.01187647 1.194888e-02 0.01196167 0.01196210 0.011971246</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> icbrnct 1.173707e-02 0.01161633 1.178450e-02 0.01178201 0.01177237 0.011791610</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> etfruit 1.148372e-02 0.01177435 1.177743e-02 0.01175691 0.01177701 0.011772672</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eatveg  1.163674e-02 0.01176749 1.176464e-02 0.01174487 0.01177581 0.011732448</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dosprt  1.177974e-02 0.01176309 1.175943e-02 0.01172499 0.01175393 0.011788374</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cgtsmke 1.753685e-10 0.01164775 1.175369e-02 0.01174862 0.01176507 0.011767361</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alcfreq 1.164775e-02 0.00000000 1.175691e-02 0.01174195 0.01177134 0.011796479</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltdpr  1.175369e-02 0.01175691 1.756241e-10 0.01077558 0.01123695 0.010685291</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> flteeff 1.174862e-02 0.01174195 1.077558e-02 0.00000000 0.01122765 0.011323121</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> slprl   1.176507e-02 0.01177134 1.123695e-02 0.01122765 0.00000000 0.011509746</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> wrhpp   1.176736e-02 0.01179648 1.068529e-02 0.01132312 0.01150975 0.000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltlnl  1.176935e-02 0.01172550 1.101477e-02 0.01150727 0.01155312 0.011298580</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> enjlf   1.177621e-02 0.01178475 1.081384e-02 0.01120979 0.01153833 0.009433815</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltsd   1.177939e-02 0.01174767 1.017172e-02 0.01125517 0.01134805 0.011037116</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cldgng  1.175877e-02 0.01174627 1.120839e-02 0.01079324 0.01134965 0.011475444</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             fltlnl       enjlf      fltsd     cldgng</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> gndr    0.01174157 0.011773499 0.01163952 0.01176000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> agea    0.01180872 0.011815542 0.01181124 0.01181419</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eisced  0.01168866 0.011809653 0.01175248 0.01173011</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pweight 0.01161834 0.011588553 0.01170013 0.01177261</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pspwght 0.01171971 0.011782344 0.01178015 0.01178761</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> health  0.01159247 0.011388947 0.01152511 0.01140120</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> height  0.01174552 0.011818955 0.01168383 0.01180252</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> weight  0.01193517 0.011972264 0.01192682 0.01196010</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> icbrnct 0.01177558 0.011792457 0.01177278 0.01178832</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> etfruit 0.01178010 0.011762897 0.01178829 0.01175011</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eatveg  0.01176133 0.011695742 0.01178872 0.01174290</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dosprt  0.01176116 0.011771682 0.01177594 0.01171483</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cgtsmke 0.01176935 0.011776210 0.01177939 0.01175877</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alcfreq 0.01172550 0.011784753 0.01174767 0.01174627</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltdpr  0.01101477 0.010813838 0.01017172 0.01120839</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> flteeff 0.01150727 0.011209789 0.01125517 0.01079324</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> slprl   0.01155312 0.011538331 0.01134805 0.01134965</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> wrhpp   0.01129858 0.009433815 0.01103712 0.01147544</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltlnl  0.00000000 0.011350693 0.01077622 0.01148289</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> enjlf   0.01135069 0.000000000 0.01117485 0.01139093</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltsd   0.01077622 0.011174846 0.00000000 0.01135778</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cldgng  0.01148289 0.011390933 0.01135778 0.00000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $p.values</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  gndr          agea       eisced      pweight       pspwght</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> gndr     0.000000e+00  9.064438e-01 3.004652e-08 5.800366e-03  8.551415e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> agea     9.064438e-01  0.000000e+00 1.323384e-30 5.815469e-01 1.627006e-112</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eisced   3.004652e-08  1.323384e-30 0.000000e+00 1.889845e-11  1.720384e-85</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pweight  5.800366e-03  5.815469e-01 1.889845e-11 0.000000e+00  2.624177e-07</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pspwght  8.551415e-01 1.627006e-112 1.720384e-85 2.624177e-07  0.000000e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> health   6.209187e-04 7.283029e-129 7.131934e-61 5.455948e-04  1.566862e-08</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> height   0.000000e+00  2.099403e-49 4.148426e-43 2.066502e-34  9.474942e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> weight   0.000000e+00  3.478210e-16 9.237343e-02 1.864938e-33  9.548563e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> icbrnct  3.645845e-01  1.518127e-08 5.362689e-04 7.533078e-03  1.744638e-15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> etfruit  2.645066e-41  1.592478e-67 2.354475e-12 8.376879e-04  2.653426e-10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eatveg   8.914046e-33  1.972710e-10 1.225846e-27 1.306110e-57  8.665554e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dosprt   1.826955e-04  5.686331e-04 5.792361e-14 4.740980e-57  9.275553e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cgtsmke  1.006948e-26  3.888490e-13 1.682318e-06 2.146178e-01  5.605934e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alcfreq 8.139076e-101  2.205354e-26 1.275128e-50 5.620213e-01  3.029701e-10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltdpr   2.182993e-25  2.112144e-01 1.279504e-15 4.149345e-01  1.086127e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> flteeff  1.395353e-12  5.793452e-04 9.155565e-13 6.732919e-15  1.540049e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> slprl    7.021243e-33  2.256472e-02 7.348087e-08 2.212670e-01  7.790778e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> wrhpp    1.038136e-01  3.403455e-05 3.127457e-02 2.112550e-07  5.226744e-09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltlnl   1.309484e-12  2.660425e-01 1.024773e-32 6.546443e-46  1.568379e-18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> enjlf    1.480249e-06  1.612560e-01 1.347201e-02 1.675580e-56  4.355480e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltsd    4.935968e-41  2.780891e-01 1.884115e-16 1.107055e-24  7.891071e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cldgng   3.841131e-09  4.387383e-01 4.182002e-23 1.135683e-05  3.288096e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                health       height       weight      icbrnct      etfruit</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> gndr     6.209187e-04 0.000000e+00 0.000000e+00 3.645845e-01 2.645066e-41</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> agea    7.283029e-129 2.099403e-49 3.478210e-16 1.518127e-08 1.592478e-67</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eisced   7.131934e-61 4.148426e-43 9.237343e-02 5.362689e-04 2.354475e-12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pweight  5.455948e-04 2.066502e-34 1.864938e-33 7.533078e-03 8.376879e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pspwght  1.566862e-08 9.474942e-03 9.548563e-01 1.744638e-15 2.653426e-10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> health   0.000000e+00 2.006578e-18 4.678977e-23 7.070786e-02 1.015007e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> height   2.006578e-18 0.000000e+00 0.000000e+00 8.083823e-06 3.143472e-32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> weight   4.678977e-23 0.000000e+00 0.000000e+00 3.500013e-01 7.191906e-09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> icbrnct  7.070786e-02 8.083823e-06 3.500013e-01 0.000000e+00 2.800621e-09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> etfruit  1.015007e-05 3.143472e-32 7.191906e-09 2.800621e-09 0.000000e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eatveg   4.580738e-18 1.537264e-21 3.264642e-14 2.319585e-06 0.000000e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dosprt   3.253373e-59 1.588064e-08 6.964252e-02 1.749282e-01 5.424889e-21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cgtsmke  2.644804e-24 3.233553e-23 3.720284e-08 4.325357e-10 5.165662e-80</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alcfreq  2.388235e-12 5.518643e-66 5.823082e-24 4.057466e-44 4.121558e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltdpr  4.073062e-131 3.500829e-20 1.331942e-05 1.853629e-01 2.535792e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> flteeff 6.579056e-152 2.802143e-09 8.923612e-01 3.741255e-01 4.253209e-09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> slprl   3.725094e-102 9.270717e-25 4.733178e-01 3.884399e-04 1.654232e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> wrhpp   6.088317e-102 5.910926e-02 4.996202e-02 1.504236e-01 1.112181e-07</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltlnl   5.734739e-54 4.645741e-20 1.528165e-08 3.252913e-03 1.329222e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> enjlf   1.019978e-111 9.001237e-03 4.172062e-01 8.517545e-01 3.999336e-10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltsd    7.141811e-73 1.966826e-37 1.330440e-11 6.083403e-05 7.347514e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cldgng  3.881159e-107 3.115037e-06 1.703771e-03 7.770468e-01 1.711546e-12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               eatveg       dosprt      cgtsmke       alcfreq        fltdpr</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> gndr    8.914046e-33 1.826955e-04 1.006948e-26 8.139076e-101  2.182993e-25</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> agea    1.972710e-10 5.686331e-04 3.888490e-13  2.205354e-26  2.112144e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eisced  1.225846e-27 5.792361e-14 1.682318e-06  1.275128e-50  1.279504e-15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pweight 1.306110e-57 4.740980e-57 2.146178e-01  5.620213e-01  4.149345e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pspwght 8.665554e-02 9.275553e-01 5.605934e-01  3.029701e-10  1.086127e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> health  4.580738e-18 3.253373e-59 2.644804e-24  2.388235e-12 4.073062e-131</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> height  1.537264e-21 1.588064e-08 3.233553e-23  5.518643e-66  3.500829e-20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> weight  3.264642e-14 6.964252e-02 3.720284e-08  5.823082e-24  1.331942e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> icbrnct 2.319585e-06 1.749282e-01 4.325357e-10  4.057466e-44  1.853629e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> etfruit 0.000000e+00 5.424889e-21 5.165662e-80  4.121558e-02  2.535792e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eatveg  0.000000e+00 4.301896e-08 8.388400e-39  2.295811e-04  2.569636e-08</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dosprt  4.301896e-08 0.000000e+00 1.156661e-03  5.799608e-09  1.744322e-13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cgtsmke 8.388400e-39 1.156661e-03 0.000000e+00  2.992626e-36  7.374377e-11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alcfreq 2.295811e-04 5.799608e-09 2.992626e-36  0.000000e+00  7.206903e-11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltdpr  2.569636e-08 1.744322e-13 7.374377e-11  7.206903e-11  0.000000e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> flteeff 1.358691e-12 6.980542e-22 2.343189e-11  8.004868e-14 2.773591e-283</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> slprl   4.371157e-04 4.314771e-14 7.398820e-07  8.488651e-06 2.402753e-152</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> wrhpp   8.629070e-19 1.237971e-07 3.938378e-09  1.443334e-01 4.926457e-312</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltlnl  2.482547e-08 3.870867e-12 1.908531e-05  1.732041e-18 8.238880e-215</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> enjlf   1.150790e-28 1.696674e-11 1.748542e-06  8.595996e-05 1.555238e-274</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltsd   4.391600e-01 5.150008e-09 9.185920e-04  3.754118e-13  0.000000e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cldgng  1.158357e-14 4.026737e-26 3.853355e-10  3.451594e-14 1.762286e-161</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               flteeff         slprl         wrhpp        fltlnl         enjlf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> gndr     1.395353e-12  7.021243e-33  1.038136e-01  1.309484e-12  1.480249e-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> agea     5.793452e-04  2.256472e-02  3.403455e-05  2.660425e-01  1.612560e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eisced   9.155565e-13  7.348087e-08  3.127457e-02  1.024773e-32  1.347201e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pweight  6.732919e-15  2.212670e-01  2.112550e-07  6.546443e-46  1.675580e-56</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pspwght  1.540049e-01  7.790778e-02  5.226744e-09  1.568379e-18  4.355480e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> health  6.579056e-152 3.725094e-102 6.088317e-102  5.734739e-54 1.019978e-111</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> height   2.802143e-09  9.270717e-25  5.910926e-02  4.645741e-20  9.001237e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> weight   8.923612e-01  4.733178e-01  4.996202e-02  1.528165e-08  4.172062e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> icbrnct  3.741255e-01  3.884399e-04  1.504236e-01  3.252913e-03  8.517545e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> etfruit  4.253209e-09  1.654232e-03  1.112181e-07  1.329222e-02  3.999336e-10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eatveg   1.358691e-12  4.371157e-04  8.629070e-19  2.482547e-08  1.150790e-28</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dosprt   6.980542e-22  4.314771e-14  1.237971e-07  3.870867e-12  1.696674e-11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cgtsmke  2.343189e-11  7.398820e-07  3.938378e-09  1.908531e-05  1.748542e-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alcfreq  8.004868e-14  8.488651e-06  1.443334e-01  1.732041e-18  8.595996e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltdpr  2.773591e-283 2.402753e-152 4.926457e-312 8.238880e-215 1.555238e-274</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> flteeff  0.000000e+00 9.274272e-154 4.833711e-130  6.715748e-77 2.758889e-161</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> slprl   9.274272e-154  0.000000e+00  6.437444e-79  1.985502e-64  6.031050e-71</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> wrhpp   4.833711e-130  6.437444e-79  0.000000e+00 7.988116e-137  0.000000e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltlnl   6.715748e-77  1.985502e-64 7.988116e-137  0.000000e+00 3.075246e-122</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> enjlf   2.758889e-161  6.031050e-71  0.000000e+00 3.075246e-122  0.000000e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltsd   6.980863e-147 3.702918e-121 1.511265e-210 6.404053e-283 3.089231e-171</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cldgng  2.427162e-278 2.552031e-121  1.723266e-89  5.437129e-85 5.555346e-112</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 fltsd        cldgng</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> gndr     4.935968e-41  3.841131e-09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> agea     2.780891e-01  4.387383e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eisced   1.884115e-16  4.182002e-23</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pweight  1.107055e-24  1.135683e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pspwght  7.891071e-03  3.288096e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> health   7.141811e-73 3.881159e-107</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> height   1.966826e-37  3.115037e-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> weight   1.330440e-11  1.703771e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> icbrnct  6.083403e-05  7.770468e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> etfruit  7.347514e-01  1.711546e-12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eatveg   4.391600e-01  1.158357e-14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dosprt   5.150008e-09  4.026737e-26</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cgtsmke  9.185920e-04  3.853355e-10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alcfreq  3.754118e-13  3.451594e-14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltdpr   0.000000e+00 1.762286e-161</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> flteeff 6.980863e-147 2.427162e-278</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> slprl   3.702918e-121 2.552031e-121</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> wrhpp   1.511265e-210  1.723266e-89</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltlnl  6.404053e-283  5.437129e-85</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> enjlf   3.089231e-171 5.555346e-112</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltsd    0.000000e+00 2.793566e-119</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cldgng  2.793566e-119  0.000000e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $t.values</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  gndr          agea        eisced     pweight      pspwght</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> gndr     5.703859e+09  1.175294e-01 -5.547277e+00   2.7596808  -0.18256883</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> agea     1.175294e-01  4.022895e+09 -1.155342e+01   0.5511516 -22.94667590</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eisced  -5.547277e+00 -1.155342e+01  5.691607e+09  -6.7250581 -19.85968430</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pweight  2.759681e+00  5.511516e-01 -6.725058e+00         Inf  -5.15351978</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pspwght -1.825688e-01 -2.294668e+01 -1.985968e+01  -5.1535198          Inf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> health   3.423816e+00  2.465059e+01 -1.661672e+01  -3.4588629  -5.66054029</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> height  -8.335969e+01 -1.488994e+01  1.385708e+01 -12.2977101   2.59512373</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> weight  -4.783414e+01  8.175260e+00  1.683240e+00 -12.1165141   0.05661149</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> icbrnct  9.067213e-01 -5.666011e+00  3.463517e+00   2.6730642   7.97602006</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> etfruit -1.354662e+01 -1.754670e+01 -7.023947e+00  -3.3414386   6.32674656</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eatveg  -1.198302e+01 -6.372656e+00 -1.093991e+01 -16.1421253   1.71354354</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dosprt  -3.743766e+00 -3.447699e+00  7.527764e+00 -16.0598313   0.09092420</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cgtsmke  1.074394e+01  7.272972e+00  4.792248e+00   1.2410765   0.58198738</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alcfreq  2.165642e+01 -1.067042e+01 -1.508118e+01   0.5798686   6.30613413</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltdpr   1.045181e+01 -1.250345e+00 -8.014688e+00   0.8152878  -2.54779323</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> flteeff  7.097118e+00 -3.442646e+00 -7.155603e+00  -7.8061023   1.42567720</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> slprl    1.200329e+01  2.281218e+00 -5.388070e+00   1.2232721  -1.76320818</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> wrhpp   -1.626846e+00 -4.147275e+00  2.153985e+00   5.1941942   5.84692280</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltlnl   7.105955e+00  1.112309e+00 -1.197156e+01  14.3244943  -8.80854881</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> enjlf   -4.817932e+00 -1.401005e+00  2.471655e+00  15.9786809   3.51918748</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltsd    1.349980e+01  1.084704e+00 -8.248989e+00  10.2943887  -2.65743900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cldgng   5.898208e+00  7.743688e-01 -9.933815e+00  -4.3926758   0.97658067</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             health     height       weight    icbrnct     etfruit      eatveg</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> gndr      3.423816 -83.359693 -47.83413649  0.9067213 -13.5466237 -11.9830195</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> agea     24.650589 -14.889941   8.17526042 -5.6660112 -17.5466992  -6.3726555</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eisced  -16.616724  13.857083   1.68323988  3.4635170  -7.0239469 -10.9399133</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pweight  -3.458863 -12.297710 -12.11651415  2.6730642  -3.3414386 -16.1421253</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pspwght  -5.660540   2.595124   0.05661149  7.9760201   6.3267466   1.7135435</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> health         Inf  -8.780704   9.92333493 -1.8076163   4.4170870   8.6862503</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> height   -8.780704        Inf  55.46781713 -4.4662076  11.8764139   9.5630034</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> weight    9.923335  55.467817          Inf -0.9346493   5.7935205   7.6032847</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> icbrnct  -1.807616  -4.466208  -0.93464928        Inf  -5.9503609  -4.7271958</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> etfruit   4.417087  11.876414   5.79352050 -5.9503609         Inf  49.0584257</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eatveg    8.686250   9.563003   7.60328472 -4.7271958  49.0584257         Inf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dosprt  -16.377107   5.658284  -1.81450781 -1.3566714  -9.4298763  -5.4838972</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cgtsmke -10.208918  -9.959769  -5.50980265  6.2504570 -19.1803663 -13.1063209</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alcfreq   7.021911 -17.335950 -10.13211698 14.0265731  -2.0417206   3.6858862</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltdpr   24.876732  -9.229989  -4.35790422  1.3245487   3.6604471   5.5746850</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> flteeff  26.895296  -5.950328  -0.13532202 -0.8888274   5.8812812   7.1008310</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> slprl    21.808099 -10.311890  -0.71713016 -3.5494895   3.1473620   3.5182307</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> wrhpp   -21.784759   1.887681  -1.96062936  1.4381903  -5.3127600  -8.8760704</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltlnl   15.597641  -9.199256  -5.66506160  2.9437557   2.4764556   5.5807070</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> enjlf   -22.860844   2.612722  -0.81132596 -0.1868870  -6.2627894 -11.1559459</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltsd    18.262607 -12.859641  -6.77663062  4.0119311   0.3388251   0.7736555</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cldgng   22.361882  -4.666792   3.13875007  0.2831803   7.0686444   7.7368368</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              dosprt       cgtsmke     alcfreq        fltdpr     flteeff</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> gndr     -3.7437659  1.074394e+01  21.6564230  1.045181e+01   7.0971179</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> agea     -3.4476994  7.272972e+00 -10.6704224 -1.250345e+00  -3.4426456</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eisced    7.5277643  4.792248e+00 -15.0811796 -8.014688e+00  -7.1556032</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pweight -16.0598313  1.241076e+00   0.5798686  8.152878e-01  -7.8061023</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pspwght   0.0909242  5.819874e-01   6.3061341 -2.547793e+00   1.4256772</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> health  -16.3771073 -1.020892e+01   7.0219109  2.487673e+01  26.8952960</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> height    5.6582837 -9.959769e+00 -17.3359497 -9.229989e+00  -5.9503280</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> weight   -1.8145078 -5.509803e+00 -10.1321170 -4.357904e+00  -0.1353220</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> icbrnct  -1.3566714  6.250457e+00  14.0265731  1.324549e+00  -0.8888274</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> etfruit  -9.4298763 -1.918037e+01  -2.0417206  3.660447e+00   5.8812812</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eatveg   -5.4838972 -1.310632e+01   3.6858862  5.574685e+00   7.1008310</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dosprt          Inf  3.250663e+00  -5.8295059 -7.381267e+00  -9.6453252</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cgtsmke   3.2506626  5.702279e+09  12.6421164 -6.522675e+00  -6.6934725</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alcfreq  -5.8295059  1.264212e+01         Inf  6.526144e+00   7.4850051</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltdpr   -7.3812674 -6.522675e+00   6.5261444  5.693980e+09  37.6469753</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> flteeff  -9.6453252 -6.693472e+00   7.4850051  3.764698e+01         Inf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> slprl    -7.5664150 -4.954980e+00   4.4556969  2.693679e+01  27.0687981</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> wrhpp     5.2931445  5.894070e+00  -1.4600014 -3.971714e+01 -24.7692848</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltlnl   -6.9537226 -4.278195e+00   8.7973168  3.237758e+01  18.7853715</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> enjlf     6.7408727  4.784475e+00  -3.9293907 -3.700622e+01 -27.7672767</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltsd    -5.8494082 -3.315722e+00   7.2777391  4.974146e+01  26.4191646</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cldgng  -10.6134844 -6.268609e+00   7.5955829  2.778502e+01  37.2844809</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               slprl      wrhpp     fltlnl      enjlf       fltsd      cldgng</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> gndr     12.0032883  -1.626846   7.105955  -4.817932  13.4998012   5.8982082</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> agea      2.2812184  -4.147275   1.112309  -1.401005   1.0847044   0.7743688</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eisced   -5.3880700   2.153985 -11.971559   2.471655  -8.2489886  -9.9338154</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pweight   1.2232721   5.194194  14.324494  15.978681  10.2943887  -4.3926758</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pspwght  -1.7632082   5.846923  -8.808549   3.519187  -2.6574390   0.9765807</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> health   21.8080988 -21.784759  15.597641 -22.860844  18.2626067  22.3618819</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> height  -10.3118902   1.887681  -9.199256   2.612722 -12.8596408  -4.6667925</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> weight   -0.7171302  -1.960629  -5.665062  -0.811326  -6.7766306   3.1387501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> icbrnct  -3.5494895   1.438190   2.943756  -0.186887   4.0119311   0.2831803</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> etfruit   3.1473620  -5.312760   2.476456  -6.262789   0.3388251   7.0686444</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eatveg    3.5182307  -8.876070   5.580707 -11.155946   0.7736555   7.7368368</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dosprt   -7.5664150   5.293144  -6.953723   6.740873  -5.8494082 -10.6134844</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cgtsmke  -4.9549798   5.894070  -4.278195   4.784475  -3.3157221  -6.2686086</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alcfreq   4.4556969  -1.460001   8.797317  -3.929391   7.2777391   7.5955829</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltdpr   26.9367950 -39.717137  32.377578 -37.006220  49.7414598  27.7850222</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> flteeff  27.0687981 -24.769285  18.785371 -27.767277  26.4191646  37.2844809</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> slprl           Inf -19.043013  17.119243 -18.007803  23.8596046  23.8765979</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> wrhpp   -19.0430129        Inf -25.444753  63.736576 -32.0307954 -20.3428737</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltlnl   17.1192426 -25.444753        Inf -23.972310  37.6201402  19.7986726</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> enjlf   -18.0078032  63.736576 -23.972310        Inf -28.6682381 -22.8895129</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltsd    23.8596046 -32.030795  37.620140 -28.668238         Inf  23.6639769</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cldgng   23.8765979 -20.342874  19.798673 -22.889513  23.6639769         Inf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $n</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         gndr agea eisced pweight pspwght health height weight icbrnct etfruit</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> gndr    7226 7189   7195    7226    7226   7219   7175   6998    7226    7220</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> agea    7189 7189   7164    7189    7189   7185   7144   6972    7189    7184</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eisced  7195 7164   7195    7195    7195   7190   7147   6975    7195    7190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pweight 7226 7189   7195    7226    7226   7219   7175   6998    7226    7220</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pspwght 7226 7189   7195    7226    7226   7219   7175   6998    7226    7220</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> health  7219 7185   7190    7219    7219   7219   7169   6993    7219    7215</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> height  7175 7144   7147    7175    7175   7169   7175   6974    7175    7171</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> weight  6998 6972   6975    6998    6998   6993   6974   6998    6998    6996</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> icbrnct 7226 7189   7195    7226    7226   7219   7175   6998    7226    7220</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> etfruit 7220 7184   7190    7220    7220   7215   7171   6996    7220    7220</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eatveg  7218 7182   7188    7218    7218   7213   7169   6995    7218    7218</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dosprt  7201 7168   7172    7201    7201   7197   7152   6977    7201    7197</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cgtsmke 7222 7187   7193    7222    7222   7216   7172   6995    7222    7217</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alcfreq 7216 7182   7187    7216    7216   7210   7166   6989    7216    7211</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltdpr  7201 7168   7175    7201    7201   7196   7162   6987    7201    7198</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> flteeff 7205 7172   7178    7205    7205   7200   7166   6991    7205    7202</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> slprl   7205 7172   7178    7205    7205   7200   7166   6990    7205    7202</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> wrhpp   7192 7159   7165    7192    7192   7187   7152   6976    7192    7189</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltlnl  7205 7172   7178    7205    7205   7200   7166   6990    7205    7202</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> enjlf   7193 7163   7166    7193    7193   7189   7154   6978    7193    7190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltsd   7201 7169   7174    7201    7201   7197   7162   6986    7201    7198</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cldgng  7198 7166   7171    7198    7198   7195   7159   6983    7198    7195</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         eatveg dosprt cgtsmke alcfreq fltdpr flteeff slprl wrhpp fltlnl enjlf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> gndr      7218   7201    7222    7216   7201    7205  7205  7192   7205  7193</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> agea      7182   7168    7187    7182   7168    7172  7172  7159   7172  7163</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eisced    7188   7172    7193    7187   7175    7178  7178  7165   7178  7166</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pweight   7218   7201    7222    7216   7201    7205  7205  7192   7205  7193</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pspwght   7218   7201    7222    7216   7201    7205  7205  7192   7205  7193</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> health    7213   7197    7216    7210   7196    7200  7200  7187   7200  7189</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> height    7169   7152    7172    7166   7162    7166  7166  7152   7166  7154</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> weight    6995   6977    6995    6989   6987    6991  6990  6976   6990  6978</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> icbrnct   7218   7201    7222    7216   7201    7205  7205  7192   7205  7193</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> etfruit   7218   7197    7217    7211   7198    7202  7202  7189   7202  7190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eatveg    7218   7195    7215    7210   7196    7201  7201  7188   7200  7188</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dosprt    7195   7201    7198    7195   7179    7183  7183  7170   7183  7173</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cgtsmke   7215   7198    7222    7213   7198    7202  7202  7189   7203  7190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alcfreq   7210   7195    7213    7216   7194    7199  7199  7186   7198  7187</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltdpr    7196   7179    7198    7194   7201    7197  7196  7183   7196  7184</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> flteeff   7201   7183    7202    7199   7197    7205  7202  7188   7201  7189</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> slprl     7201   7183    7202    7199   7196    7202  7205  7188   7201  7189</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> wrhpp     7188   7170    7189    7186   7183    7188  7188  7192   7188  7176</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltlnl    7200   7183    7203    7198   7196    7201  7201  7188   7205  7189</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> enjlf     7188   7173    7190    7187   7184    7189  7189  7176   7189  7193</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltsd     7197   7179    7198    7195   7193    7198  7198  7185   7198  7188</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cldgng    7194   7176    7195    7192   7190    7196  7195  7182   7194  7185</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         fltsd cldgng</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> gndr     7201   7198</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> agea     7169   7166</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eisced   7174   7171</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pweight  7201   7198</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pspwght  7201   7198</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> health   7197   7195</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> height   7162   7159</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> weight   6986   6983</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> icbrnct  7201   7198</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> etfruit  7198   7195</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eatveg   7197   7194</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dosprt   7179   7176</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cgtsmke  7198   7195</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alcfreq  7195   7192</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltdpr   7193   7190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> flteeff  7198   7196</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> slprl    7198   7195</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> wrhpp    7185   7182</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltlnl   7198   7194</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> enjlf    7188   7185</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltsd    7201   7194</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cldgng   7194   7198</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ci.low</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 gndr         agea       eisced      pweight      pspwght</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> gndr              NA           NA           NA           NA           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> agea    -0.021731115           NA           NA           NA           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eisced  -0.088241675 -0.157926806           NA           NA           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pweight  0.009401509 -0.016618147 -0.101966893           NA           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pspwght -0.025204268 -0.282681298 -0.249786344 -0.083463719           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> health   0.017217127  0.257822144 -0.214495621 -0.063690258 -0.089415613</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> height  -0.713037815 -0.195919169  0.139112393 -0.166281917  0.007492958</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> weight  -0.513894003  0.074152828 -0.003316919 -0.166236736 -0.022753663</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> icbrnct -0.012393112 -0.089664715  0.017713360  0.008383020  0.070525962</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> etfruit -0.179873981 -0.224819315 -0.105478072 -0.062310314  0.051283533</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eatveg  -0.162229153 -0.097953333 -0.150664763 -0.208855823 -0.002903830</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dosprt  -0.067110047 -0.063784583  0.065541892 -0.208181108 -0.022026416</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cgtsmke  0.102677382  0.062491646  0.033355648 -0.008462343 -0.016217331</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alcfreq  0.225281530 -0.147641822 -0.197488135 -0.016249012  0.051056303</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltdpr   0.099443532 -0.037906409 -0.117094763 -0.013492008 -0.053075290</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> flteeff  0.060357120 -0.063707451 -0.107096668 -0.114439097 -0.006297629</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> slprl    0.117325327  0.003789041 -0.086484311 -0.008682073 -0.043840855</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> wrhpp   -0.042275568 -0.072047345  0.002288095  0.038083984  0.045751996</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltlnl   0.060460507 -0.010012242 -0.162539769  0.143888655 -0.126024268</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> enjlf   -0.079729741 -0.039697098  0.006039626  0.162755936  0.018371543</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltsd    0.134521982 -0.010340350 -0.119818154  0.097619756 -0.054363232</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cldgng   0.046334841 -0.014008263 -0.139294824 -0.074726315 -0.011593844</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              health        height      weight      icbrnct      etfruit</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> gndr             NA            NA          NA           NA           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> agea             NA            NA          NA           NA           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eisced           NA            NA          NA           NA           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pweight          NA            NA          NA           NA           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pspwght          NA            NA          NA           NA           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> health           NA            NA          NA           NA           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> height  -0.12601416            NA          NA           NA           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> weight   0.09467876  0.5368344584          NA           NA           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> icbrnct -0.04431997 -0.0757076196 -0.03459477           NA           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> etfruit  0.02889830  0.1161349570  0.04575049 -0.092784580           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eatveg   0.07886629  0.0893294986  0.06725616 -0.078532386  0.482606644</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dosprt  -0.21174857  0.0436580165 -0.04516357 -0.039070662 -0.133253843</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cgtsmke -0.14201991 -0.1395837621 -0.08904310  0.050383389 -0.242103563</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alcfreq  0.05945668 -0.2227721378 -0.14337448  0.140391681 -0.047095277</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltdpr   0.26002716 -0.1312673110 -0.07542855 -0.007491060  0.020028291</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> flteeff  0.28105023 -0.0931307968 -0.02505959 -0.033555146  0.046123437</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> slprl    0.22716082 -0.1436890071 -0.03201548 -0.064814441  0.013982604</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> wrhpp   -0.27047803 -0.0008583126 -0.04691239 -0.006155779 -0.085538473</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltlnl   0.15837758 -0.1308764353 -0.09091290  0.011582610  0.006081091</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> enjlf   -0.28178174  0.0077119080 -0.03316954 -0.025312906 -0.096619176</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltsd    0.18829029 -0.1728088064 -0.10407665  0.024160434 -0.019109904</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cldgng   0.23321914 -0.0781453546  0.01409690 -0.019765614  0.060065474</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              eatveg      dosprt     cgtsmke     alcfreq     fltdpr    flteeff</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> gndr             NA          NA          NA          NA         NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> agea             NA          NA          NA          NA         NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eisced           NA          NA          NA          NA         NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pweight          NA          NA          NA          NA         NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pspwght          NA          NA          NA          NA         NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> health           NA          NA          NA          NA         NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> height           NA          NA          NA          NA         NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> weight           NA          NA          NA          NA         NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> icbrnct          NA          NA          NA          NA         NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> etfruit          NA          NA          NA          NA         NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eatveg           NA          NA          NA          NA         NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dosprt  -0.08750170          NA          NA          NA         NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cgtsmke -0.17497414  0.01520311          NA          NA         NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alcfreq  0.02031088 -0.09153510  0.12459735          NA         NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltdpr   0.04254313 -0.10971208 -0.09959144  0.05371377         NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> flteeff  0.06041724 -0.13586240 -0.10155049  0.06491969  0.3861835         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> slprl    0.01835009 -0.11183154 -0.08128214  0.02938444  0.2815511  0.2828083</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> wrhpp   -0.12695077  0.03930696  0.04631513 -0.04032841 -0.4431661 -0.3016282</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltlnl   0.04260204 -0.10471223 -0.07336054  0.08024188  0.3362973  0.1940396</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> enjlf   -0.15313353  0.05631228  0.03327116 -0.06935263 -0.4194227 -0.3319932</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltsd   -0.01398646 -0.09186878 -0.06210347  0.06251288  0.4885584  0.2761470</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cldgng   0.06788669 -0.14704988 -0.09665363  0.06624445  0.2904007  0.3828748</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              slprl      wrhpp     fltlnl      enjlf     fltsd cldgng</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> gndr            NA         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> agea            NA         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eisced          NA         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pweight         NA         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pspwght         NA         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> health          NA         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> height          NA         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> weight          NA         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> icbrnct         NA         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> etfruit         NA         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eatveg          NA         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dosprt          NA         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cgtsmke         NA         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alcfreq         NA         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltdpr          NA         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> flteeff         NA         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> slprl           NA         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> wrhpp   -0.2410771         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltlnl   0.1754848 -0.3085572         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> enjlf   -0.2297930  0.5862981 -0.2933737         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltsd    0.2492167 -0.3735968  0.3859148 -0.3409563        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cldgng   0.2494460 -0.2551937  0.2053159 -0.2821550 0.2471969     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ci.high</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 gndr         agea      eisced     pweight      pspwght</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> gndr              NA           NA          NA          NA           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> agea     0.024502331           NA          NA          NA           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eisced  -0.042224184 -0.112459605          NA          NA           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pweight  0.055467978  0.029613435 -0.05604125          NA           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pspwght  0.020910528 -0.239602231 -0.20597318 -0.03751754           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> health   0.063279711  0.300463221 -0.16997459 -0.01762921 -0.043482075</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> height  -0.689525010 -0.150935914  0.18426868 -0.12095837  0.053728193</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> weight  -0.478577860  0.120654735  0.04360149 -0.12033910  0.024106580</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> icbrnct  0.033716652 -0.043636673  0.06385071  0.05445249  0.116238624</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> etfruit -0.134883058 -0.180469900 -0.05956273 -0.01624736  0.097163407</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eatveg  -0.116988371 -0.051957290 -0.10518506 -0.16432250  0.043217972</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dosprt  -0.021004768 -0.017560002  0.11146742 -0.16358307  0.024168525</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cgtsmke  0.148079663  0.108393862  0.07942926  0.03765560  0.029908285</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alcfreq  0.268612899 -0.102107442 -0.15266625  0.02989579  0.096950399</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltdpr   0.144948387  0.008384712 -0.07122668  0.03269872 -0.006921889</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> flteeff  0.106218758 -0.017495496 -0.06115535 -0.06864413  0.039871519</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> slprl    0.162602320  0.050043788 -0.04040169  0.03749051  0.002321400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> wrhpp    0.003931324 -0.025828050  0.04856904  0.08413517  0.091757261</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltlnl   0.106321353  0.036268077 -0.11717633  0.18879234 -0.080334012</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> enjlf   -0.033657704  0.006607590  0.05230787  0.20739262  0.064512796</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltsd    0.179577004  0.035950039 -0.07397106  0.14314494 -0.008213485</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cldgng   0.092317279  0.032295539 -0.09363151 -0.02864519  0.034604656</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               health      height        weight      icbrnct       etfruit</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> gndr              NA          NA            NA           NA            NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> agea              NA          NA            NA           NA            NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eisced            NA          NA            NA           NA            NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pweight           NA          NA            NA           NA            NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pspwght           NA          NA            NA           NA            NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> health            NA          NA            NA           NA            NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> height  -0.080208679          NA            NA           NA            NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> weight   0.140905003  0.56940856            NA           NA            NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> icbrnct  0.001796521 -0.02955727  1.225965e-02           NA            NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> etfruit  0.074924020  0.16153375  9.239373e-02 -0.046875493            NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eatveg   0.124545137  0.13504447  1.137424e-01 -0.032534197  0.5172116504</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dosprt  -0.167200478  0.08980447  1.745036e-03  0.007112531 -0.0876098229</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cgtsmke -0.096529814 -0.09392679 -4.237527e-02  0.096263040 -0.1981973543</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alcfreq  0.105309341 -0.17832793 -9.716267e-02  0.185314133 -0.0009589908</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltdpr   0.302579645 -0.08549108 -2.865850e-02  0.038692685  0.0661470842</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> flteeff  0.323031783 -0.04705074  2.182401e-02  0.012621961  0.0920944922</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> slprl    0.270497184 -0.09805826  1.486814e-02 -0.018712866  0.0601109605</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> wrhpp   -0.227101580  0.04547159 -4.128421e-06  0.040054825 -0.0394857036</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltlnl   0.203066149 -0.08510911 -4.424005e-02  0.057709314  0.0522335870</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> enjlf   -0.238680716  0.05401424  1.375341e-02  0.020907547 -0.0506396175</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltsd    0.232452097 -0.12753334 -5.748236e-02  0.070252431  0.0270939798</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cldgng   0.276430931 -0.03195552  6.094140e-02  0.026438492  0.1059610854</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              eatveg      dosprt     cgtsmke      alcfreq     fltdpr    flteeff</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> gndr             NA          NA          NA           NA         NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> agea             NA          NA          NA           NA         NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eisced           NA          NA          NA           NA         NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pweight          NA          NA          NA           NA         NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pspwght          NA          NA          NA           NA         NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> health           NA          NA          NA           NA         NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> height           NA          NA          NA           NA         NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> weight           NA          NA          NA           NA         NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> icbrnct          NA          NA          NA           NA         NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> etfruit          NA          NA          NA           NA         NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eatveg           NA          NA          NA           NA         NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dosprt  -0.04147976          NA          NA           NA         NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cgtsmke -0.12989692  0.06134001          NA           NA         NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alcfreq  0.06639022 -0.04553804  0.16975360           NA         NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltdpr   0.08855551 -0.06379474 -0.05365825  0.099659291         NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> flteeff  0.10629111 -0.09020081 -0.05564421  0.110764413  0.4247905         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> slprl    0.06446583 -0.06594434 -0.03524725  0.075458820  0.3235304  0.3247355</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> wrhpp   -0.08121518  0.08542157  0.09232638  0.005901066 -0.4052400 -0.2590267</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltlnl   0.08860132 -0.05876859 -0.02728900  0.125955114  0.3766337  0.2380771</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> enjlf   -0.10768351  0.10230607  0.07935479 -0.023211765 -0.3805763 -0.2902369</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltsd    0.03221753 -0.04582246 -0.01596929  0.108389498  0.5229516  0.3182682</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cldgng   0.11372287 -0.10148948 -0.05069034  0.112100584  0.3321495  0.4216057</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              slprl      wrhpp     fltlnl      enjlf     fltsd cldgng</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> gndr            NA         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> agea            NA         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eisced          NA         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pweight         NA         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pspwght         NA         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> health          NA         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> height          NA         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> weight          NA         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> icbrnct         NA         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> etfruit         NA         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eatveg          NA         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dosprt          NA         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cgtsmke         NA         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alcfreq         NA         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltdpr          NA         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> flteeff         NA         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> slprl           NA         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> wrhpp   -0.1970604         NA         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltlnl   0.2198737 -0.2661400         NA         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> enjlf   -0.1855545  0.6158489 -0.2505616         NA        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fltsd    0.2920357 -0.3331276  0.4245290 -0.2994627        NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cldgng   0.2922681 -0.2114571  0.2491458 -0.2390509 0.2900774     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $desc</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 22 × 3</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    var          M     SD</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> gndr      1.52  0.500</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> agea     50.6  18.5  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> eisced    4.35  4.83 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> pweight   2.45  0.211</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> pspwght   1     0.597</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> health    2.26  0.915</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> height  170.   10.2  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> weight   74.9  16.6  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> icbrnct   1.12  0.320</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> etfruit   3.04  1.43 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 12 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "cor_matrix" "list"      </span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>

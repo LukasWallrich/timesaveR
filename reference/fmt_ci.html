@@ -18,7 +18,7 @@ placing them in between square brackets"><meta property="og:image" content="http
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9004</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.3</span>
       </span>
     </div>
 
@@ -89,10 +89,18 @@ placing them in between square brackets</p>
 
 <dt id="arg-drop-">drop_0<a class="anchor" aria-label="anchor" href="#arg-drop-"></a></dt>
 <dd><p>Logical. Should leading 0 be dropped, e.g., when reporting correlation coefficients.
-Note that this only makes sense (and only works) when the values are between -1 and 1</p></dd>
+Note that this only works when all values are between -1 and 1 (inclusive)</p></dd>
 
 </dl></div>
 
+    <div id="ref-examples">
+    <h2>Examples</h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">fmt_ci</span><span class="op">(</span><span class="fl">1.23</span>, <span class="fl">2.68</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "[1.23, 2.68]"</span>
+<span class="r-in"><span><span class="fu">fmt_ci</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.12</span>, <span class="fl">0.45</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.34</span>, <span class="fl">0.67</span><span class="op">)</span>, drop_0 <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "[.12, .34]" "[.45, .67]"</span>
+</code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>

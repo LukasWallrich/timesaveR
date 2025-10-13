@@ -19,7 +19,7 @@ descriptives that pools the results across all imputations."><meta property="og:
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9004</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.3</span>
       </span>
     </div>
 
@@ -70,7 +70,7 @@ descriptives that pools the results across all imputations.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cor_matrix_mi</span><span class="op">(</span><span class="va">data</span>, weights <span class="op">=</span> <span class="cn">NULL</span>, var_names <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cor_matrix_mi</span><span class="op">(</span><span class="va">data</span>, weights <span class="op">=</span> <span class="cn">NULL</span>, var_names <span class="op">=</span> <span class="cn">NULL</span>, ci_level <span class="op">=</span> <span class="fl">0.95</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="source">
@@ -99,12 +99,17 @@ This is most helpful when the results are passed to some print function, such as
 To facilitate post-processing, correlations with <em>original</em> variable
 names are returned in the <code>tests</code> element.</p></dd>
 
+
+<dt id="arg-ci-level">ci_level<a class="anchor" aria-label="anchor" href="#arg-ci-level"></a></dt>
+<dd><p>Confidence level for confidence intervals (default = 0.95)</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
     <p>A correlation matrix list similar to the format provided by
 <code><a href="https://jtools.jacob-long.com/reference/svycor.html" class="external-link">jtools::svycor()</a></code> with the addition of a <code>desc</code>-element with means
-and standard deviations of the variables.</p>
+and standard deviations of the variables. Returns <code>ci.low</code> and <code>ci.high</code>
+matrices with confidence intervals for correlations.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -136,7 +141,7 @@ from mice. If you want correlations for such variables, rename them.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create Dataset with missing data</span></span></span>
 <span class="r-in"><span><span class="va">ess_health</span> <span class="op">&lt;-</span> <span class="va">ess_health</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/sample_n.html" class="external-link">sample_n</a></span><span class="op">(</span><span class="fl">500</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> </span></span>
-<span class="r-in"><span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">etfruit</span>, <span class="va">eatveg</span> , <span class="va">dosprt</span>, <span class="va">health</span>, wt <span class="op">=</span> <span class="va">pspwght</span><span class="op">)</span></span></span>
+<span class="r-in"><span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">etfruit</span>, <span class="va">eatveg</span> , <span class="va">dosprt</span>, <span class="va">health</span>, wt <span class="op">=</span> <span class="va">pspwght</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">add_missing</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span><span class="va">x</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, <span class="fl">1</span>, <span class="fl">.9</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span>; <span class="va">x</span><span class="op">}</span></span></span>
 <span class="r-in"><span><span class="va">ess_health</span> <span class="op">&lt;-</span> <span class="va">ess_health</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">across</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/everything.html" class="external-link">everything</a></span><span class="op">(</span><span class="op">)</span>, <span class="op">-</span><span class="va">wt</span><span class="op">)</span>, <span class="va">add_missing</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -145,6 +150,19 @@ from mice. If you want correlations for such variables, rename them.</p>
 <span class="r-in"><span><span class="va">ess_health_mi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tidyr.tidyverse.org/reference/complete.html" class="external-link">complete</a></span><span class="op">(</span><span class="va">ess_health_mi</span>, <span class="st">"long"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">cor_matrix</span> <span class="op">&lt;-</span> <span class="fu">cor_matrix_mi</span><span class="op">(</span><span class="va">ess_health_mi</span>, weights <span class="op">=</span> <span class="va">wt</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Access confidence intervals</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">cor_matrix</span><span class="op">$</span><span class="va">ci.low</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             etfruit      eatveg     dosprt      health</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> etfruit  1.00000000  0.42513703 -0.2156854  0.02687873</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eatveg   0.42513703  1.00000000 -0.2545155  0.00492887</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dosprt  -0.21568537 -0.25451546  1.0000000 -0.23760507</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> health   0.02687873  0.00492887 -0.2376051  1.00000000</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">cor_matrix</span><span class="op">$</span><span class="va">ci.high</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             etfruit      eatveg      dosprt      health</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> etfruit  1.00000000  0.58331922 -0.03669743  0.21719598</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> eatveg   0.58331922  1.00000000 -0.07811107  0.19774275</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dosprt  -0.03669743 -0.07811107  1.00000000 -0.04858231</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> health   0.21719598  0.19774275 -0.04858231  1.00000000</span>
 </code></pre></div>
     </div>
   </div>

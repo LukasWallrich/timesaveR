@@ -19,7 +19,7 @@ side-by-side. Several pairs of such models can be compared side-by-side."><meta 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9004</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.3</span>
       </span>
     </div>
 
@@ -121,7 +121,7 @@ for variables. If NULL, then the coefficients are not renamed.</p></dd>
 <li><p><code>fmt = fmt_statistic("estimate" = 1, "r.squared" = 6)</code>: Format statistics differently.</p></li>
 <li><p><code>fmt = fmt_identity()</code>: unformatted raw values</p></li>
 </ul></li>
-<li><p>string:</p></li>
+<li><p>string: Passing the string <code>s</code> is equivalent to passing <code>fmt_sprintf(s)</code></p></li>
 <li><p>Note on LaTeX output: To ensure proper typography, all numeric entries are enclosed in the <code>\num{}</code> command, which requires the <code>siunitx</code> package to be loaded in the LaTeX preamble. This behavior can be altered with global options. See the 'Details' section.</p></li>
 </ul></dd>
 
@@ -165,8 +165,11 @@ Coefficients omitted from this vector are omitted from the table. The order
 of the vector determines the order of the table. <code>coef_map</code> can be a named
 or an unnamed character vector. If <code>coef_map</code> is a named vector, its values
 define the labels that must appear in the table, and its names identify the
-original term names stored in the model object: <code>c("hp:mpg"="HPxM/G")</code>. See
-Examples section below.</p></dd>
+original term names stored in the model object: <code>c("hp:mpg"="HPxM/G")</code>.
+If <code>coef_map</code> is an unnamed vector, its values must be raw variable
+names if <code>coef_rename=FALSE</code> and variable labels if <code>coef_rename=TRUE</code>.
+See <code><a href="https://modelsummary.com/man/get_estimates.html" class="external-link">modelsummary::get_estimates</a></code> to get the coefficient out of a model.
+See Examples section below.</p></dd>
 
     <dt><code>coef_omit</code></dt>
 <dd><p>integer vector or regular expression to identify which coefficients to omit (or keep) from the table. Positive integers determine which coefficients to omit. Negative integers determine which coefficients to keep. A regular expression can be used to omit coefficients, and perl-compatible "negative lookaheads" can be used to specify which coefficients to <em>keep</em> in the table. Examples:</p><ul><li><p>c(2, 3, 5): omits the second, third, and fifth coefficients.</p></li>
@@ -181,7 +184,7 @@ Examples section below.</p></dd>
 </ul></dd>
 
     <dt><code>coef_rename</code></dt>
-<dd><p>logical, named or unnamed character vector, or function</p><ul><li><p>Logical: TRUE renames variables based on the "label" attribute of each column. See the Example section below.</p></li>
+<dd><p>logical, named or unnamed character vector, or function</p><ul><li><p>Logical: TRUE renames variables based on the "label" attribute of each column. See the Example section below. Note: renaming is done by the <code>parameters</code> package at the extraction stage, before other arguments are applied like <code>coef_omit</code>. Therefore, this only works for models with builtin support and not for custom models.</p></li>
 <li><p>Unnamed character vector of length equal to the number of coefficients in the final table, after <code>coef_omit</code> is applied.</p></li>
 <li><p>Named character vector: Values refer to the variable names that will appear in the table. Names refer to the original term names stored in the model object. Ex: c("hp:mpg"="hp X mpg")</p></li>
 <li><p>Function: Accepts a character vector of the model's term names and returns a named vector like the one described above. The <code>modelsummary</code> package supplies a <code>coef_rename()</code> function which can do common cleaning tasks: <code>modelsummary(model, coef_rename = coef_rename)</code></p></li>
@@ -211,6 +214,9 @@ the Viewer).</p>
 <span class="r-in"><span><span class="va">mod2</span> <span class="op">&lt;-</span> <span class="fu"><a href="lm_std.html">lm_std</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">hp</span> <span class="op">+</span> <span class="va">wt</span>, <span class="va">mtcars</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">report_lm_with_std</span><span class="op">(</span><span class="va">mod1</span>, <span class="va">mod2</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The `tidy()` method for objects of class `lm_std` is not maintained by the broom team, and is only supported through the `lm` tidier method. Please be cautious in interpreting and reporting broom output.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">This warning is displayed once per session.</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;!DOCTYPE html&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;html lang="en"&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;head&gt;</span>
@@ -220,23 +226,23 @@ the Viewer).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;/head&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;body&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;div id="ohsufvsymi" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;"&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;style&gt;#ohsufvsymi table {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;div id="gdyyappvpw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;"&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;style&gt;#gdyyappvpw table {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-family: times, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   -webkit-font-smoothing: antialiased;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   -moz-osx-font-smoothing: grayscale;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi thead, #ohsufvsymi tbody, #ohsufvsymi tfoot, #ohsufvsymi tr, #ohsufvsymi td, #ohsufvsymi th {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw thead, #gdyyappvpw tbody, #gdyyappvpw tfoot, #gdyyappvpw tr, #gdyyappvpw td, #gdyyappvpw th {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-style: none;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi p {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw p {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   margin: 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding: 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_table {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_table {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   display: table;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-collapse: collapse;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   line-height: normal;</span>
@@ -262,12 +268,12 @@ the Viewer).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-left-color: #D3D3D3;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_caption {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_caption {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 4px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-bottom: 4px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_title {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_title {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 12px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-weight: initial;</span>
@@ -279,7 +285,7 @@ the Viewer).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-width: 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_subtitle {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_subtitle {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 12px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-weight: initial;</span>
@@ -291,7 +297,7 @@ the Viewer).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-width: 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_heading {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_heading {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-align: center;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-color: #FFFFFF;</span>
@@ -303,13 +309,13 @@ the Viewer).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-color: #D3D3D3;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_bottom_border {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_bottom_border {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-style: solid;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-width: 2px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-color: #000000;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_col_headings {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_col_headings {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-style: none;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-width: 2px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-color: #D3D3D3;</span>
@@ -324,7 +330,7 @@ the Viewer).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-color: #D3D3D3;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_col_heading {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_col_heading {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 100%;</span>
@@ -344,7 +350,7 @@ the Viewer).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   overflow-x: hidden;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_column_spanner_outer {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_column_spanner_outer {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 100%;</span>
@@ -356,15 +362,15 @@ the Viewer).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 4px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_column_spanner_outer:first-child {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_column_spanner_outer:first-child {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-left: 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_column_spanner_outer:last-child {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_column_spanner_outer:last-child {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_column_spanner {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_column_spanner {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-style: solid;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-width: 1px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-color: #000000;</span>
@@ -376,11 +382,11 @@ the Viewer).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   width: 100%;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_spanner_row {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_spanner_row {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-style: hidden;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_group_heading {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_group_heading {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-bottom: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-left: 5px;</span>
@@ -406,7 +412,7 @@ the Viewer).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-align: left;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_empty_group_heading {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_empty_group_heading {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding: 0.5px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
@@ -421,15 +427,15 @@ the Viewer).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   vertical-align: middle;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_from_md &gt; :first-child {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_from_md &gt; :first-child {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   margin-top: 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_from_md &gt; :last-child {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_from_md &gt; :last-child {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   margin-bottom: 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_row {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_row {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-bottom: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-left: 5px;</span>
@@ -448,7 +454,7 @@ the Viewer).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   overflow-x: hidden;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_stub {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_stub {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 100%;</span>
@@ -461,7 +467,7 @@ the Viewer).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 5px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_stub_row_group {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_stub_row_group {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 100%;</span>
@@ -475,15 +481,15 @@ the Viewer).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   vertical-align: top;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_row_group_first td {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_row_group_first td {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-width: 2px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_row_group_first th {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_row_group_first th {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-width: 2px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_summary_row {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_summary_row {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-transform: inherit;</span>
@@ -493,16 +499,16 @@ the Viewer).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 5px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_first_summary_row {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_first_summary_row {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-style: none;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-color: #D3D3D3;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_first_summary_row.thick {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_first_summary_row.thick {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-width: 2px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_last_summary_row {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_last_summary_row {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-bottom: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-left: 5px;</span>
@@ -512,7 +518,7 @@ the Viewer).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-color: #D3D3D3;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_grand_summary_row {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_grand_summary_row {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-transform: inherit;</span>
@@ -522,7 +528,7 @@ the Viewer).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 5px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_first_grand_summary_row {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_first_grand_summary_row {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-bottom: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-left: 5px;</span>
@@ -532,7 +538,7 @@ the Viewer).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-color: #D3D3D3;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_last_grand_summary_row_top {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_last_grand_summary_row_top {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-bottom: 8px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-left: 5px;</span>
@@ -542,11 +548,11 @@ the Viewer).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-color: #D3D3D3;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_striped {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_striped {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: rgba(128, 128, 128, 0.05);</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_table_body {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_table_body {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-style: solid;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-width: 1px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-top-color: #000000;</span>
@@ -555,7 +561,7 @@ the Viewer).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-color: #000000;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_footnotes {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_footnotes {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-style: none;</span>
@@ -569,7 +575,7 @@ the Viewer).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-color: #D3D3D3;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_footnote {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_footnote {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   margin: 0px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 90%;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 4px;</span>
@@ -578,7 +584,7 @@ the Viewer).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 5px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_sourcenotes {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_sourcenotes {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   color: #333333;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   background-color: #FFFFFF;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-bottom-style: none;</span>
@@ -592,7 +598,7 @@ the Viewer).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   border-right-color: #D3D3D3;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_sourcenote {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_sourcenote {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 90%;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-top: 4px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-bottom: 4px;</span>
@@ -600,72 +606,72 @@ the Viewer).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   padding-right: 5px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_left {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_left {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-align: left;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_center {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_center {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-align: center;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_right {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_right {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-align: right;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-variant-numeric: tabular-nums;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_font_normal {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_font_normal {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-weight: normal;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_font_bold {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_font_bold {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-weight: bold;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_font_italic {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_font_italic {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-style: italic;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_super {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_super {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 65%;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_footnote_marks {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_footnote_marks {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 75%;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   vertical-align: 0.4em;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   position: initial;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_asterisk {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_asterisk {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   font-size: 100%;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   vertical-align: 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_indent_1 {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_indent_1 {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-indent: 5px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_indent_2 {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_indent_2 {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-indent: 10px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_indent_3 {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_indent_3 {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-indent: 15px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_indent_4 {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_indent_4 {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-indent: 20px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .gt_indent_5 {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .gt_indent_5 {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   text-indent: 25px;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi .katex-display {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw .katex-display {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   display: inline-flex !important;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   margin-bottom: 0.75em !important;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> #ohsufvsymi div.Reactable &gt; div.rt-table &gt; div.rt-thead &gt; div.rt-tr.rt-tr-group-header &gt; div.rt-th-group:after {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #gdyyappvpw div.Reactable &gt; div.rt-table &gt; div.rt-thead &gt; div.rt-tr.rt-tr-group-header &gt; div.rt-th-group:after {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   height: 0px !important;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;/style&gt;</span>
@@ -692,15 +698,11 @@ the Viewer).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;td class="gt_row gt_left" rowspan="1" colspan="1"&gt;  &lt;em&gt;R&lt;sup&gt;2&lt;/sup&gt;     &lt;/td&gt; &lt;td class="gt_row gt_center" rowspan="1" colspan="2"&gt; .83   &lt;/td&gt; &lt;/tr&gt; &lt;tr&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;td class="gt_row gt_left" rowspan="1" colspan="1"&gt;&lt;em&gt;F&lt;/em&gt;-tests&lt;/td&gt; &lt;td class="gt_row gt_center" rowspan="1" colspan="2"&gt; &lt;p&gt;&lt;em&gt;F&lt;/em&gt;(2, 29) = 69.21, &lt;em&gt;p&lt;/em&gt; &amp;lt; .001&lt;/p&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    &lt;/td&gt; &lt;/tr&gt; &lt;/tbody&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;tfoot class="gt_sourcenotes"&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;tr&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       &lt;td class="gt_sourcenote" colspan="3"&gt;&lt;span class='gt_from_md'&gt;Given that dummy variables lose their interpretability when standardized (Fox, 2015), &amp;beta; for dummy variables are semi-standardized, indicating the impact of that dummy on the standardized outcome variable.&lt;/span&gt;&lt;/td&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;/tr&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;tr&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;tfoot&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;tr class="gt_sourcenotes"&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       &lt;td class="gt_sourcenote" colspan="3"&gt;&lt;span class='gt_from_md'&gt;&amp;dagger; &lt;em&gt;p&lt;/em&gt; &amp;lt; .1, * &lt;em&gt;p&lt;/em&gt; &amp;lt; .05, ** &lt;em&gt;p&lt;/em&gt; &amp;lt; .01, *** &lt;em&gt;p&lt;/em&gt; &amp;lt; .001&lt;/span&gt;&lt;/td&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;/tr&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;/tfoot&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;/table&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;/div&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;/body&gt;</span>
@@ -709,23 +711,23 @@ the Viewer).</p>
 
 
 
-<meta charset="utf-8"><style>body{background-color:white;}</style><div id="ohsufvsymi" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-  <style>#ohsufvsymi table {
+<meta charset="utf-8"><style>body{background-color:white;}</style><div id="gdyyappvpw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+  <style>#gdyyappvpw table {
   font-family: times, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#ohsufvsymi thead, #ohsufvsymi tbody, #ohsufvsymi tfoot, #ohsufvsymi tr, #ohsufvsymi td, #ohsufvsymi th {
+#gdyyappvpw thead, #gdyyappvpw tbody, #gdyyappvpw tfoot, #gdyyappvpw tr, #gdyyappvpw td, #gdyyappvpw th {
   border-style: none;
 }
 
-#ohsufvsymi p {
+#gdyyappvpw p {
   margin: 0;
   padding: 0;
 }
 
-#ohsufvsymi .gt_table {
+#gdyyappvpw .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -751,12 +753,12 @@ the Viewer).</p>
   border-left-color: #D3D3D3;
 }
 
-#ohsufvsymi .gt_caption {
+#gdyyappvpw .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#ohsufvsymi .gt_title {
+#gdyyappvpw .gt_title {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -768,7 +770,7 @@ the Viewer).</p>
   border-bottom-width: 0;
 }
 
-#ohsufvsymi .gt_subtitle {
+#gdyyappvpw .gt_subtitle {
   color: #333333;
   font-size: 12px;
   font-weight: initial;
@@ -780,7 +782,7 @@ the Viewer).</p>
   border-top-width: 0;
 }
 
-#ohsufvsymi .gt_heading {
+#gdyyappvpw .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -792,13 +794,13 @@ the Viewer).</p>
   border-right-color: #D3D3D3;
 }
 
-#ohsufvsymi .gt_bottom_border {
+#gdyyappvpw .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #000000;
 }
 
-#ohsufvsymi .gt_col_headings {
+#gdyyappvpw .gt_col_headings {
   border-top-style: none;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -813,7 +815,7 @@ the Viewer).</p>
   border-right-color: #D3D3D3;
 }
 
-#ohsufvsymi .gt_col_heading {
+#gdyyappvpw .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -833,7 +835,7 @@ the Viewer).</p>
   overflow-x: hidden;
 }
 
-#ohsufvsymi .gt_column_spanner_outer {
+#gdyyappvpw .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -845,15 +847,15 @@ the Viewer).</p>
   padding-right: 4px;
 }
 
-#ohsufvsymi .gt_column_spanner_outer:first-child {
+#gdyyappvpw .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#ohsufvsymi .gt_column_spanner_outer:last-child {
+#gdyyappvpw .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#ohsufvsymi .gt_column_spanner {
+#gdyyappvpw .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 1px;
   border-bottom-color: #000000;
@@ -865,11 +867,11 @@ the Viewer).</p>
   width: 100%;
 }
 
-#ohsufvsymi .gt_spanner_row {
+#gdyyappvpw .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#ohsufvsymi .gt_group_heading {
+#gdyyappvpw .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -895,7 +897,7 @@ the Viewer).</p>
   text-align: left;
 }
 
-#ohsufvsymi .gt_empty_group_heading {
+#gdyyappvpw .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -910,15 +912,15 @@ the Viewer).</p>
   vertical-align: middle;
 }
 
-#ohsufvsymi .gt_from_md > :first-child {
+#gdyyappvpw .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#ohsufvsymi .gt_from_md > :last-child {
+#gdyyappvpw .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#ohsufvsymi .gt_row {
+#gdyyappvpw .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -937,7 +939,7 @@ the Viewer).</p>
   overflow-x: hidden;
 }
 
-#ohsufvsymi .gt_stub {
+#gdyyappvpw .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -950,7 +952,7 @@ the Viewer).</p>
   padding-right: 5px;
 }
 
-#ohsufvsymi .gt_stub_row_group {
+#gdyyappvpw .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -964,15 +966,15 @@ the Viewer).</p>
   vertical-align: top;
 }
 
-#ohsufvsymi .gt_row_group_first td {
+#gdyyappvpw .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#ohsufvsymi .gt_row_group_first th {
+#gdyyappvpw .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#ohsufvsymi .gt_summary_row {
+#gdyyappvpw .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -982,16 +984,16 @@ the Viewer).</p>
   padding-right: 5px;
 }
 
-#ohsufvsymi .gt_first_summary_row {
+#gdyyappvpw .gt_first_summary_row {
   border-top-style: none;
   border-top-color: #D3D3D3;
 }
 
-#ohsufvsymi .gt_first_summary_row.thick {
+#gdyyappvpw .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#ohsufvsymi .gt_last_summary_row {
+#gdyyappvpw .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1001,7 +1003,7 @@ the Viewer).</p>
   border-bottom-color: #D3D3D3;
 }
 
-#ohsufvsymi .gt_grand_summary_row {
+#gdyyappvpw .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1011,7 +1013,7 @@ the Viewer).</p>
   padding-right: 5px;
 }
 
-#ohsufvsymi .gt_first_grand_summary_row {
+#gdyyappvpw .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1021,7 +1023,7 @@ the Viewer).</p>
   border-top-color: #D3D3D3;
 }
 
-#ohsufvsymi .gt_last_grand_summary_row_top {
+#gdyyappvpw .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1031,11 +1033,11 @@ the Viewer).</p>
   border-bottom-color: #D3D3D3;
 }
 
-#ohsufvsymi .gt_striped {
+#gdyyappvpw .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#ohsufvsymi .gt_table_body {
+#gdyyappvpw .gt_table_body {
   border-top-style: solid;
   border-top-width: 1px;
   border-top-color: #000000;
@@ -1044,7 +1046,7 @@ the Viewer).</p>
   border-bottom-color: #000000;
 }
 
-#ohsufvsymi .gt_footnotes {
+#gdyyappvpw .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1058,7 +1060,7 @@ the Viewer).</p>
   border-right-color: #D3D3D3;
 }
 
-#ohsufvsymi .gt_footnote {
+#gdyyappvpw .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1067,7 +1069,7 @@ the Viewer).</p>
   padding-right: 5px;
 }
 
-#ohsufvsymi .gt_sourcenotes {
+#gdyyappvpw .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1081,7 +1083,7 @@ the Viewer).</p>
   border-right-color: #D3D3D3;
 }
 
-#ohsufvsymi .gt_sourcenote {
+#gdyyappvpw .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1089,72 +1091,72 @@ the Viewer).</p>
   padding-right: 5px;
 }
 
-#ohsufvsymi .gt_left {
+#gdyyappvpw .gt_left {
   text-align: left;
 }
 
-#ohsufvsymi .gt_center {
+#gdyyappvpw .gt_center {
   text-align: center;
 }
 
-#ohsufvsymi .gt_right {
+#gdyyappvpw .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#ohsufvsymi .gt_font_normal {
+#gdyyappvpw .gt_font_normal {
   font-weight: normal;
 }
 
-#ohsufvsymi .gt_font_bold {
+#gdyyappvpw .gt_font_bold {
   font-weight: bold;
 }
 
-#ohsufvsymi .gt_font_italic {
+#gdyyappvpw .gt_font_italic {
   font-style: italic;
 }
 
-#ohsufvsymi .gt_super {
+#gdyyappvpw .gt_super {
   font-size: 65%;
 }
 
-#ohsufvsymi .gt_footnote_marks {
+#gdyyappvpw .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#ohsufvsymi .gt_asterisk {
+#gdyyappvpw .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#ohsufvsymi .gt_indent_1 {
+#gdyyappvpw .gt_indent_1 {
   text-indent: 5px;
 }
 
-#ohsufvsymi .gt_indent_2 {
+#gdyyappvpw .gt_indent_2 {
   text-indent: 10px;
 }
 
-#ohsufvsymi .gt_indent_3 {
+#gdyyappvpw .gt_indent_3 {
   text-indent: 15px;
 }
 
-#ohsufvsymi .gt_indent_4 {
+#gdyyappvpw .gt_indent_4 {
   text-indent: 20px;
 }
 
-#ohsufvsymi .gt_indent_5 {
+#gdyyappvpw .gt_indent_5 {
   text-indent: 25px;
 }
 
-#ohsufvsymi .katex-display {
+#gdyyappvpw .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#ohsufvsymi div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#gdyyappvpw div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style><table class="table gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false"><thead><tr class="gt_col_headings"><th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="a-"><span class="gt_from_md"></span></th>
@@ -1167,8 +1169,7 @@ the Viewer).</p>
 <td headers="Model2" class="gt_row gt_right"><span class="gt_from_md">-0.36 [-0.57, -0.15]</span></td></tr><tr><td headers=" " class="gt_row gt_left"><span class="gt_from_md">wt</span></td>
 <td headers="Model1" class="gt_row gt_right"><span class="gt_from_md">-3.88 (0.63)***</span></td>
 <td headers="Model2" class="gt_row gt_right"><span class="gt_from_md">-0.63 [-0.84, -0.42]</span></td></tr><tr style="border-top-style: solid; border-top-width: 2px;"><td class="gt_row gt_left" rowspan="1" colspan="1">  <em>N     </em></td> <td class="gt_row gt_center" rowspan="1" colspan="2"> 32   </td> </tr><tr><td class="gt_row gt_left" rowspan="1" colspan="1">  <em>R<sup>2</sup></em></td> <td class="gt_row gt_center" rowspan="1" colspan="2"> .83   </td> </tr><tr><td class="gt_row gt_left" rowspan="1" colspan="1"><em>F</em>-tests</td> <td class="gt_row gt_center" rowspan="1" colspan="2"> <p><em>F</em>(2, 29) = 69.21, <em>p</em> &lt; .001</p>
-   </td> </tr></tbody><tfoot class="gt_sourcenotes"><tr><td class="gt_sourcenote" colspan="3"><span class="gt_from_md">Given that dummy variables lose their interpretability when standardized (Fox, 2015), β for dummy variables are semi-standardized, indicating the impact of that dummy on the standardized outcome variable.</span></td>
-    </tr><tr><td class="gt_sourcenote" colspan="3"><span class="gt_from_md">† <em>p</em> &lt; .1, * <em>p</em> &lt; .05, ** <em>p</em> &lt; .01, *** <em>p</em> &lt; .001</span></td>
+   </td> </tr></tbody><tfoot><tr class="gt_sourcenotes"><td class="gt_sourcenote" colspan="3"><span class="gt_from_md">† <em>p</em> &lt; .1, * <em>p</em> &lt; .05, ** <em>p</em> &lt; .01, *** <em>p</em> &lt; .001</span></td>
     </tr></tfoot></table></div>
 
 

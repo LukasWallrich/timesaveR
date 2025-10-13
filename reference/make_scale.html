@@ -22,7 +22,7 @@ dealt with."><meta property="og:image" content="https://lukaswallrich.github.io/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9004</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.3</span>
       </span>
     </div>
 
@@ -78,9 +78,9 @@ dealt with.</p>
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">make_scale</span><span class="op">(</span></span>
 <span>  <span class="va">data</span>,</span>
-<span>  <span class="va">scale_items</span>,</span>
+<span>  <span class="va">items</span>,</span>
 <span>  <span class="va">scale_name</span>,</span>
-<span>  reverse <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"none"</span>, <span class="st">"spec"</span><span class="op">)</span>,</span>
+<span>  reverse_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"none"</span>, <span class="st">"spec"</span><span class="op">)</span>,</span>
 <span>  reverse_items <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  two_items_reliability <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"spearman_brown"</span>, <span class="st">"cron_alpha"</span>, <span class="st">"r"</span><span class="op">)</span>,</span>
 <span>  r_key <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -88,7 +88,8 @@ dealt with.</p>
 <span>  print_hist <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  print_desc <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  return_list <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  harmonize_ranges <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  harmonize_ranges <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  scale_items <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -100,7 +101,7 @@ dealt with.</p>
 <dd><p>A dataframe</p></dd>
 
 
-<dt id="arg-scale-items">scale_items<a class="anchor" aria-label="anchor" href="#arg-scale-items"></a></dt>
+<dt id="arg-items">items<a class="anchor" aria-label="anchor" href="#arg-items"></a></dt>
 <dd><p>Character vector with names of scale items (variables in data)</p></dd>
 
 
@@ -108,7 +109,7 @@ dealt with.</p>
 <dd><p>Name of the scale</p></dd>
 
 
-<dt id="arg-reverse">reverse<a class="anchor" aria-label="anchor" href="#arg-reverse"></a></dt>
+<dt id="arg-reverse-method">reverse_method<a class="anchor" aria-label="anchor" href="#arg-reverse-method"></a></dt>
 <dd><p>Should scale items be reverse coded? One of "auto" - items are
 reversed if that contributes to scale consistency, "none" - no items reversed,
 or "spec" - items specific in <code>reverse_items</code> are reversed.</p></dd>
@@ -116,7 +117,7 @@ or "spec" - items specific in <code>reverse_items</code> are reversed.</p></dd>
 
 <dt id="arg-reverse-items">reverse_items<a class="anchor" aria-label="anchor" href="#arg-reverse-items"></a></dt>
 <dd><p>Character vector with names of scale items to be reversed
-(must be subset of scale_items)</p></dd>
+(must be subset of <code>items</code>)</p></dd>
 
 
 <dt id="arg-two-items-reliability">two_items_reliability<a class="anchor" aria-label="anchor" href="#arg-two-items-reliability"></a></dt>
@@ -152,6 +153,10 @@ the observed maximum.</p></dd>
 message to flag this potential issue - set to FALSE to suppress that message. If TRUE, items are rescaled to match the first
 item given. Alternatively pass a vector (c(min, max)) to specify the desired range.</p></dd>
 
+
+<dt id="arg-scale-items">scale_items<a class="anchor" aria-label="anchor" href="#arg-scale-items"></a></dt>
+<dd><p><a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> Use the <code>items</code> argument instead</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -169,13 +174,21 @@ consider item-level multiple imputation, which can be done with <code><a href="m
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">scores</span> <span class="op">&lt;-</span> <span class="fu">make_scale</span><span class="op">(</span><span class="va">ess_health</span>, scale_items <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"etfruit"</span>, <span class="st">"eatveg"</span><span class="op">)</span>, </span></span>
-<span class="r-in"><span>                     scale_name <span class="op">=</span> <span class="st">"Healthy eating"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     </span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Create a simple two-item scale</span></span></span>
+<span class="r-in"><span><span class="va">scores</span> <span class="op">&lt;-</span> <span class="fu">make_scale</span><span class="op">(</span><span class="va">ess_health</span>, items <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"etfruit"</span>, <span class="st">"eatveg"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                     scale_name <span class="op">=</span> <span class="st">"Healthy eating"</span>, print_hist <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Descriptives for Healthy eating scale:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mean: 3.033  SD: 1.107</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> spearman_brown: 0.66</span>
-<span class="r-plt img"><img src="make_scale-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">scores</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.0 4.0 4.5 5.0 1.5 3.0</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create scale with automatic reverse coding</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="fu">make_scale</span><span class="op">(</span><span class="va">ess_health</span>, items <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fltdpr"</span>, <span class="st">"flteeff"</span>, <span class="st">"wrhpp"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>           scale_name <span class="op">=</span> <span class="st">"Depression"</span>, reverse_method <span class="op">=</span> <span class="st">"auto"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>

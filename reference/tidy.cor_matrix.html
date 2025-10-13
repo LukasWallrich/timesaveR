@@ -20,7 +20,7 @@ are never included."><meta property="og:image" content="https://lukaswallrich.gi
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9004</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.3</span>
       </span>
     </div>
 
@@ -124,6 +124,32 @@ only.</p></dd>
 
 </dl></div>
 
+    <div id="ref-examples">
+    <h2>Examples</h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Create and tidy a correlation matrix</span></span></span>
+<span class="r-in"><span><span class="va">cm</span> <span class="op">&lt;-</span> <span class="fu"><a href="cor_matrix.html">cor_matrix</a></span><span class="op">(</span><span class="va">iris</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html" class="external-link">tidy</a></span><span class="op">(</span><span class="va">cm</span>, both_directions <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 9</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   column1 column2 estimate std.error  p.value statistic     n conf.low conf.high</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Sepal.… Sepal.…   -<span style="color: #BB0000;">0.118</span>    0.081<span style="text-decoration: underline;">6</span> 1.52<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span>     -<span style="color: #BB0000;">1.44</span>   150   -<span style="color: #BB0000;">0.273</span>    0.043<span style="text-decoration: underline;">5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> Petal.… Sepal.…    0.872    0.040<span style="text-decoration: underline;">3</span> 1.04<span style="color: #949494;">e</span><span style="color: #BB0000;">-47</span>     21.6    150    0.827    0.906 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> Petal.… Sepal.…    0.818    0.047<span style="text-decoration: underline;">3</span> 2.33<span style="color: #949494;">e</span><span style="color: #BB0000;">-37</span>     17.3    150    0.757    0.865 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> Petal.… Sepal.…   -<span style="color: #BB0000;">0.428</span>    0.074<span style="text-decoration: underline;">3</span> 4.51<span style="color: #949494;">e</span><span style="color: #BB0000;">- 8</span>     -<span style="color: #BB0000;">5.77</span>   150   -<span style="color: #BB0000;">0.551</span>   -<span style="color: #BB0000;">0.288</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> Petal.… Sepal.…   -<span style="color: #BB0000;">0.366</span>    0.076<span style="text-decoration: underline;">5</span> 4.07<span style="color: #949494;">e</span><span style="color: #BB0000;">- 6</span>     -<span style="color: #BB0000;">4.79</span>   150   -<span style="color: #BB0000;">0.497</span>   -<span style="color: #BB0000;">0.219</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> Petal.… Petal.…    0.963    0.022<span style="text-decoration: underline;">2</span> 4.68<span style="color: #949494;">e</span><span style="color: #BB0000;">-86</span>     43.4    150    0.949    0.973 </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># With ESS health data</span></span></span>
+<span class="r-in"><span><span class="va">cm_ess</span> <span class="op">&lt;-</span> <span class="fu"><a href="cor_matrix.html">cor_matrix</a></span><span class="op">(</span><span class="va">ess_health</span>,</span></span>
+<span class="r-in"><span>                     var_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>health <span class="op">=</span> <span class="st">"Health"</span>, dosprt <span class="op">=</span> <span class="st">"Sport"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html" class="external-link">tidy</a></span><span class="op">(</span><span class="va">cm_ess</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 9</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   column2 column1 estimate std.error  p.value statistic     n conf.low conf.high</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Sport   Health    -<span style="color: #BB0000;">0.183</span>    0.011<span style="text-decoration: underline;">6</span> 5.86<span style="color: #949494;">e</span><span style="color: #BB0000;">-55</span>     -<span style="color: #BB0000;">15.7</span>  <span style="text-decoration: underline;">7</span>197   -<span style="color: #BB0000;">0.205</span>    -<span style="color: #BB0000;">0.160</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> Health  Sport     -<span style="color: #BB0000;">0.183</span>    0.011<span style="text-decoration: underline;">6</span> 5.86<span style="color: #949494;">e</span><span style="color: #BB0000;">-55</span>     -<span style="color: #BB0000;">15.7</span>  <span style="text-decoration: underline;">7</span>197   -<span style="color: #BB0000;">0.205</span>    -<span style="color: #BB0000;">0.160</span></span>
+</code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>

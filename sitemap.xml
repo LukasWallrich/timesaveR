@@ -68,6 +68,7 @@
 <url><loc>https://lukaswallrich.github.io/timesaveR/reference/run_and_format.html</loc></url>
 <url><loc>https://lukaswallrich.github.io/timesaveR/reference/run_mediation.html</loc></url>
 <url><loc>https://lukaswallrich.github.io/timesaveR/reference/scale_blank.html</loc></url>
+<url><loc>https://lukaswallrich.github.io/timesaveR/reference/scale_weighted.html</loc></url>
 <url><loc>https://lukaswallrich.github.io/timesaveR/reference/setup_analysis_project.html</loc></url>
 <url><loc>https://lukaswallrich.github.io/timesaveR/reference/sigstars.html</loc></url>
 <url><loc>https://lukaswallrich.github.io/timesaveR/reference/spearman_brown.html</loc></url>
@@ -76,6 +77,7 @@
 <url><loc>https://lukaswallrich.github.io/timesaveR/reference/svy_make_scale.html</loc></url>
 <url><loc>https://lukaswallrich.github.io/timesaveR/reference/svy_miss_var_summary.html</loc></url>
 <url><loc>https://lukaswallrich.github.io/timesaveR/reference/svy_pairwise_t_test.html</loc></url>
+<url><loc>https://lukaswallrich.github.io/timesaveR/reference/t_test.html</loc></url>
 <url><loc>https://lukaswallrich.github.io/timesaveR/reference/t_test_mi.html</loc></url>
 <url><loc>https://lukaswallrich.github.io/timesaveR/reference/tidy.cor_matrix.html</loc></url>
 <url><loc>https://lukaswallrich.github.io/timesaveR/reference/tidy.mira.html</loc></url>

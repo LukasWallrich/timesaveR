@@ -19,7 +19,7 @@ based on the format returned by run_moderation()"><meta property="og:image" cont
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9004</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.3</span>
       </span>
     </div>
 
@@ -71,14 +71,16 @@ based on the format returned by <code>run_moderation()</code></p>
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_mediation</span><span class="op">(</span></span>
-<span>  <span class="va">IV</span>,</span>
-<span>  <span class="va">DV</span>,</span>
+<span>  <span class="va">X</span>,</span>
+<span>  <span class="va">Y</span>,</span>
 <span>  <span class="va">Ms</span>,</span>
 <span>  <span class="va">data</span>,</span>
 <span>  digits <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  coef_offset <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">Ms</span><span class="op">)</span>,</span>
 <span>  filename <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  ind_p_values <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  ind_p_values <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  IV <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  DV <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -86,11 +88,11 @@ based on the format returned by <code>run_moderation()</code></p>
     <h2>Arguments</h2>
 
 
-<dl><dt id="arg-iv">IV<a class="anchor" aria-label="anchor" href="#arg-iv"></a></dt>
+<dl><dt id="arg-x">X<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
 <dd><p>Character. Name of predictor</p></dd>
 
 
-<dt id="arg-dv">DV<a class="anchor" aria-label="anchor" href="#arg-dv"></a></dt>
+<dt id="arg-y">Y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
 <dd><p>Character. Name of dependent variable</p></dd>
 
 
@@ -123,6 +125,14 @@ be edited. See timesaveR:::.coef_offset_3 for an example of an offset tibble.</p
 based on pvalues passed in data? If FALSE, indirect effects with confidence
 intervals that do not include zero are bolded</p></dd>
 
+
+<dt id="arg-iv">IV<a class="anchor" aria-label="anchor" href="#arg-iv"></a></dt>
+<dd><p><a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> Use the <code>X</code> argument instead</p></dd>
+
+
+<dt id="arg-dv">DV<a class="anchor" aria-label="anchor" href="#arg-dv"></a></dt>
+<dd><p><a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> Use the <code>Y</code> argument instead</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -138,8 +148,8 @@ intervals that do not include zero are bolded</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Run plot command</span></span></span>
 <span class="r-in"><span><span class="va">plot</span> <span class="op">&lt;-</span> <span class="fu">plot_mediation</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  IV <span class="op">=</span> <span class="st">"Frequency of  &lt;br /&gt; feeling depressed"</span>,</span></span>
-<span class="r-in"><span>  DV <span class="op">=</span> <span class="st">"Self-reported &lt;br /&gt; poor health"</span>, Ms <span class="op">=</span> <span class="st">"Frequency of &lt;br /&gt; physical activity"</span>, </span></span>
+<span class="r-in"><span>  X <span class="op">=</span> <span class="st">"Frequency of  &lt;br /&gt; feeling depressed"</span>,</span></span>
+<span class="r-in"><span>  Y <span class="op">=</span> <span class="st">"Self-reported &lt;br /&gt; poor health"</span>, Ms <span class="op">=</span> <span class="st">"Frequency of &lt;br /&gt; physical activity"</span>, </span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="va">res</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>

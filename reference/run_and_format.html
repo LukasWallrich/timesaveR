@@ -21,7 +21,7 @@ of code and output that is not self-contained, e.g., for teaching materials."><m
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9004</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.3</span>
       </span>
     </div>
 
@@ -70,11 +70,11 @@ of code and output that is not self-contained, e.g., for teaching materials."><m
 run it and copy the formatted code and output to the clipboard. Note that
 this does NOT run in a clean session and is thus unlikely to create <em>reproducible</em>
 examples. Instead, it is intended to be used to quickly get a formatted bit
-of code and output that is not self-contained, e.g., for teaching materials.</p>
+of code and output that is <em>not</em> self-contained, e.g., for teaching materials.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">run_and_format</span><span class="op">(</span>code <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">run_and_format</span><span class="op">(</span>code <span class="op">=</span> <span class="cn">NULL</span>, venue <span class="op">=</span> <span class="st">"gh"</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -83,6 +83,33 @@ of code and output that is not self-contained, e.g., for teaching materials.</p>
 
 <dl><dt id="arg-code">code<a class="anchor" aria-label="anchor" href="#arg-code"></a></dt>
 <dd><p>The code to run - can be NULL, then the code is retrieved from the clipboard.</p></dd>
+
+
+<dt id="arg-venue">venue<a class="anchor" aria-label="anchor" href="#arg-venue"></a></dt>
+<dd><p>Character. Must be one of the following (case insensitive):</p><ul><li><p>"gh" for <a href="https://github.github.com/gfm/" class="external-link">GitHub-Flavored Markdown</a>, the
+default</p></li>
+<li><p>"r" for a runnable R script, with commented output interleaved. Also useful
+for <a href="https://slack.com/intl/en-ca/slack-tips/share-code-snippets" class="external-link">Slack code snippets</a>;
+select "R" from the "Type" drop-down menu to enjoy nice syntax
+highlighting.</p></li>
+<li><p>"rtf" for
+<a href="https://en.wikipedia.org/wiki/Rich_Text_Format" class="external-link">Rich Text Format</a>
+(not supported for un-reprexing)</p></li>
+<li><p>"html" for an HTML fragment suitable for inclusion in a larger HTML
+document (not supported for un-reprexing)</p></li>
+<li><p>"slack" for pasting into a Slack message. Optimized for people who opt out
+of Slack's WYSIWYG interface. Go to
+<strong>Preferences &gt; Advanced &gt; Input options</strong> and select "Format messages with
+markup". (If there is demand for a second Slack venue optimized for use
+with WYSIWYG, please open an issue to discuss.)</p></li>
+<li><p>"so" for
+<a href="https://stackoverflow.com/editing-help#syntax-highlighting" class="external-link">Stack Overflow Markdown</a>.
+Note: this is just an alias for "gh", since Stack Overflow started to
+support CommonMark-style fenced code blocks in January 2019.</p></li>
+<li><p>"ds" for Discourse, e.g.,
+<a href="https://forum.posit.co/" class="external-link">forum.posit.co</a>. Note: this is
+currently just an alias for "gh".</p></li>
+</ul></dd>
 
 </dl></div>
 

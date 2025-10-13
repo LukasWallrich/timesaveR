@@ -19,7 +19,7 @@ this function only supports Cronbach's alpha, including for two-item scales."><m
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9004</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.3</span>
       </span>
     </div>
 
@@ -72,13 +72,14 @@ this function only supports Cronbach's alpha, including for two-item scales.</p>
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">make_scale_mi</span><span class="op">(</span></span>
 <span>  <span class="va">data</span>,</span>
-<span>  <span class="va">scale_items</span>,</span>
+<span>  <span class="va">items</span>,</span>
 <span>  <span class="va">scale_name</span>,</span>
 <span>  proration_cutoff <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  alpha_ci <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  boot <span class="op">=</span> <span class="fl">5000</span>,</span>
 <span>  parallel <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  scale_items <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -98,7 +99,7 @@ that multiple imputation at item level results in much higher statistical power 
 variable. Typically the output from <code>mice::complete(mids, "long")</code>.</p></dd>
 
 
-<dt id="arg-scale-items">scale_items<a class="anchor" aria-label="anchor" href="#arg-scale-items"></a></dt>
+<dt id="arg-items">items<a class="anchor" aria-label="anchor" href="#arg-items"></a></dt>
 <dd><p>Character vector with names of scale items (variables in data)</p></dd>
 
 
@@ -126,15 +127,19 @@ variable. Typically the output from <code>mice::complete(mids, "long")</code>.</
 <dd><p>Should bootstrapping be conducted in parallel (using <code>parallel</code>-package)? Pass a number to select the number of cores - otherwise, the function will use all but one core.</p></dd>
 
 
+<dt id="arg-scale-items">scale_items<a class="anchor" aria-label="anchor" href="#arg-scale-items"></a></dt>
+<dd><p><a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> Use the <code>items</code> argument instead</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Arguments passed on to <code><a href="make_scale.html">make_scale</a></code></p><dl><dt><code>reverse</code></dt>
+<dd><p>Arguments passed on to <code><a href="make_scale.html">make_scale</a></code></p><dl><dt><code>reverse_method</code></dt>
 <dd><p>Should scale items be reverse coded? One of "auto" - items are
 reversed if that contributes to scale consistency, "none" - no items reversed,
 or "spec" - items specific in <code>reverse_items</code> are reversed.</p></dd>
 
     <dt><code>reverse_items</code></dt>
 <dd><p>Character vector with names of scale items to be reversed
-(must be subset of scale_items)</p></dd>
+(must be subset of <code>items</code>)</p></dd>
 
     <dt><code>r_key</code></dt>
 <dd><p>(optional) Numeric. Set to the possible maximum value of the scale
@@ -179,8 +184,8 @@ Descriptive statistics and reliability estimates are only based on the imputed d
 <span class="r-in"><span><span class="va">scale</span> <span class="op">&lt;-</span> <span class="fu">make_scale_mi</span><span class="op">(</span><span class="va">ess_health_mi</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"etfruit"</span>, <span class="st">"eatveg"</span><span class="op">)</span>, <span class="st">"healthy"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Descriptives for healthy scale:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Mean: 2.950  SD: 1.134</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cronbach's alpha: 0.72</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Mean: 3.064  SD: 1.105</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cronbach's alpha: 0.61</span>
 </code></pre></div>
     </div>
   </div>

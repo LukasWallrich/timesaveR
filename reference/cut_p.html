@@ -19,7 +19,7 @@ or width. This function cuts a continuous variable into given proportions."><met
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9004</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.3</span>
       </span>
     </div>
 
@@ -70,7 +70,13 @@ or width. This function cuts a continuous variable into given proportions.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cut_p</span><span class="op">(</span><span class="va">x</span>, <span class="va">p</span>, ties.method <span class="op">=</span> <span class="st">"random"</span>, fct_levels <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cut_p</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">p</span>,</span>
+<span>  ties.method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"random"</span>, <span class="st">"in_order"</span><span class="op">)</span>,</span>
+<span>  fct_levels <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -87,8 +93,8 @@ ascending order. Should add up to one, otherwise, it will be scaled accordingly<
 
 
 <dt id="arg-ties-method">ties.method<a class="anchor" aria-label="anchor" href="#arg-ties-method"></a></dt>
-<dd><p>Currently accepts only "random" - could be expanded in the
-future, though it is unclear what a better method would be</p></dd>
+<dd><p>Method for handling ties when ranking. Accepts "random"
+(ties allocated randomly) or "in_order" (ties allocated in order of appearance).</p></dd>
 
 
 <dt id="arg-fct-levels">fct_levels<a class="anchor" aria-label="anchor" href="#arg-fct-levels"></a></dt>
@@ -107,10 +113,11 @@ proportions</p>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>Ties within the continuous variable are allocated randomly - so this function
-should not be used if there are many ties. The number of observations per
-group is rounded up for even-numbered levels (second, fourth, etc) and
-rounded down for others (expect for the last level that is used to balance).
+    <p>When there are ties in the data that span group boundaries, this function
+provides two methods for allocation: "random" (ties are allocated randomly)
+and "in_order" (ties are allocated in the order they appear). The number of
+observations per group is rounded up for even-numbered levels (second, fourth, etc)
+and rounded down for others (except for the last level that is used to balance).
 For large numbers of observations, the distribution will be very close to
 what is desired, for very small numbers of observations, it should be checked.</p>
     </div>
@@ -118,25 +125,25 @@ what is desired, for very small numbers of observations, it should be checked.</
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">cut_p</span><span class="op">(</span><span class="va">iris</span><span class="op">$</span><span class="va">Sepal.Length</span>, p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.25</span>, <span class="fl">.50</span>, <span class="fl">.25</span><span class="op">)</span>, fct_levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"short"</span>, <span class="st">"middling"</span>, <span class="st">"long"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Factor levels were assigned as follows: Group 1 (4.3 to 5.1): short Group 2</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> (5.1 to 6.4): middling Group 3 (6.4 to 7.9): long</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Factor levels assigned as: Group 1 (4.3 to 5.1): short Group 2 (5.1 to 6.4):</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> middling Group 3 (6.4 to 7.9): long</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [1] middling short    short    short    short    middling short    short   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [9] short    short    middling short    short    short    middling middling</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [17] middling short    middling short    middling short    short    middling</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [17] middling middling middling short    middling short    short    short   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [25] short    short    short    middling middling short    short    middling</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [33] middling middling short    short    middling short    short    middling</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [41] short    short    short    short    short    short    short    short   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [41] short    short    short    short    short    short    middling short   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [49] middling short    long     long     long     middling long     middling</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [57] middling short    long     middling short    middling middling middling</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [65] middling long     middling middling middling middling middling middling</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [73] middling middling middling long     long     long     middling middling</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [73] middling middling long     long     long     long     middling middling</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [81] middling middling middling middling middling middling long     middling</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [89] middling middling middling middling middling short    middling middling</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [97] middling middling short    middling middling middling long     middling</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [105] long     long     short    long     long     long     long     long    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [105] long     long     short    long     long     long     long     middling</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [113] long     middling middling middling long     long     long     middling</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [121] long     middling long     middling long     long     middling middling</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [129] middling long     long     long     middling middling middling long    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [129] middling long     long     long     long     middling middling long    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [137] middling middling middling long     long     long     middling long    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [145] long     long     middling long     middling middling</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Levels: short middling long</span>

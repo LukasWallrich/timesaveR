@@ -23,7 +23,7 @@ particularly useful for copying values from spreadsheet programs like Excel
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9004</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.3</span>
       </span>
     </div>
 
@@ -124,22 +124,22 @@ should be copied to the clipboard. Defaults to <code>TRUE</code> in interactive 
 Requires the <code>clipr</code> package to be installed.</p></dd>
 
 
-<dt id="arg-keep-blank-as-na">keep_blank_as_na<a class="anchor" aria-label="anchor" href="#arg-keep-blank-as-na"></a></dt>
-<dd><p>Logical. If <code>TRUE</code>, empty values are kept as <code>NA</code>.
-If <code>FALSE</code> (default), empty values are omitted from the resulting vector.</p></dd>
-
-
-<dt id="arg-return-type">return_type<a class="anchor" aria-label="anchor" href="#arg-return-type"></a></dt>
+<dt id="arg-return">return<a class="anchor" aria-label="anchor" href="#arg-return"></a></dt>
 <dd><p>Character string specifying the type of return value.
 Choose <code>"code"</code> to return the <code><a href="https://rdrr.io/r/base/c.html" class="external-link">c()</a></code> command as a string or <code>"vector"</code> to
 return the actual R vector. Defaults to <code>"code"</code>. Abbreviated values like
 <code>"c"</code> or <code>"v"</code> are accepted.</p></dd>
 
+
+<dt id="arg-keep-blank-as-na">keep_blank_as_na<a class="anchor" aria-label="anchor" href="#arg-keep-blank-as-na"></a></dt>
+<dd><p>Logical. If <code>TRUE</code>, empty values are kept as <code>NA</code>.
+If <code>FALSE</code> (default), empty values are omitted from the resulting vector.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
     <p>A character string representing the <code><a href="https://rdrr.io/r/base/c.html" class="external-link">c()</a></code> command or the actual R
-vector, depending on the <code>return_type</code> parameter.</p>
+vector, depending on the <code>return</code> parameter.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -155,8 +155,8 @@ whitespace from the start and end of each element of the vector.</p>
 <span class="r-in"><span><span class="co"># c("a", "b", "c")</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">line_to_vector</span><span class="op">(</span><span class="st">"1 2 3"</span>, return_type <span class="op">=</span> <span class="st">"vector"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in line_to_vector("1 2 3", return_type = "vector"):</span> unused argument (return_type = "vector")</span>
+<span class="r-in"><span><span class="fu">line_to_vector</span><span class="op">(</span><span class="st">"1 2 3"</span>, return <span class="op">=</span> <span class="st">"vector"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1 2 3</span>
 <span class="r-in"><span><span class="co"># [1] 1 2 3</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Can abbreviate return argument</span></span></span>

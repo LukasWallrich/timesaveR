@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9004</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.3</span>
       </span>
     </div>
 
@@ -64,7 +64,8 @@
 <h2 class="page-header" data-toc-text="0.0.3" id="timesaver-003">timesaveR 0.0.3<a class="anchor" aria-label="anchor" href="#timesaver-003"></a></h2>
 <div class="section level3">
 <h3 id="new-capabilities-0-0-3">New capabilities<a class="anchor" aria-label="anchor" href="#new-capabilities-0-0-3"></a></h3>
-<ul><li>Added <code><a href="../reference/run_mediation.html">run_mediation()</a></code> to estimate and <code><a href="../reference/plot_mediation.html">plot_mediation()</a></code> to visualize parallel mediation models.</li>
+<ul><li>Added <code><a href="../reference/t_test.html">t_test()</a></code> - a comprehensive wrapper for t-tests that always returns Cohen’s d. Supports one-sample, independent-samples, and paired-samples t-tests with both formula and vector interfaces. This replaces the now-deprecated <code><a href="../reference/paired_t_test_d.html">paired_t_test_d()</a></code>.</li>
+<li>Added <code><a href="../reference/run_mediation.html">run_mediation()</a></code> to estimate and <code><a href="../reference/plot_mediation.html">plot_mediation()</a></code> to visualize parallel mediation models.</li>
 <li>Added <code><a href="../reference/na_when.html">na_when()</a></code> to set values to NA based on logical conditions, and <code><a href="../reference/na_ifs.html">na_ifs()</a></code> to replace multiple values with NA (naming choice guided by existing dplyr::na_if function)</li>
 <li>Added <code><a href="../reference/make_scale_mi.html">make_scale_mi()</a></code> to estimate scale scores and Cronbach’s alpha after multiple-imputation at the item level. According to <a href="https://doi.org/10.1080/00273171.2012.640589" class="external-link">Gottschall, West &amp; Enders (2012)</a>, this is one of the best ways to deal with item-level missing data. If requested, the function can bootstrap confidence intervals, using the <code>future</code>-package for parallel computing.</li>
 <li>Added <code><a href="../reference/pcor_matrix.html">pcor_matrix()</a></code> to calculate partial correlation matrices after parceling out one or several variable.</li>
@@ -76,6 +77,11 @@
 <div class="section level3">
 <h3 id="enhancements-0-0-3">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-0-0-3"></a></h3>
 <ul><li>
+<strong>Breaking change</strong>: <code><a href="../reference/make_scale_mi.html">make_scale_mi()</a></code> output structure has been standardized to match <code><a href="../reference/make_scale.html">make_scale()</a></code>. The <code>descriptives</code> element now uses <code>"cronbachs_alpha"</code> (instead of <code>"cron_alpha"</code>) for the <code>reliability_method</code> field, includes <code>reversed</code> as a space-separated string (instead of a data frame), and adds <code>rev_min</code> and <code>rev_max</code> fields for consistency with <code><a href="../reference/make_scale.html">make_scale()</a></code>. Note: <code>"cron_alpha"</code> is still accepted as input for backward compatibility.</li>
+<li>
+<code><a href="../reference/report_cor_table.html">report_cor_table()</a></code> and <code><a href="../reference/plot_distributions.html">plot_distributions()</a></code> now support survey-weighted data. Distribution plots for survey design objects properly account for sampling weights using <code><a href="https://rdrr.io/pkg/survey/man/svyhist.html" class="external-link">svyhist()</a></code> for discrete variables and <code><a href="https://rdrr.io/pkg/survey/man/svysmooth.html" class="external-link">svysmooth()</a></code> for continuous variables. This ensures that distributions reflect the population rather than just the sample composition.</li>
+<li>Added package-level rounding option <code>timesaveR.round_method</code> to control rounding behavior consistently across all formatting and rounding functions. Set to <code>"to_even"</code> (default, banker’s rounding) or <code>"default"</code> (standard R rounding). Change via <code>options(timesaveR.round_method = "default")</code>. This ensures all <code><a href="../reference/round_.html">round_()</a></code>, <code><a href="../reference/round_df.html">round_df()</a></code>, <code><a href="../reference/fmt_p.html">fmt_p()</a></code>, <code><a href="../reference/fmt_pct.html">fmt_pct()</a></code>, <code><a href="../reference/fmt_cor.html">fmt_cor()</a></code>, and related functions use the same rounding method.</li>
+<li>
 <code><a href="../reference/make_scale.html">make_scale()</a></code> now has a <code>proration_cutoff</code> argument to specify the maximum share of missing data ignored in each case. This offers a simple way to improve on casewise deletion for handling missing data, without getting scale scores based on an insufficient subset of items. [NB: This is a <em>breaking</em> change, earlier versions implicitly had a proration_cutoff of 1, returning scale scores if at least one item was present - which is indefensible when there is a lot of missing data.]</li>
 <li>Added summary <code>text</code> to descriptives returned by <code><a href="../reference/make_scale.html">make_scale()</a></code>
 </li>
@@ -97,6 +103,11 @@
 <code><a href="../reference/line_to_vector.html">line_to_vector()</a></code> now automatically returns numeric vectors when only numbers are passed, and has gained an option to retain NA values for blank entries. It also allows users to pass one or multiple separators to split at explicitly. <code><a href="../reference/line_to_vector.html">l2v()</a></code> is now an alias for <code><a href="../reference/line_to_vector.html">line_to_vector()</a></code>.</li>
 </ul></div>
 <div class="section level3">
+<h3 id="deprecations-0-0-3">Deprecations<a class="anchor" aria-label="anchor" href="#deprecations-0-0-3"></a></h3>
+<ul><li>
+<code><a href="../reference/paired_t_test_d.html">paired_t_test_d()</a></code> is now deprecated in favor of the more comprehensive <code><a href="../reference/t_test.html">t_test()</a></code> function. Users should switch to <code>t_test(x, y, paired = TRUE)</code> instead.</li>
+</ul></div>
+<div class="section level3">
 <h3 id="bug-fixes-0-0-3">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-0-3"></a></h3>
 <ul><li>
 <code><a href="../reference/report_polr_with_std.html">report_polr_with_std()</a></code> works again after <code><a href="https://broom.tidymodels.org/reference/tidy.polr.html" class="external-link">broom::tidy.polr()</a></code> update broke it</li>
@@ -110,6 +121,8 @@
 <code><a href="../reference/make_scales.html">make_scales()</a></code> now correctly reacts to <code>print_desc</code> argument</li>
 <li>
 <code><a href="../reference/cor_matrix.html">cor_matrix()</a></code> now works robustly with <code>missing = "fiml"</code> even when some bootstraps do not converge</li>
+<li>
+<code><a href="../reference/round_df.html">round_df()</a></code> and <code><a href="../reference/round_.html">round_()</a></code> now consistently use round-to-even/banker’s rounding</li>
 </ul></div>
 </div>
     <div class="section level2">

@@ -19,7 +19,7 @@ function accepts tibbles containing the old and new names for arguments and leve
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9004</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.3</span>
       </span>
     </div>
 
@@ -95,6 +95,44 @@ function accepts tibbles containing the old and new names for arguments and leve
 Any variables where levels are renamed will be converted to factors.</p>
     </div>
 
+    <div id="ref-examples">
+    <h2>Examples</h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">var_renames</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="op">~</span><span class="va">old</span>,     <span class="op">~</span><span class="va">new</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"gndr"</span>,   <span class="st">"Gender"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"cntry"</span>,  <span class="st">"Country"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">level_renames</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="op">~</span><span class="va">var</span>,     <span class="op">~</span><span class="va">level_old</span>, <span class="op">~</span><span class="va">level_new</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"gndr"</span>,   <span class="st">"1"</span>,        <span class="st">"Male"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"gndr"</span>,   <span class="st">"2"</span>,        <span class="st">"Female"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"cntry"</span>,  <span class="st">"DE"</span>,       <span class="st">"Germany"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"cntry"</span>,  <span class="st">"FR"</span>,       <span class="st">"France"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"cntry"</span>,  <span class="st">"GB"</span>,       <span class="st">"UK"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">rename_cat_variables</span><span class="op">(</span><span class="va">ess_health</span>, var_names <span class="op">=</span> <span class="va">var_renames</span>,</span></span>
+<span class="r-in"><span>                     level_names <span class="op">=</span> <span class="va">level_renames</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 7,226 × 23</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    Country Gender  agea eisced pweight pspwght health height weight icbrnct</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> Germany Male      52      3    2.30   0.608      1    187     78       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> Germany Female    52      5    2.30   0.463      2    168    110       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> Germany Male      62      5    2.30   0.640      1    181     84       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> Germany Female    62      3    2.30   1.14       3    155     63       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> Germany Female    20      5    2.30   0.853      1    160     70       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> Germany Male      49      7    2.30   0.364      2    177     89       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> Germany Male      63      6    2.30   0.310      3    169     87       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> Germany Female    32      3    2.30   1.35       3    163     62       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> Germany Female    66      5    2.30   0.341      1    157     56       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> Germany Male      15      1    2.30   1.74       3    172     72       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 7,216 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 13 more variables: etfruit &lt;dbl&gt;, eatveg &lt;dbl&gt;, dosprt &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   cgtsmke &lt;dbl&gt;, alcfreq &lt;dbl&gt;, fltdpr &lt;dbl&gt;, flteeff &lt;dbl&gt;, slprl &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   wrhpp &lt;dbl&gt;, fltlnl &lt;dbl&gt;, enjlf &lt;dbl&gt;, fltsd &lt;dbl&gt;, cldgng &lt;dbl&gt;</span></span>
+</code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>

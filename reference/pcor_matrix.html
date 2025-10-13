@@ -19,7 +19,7 @@ incomplete cases are dropped with a warning."><meta property="og:image" content=
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9004</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.3</span>
       </span>
     </div>
 
@@ -59,7 +59,7 @@ incomplete cases are dropped with a warning."><meta property="og:image" content=
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Calculates a partial correlation matrix controlling for one or more variables</h1>
-    <small class="dont-index">Source: <a href="https://github.com/LukasWallrich/timesaveR/blob/master/R/pcor.R" class="external-link"><code>R/pcor.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/LukasWallrich/timesaveR/blob/master/R/cor_tables.R" class="external-link"><code>R/cor_tables.R</code></a></small>
     <div class="hidden name"><code>pcor_matrix.Rd</code></div>
     </div>
 
@@ -126,9 +126,9 @@ intervals can be bootstrapped. If you want to do that, pass the number of desire
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 9</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   column1 column2 estimate std.error  p.value statistic     n conf.low conf.high</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Weight  Health    0.144     0.011<span style="text-decoration: underline;">9</span> 1.22<span style="color: #949494;">e</span><span style="color: #BB0000;">-33</span>     12.2   <span style="text-decoration: underline;">6</span>950   0.121     0.167 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> Sport   Health   -<span style="color: #BB0000;">0.175</span>     0.011<span style="text-decoration: underline;">8</span> 3.58<span style="color: #949494;">e</span><span style="color: #BB0000;">-49</span>    -<span style="color: #BB0000;">14.9</span>   <span style="text-decoration: underline;">6</span>950  -<span style="color: #BB0000;">0.198</span>    -<span style="color: #BB0000;">0.153</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> Sport   Weight   -<span style="color: #BB0000;">0.054</span><span style="color: #BB0000; text-decoration: underline;">6</span>    0.012<span style="text-decoration: underline;">0</span> 5.20<span style="color: #949494;">e</span><span style="color: #BB0000;">- 6</span>     -<span style="color: #BB0000;">4.56</span>  <span style="text-decoration: underline;">6</span>950  -<span style="color: #BB0000;">0.078</span><span style="color: #BB0000; text-decoration: underline;">0</span>   -<span style="color: #BB0000;">0.031</span><span style="color: #BB0000; text-decoration: underline;">2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Weight  Health    0.144     0.011<span style="text-decoration: underline;">9</span> 1.23<span style="color: #949494;">e</span><span style="color: #BB0000;">-33</span>     12.2   <span style="text-decoration: underline;">6</span>950   0.121     0.167 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> Sport   Health   -<span style="color: #BB0000;">0.175</span>     0.011<span style="text-decoration: underline;">8</span> 3.64<span style="color: #949494;">e</span><span style="color: #BB0000;">-49</span>    -<span style="color: #BB0000;">14.9</span>   <span style="text-decoration: underline;">6</span>950  -<span style="color: #BB0000;">0.198</span>    -<span style="color: #BB0000;">0.153</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> Sport   Weight   -<span style="color: #BB0000;">0.054</span><span style="color: #BB0000; text-decoration: underline;">6</span>    0.012<span style="text-decoration: underline;">0</span> 5.21<span style="color: #949494;">e</span><span style="color: #BB0000;">- 6</span>     -<span style="color: #BB0000;">4.56</span>  <span style="text-decoration: underline;">6</span>950  -<span style="color: #BB0000;">0.078</span><span style="color: #BB0000; text-decoration: underline;">0</span>   -<span style="color: #BB0000;">0.031</span><span style="color: #BB0000; text-decoration: underline;">2</span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

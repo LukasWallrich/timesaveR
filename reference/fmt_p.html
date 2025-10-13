@@ -19,7 +19,7 @@ significant digits) and &amp;gt; .99 when it is extremely small or large."><meta
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">timesaveR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2.9004</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.3</span>
       </span>
     </div>
 
@@ -91,7 +91,22 @@ are reported as <code>&lt;</code> Defaults to TRUE, for use in text that reports
 FALSE is particularly useful for tables.</p></dd>
 
 </dl></div>
+    <div id="details">
+    <h2>Details</h2>
+    <p>Respects the <code>timesaveR.round_method</code> option for consistent rounding behavior
+(see <code><a href="round_.html">round_()</a></code> for details).</p>
+    </div>
 
+    <div id="ref-examples">
+    <h2>Examples</h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">fmt_p</span><span class="op">(</span><span class="fl">0.04355</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "= .044"</span>
+<span class="r-in"><span><span class="fu">fmt_p</span><span class="op">(</span><span class="fl">0.0001</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "&lt; .001"</span>
+<span class="r-in"><span><span class="fu">fmt_p</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.04355</span>, <span class="fl">0.0001</span>, <span class="fl">0.654</span><span class="op">)</span>, equal_sign <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] ".044"   "&lt; .001" ".654"  </span>
+</code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>
