@@ -60,7 +60,7 @@ However, none of the existing offered quite what we needed. This package
 
 You can install timesaveR from GitHub with the command below. If you do
 not have the `remotes`-package installed, run
-`install.packages("remote")` first.
+`install.packages("remotes")` first.
 
 ``` r
 remotes::install_github('lukaswallrich/timesaveR')
