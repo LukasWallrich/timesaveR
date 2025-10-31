@@ -639,8 +639,22 @@ dump_to_clip <- function(x) {
 line_to_vector <- function(x = NULL, strings = NULL, separators = c("top-level", "all"), 
                            to_clip = interactive(), return = c("code", "vector"), keep_blank_as_na = FALSE) {
   
-  return <- matchArg(return, c("code", "vector"), several.ok = TRUE, .var.name = "return")
-  separators <- matchArg(separators, c("top-level", "all", " ", ",", "\t", "\n"), several.ok = TRUE,  .var.name = "separators")
+  return <- checkmate::matchArg(return, c("code", "vector"))
+  
+  # Handle separators validation - use first element if default vector is passed
+  if (length(separators) > 1 && all(separators %in% c("top-level", "all"))) {
+    separators <- separators[1]  # Use first element of default
+  }
+  
+  if (length(separators) == 1 && separators %in% c("top-level", "all")) {
+    separators <- checkmate::matchArg(separators, c("top-level", "all"))
+  } else {
+    # For specific separators, validate each one
+    valid_seps <- c(" ", ",", "\t", "\n")
+    if (!all(separators %in% valid_seps)) {
+      stop("Invalid separator(s). Must be one of: 'top-level', 'all', or specific separators: ' ', ',', '\\t', '\\n'")
+    }
+  }
   
   if (is.null(x)) {
     if (!requireNamespace("clipr", quietly = TRUE)) {
@@ -660,9 +674,9 @@ line_to_vector <- function(x = NULL, strings = NULL, separators = c("top-level",
   }
   
   # Handle separators
-  if (separators[1] == "all") {
+  if (length(separators) == 1 && separators == "all") {
     x <- strsplit(x, "[ ,\n\t]") %>% unlist()
-  } else if (separators[1] == "top-level") {
+  } else if (length(separators) == 1 && separators == "top-level") {
       sep <- dplyr::case_when(
         stringr::str_detect(x, "\\n") ~ "\\n",
         stringr::str_detect(x, "\\t") ~ "\\t",
@@ -671,7 +685,7 @@ line_to_vector <- function(x = NULL, strings = NULL, separators = c("top-level",
       )
       x <- strsplit(x, sep) %>% unlist()
     } else {
-      x <- strsplit("a,b\nc\td", paste0("[", paste(separators, collapse = ""), "]")) %>% unlist()
+      x <- strsplit(x, paste0("[", paste(separators, collapse = ""), "]")) %>% unlist()
   }
   
   # Trim whitespace

@@ -41,23 +41,63 @@ test_that("line_to_vector works", {
 })
 
 
-test_that("Function handles different separators", {
+test_that("line_to_vector handles highest-level separator detection correctly", {
+  # Newlines should take precedence over tabs, commas, spaces
+  expect_equal(
+    line_to_vector("a,b\nc,d", separators = "top-level", return = "vector"),
+    c("a,b", "c,d")
+  )
+  
+  # Tabs should take precedence over commas and spaces
+  expect_equal(
+    line_to_vector("a,b\tc,d", separators = "top-level", return = "vector"),
+    c("a,b", "c,d")
+  )
+  
+  # Commas should take precedence over spaces
+  expect_equal(
+    line_to_vector("a b,c d", separators = "top-level", return = "vector"),
+    c("a b", "c d")
+  )
+  
+  # Only spaces should split by spaces
+  expect_equal(
+    line_to_vector("a b c d", separators = "top-level", return = "vector"),
+    c("a", "b", "c", "d")
+  )
+})
+
+test_that("line_to_vector handles specific separators correctly", {
+  # Test all separators
   expect_equal(
     line_to_vector("0 a,b\nc\td", separators = "all", return = "vector"),
     c("0", "a", "b", "c", "d")
   )
-  expect_equal(
-    line_to_vector("a,b\nc\td", separators = "top-level", return = "vector"),
-    c("a,b", "c\td")
-  )
+  
+  # Test multiple specific separators
   expect_equal(
     line_to_vector("a,b\nc\td", separators = c(",", "\t"), return = "vector"),
     c("a", "b\nc", "d")
   )
+  
+  # Test comma separator
+  expect_equal(
+    line_to_vector("a,b c,d", separators = ",", return = "vector"),
+    c("a", "b c", "d")
+  )
+  
+  # Test commas with spaces
+  expect_equal(
+    line_to_vector("a,b,c", return = "vector"),
+    c("a", "b", "c")
+  )
+  expect_equal(
+    line_to_vector("a, b, c", return = "vector"),
+    c("a", "b", "c")
+  )
 })
 
-
-test_that("Function handles keep_blank_as_na correctly", {
+test_that("line_to_vector handles blank values correctly", {
   expect_equal(
     line_to_vector("a  b   c", keep_blank_as_na = TRUE, separators = "all", return = "vector"),
     c("a", NA, "b", NA, NA, "c")
@@ -68,24 +108,29 @@ test_that("Function handles keep_blank_as_na correctly", {
   )
 })
 
-
-
-test_that("Function stops with appropriate error when separators are invalid", {
-  expect_error(
-    line_to_vector("a b c", separators = "invalid_separator"),
+test_that("line_to_vector handles mixed content with proper string detection", {
+  # All numeric should default to unquoted
+  expect_equal(
+    line_to_vector("1 2 3", strings = NULL),
+    "c(1, 2, 3)"
+  )
+  
+  # Mixed should default to quoted
+  expect_equal(
+    line_to_vector("1 a 3", strings = NULL),
+    'c("1", "a", "3")'
+  )
+  
+  # Force strings even for numbers
+  expect_equal(
+    line_to_vector("1 2 3", strings = TRUE),
+    'c("1", "2", "3")'
   )
 })
 
-
-
-test_that("Function handles commas and spaces together correctly", {
-  expect_equal(
-    line_to_vector("a,b,c", return = "vector"),
-    c("a", "b", "c")
-  )
-  expect_equal(
-    line_to_vector("a, b, c", return = "vector"),
-    c("a", "b", "c")
+test_that("line_to_vector error handling", {
+  expect_error(
+    line_to_vector("a b c", separators = "invalid_separator")
   )
 })
 
