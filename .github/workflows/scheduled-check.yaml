@@ -30,10 +30,11 @@ jobs:
       - uses: actions/checkout@v4
 
       # GitHub disables cron workflows in repos with no activity for 60 days;
-      # this keepalive re-enables the workflow via the API on every run.
-      - uses: gautamkrishnar/keepalive-workflow@v2
-        with:
-          use_api: true
+      # re-enabling the workflow via the API on every run resets that timer.
+      - name: Keepalive
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh api -X PUT "repos/${{ github.repository }}/actions/workflows/scheduled-check.yaml/enable"
 
       - uses: r-lib/actions/setup-r@v2
         with:
