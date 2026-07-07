@@ -41,19 +41,21 @@ There are many packages that support data analysis and reporting. For instance, 
 - prioritises publication-readiness and good reporting practices over customisability in creating tables and charts
 - integrates with the `tidyverse` by supporting tidy evaluation and returning tibbles where possible 
 
+## Status and scope
+
+timesaveR grew out of our own research and teaching workflows, and that is what it is maintained for: it is a personal/lab toolkit, distributed via GitHub rather than CRAN (a deliberate choice, given the package's broad dependency surface and workflow-specific scope). It is tested and actively used, but expect an opinionated toolkit rather than a general-purpose product.
+
+Its most distinctive parts are the pieces that are hard to find elsewhere in one place: **scale construction with reliability and reverse-coding** (including for survey-weighted and multiply-imputed data), **survey-weighted and multiple-imputation descriptives, correlation tables and t-tests**, and **mediation/moderated-mediation models with publication-ready, annotated path diagrams**. For general model tables, effect sizes, or full APA manuscripts, packages such as `modelsummary`, `gtsummary`, `easystats`, `psych` and `papaja` are excellent - timesaveR aims to complement them, not replace them.
+
 # Installation
 
-Once released on CRAN, you will be able to install timesaveR with:
-
-```r
-install.packages("timesaveR")
-```
-
-Until then - or to get the development version - you can install timesaveR from GitHub with the command below. If you do not have the `remotes`-package installed, run `install.packages("remotes")` first.
+You can install timesaveR from GitHub with the command below. If you do not have the `remotes`-package installed, run `install.packages("remotes")` first.
 
 ```r
 remotes::install_github('lukaswallrich/timesaveR')
 ```
+
+(timesaveR is not on CRAN, and this is currently not planned - see above.)
 
 # Get started
 

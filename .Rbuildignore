@@ -18,6 +18,4 @@
 ^Rplots\.pdf$
 ^test_vignettes\.R$
 ^test_warnings\.txt$
-^cran-comments\.md$
-^CRAN-SUBMISSION$
 ^\.claude$
