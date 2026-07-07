@@ -58,6 +58,11 @@ coefficients for covariates are returned as an attribute to the main results,
 given that they are not always reported. To access them, use \code{attr(res, "CV_coefficients")}
 if you have saved the return of this function in \code{res}. The lavaan code to estimate the model is
 also returned as an attribute, access it with \code{attr(res, "lavaan_code")}.
+
+Multiple mediators (\code{Ms}) are always modeled as PARALLEL mediators - i.e., there
+are no paths estimated between mediators (no serial mediation). If you need moderation of
+the first stage (X -> M) and/or the direct path (X -> Y) with a single mediator, see
+\code{\link[=run_moderated_mediation]{run_moderated_mediation()}} instead.
 }
 \examples{
 # Might the link between depression and self-reported health be partly explained

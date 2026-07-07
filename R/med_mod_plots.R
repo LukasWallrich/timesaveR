@@ -1,3 +1,13 @@
+.coef_offset_2 <- tibble::tribble(
+  ~obj, ~h_off, ~v_off,
+  # Top 1
+  "M1_a", +1, -0.3,
+  "M1_b", -1.2, -0.3,
+  # Bottom 1
+  "M2_a", 0.4, -0.15,
+  "M2_b", -0.7, -0.15,
+)
+
 .coef_offset_3 <- tibble::tribble(
   ~obj, ~h_off, ~v_off,
   # Top 1
@@ -9,6 +19,22 @@
   # Bottom 1
   "M2_a", 0.4, -0.15,
   "M2_b", -0.7, -0.15,
+)
+
+.coef_offset_4 <- tibble::tribble(
+  ~obj, ~h_off, ~v_off,
+  # Top 1
+  "M1_a", +1, -0.3,
+  "M1_b", -1.2, -0.3,
+  # Top 2
+  "M3_a", 0.5, -0.2,
+  "M3_b", -0.5, -0.2,
+  # Bottom 1
+  "M2_a", 0.4, -0.15,
+  "M2_b", -0.7, -0.15,
+  # Bottom 2
+  "M4_a", 0.5, -0.15,
+  "M4_b", -0.5, -0.15,
 )
 
 
@@ -25,8 +51,8 @@
 #' @param data Dataframe with coefficients and significance values. See details.
 #' @param coef_offset Tibble with values to position mediators. If not
 #' provided, the function will align mediators automatically, which is unlikely to
-#' provide a well-aligned chart (except for cases when the offset has been explicitly 
-#' implemented for that number of mediators, currently 1 and 3). However, the returned code can still
+#' provide a well-aligned chart (except for cases when the offset has been explicitly
+#' implemented for that number of mediators, currently 1, 2, 3 and 4). However, the returned code can still
 #' be edited. See timesaveR:::.coef_offset_3 for an example of an offset tibble.
 #' @param digits Number of digits for rounding
 #' @param filename If provided, graph will be saved as .svg file.
@@ -129,12 +155,16 @@ plot_mediation <- function(X, Y, Ms, data, digits = 2, coef_offset = length(Ms),
 
 
   if (!is.null(coef_offset)) {
-    if (!(coef_offset %in% c(1, 3) || (tibble::is_tibble(coef_offset) && nrow(coef_offset) == length(Ms) * 2))) {
+    if (!(coef_offset %in% c(1, 2, 3, 4) || (tibble::is_tibble(coef_offset) && nrow(coef_offset) == length(Ms) * 2))) {
       cli::cli_warn("Valid coef_offset tibble is not provided and automatic alignment of coefficients is not yet implemented for this number of mediators - you will likely need to either provide a valid coef_offset tibble or edit the returned grViz code manually")
       coef_offset <- NULL
-    } else if (coef_offset == 3) {
+    } else if (!tibble::is_tibble(coef_offset) && coef_offset == 4) {
+      coef_offset <- .coef_offset_4
+    } else if (!tibble::is_tibble(coef_offset) && coef_offset == 3) {
       coef_offset <- .coef_offset_3
-    } else if (coef_offset == 1) {
+    } else if (!tibble::is_tibble(coef_offset) && coef_offset == 2) {
+      coef_offset <- .coef_offset_2
+    } else if (!tibble::is_tibble(coef_offset) && coef_offset == 1) {
       coef_offset <- NULL
     }
   }
@@ -212,43 +242,96 @@ plot_mediation <- function(X, Y, Ms, data, digits = 2, coef_offset = length(Ms),
 
 
 #' Plot a moderated mediation model
-#' 
-#' This function helps to plot a moderated mediation model - with a single moderator
-#' and a single mediator. Labels for each path need to be specified manually. By default,
-#' covariates are only related to the outcome variable - if they are also used to estimate
-#' the mediator, the graph code needs to be adjusted manually.
+#'
+#' This function draws a moderated mediation model - with a single moderator
+#' and a single mediator - either as a conceptual diagram with manually-specified
+#' path labels (e.g., "+"/"-" to sketch out a hypothesised model), or as a diagram
+#' annotated with the estimated coefficients from [run_moderated_mediation()].
+#' By default, covariates are only related to the outcome variable - if they are
+#' also used to estimate the mediator, the graph code needs to be adjusted manually
+#' (this is done automatically when `data` is the result of [run_moderated_mediation()]
+#' with covariates).
 #'
 #' @param X The name of the predictor variable
 #' @param M The name of the mediator variable
 #' @param W The name of the moderator variable
 #' @param Y The name of the outcome variable
 #' @param CV The name of covariates
-#' @param mod_direct_path Logical. Should a direct path from X to Y be included?
+#' @param mod_direct_path Logical. Should a direct path from X to Y be included? Ignored
+#' (and inferred from `data`) when `data` is provided.
 #' @param labels A list of labels for the paths. See the example for the required names.
-#' @param filename The filename to save the plot to (should end in .svg). When NULL, 
+#' Ignored unless explicitly passed when `data` is provided - see `data`.
+#' @param data Optional. The (tibble) result of [run_moderated_mediation()]. When provided,
+#' labels for each path (estimate plus significance stars) are derived automatically from
+#' the estimates, and `mod_direct_path` is inferred from whether the result contains a
+#' `c_mod` row. Any names explicitly passed via `labels` still override the corresponding
+#' auto-derived label.
+#' @param digits Number of digits to round estimates to when `data` is provided.
+#' @param filename The filename to save the plot to (should end in .svg). When NULL,
 #' the graph is not saved but simply returned.
 #' @return A named list with the code and the graph
 #' @examples
-#' plot <- plot_moderated_mediation(X = "Training", M = "Self-Efficacy", 
-#'   W = "Motivation", Y = "Performance", CV = "Age, Gender", 
-#'   mod_direct_path = TRUE, labels = list(a = "+", b = "+", c = "+", 
-#'                                         a_mod = "+", c_mod = "+"), 
+#' # Manual, conceptual diagram
+#' plot <- plot_moderated_mediation(X = "Training", M = "Self-Efficacy",
+#'   W = "Motivation", Y = "Performance", CV = "Age, Gender",
+#'   mod_direct_path = TRUE, labels = list(a = "+", b = "+", c = "+",
+#'                                         a_mod = "+", c_mod = "+"),
 #'                                         filename = NULL)
-#' 
+#'
 #' # Show the graph
 #' plot$graph
-#' 
-#' # Show the code 
+#'
+#' # Show the code
 #' plot$code
-#' 
+#'
 #' # To create the graph again (e.g., after you edit its code)
 #' DiagrammeR::grViz(plot$code)
-#' 
+#'
+#' \donttest{
+#' # Annotated diagram, based on the results of run_moderated_mediation()
+#' set.seed(4321)
+#' res <- run_moderated_mediation(ess_health, X = fltdpr, M = dosprt, W = agea, Y = health,
+#'                                bootstraps = 50)
+#' plot2 <- plot_moderated_mediation(X = "Depression", M = "Physical <br /> activity",
+#'   W = "Age", Y = "Self-reported <br /> poor health", data = res)
+#' plot2$graph
+#' }
+#'
 #' @export
 
 
-plot_moderated_mediation <- function(X, M, W, Y, CV = NULL, mod_direct_path = TRUE, labels = list(a = "+", b = "+", c = "+", a_mod = "+", c_mod = "+"), filename = NULL) {
+plot_moderated_mediation <- function(X, M, W, Y, CV = NULL, mod_direct_path = TRUE,
+                                     labels = list(a = "+", b = "+", c = "+", a_mod = "+", c_mod = "+"),
+                                     data = NULL, digits = 2, filename = NULL) {
   .check_req_packages(c("glue", "DiagrammeR"))
+
+  user_labels <- if (!missing(labels)) labels else NULL
+
+  if (!is.null(data)) {
+    if (!(inherits(data, "timesaveR_mod_med") || all(c("type", "est", "pvalue") %in% names(data)))) {
+      cli::cli_abort("{.arg data} must be the result of {.fn run_moderated_mediation} (or a data frame with {.val type}, {.val est} and {.val pvalue} columns).")
+    }
+
+    mod_direct_path <- "c_mod" %in% data$type
+
+    .fmt_path_label <- function(type) {
+      row <- data[data$type == type, ]
+      if (nrow(row) == 0) {
+        return(NULL)
+      }
+      paste0(sprintf(paste0("%.", digits, "f"), row$est[1]), sigstars(row$pvalue[1]))
+    }
+
+    labels <- list(
+      a = .fmt_path_label("a"), b = .fmt_path_label("b"),
+      c = .fmt_path_label("c"), a_mod = .fmt_path_label("a_mod")
+    )
+    if (mod_direct_path) labels$c_mod <- .fmt_path_label("c_mod")
+
+    if (!is.null(user_labels)) {
+      labels[names(user_labels)] <- user_labels
+    }
+  }
 
   # Set parameters
 
@@ -278,15 +361,15 @@ plot_moderated_mediation <- function(X, M, W, Y, CV = NULL, mod_direct_path = TR
         'Y' [label = <{Y}>, color = 'black', shape = 'rectangle', height = '0.5', width = '1.5', pos = '5,0!']
         'M' [label = <{M}>, color = 'black', shape = 'rectangle', height = '0.5', width = '1.5', pos = '2.5,1!']
         'a' [label = <{a}>  color = 'black', fillcolor='transparent', shape = 'plaintext', pos = '1.0,0.6!']
-        'amod' [label = <{a_mod}>  color = 'black', fillcolor='transparent', shape = 'plaintext', pos = '1.45,-0.25!']
+        'amod' [label = <{a_mod}>  color = 'black', fillcolor='transparent', shape = 'plaintext', pos = '1.32,-0.33!']
         'b' [label = <{b}>, color = 'black', fillcolor='transparent', shape = 'plaintext', pos = '3.8,0.65!']
-        'c' [label = <{c}>, color = 'black', fillcolor='transparent', shape = 'plaintext', pos = '2.45,-0.15!']
+        'c' [label = <{c}>, color = 'black', fillcolor='transparent', shape = 'plaintext', pos = '3.3,-0.15!']
         'W' [label = <{W}>, color = 'black', shape = 'rectangle', height = '0.5', width = '1.5', pos = '1.8,-0.7!']
         'MW' [style = invis, pos = '1.3,0.5!', height = '0', width = '0']
-        {if(mod_direct_path) '\\'XW\\' [style = invis, pos = \\'1.8,0!\\', height = \\'0\\', width = \\'0\\']'}
-        {if(mod_direct_path) glue::glue('\\'cmod\\' [label = <{c_mod}>, color = \\'black\\', shape = \\'plaintext\\', fillcolor=\\'transparent\\', pos = \\'1.9,-0.25!\\']')}
+        {if(mod_direct_path) '\\'XW\\' [style = invis, pos = \\'1.8,0!\\', height = \\'0\\', width = \\'0\\']' else ''}
+        {if(mod_direct_path) glue::glue('\\'cmod\\' [label = <{c_mod}>, color = \\'black\\', shape = \\'plaintext\\', fillcolor=\\'transparent\\', pos = \\'2.25,-0.4!\\']') else ''}
 
-        {if(!is.null(CV)) glue::glue('\\'CV\\' [label = <{CV}>, color = \\'black\\', shape = \\'rectangle\\', height = \\'{0.4+stringr::str_count(CV, \\'BR\\')*.1}\\', width = \\'1.5\\', pos = \\'5,{-0.7-stringr::str_count(CV, \\'BR\\')*.05}!\\']')}
+        {if(!is.null(CV)) glue::glue('\\'CV\\' [label = <{CV}>, color = \\'black\\', shape = \\'rectangle\\', height = \\'{0.4+stringr::str_count(CV, \\'BR\\')*.1}\\', width = \\'1.5\\', pos = \\'5,{-0.7-stringr::str_count(CV, \\'BR\\')*.05}!\\']') else ''}
 
         edge [fontname = 'Helvetica',
         fontsize = '10',
@@ -300,7 +383,7 @@ plot_moderated_mediation <- function(X, M, W, Y, CV = NULL, mod_direct_path = TR
         W->MW
         {ifelse(mod_direct_path, '    X->XW [arrowhead=none] \n    XW -> Y \n    W->XW', '    X->Y')}
 
-        {if(!is.null(CV)) 'CV->Y  [style=dashed]'}
+        {if(!is.null(CV)) 'CV->Y  [style=dashed]' else ''}
 
         }}")
 

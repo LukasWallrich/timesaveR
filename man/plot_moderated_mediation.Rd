@@ -12,6 +12,8 @@ plot_moderated_mediation(
   CV = NULL,
   mod_direct_path = TRUE,
   labels = list(a = "+", b = "+", c = "+", a_mod = "+", c_mod = "+"),
+  data = NULL,
+  digits = 2,
   filename = NULL
 )
 }
@@ -26,9 +28,19 @@ plot_moderated_mediation(
 
 \item{CV}{The name of covariates}
 
-\item{mod_direct_path}{Logical. Should a direct path from X to Y be included?}
+\item{mod_direct_path}{Logical. Should a direct path from X to Y be included? Ignored
+(and inferred from \code{data}) when \code{data} is provided.}
 
-\item{labels}{A list of labels for the paths. See the example for the required names.}
+\item{labels}{A list of labels for the paths. See the example for the required names.
+Ignored unless explicitly passed when \code{data} is provided - see \code{data}.}
+
+\item{data}{Optional. The (tibble) result of \code{\link[=run_moderated_mediation]{run_moderated_mediation()}}. When provided,
+labels for each path (estimate plus significance stars) are derived automatically from
+the estimates, and \code{mod_direct_path} is inferred from whether the result contains a
+\code{c_mod} row. Any names explicitly passed via \code{labels} still override the corresponding
+auto-derived label.}
+
+\item{digits}{Number of digits to round estimates to when \code{data} is provided.}
 
 \item{filename}{The filename to save the plot to (should end in .svg). When NULL,
 the graph is not saved but simply returned.}
@@ -37,25 +49,40 @@ the graph is not saved but simply returned.}
 A named list with the code and the graph
 }
 \description{
-This function helps to plot a moderated mediation model - with a single moderator
-and a single mediator. Labels for each path need to be specified manually. By default,
-covariates are only related to the outcome variable - if they are also used to estimate
-the mediator, the graph code needs to be adjusted manually.
+This function draws a moderated mediation model - with a single moderator
+and a single mediator - either as a conceptual diagram with manually-specified
+path labels (e.g., "+"/"-" to sketch out a hypothesised model), or as a diagram
+annotated with the estimated coefficients from \code{\link[=run_moderated_mediation]{run_moderated_mediation()}}.
+By default, covariates are only related to the outcome variable - if they are
+also used to estimate the mediator, the graph code needs to be adjusted manually
+(this is done automatically when \code{data} is the result of \code{\link[=run_moderated_mediation]{run_moderated_mediation()}}
+with covariates).
 }
 \examples{
-plot <- plot_moderated_mediation(X = "Training", M = "Self-Efficacy", 
-  W = "Motivation", Y = "Performance", CV = "Age, Gender", 
-  mod_direct_path = TRUE, labels = list(a = "+", b = "+", c = "+", 
-                                        a_mod = "+", c_mod = "+"), 
+# Manual, conceptual diagram
+plot <- plot_moderated_mediation(X = "Training", M = "Self-Efficacy",
+  W = "Motivation", Y = "Performance", CV = "Age, Gender",
+  mod_direct_path = TRUE, labels = list(a = "+", b = "+", c = "+",
+                                        a_mod = "+", c_mod = "+"),
                                         filename = NULL)
 
 # Show the graph
 plot$graph
 
-# Show the code 
+# Show the code
 plot$code
 
 # To create the graph again (e.g., after you edit its code)
 DiagrammeR::grViz(plot$code)
+
+\donttest{
+# Annotated diagram, based on the results of run_moderated_mediation()
+set.seed(4321)
+res <- run_moderated_mediation(ess_health, X = fltdpr, M = dosprt, W = agea, Y = health,
+                               bootstraps = 50)
+plot2 <- plot_moderated_mediation(X = "Depression", M = "Physical <br /> activity",
+  W = "Age", Y = "Self-reported <br /> poor health", data = res)
+plot2$graph
+}
 
 }

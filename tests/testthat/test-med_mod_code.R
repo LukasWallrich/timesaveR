@@ -336,18 +336,54 @@ test_that("plot_mediation works with basic mediation result", {
   )
 })
 
-test_that("plot_mediation works with multiple mediators", {
+test_that("plot_mediation works with multiple mediators (unsupported layout still warns)", {
+  skip_if_not_installed("DiagrammeR")
+
+  res <- do.call(run_mediation, c(list(data = df, X = quote(X), Y = quote(Y),
+                                       Ms = quote(c(M1, M2, M3)), CVs = NULL,
+                                       bootstraps = 50, seed = 123), lavaan_args))
+
+  df5 <- df
+  df5$M4 <- df5$M1 + rnorm(nrow(df5))
+  df5$M5 <- df5$M2 + rnorm(nrow(df5))
+  res5 <- do.call(run_mediation, c(list(data = df5, X = quote(X), Y = quote(Y),
+                                        Ms = quote(c(M1, M2, M3, M4, M5)), CVs = NULL,
+                                        bootstraps = 50, seed = 123), lavaan_args))
+
+  # 5 mediators is not (yet) a supported automatic layout - expect warning about coef_offset
+  expect_warning(
+    plot_mediation(res5, X = "X", Y = "Y", M = c("M1", "M2", "M3", "M4", "M5")),
+    "coef_offset tibble is not provided"
+  )
+})
+
+test_that("plot_mediation with 2 mediators no longer warns about unsupported layout", {
   skip_if_not_installed("DiagrammeR")
 
   res <- do.call(run_mediation, c(list(data = df, X = quote(X), Y = quote(Y),
                                        Ms = quote(c(M1, M2)), CVs = NULL,
                                        bootstraps = 50, seed = 123), lavaan_args))
 
-  # Test with multiple mediators - expect warning about coef_offset
-  expect_warning(
-    plot_mediation(res, X = "X", Y = "Y", M = c("M1", "M2")),
-    "coef_offset tibble is not provided"
+  expect_no_warning(
+    p2 <- plot_mediation(res, X = "X", Y = "Y", M = c("M1", "M2"))
   )
+  expect_true(grepl("M1", p2$code))
+  expect_true(grepl("M2", p2$code))
+})
+
+test_that("plot_mediation with 4 mediators no longer warns about unsupported layout", {
+  skip_if_not_installed("DiagrammeR")
+
+  df4 <- df
+  df4$M4 <- df4$M1 + rnorm(nrow(df4))
+  res4 <- do.call(run_mediation, c(list(data = df4, X = quote(X), Y = quote(Y),
+                                        Ms = quote(c(M1, M2, M3, M4)), CVs = NULL,
+                                        bootstraps = 50, seed = 123), lavaan_args))
+
+  expect_no_warning(
+    p4 <- plot_mediation(res4, X = "X", Y = "Y", M = c("M1", "M2", "M3", "M4"))
+  )
+  expect_true(grepl("M4", p4$code))
 })
 
 test_that("plot_mediation handles deprecated arguments", {
@@ -363,4 +399,139 @@ test_that("plot_mediation handles deprecated arguments", {
     plot_mediation(data = res, IV = "X", Y = "Y", Ms = "M1"),
     "deprecated"
   )
+})
+
+# Tests for run_moderated_mediation ----
+
+test_that("run_moderated_mediation recovers known first-stage moderation parameters", {
+  set.seed(2468)
+  n <- 500
+  W_mm <- rnorm(n)
+  X_mm <- rnorm(n)
+  M_mm <- 0.4 * X_mm + 0.3 * W_mm + 0.2 * X_mm * W_mm + rnorm(n)
+  Y_mm <- 0.5 * M_mm + 0.2 * X_mm + rnorm(n)
+  mm_df <- data.frame(X = X_mm, M = M_mm, W = W_mm, Y = Y_mm)
+
+  res <- do.call(run_moderated_mediation, c(list(data = mm_df, X = quote(X), M = quote(M),
+                                                 W = quote(W), Y = quote(Y),
+                                                 standardized_all = FALSE, bootstraps = 200,
+                                                 seed = 13), lavaan_args))
+
+  expect_s3_class(res, "timesaveR_mod_med")
+  expect_s3_class(res, "data.frame")
+
+  a <- res$est[res$type == "a"]
+  a_mod <- res$est[res$type == "a_mod"]
+  b <- res$est[res$type == "b"]
+  c <- res$est[res$type == "c"]
+  imm <- res$est[res$type == "imm"]
+  ind_low <- res$est[res$type == "ind_low"]
+  ind_high <- res$est[res$type == "ind_high"]
+
+  expect_equal(a, 0.4, tolerance = 0.1)
+  expect_equal(a_mod, 0.2, tolerance = 0.1)
+  expect_equal(b, 0.5, tolerance = 0.1)
+  expect_equal(c, 0.2, tolerance = 0.1)
+  # imm's est is the mean of bootstrapped a_mod*b products, while a_mod/b's est
+  # are taken from the fitted model directly - so these are close, but not
+  # numerically identical
+  expect_equal(imm, a_mod * b, tolerance = 0.01)
+  expect_true(ind_high > ind_low)
+
+  # Compare point estimates to an independently hand-written lavaan model,
+  # fitted on the same (centered) data - since W and X are mean-centered
+  # internally before the product term is formed when standardized_all = FALSE
+  mm_df$X_c <- as.numeric(scale(mm_df$X, scale = FALSE))
+  mm_df$W_c <- as.numeric(scale(mm_df$W, scale = FALSE))
+  mm_df$XW <- mm_df$X_c * mm_df$W_c
+
+  mod <- "
+    M ~ a*X_c + a_mod*XW + w_m*W_c
+    Y ~ b*M + c*X_c + c_mod*XW + w_y*W_c
+  "
+  fit <- do.call(lavaan::sem, c(list(model = mod, data = mm_df, estimator = "MLR",
+                                     fixed.x = FALSE), lavaan_args))
+  pe <- lavaan::parameterEstimates(fit)
+
+  expect_equal(a, pe$est[pe$label == "a"], tolerance = 1e-6)
+  expect_equal(a_mod, pe$est[pe$label == "a_mod"], tolerance = 1e-6)
+  expect_equal(res$est[res$type == "w_m"], pe$est[pe$label == "w_m"], tolerance = 1e-6)
+  expect_equal(b, pe$est[pe$label == "b"], tolerance = 1e-6)
+  expect_equal(c, pe$est[pe$label == "c"], tolerance = 1e-6)
+  expect_equal(res$est[res$type == "c_mod"], pe$est[pe$label == "c_mod"], tolerance = 1e-6)
+  expect_equal(res$est[res$type == "w_y"], pe$est[pe$label == "w_y"], tolerance = 1e-6)
+})
+
+test_that("run_moderated_mediation with mod_direct_path = FALSE drops c_mod/dir_* rows", {
+  set.seed(2468)
+  n <- 300
+  W_mm <- rnorm(n)
+  X_mm <- rnorm(n)
+  M_mm <- 0.4 * X_mm + 0.3 * W_mm + 0.2 * X_mm * W_mm + rnorm(n)
+  Y_mm <- 0.5 * M_mm + 0.2 * X_mm + rnorm(n)
+  mm_df <- data.frame(X = X_mm, M = M_mm, W = W_mm, Y = Y_mm)
+
+  res <- do.call(run_moderated_mediation, c(list(data = mm_df, X = quote(X), M = quote(M),
+                                                 W = quote(W), Y = quote(Y),
+                                                 mod_direct_path = FALSE,
+                                                 bootstraps = 50, seed = 14), lavaan_args))
+
+  expect_false("c_mod" %in% res$type)
+  expect_false(any(c("dir_low", "dir_mean", "dir_high") %in% res$type))
+  expect_true(all(c("a", "a_mod", "w_m", "b", "c", "w_y", "imm",
+                    "ind_low", "ind_mean", "ind_high") %in% res$type))
+})
+
+test_that("run_moderated_mediation includes covariates and returns CV_coefficients", {
+  set.seed(2468)
+  n <- 300
+  W_mm <- rnorm(n)
+  X_mm <- rnorm(n)
+  CV_mm <- rnorm(n)
+  M_mm <- 0.4 * X_mm + 0.3 * W_mm + 0.2 * X_mm * W_mm + 0.2 * CV_mm + rnorm(n)
+  Y_mm <- 0.5 * M_mm + 0.2 * X_mm + 0.2 * CV_mm + rnorm(n)
+  mm_df <- data.frame(X = X_mm, M = M_mm, W = W_mm, Y = Y_mm, CV = CV_mm)
+
+  res <- do.call(run_moderated_mediation, c(list(data = mm_df, X = quote(X), M = quote(M),
+                                                 W = quote(W), Y = quote(Y), CVs = quote(CV),
+                                                 bootstraps = 50, seed = 15), lavaan_args))
+
+  cv_coefs <- attr(res, "CV_coefficients")
+  expect_s3_class(cv_coefs, "data.frame")
+  expect_equal(nrow(cv_coefs), 2) # M, Y
+  expect_true(all(cv_coefs$CV == "CV"))
+  expect_setequal(cv_coefs$DV, c("M", "Y"))
+  expect_type(attr(res, "lavaan_code"), "character")
+})
+
+test_that("plot_moderated_mediation(data = ...) returns a plot without error, manual labels still work", {
+  skip_if_not_installed("DiagrammeR")
+
+  set.seed(2468)
+  n <- 300
+  W_mm <- rnorm(n)
+  X_mm <- rnorm(n)
+  M_mm <- 0.4 * X_mm + 0.3 * W_mm + 0.2 * X_mm * W_mm + rnorm(n)
+  Y_mm <- 0.5 * M_mm + 0.2 * X_mm + rnorm(n)
+  mm_df <- data.frame(X = X_mm, M = M_mm, W = W_mm, Y = Y_mm)
+
+  res <- do.call(run_moderated_mediation, c(list(data = mm_df, X = quote(X), M = quote(M),
+                                                 W = quote(W), Y = quote(Y),
+                                                 bootstraps = 50, seed = 16), lavaan_args))
+
+  expect_no_error(
+    plot_res <- plot_moderated_mediation(X = "X", M = "M", W = "W", Y = "Y", data = res)
+  )
+  a_label <- sprintf("%.2f", res$est[res$type == "a"])
+  expect_true(grepl(a_label, plot_res$code, fixed = TRUE))
+
+  # Manual-labels path still works unchanged
+  expect_no_error(
+    plot_manual <- plot_moderated_mediation(X = "Training", M = "Self-Efficacy",
+      W = "Motivation", Y = "Performance", CV = "Age, Gender",
+      mod_direct_path = TRUE, labels = list(a = "+", b = "+", c = "+",
+                                            a_mod = "+", c_mod = "+"),
+      filename = NULL)
+  )
+  expect_true(grepl("Training", plot_manual$code, fixed = TRUE))
 })

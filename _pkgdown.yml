@@ -31,10 +31,13 @@ reference:
   - starts_with("glance")
 - title: Run and plot mediation models
   desc: |
-    Mediation models can be estimated with lavaan. These functions offer a  simple interface and an integrated path from modeling to visualisation
+    Mediation models can be estimated with lavaan. These functions offer a simple interface and an integrated path from modeling to visualisation.
+    `run_mediation()`/`plot_mediation()` cover (unmoderated) mediation with one or more parallel mediators; `run_moderated_mediation()`/`plot_moderated_mediation()`
+    cover first-stage (and, optionally, direct-path) moderated mediation with a single mediator and moderator.
 - contents:
   - run_mediation
   - plot_mediation
+  - run_moderated_mediation
   - plot_moderated_mediation
 - title: Make and assess scales
   desc: |

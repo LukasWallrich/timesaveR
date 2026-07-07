@@ -4,6 +4,8 @@
 
 * Added `t_test()` - a comprehensive wrapper for t-tests that always returns Cohen's d. Supports one-sample, independent-samples, and paired-samples t-tests with both formula and vector interfaces. This replaces the now-deprecated `paired_t_test_d()`.
 * Added `run_mediation()` to estimate and `plot_mediation()` to visualize parallel mediation models.
+* Added `run_moderated_mediation()` to estimate first-stage (and optionally direct-path) moderated mediation models with bootstrapped confidence intervals, including the index of moderated mediation and conditional indirect/direct effects at low/mean/high moderator values. `plot_moderated_mediation()` can now take its output to draw a path diagram annotated with the actual estimates (in addition to the existing manual, conceptual-diagram mode).
+* `plot_mediation()` now supports automatic layouts for 2 and 4 mediators (previously only 1 and 3).
 * Added `na_when()` to set values to NA based on logical conditions, and `na_ifs()` to replace multiple values with NA (naming choice guided by existing dplyr::na_if function)
 * Added `make_scale_mi()` to estimate scale scores and Cronbach's alpha after multiple-imputation at the item level. According to [Gottschall, West & Enders (2012)](https://doi.org/10.1080/00273171.2012.640589), this is one of the best ways to deal with item-level missing data. If requested, the function can bootstrap confidence intervals, using the `future`-package for parallel computing.
 * Added `pcor_matrix()` to calculate partial correlation matrices after parceling out one or several variable.

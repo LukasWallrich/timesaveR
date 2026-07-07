@@ -32,7 +32,7 @@ plot_mediation(
 \item{coef_offset}{Tibble with values to position mediators. If not
 provided, the function will align mediators automatically, which is unlikely to
 provide a well-aligned chart (except for cases when the offset has been explicitly
-implemented for that number of mediators, currently 1 and 3). However, the returned code can still
+implemented for that number of mediators, currently 1, 2, 3 and 4). However, the returned code can still
 be edited. See timesaveR:::.coef_offset_3 for an example of an offset tibble.}
 
 \item{filename}{If provided, graph will be saved as .svg file.}
