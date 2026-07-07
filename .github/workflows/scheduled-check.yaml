@@ -1,0 +1,76 @@
+# Scheduled regression check: runs R CMD check against the *latest* CRAN
+# versions of all dependencies every two months, so that breakage from
+# ecosystem drift (tidyverse/lavaan/psych updates) is caught even while the
+# package is not being actively developed.
+#
+# On failure it opens (or updates) a GitHub issue with the run details.
+# GitHub also emails the workflow author when a scheduled run fails,
+# per their notification settings.
+
+on:
+  schedule:
+    # 06:17 UTC on the 1st of January, March, May, July, September, November
+    - cron: '17 6 1 */2 *'
+  workflow_dispatch:
+
+name: scheduled-check
+
+permissions:
+  contents: read
+  issues: write
+  actions: write # needed by the keepalive step
+
+jobs:
+  check:
+    name: R CMD check (latest dependencies)
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # GitHub disables cron workflows in repos with no activity for 60 days;
+      # this keepalive re-enables the workflow via the API on every run.
+      - uses: gautamkrishnar/keepalive-workflow@v2
+        with:
+          use_api: true
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+          r-version: 'release'
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - name: System dependencies
+        run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev libnode-dev
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck
+          needs: check
+
+      - uses: r-lib/actions/check-r-package@v2
+        with:
+          error-on: '"warning"'
+
+      - name: Open or update issue on failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TITLE="Scheduled R CMD check failed"
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          BODY="The bi-monthly scheduled \`R CMD check\` against the latest CRAN dependency versions failed on $(date -u +%Y-%m-%d).
+
+          This usually means a dependency update broke something (see the log for the failing step and any ERRORs/WARNINGs):
+
+          ${RUN_URL}
+
+          _This issue was opened automatically by the scheduled-check workflow. It will receive a new comment on each subsequent failure until closed._"
+          EXISTING=$(gh issue list --state open --search "in:title \"$TITLE\"" --json number --jq '.[0].number' || true)
+          if [ -n "$EXISTING" ] && [ "$EXISTING" != "null" ]; then
+            gh issue comment "$EXISTING" --body "Still failing on $(date -u +%Y-%m-%d): ${RUN_URL}"
+          else
+            gh issue create --title "$TITLE" --body "$BODY" --label "bug"
+          fi
