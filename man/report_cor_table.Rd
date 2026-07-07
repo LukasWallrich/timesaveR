@@ -64,7 +64,7 @@ there is a \code{row_names} column. If there is, this will be used to match it t
 \item{apa_style}{Logical, should APA-style formatting be applied.}
 
 \item{...}{
-  Arguments passed on to \code{\link[=plot_distributions]{plot_distributions}}
+  Arguments passed on to \code{\link{plot_distributions}}
   \describe{
     \item{\code{plot_type}}{Type of plot that should be produced - \code{histogram} or \code{density} plot. If \code{auto},
 histograms are produced for variables that take fewer than 10 unique values, density plots for others. If a number is provided,

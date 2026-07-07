@@ -20,7 +20,7 @@ pairwise tests. If set to NULL, all levels are used.}
 "holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr" or "none".}
 
 \item{...}{
-  Arguments passed on to \code{\link[=svy_cohen_d_pair]{svy_cohen_d_pair}}
+  Arguments passed on to \code{\link{svy_cohen_d_pair}}
   \describe{
     \item{\code{ttest}}{Logical. Should t.test be run? Otherwise, only
 Cohen's d is calculated. Defaults to TRUE.}
