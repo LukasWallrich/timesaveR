@@ -8,7 +8,7 @@ The structure is based on https://towardsdatascience.com/how-to-keep-your-resear
 }
 \usage{
 setup_analysis_project(
-  folder = here::here(),
+  folder,
   analyses = c("data_prep", "analyses", "presentation"),
   pipeline_name = "outputs",
   code_folder = FALSE,
@@ -17,7 +17,10 @@ setup_analysis_project(
 )
 }
 \arguments{
-\item{folder}{Root folder of the project to be set up. Defaults to here::here()}
+\item{folder}{Root folder of the project to be set up. Must be provided explicitly
+(e.g. \code{here::here()} to use the current project, or \code{tempdir()} to try this out) -
+this function writes files and creates directories in \code{folder}, so it will never
+guess a default location on your filesystem.}
 
 \item{analyses}{Character vector of analysis steps. R files will be set up in order.}
 
@@ -29,6 +32,11 @@ Otherwise, are placed in root folder}
 \item{standard_packages}{Character vector of packages to be loaded at start of each analysis file.}
 
 \item{github_packages}{Character vector of packages to be loaded and installed from Github if needed at start of each analysis file.}
+}
+\value{
+Invisibly returns \code{NULL}. Called for its side effects: creates the project's
+folder structure and writes template R script files (and a notes/management-functions
+script) into \code{folder}.
 }
 \description{
 This sets up simple folder structure and template files for an analysis project.
@@ -42,4 +50,13 @@ the end of each script. Usage should follow the first example:
 
 Then there is the \strong{\verb{0_run_all.R}} file, which runs all analysis scripts in order
 and documents when this last happened.
+}
+\examples{
+\dontrun{
+# Run in the current project
+setup_analysis_project(folder = here::here())
+}
+
+# Try it out in a temporary directory
+setup_analysis_project(folder = tempdir())
 }

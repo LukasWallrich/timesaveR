@@ -1,0 +1,3 @@
+# CI-generated files - always take remote version during merges
+man/*.Rd merge=theirs
+NAMESPACE merge=theirs

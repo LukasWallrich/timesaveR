@@ -11,6 +11,9 @@ na_share(x, round = 2)
 
 \item{round}{Number of digits to round result to}
 }
+\value{
+Numeric. The share of \code{NA} values in \code{x}, rounded to \code{round} digits.
+}
 \description{
 Returns share of NA values in vector by wrapping \code{sum(is.na(x)) / length(x)}
 and rounding the result

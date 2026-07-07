@@ -11,6 +11,10 @@ dump_to_clip(x)
 To enable the use in pipelines, objects that are passed directly will be named \code{dumped_object}
 in the resulting code.}
 }
+\value{
+Invisibly returns the character vector of dump code that was written
+to the clipboard. Called for its side effect of writing to the clipboard.
+}
 \description{
 This function calls dump on one or several R objects, which creates code that recreates them from the console.
 It then copies this code to the clipboard. This can be used to quickly copy (small) objects between R sessions,

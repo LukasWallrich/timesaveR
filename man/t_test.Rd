@@ -49,7 +49,10 @@ An object of class "timesaveR_t_test" containing:
 \item{statistic}{The t-statistic}
 \item{parameter}{Degrees of freedom}
 \item{p.value}{The p-value}
-\item{estimate}{The estimated mean or mean difference}
+\item{estimate}{For one-sample and paired tests, the estimated mean or mean
+difference (a single number). For independent two-sample tests, a
+named length-2 numeric vector of the two group means (as returned by
+\code{\link[stats:t.test]{stats::t.test()}}), not their difference.}
 \item{conf.low}{Lower bound of confidence interval}
 \item{conf.high}{Upper bound of confidence interval}
 \item{cohens_d}{Cohen's d effect size}

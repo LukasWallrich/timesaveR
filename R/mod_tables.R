@@ -181,11 +181,13 @@ if (!("lm" %in% class(mod_std[[1]]) || ("mira" %in% class(mod_std[[1]]) &&
   code %<>% paste(row, sums, "</tr>", collapse = "")
 
   if (R2_change == TRUE) {
-    delta_R2 <- purrr::map_chr(R2s, function(x) {
+    if (inherits(mod[[1]], "mira")) {
+      cli::cli_abort("{.arg R2_change} is not supported for {.cls mira} (multiply imputed) models, as nested-model F-tests cannot be pooled here. Please set {.arg R2_change} to FALSE.")
+    }
+    delta_R2 <- purrr::map_dbl(R2s, function(x) {
       x %>%
         dplyr::pull(.data$r.squared)
     }) %>%
-      as.numeric() %>%
       diff() %>%
       fmt_cor()
     
@@ -267,6 +269,10 @@ if (!("lm" %in% class(mod_std[[1]]) || ("mira" %in% class(mod_std[[1]]) &&
 #' @param mod A mira object (list of lm models in `analyses` element)
 #' @param return_list Logical. Should items of test be returned in a list?
 #' Otherwise, a string for reporting is returned, with Markdown formatting for APA style
+#' @return If `return_list = TRUE`, a list with `F` (the combined F-statistic),
+#' `DoF` (numerator degrees of freedom), `DoF_residual` (denominator degrees of
+#' freedom) and `p.value`. Otherwise, a single character string reporting the
+#' F-test in APA style with Markdown formatting (e.g. for use in a `gt` table).
 #' @export
 
 mira.lm_F_test <- function(mod, return_list = FALSE) {
@@ -322,7 +328,14 @@ mira.lm_F_test <- function(mod, return_list = FALSE) {
 #' @param statistic_vertical Should standard errors and CIs be shown below coefficients? Defaults to horizontal layout
 #' @inheritParams modelsummary::modelsummary
 #' @inheritDotParams modelsummary::modelsummary -models -statistic -conf_level -stars
-#' @examples 
+#' @return An object of class `timesaveR_raw_html`, i.e. a list with `gt_tab`
+#' (the gt-table object including the parts of the table that can be created
+#' with gt - this can be post-processed and formatted with functions in the
+#' gt-package, but does not include the lower part with model statistics, i.e.
+#' N and pseudo-R^2) and `html_code` (the code that creates the full table,
+#' and is used to render it in the Viewer). If `filename` is given, the table
+#' is also saved to that HTML file and the result is returned invisibly.
+#' @examples
 #' library(MASS)
 #' pov_att <- polr(poverty ~ religion + age + gender, data = WVS)
 #' pov_att_std <- polr_std(poverty ~ religion + age + gender, data = WVS)
@@ -373,7 +386,7 @@ report_polr_with_std <- function(mod, mod_std, OR = TRUE, conf_level = .95, fmt 
       gt::cols_label(.list = col_labels) %>%
       gt::cols_align("right", gt::everything()) %>%
       gt::cols_align("left", columns = 1) %>%
-      gt::rm_source_notes("") # Remove std star note
+      gt::rm_source_notes() # Remove std star note
   } else {
     tab <- modelsummary::msummary(mods, output = "gt", statistic = NULL, 
                                   estimate = "{estimate} {stars} [{conf.low}, {conf.high}]", 
@@ -382,7 +395,7 @@ report_polr_with_std <- function(mod, mod_std, OR = TRUE, conf_level = .95, fmt 
       gt::cols_label(.list = col_labels) %>%
       gt::cols_align("right", gt::everything()) %>%
       gt::cols_align("left", columns = 1) %>%
-      gt::rm_source_notes("") # Remove std star note
+      gt::rm_source_notes() # Remove std star note
   }
   if (apa_style) tab <- tab %>% gt_apa_style()
 
@@ -468,8 +481,9 @@ tidy_custom.polr <- function(x, ...) tidy(x, p.values = TRUE, ...)
 #' @param conf.int Logical. Should confidence intervals be returned. Defaults to true.
 #' @param conf.level Confidence level for intervals. Defaults to .95
 #' @param ... extra arguments (not used)
-#' @note
-#' Available stats in result:
+#' @return A [tibble::tibble()] with one row per term and, among others, the
+#' columns listed below (from `summary(mice::pool(x), type = "all")`, sorted
+#' alphabetically after `term`):
 #' \itemize{
 #'      \item estimate
 #'      \item ubar
@@ -549,8 +563,14 @@ glance.mira <- function(x, adj_R2 = TRUE, ...) {
 #' 
 #' @param x An object with class tsR_std
 #' @param ... arguments passed on to tidy method
+#' @return A tidy [tibble::tibble()] of model results, as returned by the
+#' underlying model's `tidy()` method (e.g. `broom::tidy.lm()`), after
+#' stripping the `tsR_std` class.
 #' @export
 #' @method tidy tsR_std
+#' @examples
+#' mod_std <- lm_std(mpg ~ hp + wt, data = mtcars)
+#' tidy(mod_std)
 
 tidy.tsR_std <- function(x, ...) {
   class(x) <- class(x)[class(x) != "tsR_std"]
@@ -566,8 +586,14 @@ tidy.tsR_std <- function(x, ...) {
 #' @param fmt_labels_md Should row and column labels be formatted with markdown/HTML (Defaults to TRUE)
 #' @param row_group_background Background color for row groups. Set to NULL to remove this highlight.
 #' @source Created by Philip Parker, https://gist.github.com/pdparker/1b61b6d36d09cb295bf286a931990159. Slightly expanded here.
+#' @return A `gt` table object (same class as `gt_table`) with APA-style
+#' formatting (borders, font, row-group styling) applied.
 #' @export
-
+#' @examples
+#' if (requireNamespace("gt", quietly = TRUE)) {
+#'   gt_table <- gt::gt(head(mtcars))
+#'   gt_apa_style(gt_table)
+#' }
 
 gt_apa_style <- function(gt_table, fmt_labels_md = TRUE, row_group_background = "#E0E0E0") {
   out <- gt_table %>%

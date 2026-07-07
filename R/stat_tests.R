@@ -28,7 +28,10 @@
 #'   \item{statistic}{The t-statistic}
 #'   \item{parameter}{Degrees of freedom}
 #'   \item{p.value}{The p-value}
-#'   \item{estimate}{The estimated mean or mean difference}
+#'   \item{estimate}{For one-sample and paired tests, the estimated mean or mean
+#'         difference (a single number). For independent two-sample tests, a
+#'         named length-2 numeric vector of the two group means (as returned by
+#'         [stats::t.test()]), not their difference.}
 #'   \item{conf.low}{Lower bound of confidence interval}
 #'   \item{conf.high}{Upper bound of confidence interval}
 #'   \item{cohens_d}{Cohen's d effect size}
@@ -99,6 +102,9 @@ t_test <- function(x, y = NULL, data = NULL, paired = FALSE, mu = 0,
 
   } else if (is.null(y)) {
     # One sample t-test
+    if (paired) {
+      cli::cli_abort("{.arg y} is required for a paired t-test. Pass the second variable, or drop {.arg paired} for a one-sample test.")
+    }
     test_type <- "one_sample"
     x_vec <- x
     y_vec <- NULL
@@ -185,6 +191,15 @@ t_test <- function(x, y = NULL, data = NULL, paired = FALSE, mu = 0,
   result
 }
 
+#' Print method for timesaveR_t_test objects
+#'
+#' @param x An object of class `timesaveR_t_test`, as returned by [t_test()].
+#' @param digits Number of digits to round displayed statistics to.
+#' @param ... Additional arguments (not used).
+#' @return Invisibly returns `x`. Called for its side effect of printing a
+#' `stats::t.test()`-style summary to the console.
+#' @examples
+#' print(t_test(mtcars$mpg, mu = 20))
 #' @export
 print.timesaveR_t_test <- function(x, digits = 3, ...) {
   cat("\n")
@@ -402,6 +417,17 @@ svy_cohen_d_pair <- function(data, dv, iv, pair = NULL, ttest = TRUE, print = FA
 #' @inheritDotParams svy_cohen_d_pair -pair
 #' @inheritParams svy_cohen_d_pair
 #' @return A tibble with t-test results and Cohen's d for each pair
+#' @examples
+#' library(srvyr)
+#'
+#' # Create weights (consists of two variables in ESS)
+#' ess_health$svy_weight <- ess_health$pspwght * ess_health$pweight
+#'
+#' ess_survey <- as_survey(ess_health,
+#'   weights = svy_weight
+#' )
+#'
+#' svy_pairwise_t_test(ess_survey, "health", "cntry", cats = c("DE", "GB", "FR"))
 #' @export
 
 
@@ -953,10 +979,8 @@ pairwise_t_tests <- function(data, outcome, groups = NULL, p.adjust.method = p.a
     }
 
     if (is.numeric(group_values) && is.null(attr(group_values, "labels"))) {
-      haven_available <- "haven" %in% rownames(utils::installed.packages())
-      if (haven_available) {
-        as_factor <- getNamespace("haven")$as_factor.labelled
-        data <- data %>% dplyr::mutate(!!groups_sym := as_factor(!!groups_sym))
+      if (requireNamespace("haven", quietly = TRUE)) {
+        data <- data %>% dplyr::mutate(!!groups_sym := haven::as_factor(!!groups_sym))
       } else {
         cli::cli_warn("The grouping variable is a labelled numeric, but haven package is not available. It will be converted to a factor, but the group labels might be lost.")
         data <- data %>% dplyr::mutate(!!groups_sym := as.factor(!!groups_sym))
@@ -973,20 +997,26 @@ pairwise_t_tests <- function(data, outcome, groups = NULL, p.adjust.method = p.a
     paste(rlang::as_string(outcome_sym), "~", rlang::as_string(groups_sym))
   )
 
-  out <- purrr::map_df(pairs, function(x) {
-    dat <- dplyr::filter(data, !!groups_sym %in% x)
+  out <- purrr::map_df(pairs, function(pair) {
+    dat <- dplyr::filter(data, !!groups_sym %in% .env$pair)
     t_res <- stats::t.test(fmla, dat, var.equal = var_equal, conf.level = conf_level, na.action = "na.omit") %>%
       broom::tidy()
     desc <- dat %>%
-      dplyr::arrange(dplyr::desc(!!groups_sym == x[1])) %>%
+      dplyr::arrange(dplyr::desc(!!groups_sym == .env$pair[1])) %>%
       dplyr::group_by(!!groups_sym) %>%
       dplyr::summarise(
         M = mean(!!outcome_sym, na.rm = TRUE),
         var = stats::var(!!outcome_sym, na.rm = TRUE),
+        n = sum(!is.na(!!outcome_sym)),
         .groups = "drop"
       )
-    cohens_d <- (desc$M[1] - desc$M[2]) / sqrt((desc$var[1] + desc$var[2]) / 2)
-    tibble::tibble(var_1 = x[1], var_2 = x[2], cohens_d = cohens_d) %>%
+    if (var_equal) {
+      pooled_sd <- sqrt(((desc$n[1] - 1) * desc$var[1] + (desc$n[2] - 1) * desc$var[2]) / (desc$n[1] + desc$n[2] - 2))
+      cohens_d <- (desc$M[1] - desc$M[2]) / pooled_sd
+    } else {
+      cohens_d <- (desc$M[1] - desc$M[2]) / sqrt((desc$var[1] + desc$var[2]) / 2)
+    }
+    tibble::tibble(var_1 = pair[1], var_2 = pair[2], cohens_d = cohens_d) %>%
       dplyr::bind_cols(t_res) %>%
       dplyr::select(
         "var_1", "var_2",
@@ -1031,8 +1061,11 @@ pairwise_t_tests <- function(data, outcome, groups = NULL, p.adjust.method = p.a
 #' @inheritParams MASS::polr
 #' @inheritDotParams MASS::polr -data -subset -Hess
 #' @references See (Fox, 2015) for an argument why dummy variables should never
-#' be standardised. 
-#' @examples 
+#' be standardised.
+#' @return A `polr` object (from [MASS::polr()]) with continuous predictors
+#'  standardized, additionally classed `tsR_std` so that downstream reporting
+#'  functions (e.g. [report_polr_with_std()]) recognize it as a standardized model.
+#' @examples
 #' polr_std(poverty ~ religion + age + gender, WVS)
 #' @export
 
@@ -1104,9 +1137,12 @@ polr_std <- function(formula, data = NULL, weights = NULL, ...) {
 #' If NULL, variables are just named with the levels. If left as NA, the function will try to extract the name of the variable passed.
 #' @param drop_first Should first level be dropped? Defaults to TRUE
 #' @param verbose Should message with reference level be displayed?
-#' @examples 
+#' @return A [tibble::tibble()] of logical dummy columns (one per level of `x`,
+#'  or n-1 if `drop_first = TRUE`), named using `prefix` (if any) and a
+#'  cleaned, snake_case version of each level.
+#' @examples
 #' dummy_code(iris$Species)
-#' @export     
+#' @export
 
 dummy_code <- function(x, prefix = NA, drop_first = TRUE, verbose = interactive()) {
   if (is.null(prefix)) {

@@ -5,10 +5,9 @@ doc
 Meta
 Notes.*
 docs
-/man/*
-!/man/figures
-/man/figures/*
-!/man/figures/README*
-NAMESPACE
 .Rhistory
 .DS_Store
+NAMESPACE
+man/
+Rplots.pdf
+tests/testthat/Rplots.pdf

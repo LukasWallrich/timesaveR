@@ -12,6 +12,12 @@ mira.lm_F_test(mod, return_list = FALSE)
 \item{return_list}{Logical. Should items of test be returned in a list?
 Otherwise, a string for reporting is returned, with Markdown formatting for APA style}
 }
+\value{
+If \code{return_list = TRUE}, a list with \code{F} (the combined F-statistic),
+\code{DoF} (numerator degrees of freedom), \code{DoF_residual} (denominator degrees of
+freedom) and \code{p.value}. Otherwise, a single character string reporting the
+F-test in APA style with Markdown formatting (e.g. for use in a \code{gt} table).
+}
 \description{
 Takes a mira object (list of lm models based on mice imputations) and returns
 an F-test for their significance, based on \code{\link[miceadds:micombine.F]{miceadds::micombine.F()}}

@@ -11,7 +11,18 @@ knit_print.timesaveR_raw_html(x, ...)
 
 \item{...}{Additional knit_print arguments}
 }
+\value{
+A character string (the HTML code, with \verb{<!DOCTYPE html>}, \verb{<html>}
+and \verb{</html>} tags stripped) classed as \code{"knit_asis"}, so that knitr/rmarkdown
+render it as raw HTML output.
+}
 \description{
 These S3 methods are necessary to allow custom tables to print themselves in
 knitr/rmarkdown documents.
+}
+\examples{
+if (requireNamespace("knitr", quietly = TRUE)) {
+  x <- structure(list(html_code = "<p>Hello</p>"), class = "timesaveR_raw_html")
+  knitr::knit_print(x)
+}
 }

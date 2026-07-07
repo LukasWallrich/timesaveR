@@ -16,6 +16,11 @@ If NULL, variables are just named with the levels. If left as NA, the function w
 
 \item{verbose}{Should message with reference level be displayed?}
 }
+\value{
+A \code{\link[tibble:tibble]{tibble::tibble()}} of logical dummy columns (one per level of \code{x},
+or n-1 if \code{drop_first = TRUE}), named using \code{prefix} (if any) and a
+cleaned, snake_case version of each level.
+}
 \description{
 Turns a categorical variable into a tibble of n-1 dummy-coded values. If x is a factor, the first level is
 omitted and thus treated as the reference level (to match the behavior of lm() and related functions). If x

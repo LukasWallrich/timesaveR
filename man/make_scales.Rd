@@ -44,3 +44,11 @@ descriptive statistics for each scale (\code{descriptives})
 This function creates multiple scales, returns descriptives and supports
 reverse-coding of items.
 }
+\examples{
+scales <- make_scales(ess_health,
+  items = list(healthy_eating = c("etfruit", "eatveg"), depression = c("fltdpr", "flteeff")),
+  print_desc = FALSE
+)
+head(scales$scores)
+scales$descriptives
+}

@@ -19,6 +19,8 @@
 #' (exclusive), defaults to .95 (i.e. 95% confidence intervals).
 #' @param seed Random seed. You should set this to get reproducible results. 
 #' @param bootstraps Number of bootstraps, defaults to 5000.
+#' @param cores Number of CPU cores to use for bootstrapping. Defaults to 1
+#' (sequential processing); set higher to speed up bootstrapping on multi-core machines.
 #' @param ... Options passed on to [lavaan::sem()]. 
 #' @return Tibble with direct, total and indirect effects, based on bootstrap resamples. In addition, 'a' coefficients for paths from 
 #' X to mediators and 'b' coefficients for paths from mediators to Y are returned. Coefficients for covariates
@@ -41,7 +43,7 @@
 
 run_mediation <- function(data, X, Y, Ms, CVs = NULL, standardized_all = TRUE,
                           conf_level = .95, seed = NULL,
-                          bootstraps = 5000, ...) {
+                          bootstraps = 5000, cores = 1, ...) {
 
   .check_req_packages(c("lavaan"))
 
@@ -89,7 +91,7 @@ run_mediation <- function(data, X, Y, Ms, CVs = NULL, standardized_all = TRUE,
       {Y} ~ cdash*{X} + {paste0(M_letter, M_letter, '*', Ms, collapse=' + ')} {CVs}
 
        
-       #Direct effects cond on moderator
+       #Direct effects
       direct := cdash
 
 ")) %>%
@@ -135,7 +137,9 @@ run_mediation <- function(data, X, Y, Ms, CVs = NULL, standardized_all = TRUE,
   }
   fit <- do.call(lavaansem, dots)
 
-  bs <- lavaan::bootstrapLavaan(fit, R = bootstraps, FUN = "coef", parallel = "snow") %>%
+  bs <- lavaan::bootstrapLavaan(fit, R = bootstraps, FUN = "coef",
+                                parallel = ifelse(cores > 1, "snow", "no"),
+                                ncpus = cores) %>%
     data.frame() %>% 
     # Drop unsuccessful bootstraps
     tidyr::drop_na()

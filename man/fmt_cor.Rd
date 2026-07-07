@@ -11,6 +11,10 @@ fmt_cor(cor_value, digits = 2)
 
 \item{digits}{Number of significant digits, defaults to 2}
 }
+\value{
+A character vector of formatted correlation coefficients (without leading
+zero), the same length as \code{cor_value}. \code{NA} values return \code{NA_character_}.
+}
 \description{
 Format numbers as correlation coefficients, by rounding them and removing the leading 0.
 Respects the \code{timesaveR.round_method} option for consistent rounding behavior

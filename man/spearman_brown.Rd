@@ -28,3 +28,8 @@ This function calculates the Spearman-Brown reliability for a two-item scale,
 which is the recommended measure for two-item scales (rather than Cronbach's
 alpha, which is used for longer scales.)
 }
+\examples{
+spearman_brown(ess_health, items = c("etfruit", "eatveg"), name = "Healthy eating")
+spearman_brown(ess_health, items = c("etfruit", "eatveg"), SB_only = TRUE)
+
+}

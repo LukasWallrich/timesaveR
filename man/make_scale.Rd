@@ -10,7 +10,7 @@ make_scale(
   scale_name,
   reverse_method = c("auto", "none", "spec"),
   reverse_items = NULL,
-  two_items_reliability = c("spearman_brown", "cron_alpha", "r"),
+  two_items_reliability = c("spearman_brown", "cronbachs_alpha", "r"),
   r_key = NULL,
   proration_cutoff = 0.4,
   print_hist = TRUE,

@@ -16,9 +16,20 @@ clip_excel(data, row_names = FALSE, col_names = TRUE, ...)
 
 \item{col_names}{Logical. Should column names be copied?}
 
-\item{...}{Further arguments passed to \code{write.table}}
+\item{...}{Further arguments passed to \code{utils::write.table()}}
+}
+\value{
+Invisibly returns the tab-separated text that was copied to the
+clipboard. Called for its side effect of writing to the clipboard.
 }
 \description{
 This function copies a dataframe into the clipboard, so that it can be
-pasted into excel.
+pasted into excel. Uses the \code{clipr} package, which supports Windows, macOS
+and Linux (unlike base R's "clipboard" connection, which only works on
+Windows).
+}
+\examples{
+if (interactive()) {
+  clip_excel(mtcars[1:5, 1:3])
+}
 }

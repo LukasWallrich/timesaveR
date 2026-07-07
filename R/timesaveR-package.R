@@ -46,6 +46,7 @@ globalVariables(".")
 #' @importFrom magrittr %<>%
 #' @importFrom lifecycle deprecated
 #' @importFrom rlang .data
+#' @importFrom rlang .env
 #' @importFrom rlang :=
 #' @importFrom stats as.formula cor.test sd t.test lm p.adjust.methods quantile coef qnorm qt setNames update
 #' @importFrom here here
@@ -102,7 +103,13 @@ generics::glance
 #' @param x Either a character vector containing HTML code
 #' or a list with a html_code element
 #' @param ... Additional arguments passed to print.
+#' @return Invisibly returns the `htmltools` HTML object that was printed. Called
+#' for its side effect of rendering the HTML (in the RStudio Viewer pane if
+#' interactive, or via `print()` otherwise).
 #' @exportS3Method print timesaveR_raw_html
+#' @examples
+#' x <- structure(list(html_code = "<p>Hello</p>"), class = "timesaveR_raw_html")
+#' print(x)
 
 print.timesaveR_raw_html <- function(x, ...) {
   if ("html_code" %in% names(x)) {
@@ -124,7 +131,15 @@ print.timesaveR_raw_html <- function(x, ...) {
 #'
 #' @param x Object to knit_print
 #' @param ... Additional knit_print arguments
+#' @return A character string (the HTML code, with `<!DOCTYPE html>`, `<html>`
+#' and `</html>` tags stripped) classed as `"knit_asis"`, so that knitr/rmarkdown
+#' render it as raw HTML output.
 #' @exportS3Method knitr::knit_print timesaveR_raw_html
+#' @examples
+#' if (requireNamespace("knitr", quietly = TRUE)) {
+#'   x <- structure(list(html_code = "<p>Hello</p>"), class = "timesaveR_raw_html")
+#'   knitr::knit_print(x)
+#' }
 
 knit_print.timesaveR_raw_html <- function(x, ...) {
   if ("html_code" %in% names(x)) {

@@ -4,7 +4,7 @@
 #' Australia, Norway, Sweden, and the United States. It is taken from the
 #' `carData` package.
 #' 
-#' #' @format A dataframe with 5,381 rows and 23 columns
+#' @format A dataframe with 5,381 rows and 23 columns
 #' \describe{
 #'  \item{poverty}{“Do you think that what the government is doing for people in 
 #'  poverty in this country is about the right amount, too much, or too little?” (ordered): 
@@ -64,7 +64,7 @@ NULL
 #' @name ess_health
 #' @docType data
 #' @author ESS-ERIC, selected by package author
-#' @references <https://www.europeansocialsurvey.org/data/download.html?r=7>
+#' @references <https://www.europeansocialsurvey.org/>
 #' @keywords data
 #'
 NULL

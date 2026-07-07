@@ -11,6 +11,9 @@ na_ifs(x, replace)
 
 \item{replace}{One or more values to replace by NA.}
 }
+\value{
+\code{x}, with any elements matching a value in \code{replace} set to \code{NA}.
+}
 \description{
 This function replaces specific values in a variable with NA. It would most commonly be used
 to remove missing values indicated with codes such as "NA", -999 or "none".
@@ -19,6 +22,6 @@ to remove missing values indicated with codes such as "NA", -999 or "none".
 \examples{
 library(dplyr)
 
-ess_health \%>\% 
+ess_health \%>\%
     mutate(eisced = na_ifs(eisced, c(7, 55)))
 }

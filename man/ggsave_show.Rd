@@ -43,9 +43,14 @@ a prompt will appear asking to create a new directory when necessary.}
 
 \item{units}{Unit for width and height, if provided. Defaults to "cm", can also be "in" or "mm"}
 }
+\value{
+Invisibly returns the filename the plot was saved to. When run interactively, also
+opens the containing folder in the system's file browser as a side effect.
+}
 \description{
-This wraps \code{ggsave} and opens the folder where the graph was saved in a Shell.
-From there, it can easily be dragged and dropped into the application where you want to use it.
+This wraps \code{ggsave} and, when run interactively, opens the folder where the
+graph was saved so that it can easily be dragged and dropped into the application where you
+want to use it.
 It also changes the default units from in to cm, and defaults to saving temporary png files.
 }
 \examples{

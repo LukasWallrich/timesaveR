@@ -49,6 +49,11 @@ polr_std(formula, data = NULL, weights = NULL, ...)
   }
   }}
 }
+\value{
+A \code{polr} object (from \code{\link[MASS:polr]{MASS::polr()}}) with continuous predictors
+standardized, additionally classed \code{tsR_std} so that downstream reporting
+functions (e.g. \code{\link[=report_polr_with_std]{report_polr_with_std()}}) recognize it as a standardized model.
+}
 \description{
 This runs \code{\link[MASS:polr]{MASS::polr()}} after standardising all continuous predictors, while leaving
 factors intact. Note that the Hessian (the observed information matrix)

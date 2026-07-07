@@ -22,7 +22,10 @@ A \code{\link[tibble:tibble]{tibble::tibble()}} with columns:
 \item{column2}{Name of the second variable}
 \item{estimate}{The estimated value of the correlation}
 \item{statistic}{The t-statistic used for significance testing}
+\item{std.error}{The standard error of the correlation}
 \item{p.value}{The two-sided p-value of the correlation}
+\item{conf.low, conf.high}{The confidence interval of the correlation
+(at the level set when creating the matrix), if available}
 }
 \description{
 This function turns the correlation matrix returned by \code{\link[=svy_cor_matrix]{svy_cor_matrix()}}. Note that by default, results for both the \code{cor(A, B)}

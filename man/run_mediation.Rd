@@ -14,6 +14,7 @@ run_mediation(
   conf_level = 0.95,
   seed = NULL,
   bootstraps = 5000,
+  cores = 1,
   ...
 )
 }
@@ -36,6 +37,9 @@ run_mediation(
 \item{seed}{Random seed. You should set this to get reproducible results.}
 
 \item{bootstraps}{Number of bootstraps, defaults to 5000.}
+
+\item{cores}{Number of CPU cores to use for bootstrapping. Defaults to 1
+(sequential processing); set higher to speed up bootstrapping on multi-core machines.}
 
 \item{...}{Options passed on to \code{\link[lavaan:sem]{lavaan::sem()}}.}
 }

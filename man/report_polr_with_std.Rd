@@ -88,6 +88,7 @@ the data.frame produced by \code{get_estimates(model)}, and strings with curly b
 \item \code{"estimate"}
 \item \code{"{estimate} ({std.error}){stars}"}
 \item \code{"{estimate} [{conf.low}, {conf.high}]"}
+\item Numbers are automatically rounded and converted to strings. To let glue apply functions to numeric values, users must set \code{fmt=NULL}. For more complex formatting, users are encouraged to use the \code{fmt} argument, which accepts custom functions.
 }}
     \item{\code{vcov}}{robust standard errors and other manual statistics. The \code{vcov}
 argument accepts six types of input (see the 'Details' and 'Examples'
@@ -203,6 +204,15 @@ the table (e.g., \code{align = "lcc"}).  Valid characters: l, c, r, d.
     \item{\code{escape}}{boolean TRUE escapes or substitutes LaTeX/HTML characters which could
 prevent the file from compiling/displaying. \code{TRUE} escapes all cells, captions, and notes. Users can have more fine-grained control by setting \code{escape=FALSE} and using an external command such as: \code{modelsummary(model, "latex") |> tinytable::format_tt(tab, j=1:5, escape=TRUE)}}
   }}
+}
+\value{
+An object of class \code{timesaveR_raw_html}, i.e. a list with \code{gt_tab}
+(the gt-table object including the parts of the table that can be created
+with gt - this can be post-processed and formatted with functions in the
+gt-package, but does not include the lower part with model statistics, i.e.
+N and pseudo-R^2) and \code{html_code} (the code that creates the full table,
+and is used to render it in the Viewer). If \code{filename} is given, the table
+is also saved to that HTML file and the result is returned invisibly.
 }
 \description{
 This function creates a summary table for polr models (including mice::mira objects

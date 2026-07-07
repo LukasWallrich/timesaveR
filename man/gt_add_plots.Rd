@@ -13,6 +13,10 @@ gt_add_plots(gt_table, plots, col_index)
 
 \item{col_index}{The index of the column in gt_table that is to be overwritten with the plots}
 }
+\value{
+A \code{gt} table object (same class as \code{gt_table}), with the specified
+column's cells replaced by the corresponding rendered plots.
+}
 \description{
 This function takes a list of ggplot2 plots and adds them into a gt table column.
 }

@@ -43,7 +43,13 @@ There are many packages that support data analysis and reporting. For instance, 
 
 # Installation
 
-You can install timesaveR from GitHub with the command below. If you do not have the `remotes`-package installed, run `install.packages("remotes")` first.
+Once released on CRAN, you will be able to install timesaveR with:
+
+```r
+install.packages("timesaveR")
+```
+
+Until then - or to get the development version - you can install timesaveR from GitHub with the command below. If you do not have the `remotes`-package installed, run `install.packages("remotes")` first.
 
 ```r
 remotes::install_github('lukaswallrich/timesaveR')
@@ -203,6 +209,6 @@ report_lm_with_std(mod = list(mod1, mod3), mod_std = list(mod2, mod4),
 
 # Related/alternative packages
 
-- [`modelsummary`](https://vincentarelbundock.github.io/modelsummary/) allows you to create highly customisable tables with data summaries or the output of statistical models that can be saved in a wide range of formats.
-- [`apa`](https://cran.r-project.org/web/packages/apa/apa.pdf) mostly offers functions that turn the output of statistical tests (e.g., t-tests) into text, in line with APA guidelines.
+- [`modelsummary`](https://modelsummary.com/) allows you to create highly customisable tables with data summaries or the output of statistical models that can be saved in a wide range of formats.
+- [`apa`](https://CRAN.R-project.org/package=apa) mostly offers functions that turn the output of statistical tests (e.g., t-tests) into text, in line with APA guidelines.
 - [`papaja`](https://github.com/crsh/papaja) offers the opportunity to create full APA-style journal manuscripts in R. It's `apa_table` function is a generic alternative to the table functions in this package, which support many more types of models, but includes fewer details. 

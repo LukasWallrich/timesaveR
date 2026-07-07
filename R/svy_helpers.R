@@ -14,6 +14,11 @@
 #' of the variables considered? Defaults to TRUE.
 #' @param .include_complete Should variables with no missing data be included
 #' in the returned tibble? Defaults to FALSE.
+#' @return A [tibble::tibble()] with one row per considered variable (sorted by
+#' descending `n_miss`), and columns `variable`, `n_miss` (weighted number of
+#' missing responses) and `pct_miss` (weighted proportion missing). If
+#' `.any_missing = TRUE`, an additional row named `.any_missing` is prepended,
+#' summarizing rows with missing data on at least one considered variable.
 #' @examples
 #' library(survey)
 #' data(api)

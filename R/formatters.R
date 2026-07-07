@@ -6,6 +6,8 @@
 #'
 #' @param df Dataframe to be rounded
 #' @param digits Number of digits, defaults to 2
+#' @return The input dataframe, with all numeric columns rounded to `digits` digits.
+#' Non-numeric columns are returned unchanged.
 #'
 #' @details
 #' The rounding method is controlled by the `timesaveR.round_method` option:
@@ -16,6 +18,8 @@
 #' Set via `options(timesaveR.round_method = "default")` to change for your session.
 #'
 #' @source https://stackoverflow.com/questions/9063889/how-to-round-a-data-frame-in-r-that-contains-some-character-variables
+#' @examples
+#' round_df(mtcars[1:3, 1:3], digits = 1)
 #' @export
 
 round_df <- function(df, digits = 2) {
@@ -80,6 +84,8 @@ round_df <- function(df, digits = 2) {
 #' @param equal_sign Logical. Should *p*-values be prefixed with `=` unless they
 #' are reported as `<` Defaults to TRUE, for use in text that reports result,
 #' FALSE is particularly useful for tables.
+#' @return A character vector of formatted *p*-values, the same length as `p_value`.
+#' `NA` inputs return `NA_character_`.
 #' @examples
 #' fmt_p(0.04355)
 #' fmt_p(0.0001)
@@ -87,6 +93,12 @@ round_df <- function(df, digits = 2) {
 #' @export
 
 fmt_p <- function(p_value, digits = 3, equal_sign = TRUE) {
+
+  # Allow bare logical NA (as produced by `NA`) to be treated as numeric,
+  # consistent with fmt_pct()/round_() which accept it.
+  if (is.logical(p_value) && all(is.na(p_value))) {
+    p_value <- as.numeric(p_value)
+  }
 
   assert_numeric(p_value)
   assert_integerish(digits)
@@ -101,6 +113,14 @@ fmt_p <- function(p_value, digits = 3, equal_sign = TRUE) {
     cli::cli_warn("p-values should be between 0 and 1. Invalid values detected.")
   }
 
+  lower_cutoff <- 10^(-digits)
+  # The upper cutoff is .99 by default (as before), but for low `digits` (e.g.
+  # digits = 1) that fixed cutoff is coarser than the rounding step itself, so
+  # values below .99 could still round up to display as "1.0". Scaling the
+  # cutoff down to 1 - 10^(-digits) whenever that is stricter than .99 avoids
+  # that, while leaving the default `digits = 3` behaviour unchanged (.99).
+  upper_cutoff <- min(0.99, 1 - 10^(-digits))
+
   fmt <- paste0("%.", digits, "f")
   fmt_p <- function(x) {
     # Round using dispatcher first
@@ -108,16 +128,22 @@ fmt_p <- function(p_value, digits = 3, equal_sign = TRUE) {
     paste0(if(equal_sign == TRUE) "= " else "", sprintf(fmt, rounded)) %>%
       stringr::str_replace("0.", ".")
   }
-  exact <- !(p_value < 10^(-digits) | p_value > .99) & p_value >= 0 & p_value <= 1
+  exact <- !(p_value < lower_cutoff | p_value > upper_cutoff) & p_value >= 0 & p_value <= 1
   exact[is.na(exact)] <- TRUE
   out <- p_value
   out[exact] <- purrr::map_chr(out[exact], fmt_p)
   small_threshold <- paste0(if(equal_sign == TRUE) "< " else "< ",
-                           sprintf(paste0("%.", digits, "f"), 10^(-digits)) %>%
+                           sprintf(paste0("%.", digits, "f"), lower_cutoff) %>%
                            stringr::str_replace("0.", "."))
-  out[p_value < 10^(-digits) & p_value >= 0] <- small_threshold
-  large <- p_value > .99 & p_value <= 1
-  out[large] <- "> .99"
+  out[p_value < lower_cutoff & p_value >= 0] <- small_threshold
+  # Trim the upper cutoff to the minimal number of decimals needed (no
+  # trailing zeroes), so e.g. .99 stays "> .99" and .9 becomes "> .9".
+  upper_txt <- sub("0+$", "", sprintf("%.10f", upper_cutoff))
+  upper_txt <- sub("\\.$", "", upper_txt)
+  upper_txt <- sub("^0\\.", ".", upper_txt)
+  large_threshold <- paste0("> ", upper_txt)
+  large <- p_value > upper_cutoff & p_value <= 1
+  out[large] <- large_threshold
   out[p_value > 1] <- "> 1 (!!)"
   out[p_value < 0] <- "< 0 (!!)"
   out[is.na(p_value)] <- NA
@@ -134,6 +160,8 @@ fmt_p <- function(p_value, digits = 3, equal_sign = TRUE) {
 #'
 #' @param x Numeric, or a vector of numbers
 #' @param digits Number of significant digits, defaults to 1
+#' @return A character vector of formatted percentages, the same length as `x`.
+#' `NA` values return `NA_character_`.
 #' @examples
 #' fmt_pct(0.127)
 #' fmt_pct(c(0.127, 0.456, 0.789), digits = 2)
@@ -160,6 +188,8 @@ fmt_pct <- function(x, digits = 1) {
 #'
 #' @param cor_value Numeric, or a vector of numbers
 #' @param digits Number of significant digits, defaults to 2
+#' @return A character vector of formatted correlation coefficients (without leading
+#' zero), the same length as `cor_value`. `NA` values return `NA_character_`.
 #' @examples
 #' fmt_cor(0.127)
 #' fmt_cor(c(0.456, -0.789, 0.023))
@@ -189,6 +219,8 @@ fmt_cor <- function(cor_value, digits = 2) {
 #' @param digits Number of significant digits, defaults to 2
 #' @param drop_0 Logical. Should leading 0 be dropped, e.g., when reporting correlation coefficients.
 #' Note that this only works when all values are between -1 and 1 (inclusive)
+#' @return A character vector of formatted confidence intervals, e.g. `"[1.23, 2.68]"`,
+#' the same length as `lower`/`upper`. `NA` is returned where either bound is `NA`.
 #' @examples
 #' fmt_ci(1.23, 2.68)
 #' fmt_ci(c(0.12, 0.45), c(0.34, 0.67), drop_0 = TRUE)

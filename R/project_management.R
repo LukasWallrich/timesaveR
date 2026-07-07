@@ -11,21 +11,42 @@
 #' Then there is the **`0_run_all.R`** file, which runs all analysis scripts in order
 #' and documents when this last happened. 
 #'
-#' @param folder Root folder of the project to be set up. Defaults to here::here()
+#' @param folder Root folder of the project to be set up. Must be provided explicitly
+#' (e.g. `here::here()` to use the current project, or `tempdir()` to try this out) -
+#' this function writes files and creates directories in `folder`, so it will never
+#' guess a default location on your filesystem.
 #' @param analyses Character vector of analysis steps. R files will be set up in order.
 #' @param pipeline_name Name of folder for outputs from each analysis step
 #' @param code_folder Logical. Should code files be placed in /code sub-folder?
 #' Otherwise, are placed in root folder
 #' @param standard_packages Character vector of packages to be loaded at start of each analysis file.
 #' @param github_packages Character vector of packages to be loaded and installed from Github if needed at start of each analysis file.
+#' @return Invisibly returns `NULL`. Called for its side effects: creates the project's
+#' folder structure and writes template R script files (and a notes/management-functions
+#' script) into `folder`.
 #' @source The structure is based on https://towardsdatascience.com/how-to-keep-your-research-projects-organized-part-1-folder-structure-10bd56034d3a, with some simplifications and additions.
+#' @examples
+#' \dontrun{
+#' # Run in the current project
+#' setup_analysis_project(folder = here::here())
+#' }
+#'
+#' # Try it out in a temporary directory
+#' setup_analysis_project(folder = tempdir())
 #' @export
 
-setup_analysis_project <- function(folder = here::here(), analyses = c("data_prep", "analyses", "presentation"), 
-                                   pipeline_name = "outputs", code_folder = FALSE, 
-                                   standard_packages = c("magrittr", "here", "dplyr"), 
+setup_analysis_project <- function(folder, analyses = c("data_prep", "analyses", "presentation"),
+                                   pipeline_name = "outputs", code_folder = FALSE,
+                                   standard_packages = c("magrittr", "here", "dplyr"),
                                    github_packages = NULL) {
-  
+
+  if (missing(folder)) {
+    cli::cli_abort(c(
+      "{.arg folder} must be provided explicitly - this function writes files and creates directories there.",
+      "i" = "Use {.code here::here()} to set up the current project, or {.code tempdir()} to try this out."
+    ))
+  }
+
   pipeline_folder <- paste0("3_", pipeline_name)
   folders <- paste0(folder, "/", c("0_data", "1_tools", (if (code_folder) "2_code" else NULL), pipeline_folder))
 
@@ -169,11 +190,21 @@ writeLines(notes, here("last_complete_run.txt"))
 add_package_snippets <- function() {
   added <- FALSE
 
+  # This function copies files into the RStudio user configuration directory,
+  # which requires explicit user confirmation - so it only makes sense interactively
+  if (!interactive()) {
+    cli::cli_abort(
+      "{.fun add_package_snippets} copies files into your RStudio configuration directory and asks for confirmation before doing so - it can therefore only be run interactively."
+    )
+  }
+
   # if not on RStudio or RStudioServer exit
   if (!nzchar(Sys.getenv("RSTUDIO_USER_IDENTITY"))) {
     cli::cli_warn("Code snippets are only implemented in RStudio - so cannot do anything here.")
     return(NULL)
   }
+
+  .check_req_packages("rstudioapi")
 
   # Name of files containing snippet code to copy
   pckgSnippetsFiles <- c("r.snippets", "rmd.snippets")
@@ -309,14 +340,18 @@ rproj_to_clip <- function() {
 
 #' @title Save ggplot-graph and show in folder
 #'
-#' @description This wraps `ggsave` and opens the folder where the graph was saved in a Shell.
-#' From there, it can easily be dragged and dropped into the application where you want to use it.
+#' @description This wraps `ggsave` and, when run interactively, opens the folder where the
+#' graph was saved so that it can easily be dragged and dropped into the application where you
+#' want to use it.
 #' It also changes the default units from in to cm, and defaults to saving temporary png files.
 #'
 #' @param filename File name with path. If not provided, only a temporary file is saved
 #' @param units Unit for width and height, if provided. Defaults to "cm", can also be "in" or "mm"
 #' @inheritParams ggplot2::ggsave
 #' @inheritDotParams ggplot2::ggsave
+#'
+#' @return Invisibly returns the filename the plot was saved to. When run interactively, also
+#' opens the containing folder in the system's file browser as a side effect.
 #'
 #' @export
 #'
@@ -329,15 +364,14 @@ rproj_to_clip <- function() {
 
 ggsave_show <- function(filename = NULL, ..., device = NULL, units = "cm") {
   if(is.null(filename)) {
-    filename <- tempfile(Sys.time() %>% 
-                           {paste0("0-plot-", format(., "%H"), "-", format(., "%M"), "-")}, 
+    filename <- tempfile(Sys.time() %>%
+                           {paste0("0-plot-", format(., "%H"), "-", format(., "%M"), "-")},
                          fileext = ".png")
   }
-  
+
   ggplot2::ggsave(filename, units = units, device = device, ...)
-  if (.Platform["OS.type"] == "windows") {
-    shell.exec(dirname(filename))
-  } else {
-    system(paste(Sys.getenv("R_BROWSER"), dirname(filename)))
+  if (interactive()) {
+    utils::browseURL(dirname(filename))
   }
+  invisible(filename)
 }

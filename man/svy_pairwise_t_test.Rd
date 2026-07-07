@@ -35,3 +35,15 @@ This function calculates a t.test() for any pair of levels in a
 \code{srvyr} survey object. It does currently not do any p-value adjustment
 for multiple comparisons, and print rather than returns the results.
 }
+\examples{
+library(srvyr)
+
+# Create weights (consists of two variables in ESS)
+ess_health$svy_weight <- ess_health$pspwght * ess_health$pweight
+
+ess_survey <- as_survey(ess_health,
+  weights = svy_weight
+)
+
+svy_pairwise_t_test(ess_survey, "health", "cntry", cats = c("DE", "GB", "FR"))
+}

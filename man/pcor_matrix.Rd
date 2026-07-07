@@ -27,6 +27,13 @@ intervals can be bootstrapped. If you want to do that, pass the number of desire
     \item{\code{adjust}}{What adjustment for multiple tests should be used? ("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"). See \code{\link{p.adjust}} for details about why to use "holm" rather than "bonferroni"). }
   }}
 }
+\value{
+A correlation matrix list in the same format as returned by
+\code{\link[=cor_matrix]{cor_matrix()}} (correlation matrix, p-values, standard errors, t-values,
+pairwise number of observations, confidence intervals, descriptives, and,
+if \code{var_names} was provided, a tibble with old and new variable names),
+based on the residuals after partialling out \code{given}.
+}
 \description{
 This returns a matrix aligned with the \code{cor_matrix()} function after parceling
 out the effect of one or more other variables. This function requires complete data;

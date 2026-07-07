@@ -25,6 +25,13 @@ of the variables considered? Defaults to TRUE.}
 \item{.include_complete}{Should variables with no missing data be included
 in the returned tibble? Defaults to FALSE.}
 }
+\value{
+A \code{\link[tibble:tibble]{tibble::tibble()}} with one row per considered variable (sorted by
+descending \code{n_miss}), and columns \code{variable}, \code{n_miss} (weighted number of
+missing responses) and \code{pct_miss} (weighted proportion missing). If
+\code{.any_missing = TRUE}, an additional row named \code{.any_missing} is prepended,
+summarizing rows with missing data on at least one considered variable.
+}
 \description{
 This function creates a tibble that summarizes missing data
 with survey weights for missing counts and proportions. (Apart from

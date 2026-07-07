@@ -16,7 +16,17 @@ gt_apa_style(gt_table, fmt_labels_md = TRUE, row_group_background = "#E0E0E0")
 
 \item{row_group_background}{Background color for row groups. Set to NULL to remove this highlight.}
 }
+\value{
+A \code{gt} table object (same class as \code{gt_table}) with APA-style
+formatting (borders, font, row-group styling) applied.
+}
 \description{
 This function takes a \code{gt} table object and changes font-type, borders etc
 to align with APA style.
+}
+\examples{
+if (requireNamespace("gt", quietly = TRUE)) {
+  gt_table <- gt::gt(head(mtcars))
+  gt_apa_style(gt_table)
+}
 }

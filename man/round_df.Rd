@@ -14,6 +14,10 @@ round_df(df, digits = 2)
 
 \item{digits}{Number of digits, defaults to 2}
 }
+\value{
+The input dataframe, with all numeric columns rounded to \code{digits} digits.
+Non-numeric columns are returned unchanged.
+}
 \description{
 Rounds all numeric columns in dataframe. By default, uses "round half to even"
 (aka banker's rounding), but the rounding method can be changed via the
@@ -26,4 +30,7 @@ The rounding method is controlled by the \code{timesaveR.round_method} option:
 \item \code{"default"}: Standard R rounding (round half away from zero)
 }
 Set via \code{options(timesaveR.round_method = "default")} to change for your session.
+}
+\examples{
+round_df(mtcars[1:3, 1:3], digits = 1)
 }

@@ -37,3 +37,6 @@ Symbols and thresholds are *** \emph{p} < .001,  ** \emph{p} < .01, * \emph{p}
 descendingly to the \code{stars} argument. For the default, the argument would be
 \verb{stars <- c(}†\verb{= .1,}\emph{\verb{= 0.05,}\strong{\verb{= 0.01,}}}\verb{ = 0.001)}
 }
+\examples{
+sigstars(c(0.001, 0.03, 0.2, NA))
+}

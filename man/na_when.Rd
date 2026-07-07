@@ -14,6 +14,9 @@ na_when(x, ..., operator = "|")
 \item{operator}{Name of a logical operator to combine the conditions. Defaults to \code{"|"} (or),
 \code{"&"} (and) is the other common choice, though \code{"xor"} would also work.}
 }
+\value{
+\code{x}, with elements for which the combined condition is \code{TRUE} set to \code{NA}.
+}
 \description{
 This function sets a variable to NA based on one or several logical conditions.
 It would most naturally be used inside a dplyr-mutate call.

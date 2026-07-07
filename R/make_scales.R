@@ -54,9 +54,9 @@ make_scale <- function(data, items, scale_name, reverse_method = c(
   "auto",
   "none", "spec"
 ), reverse_items = NULL, two_items_reliability = c(
-  "spearman_brown", "cron_alpha",
+  "spearman_brown", "cronbachs_alpha",
   "r"
-), r_key = NULL, 
+), r_key = NULL,
 proration_cutoff = .4,
 print_hist = TRUE, print_desc = TRUE, return_list = FALSE,
 harmonize_ranges = NULL,
@@ -77,7 +77,10 @@ scale_items = lifecycle::deprecated()) {
   if (length(items) < 2) cli::cli_abort("Scales need to have at least two items specified in the {.arg items} argument.")
   
   assert_choice(reverse_method[1], c("auto", "none", "spec"))
-  
+
+  if (two_items_reliability[1] == "cron_alpha") two_items_reliability <- "cronbachs_alpha"
+  assert_choice(two_items_reliability[1], c("spearman_brown", "cronbachs_alpha", "r"))
+
   if (!is.null(reverse_items) && !reverse_method[1] == "spec") cli::cli_abort('{.arg reverse_items} should only be specified together with {.arg reverse_method} = "spec".')
   
   if (is.null(r_key)) r_key <- 0
@@ -188,7 +191,7 @@ scale_items = lifecycle::deprecated()) {
     } else if (two_items_reliability[1] == "cronbachs_alpha") {
       reliab <- alpha_obj$total$std.alpha
     } else if (two_items_reliability[1] == "r") {
-      reliab <- cor.test(data[, items[1]], data[, items[2]], na.rm = TRUE)$estimate
+      reliab <- cor.test(data[[items[1]]], data[[items[2]]])$estimate
     }
   } else {
     reliab_method <- "cronbachs_alpha"
@@ -199,7 +202,7 @@ scale_items = lifecycle::deprecated()) {
   
                         Descriptives for {scale_name} scale:
                         Mean: {round_(mean(alpha_obj$scores, na.rm = TRUE), 3)}  SD: {round_(sd(alpha_obj$scores, na.rm = TRUE), 3)}
-                        {paste0(ifelse(length(items) == 2, paste0(two_items_reliability, ": "),
+                        {paste0(ifelse(length(items) == 2, paste0(reliab_method, ": "),
                                        "Cronbach\\\'s alpha: "), round_(reliab, 2))}')
   
   if (length(reversed) > 0) {
@@ -287,6 +290,13 @@ range_ <- function(x, digits = 2, simplify = FALSE) {
 #' @return A list of two dataframes: scale values (`scores`) and
 #' descriptive statistics for each scale (`descriptives`)
 #' @export
+#' @examples
+#' scales <- make_scales(ess_health,
+#'   items = list(healthy_eating = c("etfruit", "eatveg"), depression = c("fltdpr", "flteeff")),
+#'   print_desc = FALSE
+#' )
+#' head(scales$scores)
+#' scales$descriptives
 
 make_scales <- function(data, items, reversed = FALSE, two_items_reliability = c(
                           "spearman_brown",
@@ -383,9 +393,12 @@ make_scales <- function(data, items, reversed = FALSE, two_items_reliability = c
 #'   dataframe including the Pearson correlation coefficient and the scale name
 #' @export
 #' @source https://www.r-bloggers.com/five-ways-to-calculate-internal-consistency/
+#' @examples
+#' spearman_brown(ess_health, items = c("etfruit", "eatveg"), name = "Healthy eating")
+#' spearman_brown(ess_health, items = c("etfruit", "eatveg"), SB_only = TRUE)
 #'
 spearman_brown <- function(data, items, name = "", SB_only = FALSE) {
-  cor_value <- cor.test(magrittr::extract2(data, items[1]), magrittr::extract2(data, items[2]), na.rm = TRUE)$estimate
+  cor_value <- cor.test(magrittr::extract2(data, items[1]), magrittr::extract2(data, items[2]))$estimate
   SB_value <- (abs(cor_value) * 2) / (1 + abs(cor_value))
   if (SB_only) {
     return(as.numeric(SB_value))
@@ -471,6 +484,10 @@ svy_make_scale <- function(data, items, scale_name,
     cli::cli_abort("`reverse_items` should only be used with `reverse = \"spec\"`")
   if (reverse[1] == "auto")
     cli::cli_abort("Automatic reverse coding ({.arg reverse} = {.val auto}) isn't supported for survey objects")
+
+  if (two_items_reliability[1] == "cron_alpha") two_items_reliability <- "cronbachs_alpha"
+  assert_choice(two_items_reliability[1], c("spearman_brown", "cronbachs_alpha", "r"))
+  assert_numeric(proration_cutoff, lower = 0, upper = 1, len = 1)
   
   if (scale_title != scale_name)
     scale_title <- paste0(scale_title, " (", scale_name, ")")
@@ -500,6 +517,7 @@ svy_make_scale <- function(data, items, scale_name,
   ## composite scale
   scale_matrix  <- do.call(cbind, data$variables[scale_items_num])
   scale_values  <- rowMeans(scale_matrix, na.rm = TRUE)
+  scale_values[rowSums(is.na(scale_matrix)) > proration_cutoff * ncol(scale_matrix)] <- NA
   data          <- do.call(update, c(list(data), stats::setNames(list(scale_values), scale_name)))
   
   ## optional full-scale reversal
@@ -522,12 +540,26 @@ svy_make_scale <- function(data, items, scale_name,
                                        data, na.rm = TRUE)[1], 3)
     sd_val <- round_(sqrt(survey::svyvar(as.formula(paste0("~", scale_name)),
                                          data, na.rm = TRUE)[1]), 3)
-    alpha_val <- survey::svycralpha(as.formula(.scale_formula(scale_items_num)), data, na.rm = TRUE)
-    
+    if (length(items) == 2 && two_items_reliability[1] != "cronbachs_alpha") {
+      .check_req_packages("jtools")
+      r_val <- jtools::svycor(as.formula(.scale_formula(scale_items_num)), data, na.rm = TRUE)$cors[1, 2]
+      if (two_items_reliability[1] == "spearman_brown") {
+        alpha_val <- (abs(r_val) * 2) / (1 + abs(r_val))
+      } else {
+        alpha_val <- r_val
+      }
+      reliability_method <- two_items_reliability[1]
+      reliability_label <- c(spearman_brown = "Spearman-Brown coefficient", r = "Correlation (r)")[[reliability_method]]
+    } else {
+      alpha_val <- survey::svycralpha(as.formula(.scale_formula(scale_items_num)), data, na.rm = TRUE)
+      reliability_method <- "cronbachs_alpha"
+      reliability_label <- "Cronbach's alpha"
+    }
+
     description_text <- glue::glue('
                            Descriptives for {scale_title} scale:
                            Mean: {mean_val}  SD: {sd_val}
-                           Cronbach\'s alpha: {fmt_cor(alpha_val)}')
+                           {reliability_label}: {fmt_cor(alpha_val)}')
     
     if (reverse[1] == "spec" && !is.null(reverse_items) && length(reverse_items) > 0) {
       reversed_min <- numeric()
@@ -546,7 +578,7 @@ svy_make_scale <- function(data, items, scale_name,
     if(return_list){
       descriptives$n_items <- length(items)
       descriptives$reliability <- alpha_val
-      descriptives$reliability_method <- "cronbachs_alpha"
+      descriptives$reliability_method <- reliability_method
       descriptives$mean <- mean_val
       descriptives$SD <- sd_val
       descriptives$reversed <- if (reverse[1] == "spec" && !is.null(reverse_items)) paste0(reverse_items, collapse = " ") else ""
@@ -598,16 +630,25 @@ svy_make_scale <- function(data, items, scale_name,
 #' @param data A dataframe containing multiple imputations, distinguished by a `.imp` 
 #' variable. Typically the output from `mice::complete(mids, "long")`.
 #' @inheritParams make_scale
-#' @param proration_cutoff Applies only to raw data (.imp == 0) in data. Scales scores are only calculated for cases with at most this share of missing data.
+#' @param proration_cutoff Scale scores are only calculated for cases with at most this share of missing data. This is applied across all rows in `data`; since imputed datasets usually contain no missing item responses, it typically only affects the raw data (`.imp == 0`).
 #' @inheritDotParams make_scale -print_hist -two_items_reliability 
 #' @param alpha_ci Should a confidence interval for Cronbach's alpha be returned? Note that this requires bootstrapping and thus makes the function much slower. TRUE corresponds to a 95% confidence interval, other widths can be specified as fractions, e.g., .9
 #' @param boot For pooling, the variance of Cronbach's alpha is bootstrapped. Set number of bootstrap resamples here.
 #' @param seed For pooling, the variance of Cronbach's alpha is bootstrapped. Set a seed to make this reproducible.
 #' @param parallel Should bootstrapping be conducted in parallel (using `parallel`-package)? Pass a number to select the number of cores - otherwise, the function will use all but one core.
 #' @param scale_items `r lifecycle::badge("deprecated")` Use the `items` argument instead
-#' @source The approach to pooling Cronbach's alpha is taken from Dion Groothof [on StackOverflow](https://stackoverflow.com/a/70817748/10581449). 
-#' The development of the function was motivated by [Gottschall, West & Enders (2012)](https://doi.org/10.1080/00273171.2012.640589) who showed 
+#' @source The approach to pooling Cronbach's alpha is taken from Dion Groothof [on StackOverflow](https://stackoverflow.com/a/70817748/10581449).
+#' The development of the function was motivated by Gottschall, West & Enders (2012, \doi{10.1080/00273171.2012.640589}) who showed
 #' that multiple imputation at item level results in much higher statistical power than multiple imputation at scale level.
+#' @return Depends on the (hidden, passed through `...`) `return_list` argument - by
+#'  default (`TRUE`) a list with `scores` (a numeric vector of scale scores, one
+#'  per row of `data`, pooled/raw depending on `.imp`) and `descriptives` - a list
+#'  including `n_items`, pooled `reliability` (Cronbach's alpha, and, if
+#'  `alpha_ci = TRUE`, `reliability_ci_lower`/`reliability_ci_upper`/`reliability_ci_level`),
+#'  `reliability_method`, `mean`, `SD`, `reversed` (items that were reverse-coded),
+#'  `rev_min`/`rev_max`, `m_imputations`, and `text` (a convenient text summary of
+#'  the pooled descriptives). If `return_list = FALSE`, just the numeric vector of
+#'  scale scores is returned.
 #' @export
 #' @examples 
 #' library(dplyr)
@@ -627,8 +668,8 @@ svy_make_scale <- function(data, items, scale_name,
 make_scale_mi <- function(data, items, scale_name, proration_cutoff = 0, seed = NULL, alpha_ci = FALSE, boot = 5000, parallel = TRUE, scale_items = deprecated(), ...) {
 
     if (lifecycle::is_present(scale_items)) {
-      lifecycle::deprecate_warn("0.0.3", "make_scale(scale_items)", "make_scale(items)")
-      items <- items
+      lifecycle::deprecate_warn("0.0.3", "make_scale_mi(scale_items)", "make_scale_mi(items)")
+      items <- scale_items
     }
   
   if (!alpha_ci) {
@@ -829,10 +870,11 @@ make_scale_mi <- function(data, items, scale_name, proration_cutoff = 0, seed = 
 
 # pooled estimates
 pool_estimates <- function(x, ci = .95) {
+  crit <- stats::qt(1 - (1 - ci) / 2, x$df)
   out <- c(
     alpha = x$qbar,
-    lwr = x$qbar - stats::qt(1-(ci/2), x$df) * sqrt(x$t),
-    upr = x$qbar + stats::qt(1-(ci/2), x$df) * sqrt(x$t)
+    lwr = x$qbar - crit * sqrt(x$t),
+    upr = x$qbar + crit * sqrt(x$t)
   )
   return(out)
 }

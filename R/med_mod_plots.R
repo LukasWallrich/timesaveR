@@ -63,12 +63,12 @@ plot_mediation <- function(X, Y, Ms, data, digits = 2, coef_offset = length(Ms),
                            filename = NULL, ind_p_values = FALSE, IV = lifecycle::deprecated(), DV = lifecycle::deprecated()) {
   
   if (lifecycle::is_present(DV)) {
-    lifecycle::deprecate_warn("0.0.3", "make_scale(DV)", "make_scale(Y)")
+    lifecycle::deprecate_warn("0.0.3", "plot_mediation(DV)", "plot_mediation(Y)")
     Y <- DV
   }
-  
+
   if (lifecycle::is_present(IV)) {
-    lifecycle::deprecate_warn("0.0.3", "make_scale(IV)", "make_scale(X)")
+    lifecycle::deprecate_warn("0.0.3", "plot_mediation(IV)", "plot_mediation(X)")
     X <- IV
   }
   
@@ -249,10 +249,6 @@ plot_mediation <- function(X, Y, Ms, data, digits = 2, coef_offset = length(Ms),
 
 plot_moderated_mediation <- function(X, M, W, Y, CV = NULL, mod_direct_path = TRUE, labels = list(a = "+", b = "+", c = "+", a_mod = "+", c_mod = "+"), filename = NULL) {
   .check_req_packages(c("glue", "DiagrammeR"))
-
-  all_text <- paste(X, M, W, Y, CV)
-  escapes <- stringr::str_extract_all(all_text, "&.*?;")[[1]] %>% unique()
-  targets <- .unescape_html(escapes)
 
   # Set parameters
 

@@ -41,6 +41,26 @@
 * `make_scales()` now correctly reacts to `print_desc` argument
 * `cor_matrix()` now works robustly with `missing = "fiml"` even when some bootstraps do not converge
 * `round_df()` and `round_()` now consistently use round-to-even/banker's rounding
+* `report_lm_with_std()` no longer errors when `R2_change = TRUE`, and now gives an informative error instead of failing obscurely when passed `mira` models
+* `make_scale()`'s default `two_items_reliability` option, `"cronbachs_alpha"`, now works (the default previously pointed to a misspelled option that always errored), and the Pearson's-*r* option now also works with tibbles
+* `make_scale_mi()`'s deprecated `scale_items` argument is now correctly mapped to `items`
+* Confidence intervals for bootstrapped Cronbach's alpha in `make_scale_mi()` are now correct (previously far too narrow due to an incorrect *t* critical value)
+* `svy_make_scale()` now actually applies `proration_cutoff` and supports `two_items_reliability` - both arguments were previously accepted but silently ignored
+* `svy_cor_matrix()` no longer mangles variable names that contain `"_1"`, and `tidy.svy_cor_matrix()` now returns the correct columns, including standard errors and confidence intervals
+* `pcor_matrix()` now works when `var_names` is passed as a tibble
+* `cor_matrix()` no longer resets the random seed when no seed is provided
+* `pairwise_t_tests()` now works when the outcome variable is named `x`, and Cohen's *d* now respects `var_equal = TRUE` (pooled SD)
+* `t_test(paired = TRUE)` without `y` now gives an informative error instead of silently running a one-sample test
+* `fmt_p()` now handles small `digits` values properly (no longer reports "= 1.0") and returns `NA` for `NA` input
+* `sigstars(pad_html = TRUE)` now pads `NA` entries to the same width as other entries
+* `clip_excel()` now works cross-platform via `clipr`, and is restricted to interactive sessions
+* `setup_analysis_project()` now requires an explicit folder to be specified rather than defaulting to the working directory, and `ggsave_show()` only opens the output folder in interactive sessions
+* Deprecation warnings in `plot_mediation()` now reference the correct replacement function
+
+## Other
+
+* Updated code to remove `tidyverse` deprecation warnings (e.g. around `across()` and `.data` usage), so that functions run cleanly on current package versions
+* `run_mediation()` now bootstraps sequentially by default; use the new `cores` argument to enable parallel processing (previously it always used all-but-one CPU cores, which violated CRAN check limits and could surprise users)
 
 # timesaveR 0.0.2
 

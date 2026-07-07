@@ -16,6 +16,10 @@ fmt_ci(lower, upper, digits = 2, drop_0 = FALSE)
 \item{drop_0}{Logical. Should leading 0 be dropped, e.g., when reporting correlation coefficients.
 Note that this only works when all values are between -1 and 1 (inclusive)}
 }
+\value{
+A character vector of formatted confidence intervals, e.g. \code{"[1.23, 2.68]"},
+the same length as \code{lower}/\code{upper}. \code{NA} is returned where either bound is \code{NA}.
+}
 \description{
 Constructs a confidence intervals from upper and lower bounds,
 placing them in between square brackets

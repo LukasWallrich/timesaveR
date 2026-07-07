@@ -44,7 +44,7 @@ health as well as specific health behaviours. It can be used to
 demonstrate most functions of this package.
 }
 \references{
-\url{https://www.europeansocialsurvey.org/data/download.html?r=7}
+\url{https://www.europeansocialsurvey.org/}
 }
 \author{
 ESS-ERIC, selected by package author

@@ -15,6 +15,10 @@ fmt_p(p_value, digits = 3, equal_sign = TRUE)
 are reported as \code{<} Defaults to TRUE, for use in text that reports result,
 FALSE is particularly useful for tables.}
 }
+\value{
+A character vector of formatted \emph{p}-values, the same length as \code{p_value}.
+\code{NA} inputs return \code{NA_character_}.
+}
 \description{
 Formats p-value in line with APA standard, returning it without leading 0 and
 as < .001 (or below the smallest value expressible with the given number of

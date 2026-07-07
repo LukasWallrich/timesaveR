@@ -92,12 +92,15 @@ std_stars_pad <- c(`&nbsp;&nbsp;&nbsp;` = 1, `&dagger;&nbsp;&nbsp;` = .1, `*&nbs
 #' each padded with spaces to be four characters long
 #' @source Adapted from
 #'  http://www.sthda.com/english/wiki/elegant-correlation-table-using-xtable-r-package
+#' @examples
+#' sigstars(c(0.001, 0.03, 0.2, NA))
 #' @export
 
 sigstars <- function(p, stars = NULL, pad_html = FALSE, ns = FALSE, return_NAs = FALSE) {
   if (is.null(stars)) stars <- c(`&dagger;` = .1, `*` = 0.05, `**` = 0.01, `***` = 0.001)
-  stars <- sort(stars, decreasing = T)
+  stars <- sort(stars, decreasing = TRUE)
   ns <- ifelse(ns == TRUE, "<sup>ns</sup>", "")
+  blank <- ""
   if (pad_html) {
     .check_req_packages(c("xml2"), note = "Trying to add HTML-padding to sigstars.")
     stars2 <- names(stars)
@@ -109,6 +112,7 @@ sigstars <- function(p, stars = NULL, pad_html = FALSE, ns = FALSE, return_NAs =
     names(stars) <- padded_stars
     ns_unescaped <- ifelse(ns == "", "", xml2::xml_text(xml2::read_html(paste0("<x>", ns, "</x>"))))
     ns <- .pad(ns_unescaped, len)
+    blank <- .pad("", len)
   }
 
   out <- rep(ns, length(p))
@@ -117,7 +121,7 @@ sigstars <- function(p, stars = NULL, pad_html = FALSE, ns = FALSE, return_NAs =
     out <- ifelse(p < stars[n], n, out)
   }
 
-  if (!return_NAs) out[is.na(out)] <- ""
+  if (!return_NAs) out[is.na(out)] <- blank
 
   out
 }
@@ -126,9 +130,9 @@ sigstars <- function(p, stars = NULL, pad_html = FALSE, ns = FALSE, return_NAs =
   if (is.null(stars)) stars <- c(`&dagger;` = .1, `*` = .05, `**` = .01, `***` = .001)
   out <- stars
   if (markdown == TRUE) {
-    out <- paste0(names(out), " *p* < ", sub(".", "", out))
+    out <- paste0(names(out), " *p* < ", sub("^0\\.", ".", out))
   } else {
-    out <- paste0(names(out), " p < ", sub(".", "", out))
+    out <- paste0(names(out), " p < ", sub("^0\\.", ".", out))
   }
   out <- paste0(out, collapse = ", ")
 
@@ -358,6 +362,9 @@ scale_weighted <- function(x, w, na.rm = TRUE) {
 #' @param show Logical. Print code (otherwise, returned - print with `cat()` to get linebreaks etc)
 #' @param digits Number of digits to round numeric columns to.
 #' @param to_clip Should code for vector be copied into clipboard? Defaults to TRUE in interactive use, but only works when `clipr` package is installed
+#' @return A character string of `tibble::tribble()` code that recreates `x`
+#' (with line breaks embedded, so print with `cat()` for readable formatting).
+#' If `show = TRUE`, the code is also printed and the string is returned invisibly.
 #' @examples
 #' to_tribble(mtcars[1:5, 1:3], show = TRUE)
 #' @export
@@ -519,17 +526,35 @@ get_coef_rename_tribble <- function(mod, show = TRUE) {
 #' Copy data to clipboard to paste into Excel
 #'
 #' This function copies a dataframe into the clipboard, so that it can be
-#' pasted into excel.
+#' pasted into excel. Uses the `clipr` package, which supports Windows, macOS
+#' and Linux (unlike base R's "clipboard" connection, which only works on
+#' Windows).
 #'
 #' @param data Dataframe to be copied.
 #' @param row_names Logical. Should row names be copied?
 #' @param col_names Logical. Should column names be copied?
-#' @param ... Further arguments passed to `write.table`
+#' @param ... Further arguments passed to `utils::write.table()`
+#' @return Invisibly returns the tab-separated text that was copied to the
+#' clipboard. Called for its side effect of writing to the clipboard.
 #' @source https://www.r-bloggers.com/copying-data-from-excel-to-r-and-back/
+#' @examples
+#' if (interactive()) {
+#'   clip_excel(mtcars[1:5, 1:3])
+#' }
 #' @export
 
 clip_excel <- function(data, row_names = FALSE, col_names = TRUE, ...) {
-  utils::write.table(data, "clipboard", sep = "\t", row.names = row_names, col.names = col_names, ...)
+  .check_req_packages("clipr")
+  if (!interactive()) cli::cli_abort("Clipboard access only supported in interactive sessions")
+
+  out <- utils::capture.output(
+    utils::write.table(data, sep = "\t", row.names = row_names, col.names = col_names, ...)
+  ) %>%
+    paste(collapse = "\n")
+
+  clipr::write_clip(out, object_type = "character")
+
+  invisible(out)
 }
 
 
@@ -539,10 +564,12 @@ clip_excel <- function(data, row_names = FALSE, col_names = TRUE, ...) {
 #' It then copies this code to the clipboard. This can be used to quickly copy (small) objects between R sessions,
 #' for instance during package development and testing, or - of course - to paste the dump code into a forum post.
 #'
-#' @param x An object to dump to the clipboard, or a character vector of object names. 
+#' @param x An object to dump to the clipboard, or a character vector of object names.
 #' To enable the use in pipelines, objects that are passed directly will be named `dumped_object`
 #' in the resulting code.
-#'  
+#' @return Invisibly returns the character vector of dump code that was written
+#' to the clipboard. Called for its side effect of writing to the clipboard.
+#'
 #' @examples
 #' if (interactive()) {
 #'   outcome <- "mpg"
@@ -753,6 +780,7 @@ l2v <- line_to_vector
 #'
 #' @param x Vector
 #' @param round Number of digits to round result to
+#' @return Numeric. The share of `NA` values in `x`, rounded to `round` digits.
 #' @examples
 #' x <- c(NA, 1, 2)
 #' na_share(x)
@@ -774,14 +802,15 @@ rm_na <- function(x) {
 #'
 #' @param x The variable to transform.
 #' @param replace One or more values to replace by NA.
-#' 
+#' @return `x`, with any elements matching a value in `replace` set to `NA`.
+#'
 #' @export
 #' @examples
 #' library(dplyr)
-#' 
-#' ess_health %>% 
+#'
+#' ess_health %>%
 #'     mutate(eisced = na_ifs(eisced, c(7, 55)))
-  
+
 
 na_ifs <- function(x, replace) {
   purrr::map(replace, function(z) {
@@ -804,7 +833,8 @@ na_ifs <- function(x, replace) {
 #' @param ... One or more logical conditions, involving x or other variables.
 #' @param operator Name of a logical operator to combine the conditions. Defaults to `"|"` (or),
 #' `"&"` (and) is the other common choice, though `"xor"` would also work.
-#' 
+#' @return `x`, with elements for which the combined condition is `TRUE` set to `NA`.
+#'
 #' @export
 #' @examples
 #' library(dplyr)
@@ -855,8 +885,11 @@ add_class <- function(x, class_to_add = "exp") {
 #' of code and output that is *not* self-contained, e.g., for teaching materials.
 #' 
 #' @param code The code to run - can be NULL, then the code is retrieved from the clipboard.
-#' @inheritParams reprex::reprex                                    
-#' @examples 
+#' @inheritParams reprex::reprex
+#' @return Invisibly returns the rendered reprex output (as returned by
+#' `reprex:::reprex_impl()`). Called primarily for its side effect of writing
+#' formatted code and output to the clipboard.
+#' @examples
 #' if (interactive()) {
 #'   name <- "Lukas"
 #'   run_and_format(paste("My name is", name))
@@ -865,12 +898,20 @@ add_class <- function(x, class_to_add = "exp") {
 
 
 run_and_format <- function (code = NULL, venue = "gh") {
-  
+
   .check_req_packages("reprex")
-  
+
+  if (!exists("reprex_impl", envir = asNamespace("reprex"), inherits = FALSE)) {
+    cli::cli_abort(c(
+      "The internal {.code reprex:::reprex_impl} function could not be found.",
+      "i" = "This most likely means that an updated version of the {.pkg reprex} package is no longer compatible with {.fn run_and_format}.",
+      "i" = "Please report this incompatibility at the timesaveR issue tracker."
+    ))
+  }
+
   reprex_internal <- get("reprex_impl", envir = asNamespace("reprex"),
                          inherits = FALSE)
-  
+
   reprex_internal(
     x_expr = substitute(code),
     input = NULL,

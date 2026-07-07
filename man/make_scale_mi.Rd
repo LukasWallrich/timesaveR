@@ -5,7 +5,7 @@
 \title{Create a scale based on multiple imputation at item level}
 \source{
 The approach to pooling Cronbach's alpha is taken from Dion Groothof \href{https://stackoverflow.com/a/70817748/10581449}{on StackOverflow}.
-The development of the function was motivated by \href{https://doi.org/10.1080/00273171.2012.640589}{Gottschall, West & Enders (2012)} who showed
+The development of the function was motivated by Gottschall, West & Enders (2012, \doi{10.1080/00273171.2012.640589}) who showed
 that multiple imputation at item level results in much higher statistical power than multiple imputation at scale level.
 }
 \usage{
@@ -30,7 +30,7 @@ variable. Typically the output from \code{mice::complete(mids, "long")}.}
 
 \item{scale_name}{Name of the scale}
 
-\item{proration_cutoff}{Applies only to raw data (.imp == 0) in data. Scales scores are only calculated for cases with at most this share of missing data.}
+\item{proration_cutoff}{Scale scores are only calculated for cases with at most this share of missing data. This is applied across all rows in \code{data}; since imputed datasets usually contain no missing item responses, it typically only affects the raw data (\code{.imp == 0}).}
 
 \item{seed}{For pooling, the variance of Cronbach's alpha is bootstrapped. Set a seed to make this reproducible.}
 
@@ -59,6 +59,17 @@ the observed maximum.}
 message to flag this potential issue - set to FALSE to suppress that message. If TRUE, items are rescaled to match the first
 item given. Alternatively pass a vector (c(min, max)) to specify the desired range.}
   }}
+}
+\value{
+Depends on the (hidden, passed through \code{...}) \code{return_list} argument - by
+default (\code{TRUE}) a list with \code{scores} (a numeric vector of scale scores, one
+per row of \code{data}, pooled/raw depending on \code{.imp}) and \code{descriptives} - a list
+including \code{n_items}, pooled \code{reliability} (Cronbach's alpha, and, if
+\code{alpha_ci = TRUE}, \code{reliability_ci_lower}/\code{reliability_ci_upper}/\code{reliability_ci_level}),
+\code{reliability_method}, \code{mean}, \code{SD}, \code{reversed} (items that were reverse-coded),
+\code{rev_min}/\code{rev_max}, \code{m_imputations}, and \code{text} (a convenient text summary of
+the pooled descriptives). If \code{return_list = FALSE}, just the numeric vector of
+scale scores is returned.
 }
 \description{
 This function creates a scale based on multiple imputation at item level and

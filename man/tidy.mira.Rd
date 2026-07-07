@@ -15,11 +15,10 @@
 
 \item{...}{extra arguments (not used)}
 }
-\description{
-Note that the \code{mice} authors prefer to tidy \code{mipo} rather than \code{mira} objects and have now included \code{tidy.mipo} and \code{glance.mipo} into their package. The \code{mira} functions here are mostly retained for compatibility with my earlier code.
-}
-\note{
-Available stats in result:
+\value{
+A \code{\link[tibble:tibble]{tibble::tibble()}} with one row per term and, among others, the
+columns listed below (from \code{summary(mice::pool(x), type = "all")}, sorted
+alphabetically after \code{term}):
 \itemize{
 \item estimate
 \item ubar
@@ -34,4 +33,7 @@ Available stats in result:
 \item conf.low (if called with conf.int = TRUE)
 \item conf.high (if called with conf.int = TRUE)
 }
+}
+\description{
+Note that the \code{mice} authors prefer to tidy \code{mipo} rather than \code{mira} objects and have now included \code{tidy.mipo} and \code{glance.mipo} into their package. The \code{mira} functions here are mostly retained for compatibility with my earlier code.
 }

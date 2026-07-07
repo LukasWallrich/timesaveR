@@ -4,13 +4,8 @@
 \name{WVS}
 \alias{WVS}
 \title{Sample data: World Values Survey}
-\description{
-This dataset contains responses from the World Values Surveys 1995-1997 for
-Australia, Norway, Sweden, and the United States. It is taken from the
-\code{carData} package.
-}
-\details{
-#' @format A dataframe with 5,381 rows and 23 columns
+\format{
+A dataframe with 5,381 rows and 23 columns
 \describe{
 \item{poverty}{“Do you think that what the government is doing for people in
 poverty in this country is about the right amount, too much, or too little?” (ordered):
@@ -21,6 +16,11 @@ poverty in this country is about the right amount, too much, or too little?” (
 \item{age}{in years}
 \item{gender}{\code{male} or \code{female}}
 }
+}
+\description{
+This dataset contains responses from the World Values Surveys 1995-1997 for
+Australia, Norway, Sweden, and the United States. It is taken from the
+\code{carData} package.
 }
 \author{
 Taken from carData package

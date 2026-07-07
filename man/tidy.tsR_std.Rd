@@ -11,7 +11,16 @@
 
 \item{...}{arguments passed on to tidy method}
 }
+\value{
+A tidy \code{\link[tibble:tibble]{tibble::tibble()}} of model results, as returned by the
+underlying model's \code{tidy()} method (e.g. \code{broom::tidy.lm()}), after
+stripping the \code{tsR_std} class.
+}
 \description{
 Strips tsR_std class and calls tidy() again
 (for use with lm_std() and polr_std() outputs)
+}
+\examples{
+mod_std <- lm_std(mpg ~ hp + wt, data = mtcars)
+tidy(mod_std)
 }

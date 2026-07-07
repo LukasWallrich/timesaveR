@@ -11,6 +11,10 @@ fmt_pct(x, digits = 1)
 
 \item{digits}{Number of significant digits, defaults to 1}
 }
+\value{
+A character vector of formatted percentages, the same length as \code{x}.
+\code{NA} values return \code{NA_character_}.
+}
 \description{
 Formats fractions as percentages, i.e. multiplying them by 100 and adding '\%'.
 Respects the \code{timesaveR.round_method} option for consistent rounding behavior

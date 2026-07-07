@@ -15,6 +15,11 @@ to_tribble(x, show = FALSE, digits = 5, to_clip = interactive())
 
 \item{to_clip}{Should code for vector be copied into clipboard? Defaults to TRUE in interactive use, but only works when \code{clipr} package is installed}
 }
+\value{
+A character string of \code{tibble::tribble()} code that recreates \code{x}
+(with line breaks embedded, so print with \code{cat()} for readable formatting).
+If \code{show = TRUE}, the code is also printed and the string is returned invisibly.
+}
 \description{
 Tribbles are an easy way to legibly input data, and therefore helpful for teaching
 and interactive work. This function takes

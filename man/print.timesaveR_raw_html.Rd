@@ -12,8 +12,17 @@ or a list with a html_code element}
 
 \item{...}{Additional arguments passed to print.}
 }
+\value{
+Invisibly returns the \code{htmltools} HTML object that was printed. Called
+for its side effect of rendering the HTML (in the RStudio Viewer pane if
+interactive, or via \code{print()} otherwise).
+}
 \description{
 Various functions in this package return HTML code, mostly for tables. This
 function allows for them to rendered and shown in the Viewer. It can also be
 called manually to render a character vector x that contains HTML code.
+}
+\examples{
+x <- structure(list(html_code = "<p>Hello</p>"), class = "timesaveR_raw_html")
+print(x)
 }

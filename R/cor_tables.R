@@ -115,9 +115,9 @@ report_cor_table <- function(cor_matrix, ci_type = deprecated(),
     if ("row_names" %in% names(extras)) {
       # Use 'row_names' to align 'extras' with variables
       extras <- cor_matrix$desc %>%
-        dplyr::select(.data$var) %>%
+        dplyr::select("var") %>%
         dplyr::left_join(extras, by = c("var" = "row_names")) %>%
-        dplyr::select(-.data$var)
+        dplyr::select(-"var")
     } else {
       if (nrow(extras) != nrow(cor_matrix$desc)) {
         cli::cli_abort("The number of rows in {.arg extras} does not match the number of variables in {.arg cor_matrix}.
@@ -325,7 +325,7 @@ cor_matrix <- function(data,
                        bootstrap = NULL,
                        seed = NULL) {
   
-  set.seed(seed)
+  if (!is.null(seed)) set.seed(seed)
 
   # Preserve attributes before selecting numeric columns
   data_attrs <- attributes(data)
@@ -415,7 +415,7 @@ cor_matrix <- function(data,
     desc_stat <- data |>
       psych::describe() |>
       tibble::as_tibble(rownames = "var") |>
-      dplyr::select(.data$var, M = .data$mean, SD = .data$sd)
+      dplyr::select("var", M = "mean", SD = "sd")
     
   } else {
     
@@ -427,7 +427,7 @@ cor_matrix <- function(data,
     
     Ms <- lavaan::parameterestimates(mod) |>
       dplyr::filter(.data$op == "~1") |>
-      dplyr::select(var = .data$lhs, M = .data$est)
+      dplyr::select(var = "lhs", M = "est")
 
     desc_stat <- lavaan::parameterestimates(mod) |>
       dplyr::filter(.data$op == "~~", .data$lhs == .data$rhs) |>
@@ -674,13 +674,23 @@ svy_cor_matrix <- function(svy_data, var_names = NULL, ci_level = 0.95) {
     dplyr::select(!dplyr::matches("_se")) %>%
     tidyr::pivot_longer(cols = dplyr::everything(), names_to = "key", values_to = "value") %>%
     tidyr::separate(.data$key, into = c("var", "statistic"), sep = "_1") %>%
-    tidyr::pivot_wider(names_from = .data$statistic, values_from = .data$value) %>%
+    tidyr::pivot_wider(names_from = "statistic", values_from = "value") %>%
     dplyr::mutate(SD = sqrt(.data$SD)) %>%
     dplyr::arrange(match(.data$var, rownames(cor_matrix$cors)))
   
   if (nrow(cor_matrix$desc) == 0) {
     cli::cli_abort("No numeric columns found - check your input and that you have installed the most recent dplyr version.")
   }
+  
+  ## --- undo temporary renaming of variables containing "_1" -----------------
+  unmangle <- function(x) stringr::str_replace_all(x, stringr::fixed("_.1"), "_1")
+  mangled_mats <- intersect(c("cors", "p.values", "t.values", "std.err"), names(cor_matrix))
+  cor_matrix[mangled_mats] <- purrr::map(cor_matrix[mangled_mats], function(m) {
+    rownames(m) <- unmangle(rownames(m))
+    colnames(m) <- unmangle(colnames(m))
+    m
+  })
+  cor_matrix$desc$var <- unmangle(cor_matrix$desc$var)
   
   ## --- confidence intervals for correlations --------------------------------
   if (!is.null(cor_matrix$std.err)) {
@@ -885,7 +895,7 @@ cor_matrix_mi <- function(data, weights = NULL, var_names = NULL, ci_level = 0.9
   
   to_matrix <- function(data, names, value, set_diag = 1) {
     m <- matrix(0, length(names), length(names))
-    m[as.matrix(data %>% dplyr::select(.data$row, .data$column))] <- data[[value]]
+    m[as.matrix(data %>% dplyr::select("row", "column"))] <- data[[value]]
     rownames(m) <- names
     colnames(m) <- names
     if (!is.na(set_diag)) {
@@ -1307,6 +1317,8 @@ plot_distributions <- function(data, var_names = NULL, plot_type = c("auto", "hi
 #' @param plots A list of ggplot2 plots, typically with the same length as the number of rows in gt_table
 #' @param col_index The index of the column in gt_table that is to be overwritten with the plots
 #'
+#' @return A `gt` table object (same class as `gt_table`), with the specified
+#'  column's cells replaced by the corresponding rendered plots.
 #' @export
 #' @examples
 #' \dontrun{
@@ -1413,7 +1425,10 @@ tidy.cor_matrix <- function(x, both_directions = TRUE, ...) {
 #' \item{column2}{Name of the second variable}
 #' \item{estimate}{The estimated value of the correlation}
 #' \item{statistic}{The t-statistic used for significance testing}
+#' \item{std.error}{The standard error of the correlation}
 #' \item{p.value}{The two-sided p-value of the correlation}
+#' \item{conf.low, conf.high}{The confidence interval of the correlation
+#' (at the level set when creating the matrix), if available}
 #' @method tidy svy_cor_matrix
 #' @export
 
@@ -1423,9 +1438,13 @@ tidy.svy_cor_matrix <- function(x, both_directions = TRUE, ...) {
     cli::cli_abort("{.arg conf_level} cannot be changed in this tidy function. Please recreate the cor_matrix with the desired confidence level.")
   }
   
-  cli::cli_inform("Presently, confidence intervals cannot be calculated for survey-weighted correlations.")
-  
-  out <- purrr::map2(x[c(1, 4:6)], names(x[c(1, 4:6)]), function(m, name) {
+  elements <- intersect(c("cors", "t.values", "std.err", "p.values", "ci.low", "ci.high"), names(x))
+
+  if (!all(c("ci.low", "ci.high") %in% elements)) {
+    cli::cli_inform("Confidence intervals are not available for this correlation matrix, so they are not included.")
+  }
+
+  out <- purrr::map2(x[elements], elements, function(m, name) {
     ind <- which(lower.tri(m, diag = FALSE), arr.ind = TRUE)
     nn <- dimnames(m)
     res <- tibble::tibble(
@@ -1437,7 +1456,10 @@ tidy.svy_cor_matrix <- function(x, both_directions = TRUE, ...) {
     res
   }) %>% 
     purrr::reduce(dplyr::left_join, by = c("column1", "column2")) %>%
-    dplyr::rename(estimate = "cors", statistic = "t.values", std.error = "std.err", p.value = "p.values")
+    dplyr::rename(dplyr::any_of(c(
+      estimate = "cors", statistic = "t.values", std.error = "std.err",
+      p.value = "p.values", conf.low = "ci.low", conf.high = "ci.high"
+    )))
   
   if (both_directions) {
     out <- out %>%
@@ -1457,8 +1479,13 @@ tidy.svy_cor_matrix <- function(x, both_directions = TRUE, ...) {
 #' @param given A character vector with one or multiple variables in data. It/they will be parceled out from all other variables in data,
 #' before the correlation table is calculated.
 #' @inheritDotParams cor_matrix -missing
+#' @return A correlation matrix list in the same format as returned by
+#'  [cor_matrix()] (correlation matrix, p-values, standard errors, t-values,
+#'  pairwise number of observations, confidence intervals, descriptives, and,
+#'  if `var_names` was provided, a tibble with old and new variable names),
+#'  based on the residuals after partialling out `given`.
 #' @examples
-#' 
+#'
 #' # One might want to estimate correlations between health and possible predictors in the ESS
 #' # after parceling out / controling for key demographic attributes:
 #' pcor_matrix(ess_health, given = c("agea", "gndr"), 
@@ -1475,7 +1502,7 @@ pcor_matrix <- function(data, given, ...) {
 
   if (!is.null(args$var_names)) {
     if (is.data.frame(args$var_names)) {
-      assert_names(names(var_names), must.include = c("old", "new"))
+      assert_names(names(args$var_names), must.include = c("old", "new"))
       var_names <- args$var_names$old
     } else {
       var_names <- names(args$var_names)

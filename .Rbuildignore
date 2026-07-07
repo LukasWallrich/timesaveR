@@ -11,3 +11,13 @@
 ^docs$
 ^pkgdown$
 ^README\.Rmd$
+^cache$
+^\.gitattributes$
+^\.DS_Store$
+^\.Rhistory$
+^Rplots\.pdf$
+^test_vignettes\.R$
+^test_warnings\.txt$
+^cran-comments\.md$
+^CRAN-SUBMISSION$
+^\.claude$

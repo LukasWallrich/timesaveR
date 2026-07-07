@@ -36,6 +36,11 @@ support CommonMark-style fenced code blocks in January 2019.
 currently just an alias for "gh".
 }}
 }
+\value{
+Invisibly returns the rendered reprex output (as returned by
+\code{reprex:::reprex_impl()}). Called primarily for its side effect of writing
+formatted code and output to the clipboard.
+}
 \description{
 This builds on the \code{\link[reprex:reprex]{reprex::reprex()}} function to take a chunk of code,
 run it and copy the formatted code and output to the clipboard. Note that

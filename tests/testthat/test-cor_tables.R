@@ -383,18 +383,13 @@ test_that("tidy.cor_matrix returns correct column names", {
 
 # Tests for tidy.svy_cor_matrix
 test_that("tidy.svy_cor_matrix works", {
-  expect_message(
-    tidy_result <- tidy(ess_survey_cor_matrix),
-    "confidence intervals cannot be calculated"
-  )
-  # ToDo - check whether CIs can be calculated for survey data in future
+  expect_no_message(tidy_result <- tidy(ess_survey_cor_matrix))
   expect_s3_class(tidy_result, "tbl_df")
+  expect_true(all(c("conf.low", "conf.high") %in% names(tidy_result)))
 })
 
 test_that("tidy.svy_cor_matrix works with both_directions = FALSE", {
-  expect_message(
-    tidy_result <- tidy(ess_survey_cor_matrix, both_directions = FALSE)
-  )
+  tidy_result <- tidy(ess_survey_cor_matrix, both_directions = FALSE)
   n_vars <- nrow(ess_survey_cor_matrix$desc)
   expected_rows <- n_vars * (n_vars - 1) / 2
   expect_equal(nrow(tidy_result), expected_rows)
