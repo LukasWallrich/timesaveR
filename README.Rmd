@@ -43,7 +43,7 @@ There are many packages that support data analysis and reporting. For instance, 
 
 # Installation
 
-You can install timesaveR from GitHub with the command below. If you do not have the `remotes`-package installed, run `install.packages("remote")` first.
+You can install timesaveR from GitHub with the command below. If you do not have the `remotes`-package installed, run `install.packages("remotes")` first.
 
 ```r
 remotes::install_github('lukaswallrich/timesaveR')
