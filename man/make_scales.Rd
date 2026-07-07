@@ -31,7 +31,7 @@ and Pearson's "r" are also supported.}
 \item{print_desc}{Logical. Should descriptives for scales be printed?}
 
 \item{...}{
-  Arguments passed on to \code{\link[=make_scale]{make_scale}}
+  Arguments passed on to \code{\link{make_scale}}
   \describe{
     \item{\code{print_hist}}{Logical. Should histograms for items and resulting scale be printed?}
   }}

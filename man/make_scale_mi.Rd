@@ -43,7 +43,7 @@ variable. Typically the output from \code{mice::complete(mids, "long")}.}
 \item{scale_items}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use the \code{items} argument instead}
 
 \item{...}{
-  Arguments passed on to \code{\link[=make_scale]{make_scale}}
+  Arguments passed on to \code{\link{make_scale}}
   \describe{
     \item{\code{reverse_method}}{Should scale items be reverse coded? One of "auto" - items are
 reversed if that contributes to scale consistency, "none" - no items reversed,

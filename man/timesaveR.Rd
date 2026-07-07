@@ -34,4 +34,9 @@ Useful links:
 \author{
 \strong{Maintainer}: Lukas Wallrich \email{lukas.wallrich@gmail.com} (\href{https://orcid.org/0000-0003-2121-5177}{ORCID}) [copyright holder]
 
+Authors:
+\itemize{
+  \item Lukas Wallrich \email{lukas.wallrich@gmail.com} (\href{https://orcid.org/0000-0003-2121-5177}{ORCID}) [copyright holder]
+}
+
 }

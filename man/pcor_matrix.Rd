@@ -13,7 +13,7 @@ pcor_matrix(data, given, ...)
 before the correlation table is calculated.}
 
 \item{...}{
-  Arguments passed on to \code{\link[=cor_matrix]{cor_matrix}}
+  Arguments passed on to \code{\link{cor_matrix}}
   \describe{
     \item{\code{var_names}}{A named character vector with new variable names or a tibble as provided by \code{\link[=get_rename_tribbles]{get_rename_tribbles()}}
 for variables. If NULL, then the variables are not renamed. If names are provided, only the variables included here are retained.
